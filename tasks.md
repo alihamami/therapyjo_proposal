@@ -125,6 +125,8 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-062 | Limit doctors to their own sessions | SPLIT — **complete**: both halves merged to `master` as `7622d50` on 2026-10-12 at the user's request; **live check owed** | — |
 | TJ-062a | Server: a doctor may change only their own sessions | DONE — task commit `30591ee`, merged into `claude/exciting-einstein-krgpmv` as `3a23dd6`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-session-ownership` |
 | TJ-062b | Screens: a colleague's session is read-only to a doctor | DONE — task commit `faa8935`, merged into `claude/exciting-einstein-krgpmv` as `7024348`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-readonly-sessions` |
+| TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT — passed 2026-10-26; **the fix is a production setting the user changes (P1–P4)**; the code half is TJ-063a | — |
+| TJ-063a | Keep staff signed in through a database failure, and stop waiting forever for a connection | BLOCKED — **one decision (Q1)**; the instructions assume the recommended answer | `bugfix/db-failure-keeps-session` |
 
 ---
 
@@ -11821,6 +11823,219 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 
 ---
 
+### TJ-063 — Staff are signed out, and cannot sign back in, while the database pooler is full
+
+- **Status:** SPLIT. Passed 2026-10-26. **The fix is a production setting, steps P1–P4 below, and only the user can make it.** The code half is **TJ-063a**. Nothing executes against this ID.
+- **Branch:** none of its own.
+- **Why:** User report, 2026-10-26: during clinic hours, signing in to the admin dashboard is slow and then fails outright, and the logs say "max clients reached".
+
+**Planning pass:** 2026-10-26. Files read:
+- `src/lib/prisma.ts`, `src/lib/auth.ts`, `src/lib/auth.config.ts`, `src/lib/username.ts`, `src/middleware.ts`, `prisma.config.ts`, `.env.example`, `package.json`.
+- `src/app/login/page.tsx`, `src/app/providers.tsx`, `src/app/SessionExpiryNotice.tsx`, the three dashboard layouts, and the data loading in `src/app/admin/page.tsx`.
+- `GET` in `api/reservations/route.ts`, `api/employees/doctors/route.ts` and `api/patients/duplicates/route.ts`.
+- Library code, at the installed versions: `pg-pool` 3.11.0 `index.js` (option defaults, the wait queue); `@prisma/adapter-pg` 7.4.1 `dist/index.js` (`performIO`, `startTransaction`); `@auth/core` 0.41.0 `lib/actions/session.js`; `next-auth` 5.0.0-beta.30 `lib/index.js` and `react.js`.
+- `Production_Cutover.md`: the env table, *Declined, deliberately*, Hazard 8.
+- The production build in `.next/server` (`BUILD_ID` `M0s2-mWbsTLphowNXH7dp`, built 2026-10-14).
+
+**Confirmed: the cause.**
+
+| Claim | Evidence |
+|---|---|
+| "max clients reached" is the **session-mode** pooler's error | Supavisor words it `(EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size`. Transaction mode words its own limit differently ("max client connections reached"), and that limit is 200. |
+| Session mode caps the whole app at **15** | Pool size 15 at Nano (Hazard 8). In session mode a client keeps one of those 15 for as long as its connection is open, busy or idle. |
+| Each instance holds up to **3** | `max: 3` in `prisma.ts`, and idle connections stay open for 10 s (`pg-pool`'s default `idleTimeoutMillis: 10000`). Five busy instances fill the cap. |
+| One pool per instance, not one per route | The production build has exactly **one** server chunk that builds the pool. There is no duplicate-pool bug, and the `NODE_ENV` guard on the `globalThis` cache is harmless. |
+| Production's port was never verified | *Declined, deliberately* in `Production_Cutover.md`: the owner said `6543`, recorded as "unverifiable". The error says `5432`. Local `.env` is on `5432` too. |
+
+**Confirmed: why it shows up as a login failure, not just slowness.**
+
+| Step | What the code does when the database cannot be reached |
+|---|---|
+| Waiting | `pg-pool` sets no `connectionTimeoutMillis` by default. A request waits in its queue with no limit, then in the pooler's queue until the pooler rejects it. **That is the latency.** |
+| Session check | Every `auth()` and every `GET /api/auth/session` runs the `jwt` callback in `auth.ts`, which queries `User.status` (TJ-007). If that query throws, `@auth/core`'s session action catches the error and **clears the session cookie**, exactly as it does for a `null` return. |
+| A tab comes back into view | **Two** session checks per staff tab. `SessionProvider` refetches on `visibilitychange` (`next-auth/react.js`, `refetchOnWindowFocus` defaults to true), and `SessionExpiryNotice.tsx` fetches `/api/auth/session` on the same event. On a full pool either one signs the person out, and they see "Your session has ended". |
+| Signing back in | `authorize()` needs 2–3 queries. Any failure shows **"Invalid username or password"** (`login/page.tsx`, `if (result?.error)`), even for a correct password. If sign-in succeeds but the follow-up `fetch("/api/auth/session")` fails, the cookie is cleared again, `role` is undefined, and the user lands on `/`, signed out. |
+| Loading the dashboard | `/admin` fires `/api/employees/doctors`, `/api/reservations` and `/api/patients/duplicates` together (the date picker's month counts load only once its popover opens). Each one runs a session check and then its own query, and the duplicates scan reads every patient with a reservation count. |
+
+**Confirmed: transaction mode is safe for this app.**
+- `adapter-pg`'s `performIO` passes `{ text, values, rowMode, types }` and never a `name`, so every query is an unnamed statement. That is Supabase's own guidance for node-postgres in transaction mode: omit `name`. The `prepared statement … already exists` warning in `Production_Cutover.md` belongs to Prisma's query engine, which this app does not use. **Do not add `?pgbouncer=true`**: that flag is read by the query engine, not by the adapter.
+- No session-scoped SQL: no `SET`, advisory locks, `LISTEN` or temp tables in `src/`. The only raw query is the parameterised `SELECT` in `username.ts`.
+- All five `$transaction` calls use the batch (array) form. `adapter-pg` runs them as `BEGIN` … `COMMIT` on one checked-out connection, which transaction mode supports.
+- `prisma.config.ts` hands the same variable to the Prisma CLI, but production's value is only ever read by the running app. Local `db push` and Studio are unaffected, and **local stays on `5432`**.
+
+**Considered and rejected:**
+
+| Option | Why not |
+|---|---|
+| Raise Supabase's Pool Size | Nano's Postgres has few connection slots to spare, and session mode is still the wrong shape for serverless. |
+| `idleTimeoutMillis: 5000` (Vercel's Fluid guidance) | In transaction mode an idle client costs one of 200, not one of 15. Every reconnect is a fresh TLS handshake from `iad1` to Ireland, so a shorter idle timeout adds latency for staff who click every few seconds. |
+| `attachDatabasePool` from `@vercel/functions` | Not in `package.json` (Hard Rule 1). Revisit only if, after P2, the pooler's client count creeps upward over a day. |
+| Re-check status less often than every request | Weakens TJ-007's "immediately". Each check is a primary-key lookup, and once the pool has room it is not the bottleneck. |
+| Drop `SessionExpiryNotice`'s own fetch | It duplicates `SessionProvider`'s, so removing it halves tab-return checks. Minor once P2 lands; filed in *Notes for the planner*. |
+| Move functions to `dub1` | Declined 2026-08-23 and not reopened here. It would shorten every query, and so how long each connection is held. |
+
+**Steps.** P1–P4 are the user's. P5 is the planner's.
+
+- **P1. Confirm the mode.** Open one full "max clients" line in Vercel's logs. `in session mode` or `pool_size: 15` confirms this pass. If it reads `max client connections reached` (the 200 limit) instead, **stop**: production is already in transaction mode, the cause is a leak, and TJ-063 needs a new pass.
+- **P2. Switch production to the transaction pooler.** Supabase → the project → **Connect** → **Transaction pooler**. Copy the URI: host `aws-1-eu-west-1.pooler.supabase.com`, port **`6543`**, user `postgres.<project-ref>`. Host, user and password are the same as today; only the port differs. Replace `[YOUR-PASSWORD]` with the database password and add nothing else to the string. Then in Vercel → Settings → Environment Variables, edit `DATABASE_URL` (Production) and paste. **Never paste the value into a chat.**
+  - **If nobody knows the password:** resetting it in Supabase breaks production immediately, until the new string is pasted and deployed. Do it outside clinic hours, and put the new value in local `.env` as well, which has been stale since 2026-08-28.
+- **P3. Redeploy:** Deployments → the latest Production deployment → ⋯ → **Redeploy**. Only a new deployment sees an environment change.
+- **P4. Check it live:**
+  - `curl -s -o /dev/null -w "%{http_code}\n" https://therapyjo.com/api/public/blog` returns `200`. That route runs an `updateMany` and a `findMany`, so a write and a read both went through the new string.
+  - Sign in to `/admin` once.
+  - Through the next clinic day, Vercel's logs show **no** `max clients`, `EMAXCONN` or `prepared statement` lines.
+  - **Rollback:** Instant Rollback to the previous deployment, which keeps its old value.
+- **P5. Planner:** record the measured mode and port in `Production_Cutover.md`, in the *Declined, deliberately* row and in Hazard 8's "The ceiling is not tight".
+
+---
+
+### TJ-063a — Keep staff signed in through a database failure, and stop waiting forever for a connection
+
+- **Status:** BLOCKED. One decision, **Q1** below. It becomes READY when Q1 is answered; the instructions assume the recommended answer.
+- **Branch:** `bugfix/db-failure-keeps-session`, cut from `master`.
+- **Why:** See TJ-063. With P2 done the pool has room, but any database failure (a pooler restart, a Supabase blip, a full pool) still signs out every staff member whose tab refetches the session, and requests still wait with no time limit. **Independent of P1–P4**: it can ship before or after them.
+
+**Decision for the user:**
+- **Q1. When the status check cannot reach the database, keep the session or end it?**
+  - **Keep it (recommended).** An outage signs nobody out. A resigned user is revoked on the next read that reaches the database, and while it is unreachable every route that serves clinic data fails anyway, so they reach nothing.
+  - **End it (today's behaviour).** TJ-007's revocation stays strict even during an outage, at the cost of signing the whole clinic out.
+
+**Planning pass:** 2026-10-26, the same pass as TJ-063. Also confirmed:
+- `pg-pool` 3.11.0 `connect()`: with `connectionTimeoutMillis` set, a wait for a busy client rejects with `timeout exceeded when trying to connect`, and a new connection attempt is ended with `Connection terminated due to connection timeout` (measured below). Without it, neither has a timer.
+- **Ordering hazard.** The timeout on its own would make sign-outs *more* frequent: a request that would have waited and then succeeded now fails, and a failed status check clears the cookie. So the two changes ship together. Never `prisma.ts` alone.
+- House style: `src/lib` logs as `console.error("[tag] …", err)` (`audit.ts`), comments explain the why and cite the task, 4-space indent. `tsconfig.json` has `strict: false`.
+- The revocation line `if (!current || current.status !== "ACTIVE") return null;` stays byte-identical, so TJ-007 still holds whenever the database answers.
+
+**Planner prototype, 2026-10-26.** The three instructions below were extracted from this file by script, matched against their targets (**each anchor occurs exactly once**), and applied in a throwaway worktree of `master` at `9e0ff07`. Nothing from it was committed, and the worktree is gone. Results:
+- `npx tsc --noEmit --incremental false`: exit **0**. `next build --webpack`: exit **0**. (Turbopack refuses a junctioned `node_modules` that points outside the worktree, hence webpack. The executor builds in the real checkout with `npm run build`.)
+- The probes in Verification, before and after:
+
+| Probe | `master` (before) | With the change (after) |
+|---|---|---|
+| A: `GET /api/auth/session`, database refused | `200`, body `null`. Two `Set-Cookie` lines: middleware's re-issue, then **`authjs.session-token=; Max-Age=0`**. Log: `JWTSessionError` caused by `PrismaClientKnownRequestError` | `200`, body carries `"role":"ADMIN"`. Both `Set-Cookie` lines carry a token, and **no `Max-Age=0`**. Log: `[auth] status check failed; keeping the session` |
+| B: `GET /api/employees/doctors`, silent listener | **No response in 60 s** (curl exit 28) | **`500` at 20.2 s**. Log: `Connection terminated due to connection timeout` |
+
+**Scope — touch only these:**
+- `src/lib/auth.ts`
+- `src/lib/prisma.ts`
+- `.env.example`
+
+**Do not touch:** `src/lib/auth.config.ts` (imported by Edge middleware, must stay Prisma-free), `src/app/SessionExpiryNotice.tsx`, `prisma.config.ts`, and every `.env*` file other than `.env.example`. **Never run `prisma db push`, `db seed` or Studio, and never point a probe at the Supabase database.** Runtime verification against production is waived (standing directive, 2026-09-15); the local probes below are not.
+
+**Instructions:**
+
+1. `src/lib/auth.ts`, inside `async jwt({ token, user })`. Replace this anchor, verbatim:
+
+   ```ts
+               const current = await prisma.user.findUnique({
+                   where: { id: userId },
+                   select: { status: true },
+               });
+               if (!current || current.status !== "ACTIVE") return null;
+   ```
+
+   with:
+
+   ```ts
+               // A failed lookup is not a revoked account. Letting it throw
+               // signs the user out: @auth/core's session action catches the
+               // error and clears the session cookie, exactly as it does for
+               // a null return. So a full pooler or a database blip would sign
+               // out every staff member whose tab refetches the session, and
+               // they could not sign back in for the same reason. Keep the
+               // session instead; the next read that reaches the database
+               // re-checks it. Every route that serves clinic data needs that
+               // same database, so a resigned user gains nothing meanwhile.
+               // (TJ-063a)
+               let current: { status: string } | null;
+               try {
+                   current = await prisma.user.findUnique({
+                       where: { id: userId },
+                       select: { status: true },
+                   });
+               } catch (err) {
+                   console.error("[auth] status check failed; keeping the session:", err);
+                   return token;
+               }
+               if (!current || current.status !== "ACTIVE") return null;
+   ```
+
+2. `src/lib/prisma.ts`. Replace this anchor, verbatim:
+
+   ```ts
+           max: 3,
+       });
+   ```
+
+   with:
+
+   ```ts
+           max: 3,
+           // pg-pool waits for a connection with no time limit by default.
+           // When the pooler is full, a request then hangs until the pooler
+           // itself rejects it, and staff see a frozen page. Give up after
+           // 10 seconds instead: far longer than a healthy connect, and far
+           // shorter than the pooler's own queue. (TJ-063a)
+           connectionTimeoutMillis: 10000,
+       });
+   ```
+
+   Leave `max: 3` and `idleTimeoutMillis` alone; TJ-063 says why.
+
+3. `.env.example`. Replace these three lines, verbatim:
+
+   ```
+   # PRODUCTION: use Supabase's POOLED connection string, not the direct one.
+   # src/lib/prisma.ts opens a pg.Pool per instance; on a serverless host the
+   # direct connection exhausts Postgres connection slots under load.
+   ```
+
+   with:
+
+   ```
+   # PRODUCTION: use Supabase's TRANSACTION pooler string: the pooler host,
+   # port 6543. Not the direct connection, and not the session pooler on port
+   # 5432 of the same host. src/lib/prisma.ts opens a pg.Pool per instance, and
+   # session mode caps the whole app at the pool size (15 on Nano); past that,
+   # requests queue and then fail with "max clients reached" (TJ-063).
+   # Do not add ?pgbouncer=true: the app reaches Postgres through Prisma's pg
+   # driver adapter, which never names its statements.
+   # LOCAL: port 5432 is fine. prisma.config.ts hands this same variable to the
+   # Prisma CLI (db push, Studio), and the CLI should not go through port 6543.
+   ```
+
+4. Commit on the branch: `Keep staff signed in through a database failure, and time out waiting for a connection (TJ-063a)`.
+
+**Verification:**
+- `npx tsc --noEmit --incremental false` exits 0, and `npm run build` exits 0. If a failure is confined to `.claude/worktrees/` (TJ-050) or `.next/dev/types` (stale dev types), report it and do not fix it.
+- Lint is informational. The bar is that the three changed files add nothing.
+- **Local probes: no database, no credentials.** Run each probe on `master` first and then on the branch, with identical commands, and report both results as a table.
+  - Start the build with `npx next start -p 3100` and these variables set in the process environment, which takes precedence over `.env`:
+    - `DATABASE_URL`: the probe's value, below
+    - `AUTH_SECRET=tj063a-probe-secret-not-a-real-key-0000`
+    - `AUTH_URL=http://localhost:3100`
+    - `AUTH_TRUST_HOST=true`
+    - `NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co`
+    - `NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder`
+  - **Session cookie:** from the repo root, `node --input-type=module -e` importing `encode` from `next-auth/jwt`, called with `{ token: { sub: "probe", id: "probe", role: "ADMIN", name: "Probe" }, secret: "<the AUTH_SECRET above>", salt: "authjs.session-token" }`. Send the result as `Cookie: authjs.session-token=<value>`. Over plain http the cookie has no `__Secure-` prefix.
+  - **Probe A, the session survives.** `DATABASE_URL=postgresql://probe:probe@127.0.0.1:1/probe` (connection refused at once). Then `curl -si http://localhost:3100/api/auth/session -H "Cookie: authjs.session-token=<value>"`.
+    - `master`: body `null`, and a `Set-Cookie` of `authjs.session-token=; Max-Age=0` (the cookie is cleared).
+    - Branch: the body contains `"role":"ADMIN"`, every `Set-Cookie` carries a non-empty token with no `Max-Age=0`, and the server log shows `[auth] status check failed; keeping the session`.
+  - **Probe B, fail fast.** Start a listener that accepts and never answers: `node -e "require('net').createServer((s) => s.on('error', () => {})).listen(5999)"`. The error handler matters: without it the listener crashes on `ECONNRESET` when the server stops. Set `DATABASE_URL=postgresql://probe:probe@127.0.0.1:5999/probe`. Then `curl -s -o /dev/null -w "%{http_code} %{time_total}\n" --max-time 60 http://localhost:3100/api/employees/doctors -H "Cookie: authjs.session-token=<value>"`.
+    - `master`: no response inside 60 s (curl exit 28).
+    - Branch: `500` in roughly **20 s**: 10 s for the status check (caught, session kept), then 10 s for the doctor list.
+  - **Negative case, TJ-007 still revokes.** Read the diff: the revocation line is unchanged and still runs after a successful lookup. A live proof needs a database holding a `RESIGNED` user. Use the throwaway-Postgres recipe in *Notes for the planner* if the machine has the binaries; otherwise record it as **waived**.
+  - Stop both servers and the listener. Kill only processes you started.
+
+**Done when:**
+- [ ] The diff touches only the three Scope files.
+- [ ] tsc and build exit 0.
+- [ ] Probes A and B are reported before and after, and match the expectations above.
+- [ ] The revocation line is byte-identical.
+- [ ] **Live check owed after merge and push:** sign in on `therapyjo.com` once, and confirm Vercel's logs show no `[auth] status check failed` lines on a normal day.
+
+---
+
 ## Notes for the planner
 
 Findings reported by the executor, or surfaced during a pass, that fall outside the scope of the task that turned them up. The planner triages these into tasks. **The executor does not write here** — it reports in conversation and the planner records.
@@ -11995,3 +12210,5 @@ Findings reported by the executor, or surfaced during a pass, that fall outside 
   **Run the same probe script before and after a change.** The "before" table is what makes the "after" table evidence. Two cautions:
   - Chromium defaults to UTC, so pass `timezoneId: "Asia/Amman"` or schedule times read three hours early.
   - Fixture `sessionDate` values must be written the way `POST /api/reservations` writes them (`new Date("YYYY-MM-DD")`, UTC midnight). Otherwise the month counts land on the previous day. (Recorded during the TJ-054 review, 2026-09-28.)
+- **Two `/api/auth/session` checks fire every time a staff tab comes back into view.** `SessionProvider` already refetches on `visibilitychange` (`next-auth/react.js`, `refetchOnWindowFocus` defaults to true), and `SessionExpiryNotice.tsx` adds its own fetch on the same event. Each check runs the TJ-007 status query. Dropping the component's fetch halves that load, but its comment defends it as "belt-and-braces", so it needs a pass that checks whether the provider's refetch covers the hidden-tab case. (Found during the TJ-063 pass, 2026-10-26.)
+- **The login page reports every failure as "Invalid username or password".** `login/page.tsx` shows that message for any `result?.error`, including a database error inside `authorize()`. So whenever the pooler is full, staff with correct passwords are told they are wrong. Distinguishing `CredentialsSignin` from other errors would fix it. Needs a pass. (Found during the TJ-063 pass, 2026-10-26.)
