@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { canViewPatientContact } from "@/lib/permissions";
+import { canViewPatientContact, sessionsHiddenFrom } from "@/lib/permissions";
 import { logPatientActivity } from "@/lib/audit";
 import { checkClinicWindow } from "@/lib/clinicHours";
 
@@ -21,6 +21,10 @@ export async function GET(req: NextRequest) {
     // A doctor's schedule and session history carry the patient's name but
     // not their numbers. (TJ-054)
     const contact = canViewPatientContact(session.user);
+    // A doctor is sent no session on a day that has not opened yet. All three
+    // modes below cap sessionDate here, so the day view, the patient history
+    // and the date picker's counts agree. null for admin and secretary. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
 
     // Month counts mode: returns { "2026-02-01": 3, "2026-02-02": 1, ... }
     if (monthStr) {
@@ -30,7 +34,7 @@ export async function GET(req: NextRequest) {
 
         const reservations = await prisma.reservation.findMany({
             where: {
-                sessionDate: { gte: startOfMonth, lte: endOfMonth },
+                sessionDate: { gte: startOfMonth, lte: endOfMonth, ...(hiddenFrom && { lt: hiddenFrom }) },
                 ...(doctorId && { doctorId }),
             },
             select: { sessionDate: true },
@@ -48,7 +52,7 @@ export async function GET(req: NextRequest) {
     // Patient-only mode: all sessions for a patient (no date filter)
     if (!dateStr && patientId) {
         const reservations = await prisma.reservation.findMany({
-            where: { patientId: parseInt(patientId, 10) },
+            where: { patientId: parseInt(patientId, 10), ...(hiddenFrom && { sessionDate: { lt: hiddenFrom } }) },
             include: {
                 patient: { select: { id: true, name: true, phone1: contact, phone2: contact } },
                 doctor: { select: { id: true, name: true, color: true } },
@@ -67,7 +71,7 @@ export async function GET(req: NextRequest) {
     const nextDay = new Date(dateStr + "T23:59:59.999");
 
     const where = {
-        sessionDate: { gte: date, lte: nextDay },
+        sessionDate: { gte: date, lte: nextDay, ...(hiddenFrom && { lt: hiddenFrom }) },
         ...(doctorId && doctorId !== "all" && { doctorId }),
         ...(patientId && { patientId: parseInt(patientId, 10) }),
     };

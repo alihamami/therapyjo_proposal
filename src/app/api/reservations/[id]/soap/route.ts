@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { canAccessClinical, canWriteSession } from "@/lib/permissions";
+import { canAccessClinical, canWriteSession, sessionsHiddenFrom } from "@/lib/permissions";
 import { logPatientActivity } from "@/lib/audit";
 
 // GET /api/reservations/[id]/soap — get SOAP note for a reservation
@@ -16,6 +16,20 @@ export async function GET(
     }
 
     const { id } = await params;
+
+    // A doctor cannot read the note of a session they cannot see. Admin skips
+    // the lookup and keeps the old answer for a missing id. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (hiddenFrom) {
+        const reservation = await prisma.reservation.findUnique({
+            where: { id: parseInt(id, 10) },
+            select: { sessionDate: true },
+        });
+        if (!reservation || reservation.sessionDate >= hiddenFrom) {
+            return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
+        }
+    }
+
     const soap = await prisma.sOAPNote.findUnique({
         where: { reservationId: parseInt(id, 10) },
     });
@@ -42,9 +56,11 @@ export async function PUT(
 
     const reservation = await prisma.reservation.findUnique({
         where: { id: reservationId },
-        select: { patientId: true, doctorId: true },
+        select: { patientId: true, doctorId: true, sessionDate: true },
     });
-    if (!reservation) {
+    // Nor write one, as in GET. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!reservation || (hiddenFrom && reservation.sessionDate >= hiddenFrom)) {
         return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
     }
     // A doctor may read a colleague's SOAP note but not write it. (TJ-062)

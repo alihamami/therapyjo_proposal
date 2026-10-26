@@ -1,4 +1,5 @@
 import type { Session } from "next-auth";
+import { firstHiddenScheduleDay } from "@/lib/clinicHours";
 
 /**
  * May this user manage public content — Blog posts, public Doctor profiles,
@@ -108,4 +109,27 @@ export function canWriteSession(
     if (!user) return false;
     if (user.role === "ADMIN" || user.role === "SECRETARY") return true;
     return user.role === "DOCTOR" && sessionDoctorId !== null && sessionDoctorId === user.id;
+}
+
+/**
+ * From which instant are sessions hidden from this user? null means none are.
+ *
+ * ADMIN and SECRETARY see every day: they book and run the calendar. Anyone
+ * else, which today means DOCTOR, sees a day only once it has opened: every
+ * past day, today from SCHEDULE_OPEN_HOUR:SCHEDULE_OPEN_MINUTE Amman time, and
+ * no later day at all (src/lib/clinicHours.ts). Like the helpers above, it
+ * names the roles that may, so a role added later is held back until someone
+ * decides otherwise.
+ *
+ * Compare it against Reservation.sessionDate with `lt`. Every write path
+ * stores that column as `new Date("YYYY-MM-DD")`, UTC midnight of its day, and
+ * this returns UTC midnight of the first hidden day. User decision,
+ * 2026-10-26. (TJ-064)
+ */
+export function sessionsHiddenFrom(
+    user: Session["user"] | undefined | null,
+    now: Date = new Date()
+): Date | null {
+    if (user && (user.role === "ADMIN" || user.role === "SECRETARY")) return null;
+    return new Date(firstHiddenScheduleDay(now));
 }
