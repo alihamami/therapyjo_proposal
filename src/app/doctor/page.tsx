@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
+import { sessionsHiddenFrom } from "@/lib/permissions";
+import { SCHEDULE_OPEN_LABEL } from "@/lib/clinicHours";
 
 interface Doctor {
     id: string;
@@ -40,6 +42,13 @@ export default function DoctorDashboard() {
     // An admin may open this page too and keeps every action. Until the
     // session loads, no card offers anything. (TJ-062)
     const ownerId = session?.user?.role === "ADMIN" ? undefined : (doctorId ?? "");
+
+    // A day that has not opened yet shows a notice, not an empty calendar: the
+    // server sends a doctor nothing for it, and "0 sessions" would read as a
+    // free day. selectedDate parses as UTC midnight, the instant the server
+    // compares against. An admin sees every day. (TJ-064)
+    const hiddenFrom = session ? sessionsHiddenFrom(session.user) : null;
+    const dayLocked = hiddenFrom !== null && new Date(selectedDate) >= hiddenFrom;
 
     // Opens on the whole clinic's schedule, the same as admin and secretary.
     // The select below narrows it to the doctor's own, or to one colleague's.
@@ -119,12 +128,18 @@ export default function DoctorDashboard() {
                     doctorId={doctorFilter}
                     label={formatDate()}
                 />
-                <span className="session-count">{reservations.length} session{reservations.length !== 1 ? "s" : ""}</span>
+                {!dayLocked && (
+                    <span className="session-count">{reservations.length} session{reservations.length !== 1 ? "s" : ""}</span>
+                )}
             </div>
 
             <div className="main-layout">
                 <div className="calendar-col">
-                    {loading ? (
+                    {dayLocked ? (
+                        <div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem", textAlign: "center" }}>
+                            {`This day's schedule opens at ${SCHEDULE_OPEN_LABEL} on ${formatDate()}.`}
+                        </div>
+                    ) : loading ? (
                         <div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem", textAlign: "center" }}>Loading…</div>
                     ) : (
                         <Calendar
