@@ -61,7 +61,6 @@ export default function DoctorsPage() {
     const router = useRouter();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showModal, setShowModal] = useState(false);
     const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState<DoctorForm>({
@@ -153,20 +152,6 @@ export default function DoctorsPage() {
         [doctors, editingDoctor]
     );
 
-    const openAdd = () => {
-        setEditingDoctor(null);
-        setForm({ name: "", email: "", phone: "", workingHours: "", username: "", password: "", confirmPassword: "", adminPassword: "", color: COLORS[0], canManageContent: false });
-        setShowPassword(false);
-        setFormError("");
-        setHoursFrom("");
-        setHoursTo("");
-        setLegacyHours("");
-        setDocs([]);
-        setDocError("");
-        setUploadingName("");
-        setShowModal(true);
-    };
-
     const openEdit = (doc: Doctor) => {
         setEditingDoctor(doc);
         setForm({
@@ -185,13 +170,13 @@ export default function DoctorsPage() {
         setDocError("");
         setUploadingName("");
         loadDocs(doc.id);
-        setShowModal(true);
     };
 
     const handleSave = async () => {
+        if (!editingDoctor) return;
         setFormError("");
 
-        if (!editingDoctor || form.password) {
+        if (form.password) {
             if (form.password.length < 8) {
                 setFormError("Password must be at least 8 characters");
                 return;
@@ -200,39 +185,28 @@ export default function DoctorsPage() {
                 setFormError("Passwords do not match");
                 return;
             }
-        }
-
-        if (editingDoctor && form.password && !form.adminPassword) {
-            setFormError("Enter your own password to confirm this change");
-            return;
+            if (!form.adminPassword) {
+                setFormError("Enter your own password to confirm this change");
+                return;
+            }
         }
 
         setSaving(true);
-        const url = editingDoctor
-            ? `/api/employees/doctors/${editingDoctor.id}`
-            : "/api/employees/doctors";
-        const method = editingDoctor ? "PUT" : "POST";
-
         const body: Record<string, string | boolean> = {
             name: form.name, email: form.email, phone: form.phone,
             workingHours: form.workingHours, color: form.color,
+            canManageContent: form.canManageContent,
         };
-        if (!editingDoctor) {
-            body.username = form.username;
+        if (form.username.trim() !== editingDoctor.username) {
+            body.username = form.username.trim();
+        }
+        if (form.password) {
             body.password = form.password;
-        } else {
-            body.canManageContent = form.canManageContent;
-            if (form.username.trim() !== editingDoctor.username) {
-                body.username = form.username.trim();
-            }
-            if (form.password) {
-                body.password = form.password;
-                body.adminPassword = form.adminPassword;
-            }
+            body.adminPassword = form.adminPassword;
         }
 
-        const res = await fetch(url, {
-            method,
+        const res = await fetch(`/api/employees/doctors/${editingDoctor.id}`, {
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
         });
@@ -245,7 +219,7 @@ export default function DoctorsPage() {
             return;
         }
 
-        setShowModal(false);
+        setEditingDoctor(null);
         fetchDoctors();
     };
 
@@ -429,10 +403,10 @@ export default function DoctorsPage() {
             </div>
 
             {/* Modal */}
-            {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+            {editingDoctor && (
+                <div className="modal-overlay" onClick={() => setEditingDoctor(null)}>
                     <div className="modal-card modal-form" onClick={(e) => e.stopPropagation()}>
-                        <h2>{editingDoctor ? "Edit Doctor" : "Add Doctor"}</h2>
+                        <h2>Edit Doctor</h2>
                         <div className="modal-body">
                             {formError && <div className="error-msg" role="alert">{formError}</div>}
 
@@ -477,12 +451,12 @@ export default function DoctorsPage() {
                                 <div className="form-group">
                                     <label>Username *</label>
                                     <input value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
-                                    {editingDoctor && form.username.trim() !== editingDoctor.username && (
+                                    {form.username.trim() !== editingDoctor.username && (
                                         <span className="field-hint">They sign in with this from now on.</span>
                                     )}
                                 </div>
                                 <div className="form-group">
-                                    <label>{editingDoctor ? "New Password (optional)" : "Password *"}</label>
+                                    <label>New Password (optional)</label>
                                     <div className="password-wrap">
                                         <input
                                             type={showPassword ? "text" : "password"}
@@ -512,14 +486,14 @@ export default function DoctorsPage() {
                                     <span className="field-hint">At least 8 characters.</span>
                                 </div>
                                 <div className="form-group">
-                                    <label>{editingDoctor ? "Repeat New Password" : "Repeat Password *"}</label>
+                                    <label>Repeat New Password</label>
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         value={form.confirmPassword}
                                         onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                                     />
                                 </div>
-                                {editingDoctor && form.password && (
+                                {form.password && (
                                     <div className="form-group">
                                         <label>Your Password *</label>
                                         <input
@@ -555,79 +529,75 @@ export default function DoctorsPage() {
                                 )}
                             </div>
 
-                            {editingDoctor && (
-                                <div className="form-group grant-section">
-                                    <label>Content management</label>
-                                    <label className="grant-row">
-                                        <input
-                                            type="checkbox"
-                                            checked={form.canManageContent}
-                                            onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
-                                        />
-                                        <span>May manage Blog, public Doctor profiles, and Approvals</span>
-                                    </label>
-                                    <span className="field-hint">Takes effect at their next sign-in.</span>
-                                </div>
-                            )}
-
-                            {editingDoctor && (
-                                <div className="form-group doc-section">
-                                    <label>Documents</label>
-                                    {docError && <div className="error-msg" role="alert">{docError}</div>}
+                            <div className="form-group grant-section">
+                                <label>Content management</label>
+                                <label className="grant-row">
                                     <input
-                                        type="file"
-                                        className="doc-input"
-                                        aria-label="Upload a document"
-                                        disabled={!!uploadingName}
-                                        onChange={handleUpload}
+                                        type="checkbox"
+                                        checked={form.canManageContent}
+                                        onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
                                     />
-                                    {docsLoading ? (
-                                        <span className="field-hint">Loading documents…</span>
-                                    ) : (
-                                        <ul className="doc-list">
-                                            {uploadingName && (
-                                                <li className="doc-row uploading">
-                                                    <span className="doc-icon">⏳</span>
-                                                    <span className="doc-name">Uploading {uploadingName}…</span>
-                                                </li>
-                                            )}
-                                            {docs.map((d) => (
-                                                <li key={d.id} className="doc-row">
-                                                    <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
-                                                    <a
-                                                        className="doc-name"
-                                                        href={clinicalFileUrl(d.filePath)}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                    >
-                                                        {d.fileName}
-                                                    </a>
-                                                    <button
-                                                        type="button"
-                                                        className="btn-sm btn-delete"
-                                                        disabled={removingId === d.id}
-                                                        onClick={() => handleRemoveDoc(d.id)}
-                                                    >
-                                                        {removingId === d.id ? "Removing…" : "Remove"}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                            {docs.length === 0 && !uploadingName && (
-                                                <li className="doc-empty">No documents yet</li>
-                                            )}
-                                        </ul>
-                                    )}
-                                    <span className="field-hint">Documents are saved immediately — they do not wait for Save.</span>
-                                </div>
-                            )}
+                                    <span>May manage Blog, public Doctor profiles, and Approvals</span>
+                                </label>
+                                <span className="field-hint">Takes effect at their next sign-in.</span>
+                            </div>
+
+                            <div className="form-group doc-section">
+                                <label>Documents</label>
+                                {docError && <div className="error-msg" role="alert">{docError}</div>}
+                                <input
+                                    type="file"
+                                    className="doc-input"
+                                    aria-label="Upload a document"
+                                    disabled={!!uploadingName}
+                                    onChange={handleUpload}
+                                />
+                                {docsLoading ? (
+                                    <span className="field-hint">Loading documents…</span>
+                                ) : (
+                                    <ul className="doc-list">
+                                        {uploadingName && (
+                                            <li className="doc-row uploading">
+                                                <span className="doc-icon">⏳</span>
+                                                <span className="doc-name">Uploading {uploadingName}…</span>
+                                            </li>
+                                        )}
+                                        {docs.map((d) => (
+                                            <li key={d.id} className="doc-row">
+                                                <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+                                                <a
+                                                    className="doc-name"
+                                                    href={clinicalFileUrl(d.filePath)}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {d.fileName}
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    className="btn-sm btn-delete"
+                                                    disabled={removingId === d.id}
+                                                    onClick={() => handleRemoveDoc(d.id)}
+                                                >
+                                                    {removingId === d.id ? "Removing…" : "Remove"}
+                                                </button>
+                                            </li>
+                                        ))}
+                                        {docs.length === 0 && !uploadingName && (
+                                            <li className="doc-empty">No documents yet</li>
+                                        )}
+                                    </ul>
+                                )}
+                                <span className="field-hint">Documents are saved immediately — they do not wait for Save.</span>
+                            </div>
                         </div>
 
                         <div className="modal-actions">
-                            <button className="btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                            <button className="btn-secondary" onClick={() => setEditingDoctor(null)}>Cancel</button>
                             <button
                                 className="btn-primary"
                                 onClick={handleSave}
-                                disabled={saving || !form.name || !form.username.trim() || (!editingDoctor && !form.password)}
+                                disabled={saving || !form.name || !form.username.trim()}
                             >
                                 {saving ? "Saving..." : "Save"}
                             </button>

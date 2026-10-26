@@ -48,7 +48,6 @@ export default function SecretariesPage() {
     const router = useRouter();
     const [secretaries, setSecretaries] = useState<Secretary[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showModal, setShowModal] = useState(false);
     const [editing, setEditing] = useState<Secretary | null>(null);
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState<SecretaryForm>({
@@ -123,20 +122,6 @@ export default function SecretariesPage() {
         [secretaries, filter]
     );
 
-    const openAdd = () => {
-        setEditing(null);
-        setForm({ name: "", email: "", phone: "", workingHours: "", username: "", password: "", confirmPassword: "", adminPassword: "", canManageContent: false });
-        setShowPassword(false);
-        setFormError("");
-        setHoursFrom("");
-        setHoursTo("");
-        setLegacyHours("");
-        setDocs([]);
-        setDocError("");
-        setUploadingName("");
-        setShowModal(true);
-    };
-
     const openEdit = (sec: Secretary) => {
         setEditing(sec);
         setForm({
@@ -154,13 +139,13 @@ export default function SecretariesPage() {
         setDocError("");
         setUploadingName("");
         loadDocs(sec.id);
-        setShowModal(true);
     };
 
     const handleSave = async () => {
+        if (!editing) return;
         setFormError("");
 
-        if (!editing || form.password) {
+        if (form.password) {
             if (form.password.length < 8) {
                 setFormError("Password must be at least 8 characters");
                 return;
@@ -169,39 +154,28 @@ export default function SecretariesPage() {
                 setFormError("Passwords do not match");
                 return;
             }
-        }
-
-        if (editing && form.password && !form.adminPassword) {
-            setFormError("Enter your own password to confirm this change");
-            return;
+            if (!form.adminPassword) {
+                setFormError("Enter your own password to confirm this change");
+                return;
+            }
         }
 
         setSaving(true);
-        const url = editing
-            ? `/api/employees/secretaries/${editing.id}`
-            : "/api/employees/secretaries";
-        const method = editing ? "PUT" : "POST";
-
         const body: Record<string, string | boolean> = {
             name: form.name, email: form.email, phone: form.phone,
             workingHours: form.workingHours,
+            canManageContent: form.canManageContent,
         };
-        if (!editing) {
-            body.username = form.username;
+        if (form.username.trim() !== editing.username) {
+            body.username = form.username.trim();
+        }
+        if (form.password) {
             body.password = form.password;
-        } else {
-            body.canManageContent = form.canManageContent;
-            if (form.username.trim() !== editing.username) {
-                body.username = form.username.trim();
-            }
-            if (form.password) {
-                body.password = form.password;
-                body.adminPassword = form.adminPassword;
-            }
+            body.adminPassword = form.adminPassword;
         }
 
-        const res = await fetch(url, {
-            method,
+        const res = await fetch(`/api/employees/secretaries/${editing.id}`, {
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
         });
@@ -214,7 +188,7 @@ export default function SecretariesPage() {
             return;
         }
 
-        setShowModal(false);
+        setEditing(null);
         fetchSecretaries();
     };
 
@@ -388,10 +362,10 @@ export default function SecretariesPage() {
                 </table>
             </div>
 
-            {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+            {editing && (
+                <div className="modal-overlay" onClick={() => setEditing(null)}>
                     <div className="modal-card modal-form" onClick={(e) => e.stopPropagation()}>
-                        <h2>{editing ? "Edit Secretary" : "Add Secretary"}</h2>
+                        <h2>Edit Secretary</h2>
                         <div className="modal-body">
                             {formError && <div className="error-msg" role="alert">{formError}</div>}
 
@@ -436,12 +410,12 @@ export default function SecretariesPage() {
                                 <div className="form-group">
                                     <label>Username *</label>
                                     <input value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
-                                    {editing && form.username.trim() !== editing.username && (
+                                    {form.username.trim() !== editing.username && (
                                         <span className="field-hint">They sign in with this from now on.</span>
                                     )}
                                 </div>
                                 <div className="form-group">
-                                    <label>{editing ? "New Password (optional)" : "Password *"}</label>
+                                    <label>New Password (optional)</label>
                                     <div className="password-wrap">
                                         <input
                                             type={showPassword ? "text" : "password"}
@@ -471,14 +445,14 @@ export default function SecretariesPage() {
                                     <span className="field-hint">At least 8 characters.</span>
                                 </div>
                                 <div className="form-group">
-                                    <label>{editing ? "Repeat New Password" : "Repeat Password *"}</label>
+                                    <label>Repeat New Password</label>
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         value={form.confirmPassword}
                                         onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                                     />
                                 </div>
-                                {editing && form.password && (
+                                {form.password && (
                                     <div className="form-group">
                                         <label>Your Password *</label>
                                         <input
@@ -491,79 +465,75 @@ export default function SecretariesPage() {
                                 )}
                             </div>
 
-                            {editing && (
-                                <div className="form-group grant-section">
-                                    <label>Content management</label>
-                                    <label className="grant-row">
-                                        <input
-                                            type="checkbox"
-                                            checked={form.canManageContent}
-                                            onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
-                                        />
-                                        <span>May manage Blog, public Doctor profiles, and Approvals</span>
-                                    </label>
-                                    <span className="field-hint">Takes effect at their next sign-in.</span>
-                                </div>
-                            )}
-
-                            {editing && (
-                                <div className="form-group doc-section">
-                                    <label>Documents</label>
-                                    {docError && <div className="error-msg" role="alert">{docError}</div>}
+                            <div className="form-group grant-section">
+                                <label>Content management</label>
+                                <label className="grant-row">
                                     <input
-                                        type="file"
-                                        className="doc-input"
-                                        aria-label="Upload a document"
-                                        disabled={!!uploadingName}
-                                        onChange={handleUpload}
+                                        type="checkbox"
+                                        checked={form.canManageContent}
+                                        onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
                                     />
-                                    {docsLoading ? (
-                                        <span className="field-hint">Loading documents…</span>
-                                    ) : (
-                                        <ul className="doc-list">
-                                            {uploadingName && (
-                                                <li className="doc-row uploading">
-                                                    <span className="doc-icon">⏳</span>
-                                                    <span className="doc-name">Uploading {uploadingName}…</span>
-                                                </li>
-                                            )}
-                                            {docs.map((d) => (
-                                                <li key={d.id} className="doc-row">
-                                                    <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
-                                                    <a
-                                                        className="doc-name"
-                                                        href={clinicalFileUrl(d.filePath)}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                    >
-                                                        {d.fileName}
-                                                    </a>
-                                                    <button
-                                                        type="button"
-                                                        className="btn-sm btn-delete"
-                                                        disabled={removingId === d.id}
-                                                        onClick={() => handleRemoveDoc(d.id)}
-                                                    >
-                                                        {removingId === d.id ? "Removing…" : "Remove"}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                            {docs.length === 0 && !uploadingName && (
-                                                <li className="doc-empty">No documents yet</li>
-                                            )}
-                                        </ul>
-                                    )}
-                                    <span className="field-hint">Documents are saved immediately — they do not wait for Save.</span>
-                                </div>
-                            )}
+                                    <span>May manage Blog, public Doctor profiles, and Approvals</span>
+                                </label>
+                                <span className="field-hint">Takes effect at their next sign-in.</span>
+                            </div>
+
+                            <div className="form-group doc-section">
+                                <label>Documents</label>
+                                {docError && <div className="error-msg" role="alert">{docError}</div>}
+                                <input
+                                    type="file"
+                                    className="doc-input"
+                                    aria-label="Upload a document"
+                                    disabled={!!uploadingName}
+                                    onChange={handleUpload}
+                                />
+                                {docsLoading ? (
+                                    <span className="field-hint">Loading documents…</span>
+                                ) : (
+                                    <ul className="doc-list">
+                                        {uploadingName && (
+                                            <li className="doc-row uploading">
+                                                <span className="doc-icon">⏳</span>
+                                                <span className="doc-name">Uploading {uploadingName}…</span>
+                                            </li>
+                                        )}
+                                        {docs.map((d) => (
+                                            <li key={d.id} className="doc-row">
+                                                <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+                                                <a
+                                                    className="doc-name"
+                                                    href={clinicalFileUrl(d.filePath)}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {d.fileName}
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    className="btn-sm btn-delete"
+                                                    disabled={removingId === d.id}
+                                                    onClick={() => handleRemoveDoc(d.id)}
+                                                >
+                                                    {removingId === d.id ? "Removing…" : "Remove"}
+                                                </button>
+                                            </li>
+                                        ))}
+                                        {docs.length === 0 && !uploadingName && (
+                                            <li className="doc-empty">No documents yet</li>
+                                        )}
+                                    </ul>
+                                )}
+                                <span className="field-hint">Documents are saved immediately — they do not wait for Save.</span>
+                            </div>
                         </div>
 
                         <div className="modal-actions">
-                            <button className="btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                            <button className="btn-secondary" onClick={() => setEditing(null)}>Cancel</button>
                             <button
                                 className="btn-primary"
                                 onClick={handleSave}
-                                disabled={saving || !form.name || !form.username.trim() || (!editing && !form.password)}
+                                disabled={saving || !form.name || !form.username.trim()}
                             >
                                 {saving ? "Saving..." : "Save"}
                             </button>
