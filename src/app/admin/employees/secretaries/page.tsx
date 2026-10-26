@@ -191,6 +191,9 @@ export default function SecretariesPage() {
             body.password = form.password;
         } else {
             body.canManageContent = form.canManageContent;
+            if (form.username.trim() !== editing.username) {
+                body.username = form.username.trim();
+            }
             if (form.password) {
                 body.password = form.password;
                 body.adminPassword = form.adminPassword;
@@ -387,177 +390,180 @@ export default function SecretariesPage() {
 
             {showModal && (
                 <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal-card modal-form" onClick={(e) => e.stopPropagation()}>
                         <h2>{editing ? "Edit Secretary" : "Add Secretary"}</h2>
+                        <div className="modal-body">
                             {formError && <div className="error-msg" role="alert">{formError}</div>}
 
-                        <div className="form-grid">
-                            <div className="form-group">
-                                <label>Name *</label>
-                                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label>Phone</label>
-                                <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                            </div>
-                            <div className="form-group wide">
-                                <label>Email</label>
-                                <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                            </div>
-                            <div className="form-group wide">
-                                <label>Working Hours</label>
-                                <div className="hours-row">
-                                    <input
-                                        type="time"
-                                        aria-label="Start time"
-                                        value={hoursFrom}
-                                        onChange={(e) => {
-                                            setHoursFrom(e.target.value);
-                                            setForm({ ...form, workingHours: formatWorkingHours(e.target.value, hoursTo) });
-                                        }}
-                                    />
-                                    <span className="hours-sep">to</span>
-                                    <input
-                                        type="time"
-                                        aria-label="End time"
-                                        value={hoursTo}
-                                        onChange={(e) => {
-                                            setHoursTo(e.target.value);
-                                            setForm({ ...form, workingHours: formatWorkingHours(hoursFrom, e.target.value) });
-                                        }}
-                                    />
+                            <div className="form-grid">
+                                <div className="form-group">
+                                    <label>Name *</label>
+                                    <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                                 </div>
-                                {legacyHours && <span className="field-hint">Currently: {legacyHours}</span>}
-                            </div>
-                            {!editing && (
+                                <div className="form-group">
+                                    <label>Phone</label>
+                                    <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                                </div>
+                                <div className="form-group wide">
+                                    <label>Email</label>
+                                    <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                                </div>
+                                <div className="form-group wide">
+                                    <label>Working Hours</label>
+                                    <div className="hours-row">
+                                        <input
+                                            type="time"
+                                            aria-label="Start time"
+                                            value={hoursFrom}
+                                            onChange={(e) => {
+                                                setHoursFrom(e.target.value);
+                                                setForm({ ...form, workingHours: formatWorkingHours(e.target.value, hoursTo) });
+                                            }}
+                                        />
+                                        <span className="hours-sep">to</span>
+                                        <input
+                                            type="time"
+                                            aria-label="End time"
+                                            value={hoursTo}
+                                            onChange={(e) => {
+                                                setHoursTo(e.target.value);
+                                                setForm({ ...form, workingHours: formatWorkingHours(hoursFrom, e.target.value) });
+                                            }}
+                                        />
+                                    </div>
+                                    {legacyHours && <span className="field-hint">Currently: {legacyHours}</span>}
+                                </div>
                                 <div className="form-group">
                                     <label>Username *</label>
                                     <input value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
+                                    {editing && form.username.trim() !== editing.username && (
+                                        <span className="field-hint">They sign in with this from now on.</span>
+                                    )}
                                 </div>
-                            )}
-                            <div className="form-group">
-                                <label>{editing ? "New Password (optional)" : "Password *"}</label>
-                                <div className="password-wrap">
+                                <div className="form-group">
+                                    <label>{editing ? "New Password (optional)" : "Password *"}</label>
+                                    <div className="password-wrap">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            value={form.password}
+                                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="toggle-password"
+                                            aria-label={showPassword ? "Hide password" : "Show password"}
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? (
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.2 3.15M6.6 6.6A17.7 17.7 0 0 0 2 11s3.6 7 10 7a9 9 0 0 0 4.4-1.1" />
+                                                    <path d="m2 2 20 20" />
+                                                    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+                                                </svg>
+                                            ) : (
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </div>
+                                    <span className="field-hint">At least 8 characters.</span>
+                                </div>
+                                <div className="form-group">
+                                    <label>{editing ? "Repeat New Password" : "Repeat Password *"}</label>
                                     <input
                                         type={showPassword ? "text" : "password"}
-                                        value={form.password}
-                                        onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                        value={form.confirmPassword}
+                                        onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                                     />
-                                    <button
-                                        type="button"
-                                        className="toggle-password"
-                                        aria-label={showPassword ? "Hide password" : "Show password"}
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? (
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.2 3.15M6.6 6.6A17.7 17.7 0 0 0 2 11s3.6 7 10 7a9 9 0 0 0 4.4-1.1" />
-                                                <path d="m2 2 20 20" />
-                                                <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
-                                            </svg>
-                                        ) : (
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
-                                                <circle cx="12" cy="12" r="3" />
-                                            </svg>
-                                        )}
-                                    </button>
                                 </div>
-                                <span className="field-hint">At least 8 characters.</span>
+                                {editing && form.password && (
+                                    <div className="form-group">
+                                        <label>Your Password *</label>
+                                        <input
+                                            type="password"
+                                            value={form.adminPassword}
+                                            onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
+                                        />
+                                        <span className="field-hint">Confirm it is you before changing someone else&apos;s password.</span>
+                                    </div>
+                                )}
                             </div>
-                            <div className="form-group">
-                                <label>{editing ? "Repeat New Password" : "Repeat Password *"}</label>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    value={form.confirmPassword}
-                                    onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                                />
-                            </div>
-                            {editing && form.password && (
-                                <div className="form-group">
-                                    <label>Your Password *</label>
+
+                            {editing && (
+                                <div className="form-group grant-section">
+                                    <label>Content management</label>
+                                    <label className="grant-row">
+                                        <input
+                                            type="checkbox"
+                                            checked={form.canManageContent}
+                                            onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
+                                        />
+                                        <span>May manage Blog, public Doctor profiles, and Approvals</span>
+                                    </label>
+                                    <span className="field-hint">Takes effect at their next sign-in.</span>
+                                </div>
+                            )}
+
+                            {editing && (
+                                <div className="form-group doc-section">
+                                    <label>Documents</label>
+                                    {docError && <div className="error-msg" role="alert">{docError}</div>}
                                     <input
-                                        type="password"
-                                        value={form.adminPassword}
-                                        onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
+                                        type="file"
+                                        className="doc-input"
+                                        aria-label="Upload a document"
+                                        disabled={!!uploadingName}
+                                        onChange={handleUpload}
                                     />
-                                    <span className="field-hint">Confirm it is you before changing someone else&apos;s password.</span>
+                                    {docsLoading ? (
+                                        <span className="field-hint">Loading documents…</span>
+                                    ) : (
+                                        <ul className="doc-list">
+                                            {uploadingName && (
+                                                <li className="doc-row uploading">
+                                                    <span className="doc-icon">⏳</span>
+                                                    <span className="doc-name">Uploading {uploadingName}…</span>
+                                                </li>
+                                            )}
+                                            {docs.map((d) => (
+                                                <li key={d.id} className="doc-row">
+                                                    <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+                                                    <a
+                                                        className="doc-name"
+                                                        href={clinicalFileUrl(d.filePath)}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        {d.fileName}
+                                                    </a>
+                                                    <button
+                                                        type="button"
+                                                        className="btn-sm btn-delete"
+                                                        disabled={removingId === d.id}
+                                                        onClick={() => handleRemoveDoc(d.id)}
+                                                    >
+                                                        {removingId === d.id ? "Removing…" : "Remove"}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                            {docs.length === 0 && !uploadingName && (
+                                                <li className="doc-empty">No documents yet</li>
+                                            )}
+                                        </ul>
+                                    )}
+                                    <span className="field-hint">Documents are saved immediately — they do not wait for Save.</span>
                                 </div>
                             )}
                         </div>
-
-                        {editing && (
-                            <div className="form-group grant-section">
-                                <label>Content management</label>
-                                <label className="grant-row">
-                                    <input
-                                        type="checkbox"
-                                        checked={form.canManageContent}
-                                        onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
-                                    />
-                                    <span>May manage Blog, public Doctor profiles, and Approvals</span>
-                                </label>
-                                <span className="field-hint">Takes effect at their next sign-in.</span>
-                            </div>
-                        )}
-
-                        {editing && (
-                            <div className="form-group doc-section">
-                                <label>Documents</label>
-                                {docError && <div className="error-msg" role="alert">{docError}</div>}
-                                <input
-                                    type="file"
-                                    className="doc-input"
-                                    aria-label="Upload a document"
-                                    disabled={!!uploadingName}
-                                    onChange={handleUpload}
-                                />
-                                {docsLoading ? (
-                                    <span className="field-hint">Loading documents…</span>
-                                ) : (
-                                    <ul className="doc-list">
-                                        {uploadingName && (
-                                            <li className="doc-row uploading">
-                                                <span className="doc-icon">⏳</span>
-                                                <span className="doc-name">Uploading {uploadingName}…</span>
-                                            </li>
-                                        )}
-                                        {docs.map((d) => (
-                                            <li key={d.id} className="doc-row">
-                                                <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
-                                                <a
-                                                    className="doc-name"
-                                                    href={clinicalFileUrl(d.filePath)}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    {d.fileName}
-                                                </a>
-                                                <button
-                                                    type="button"
-                                                    className="btn-sm btn-delete"
-                                                    disabled={removingId === d.id}
-                                                    onClick={() => handleRemoveDoc(d.id)}
-                                                >
-                                                    {removingId === d.id ? "Removing…" : "Remove"}
-                                                </button>
-                                            </li>
-                                        ))}
-                                        {docs.length === 0 && !uploadingName && (
-                                            <li className="doc-empty">No documents yet</li>
-                                        )}
-                                    </ul>
-                                )}
-                                <span className="field-hint">Documents are saved immediately — they do not wait for Save.</span>
-                            </div>
-                        )}
 
                         <div className="modal-actions">
                             <button className="btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
                             <button
                                 className="btn-primary"
                                 onClick={handleSave}
-                                disabled={saving || !form.name || (!editing && (!form.username || !form.password))}
+                                disabled={saving || !form.name || !form.username.trim() || (!editing && !form.password)}
                             >
                                 {saving ? "Saving..." : "Save"}
                             </button>
@@ -660,9 +666,22 @@ export default function SecretariesPage() {
         .modal-card {
           background: #1e293b; border: 1px solid rgba(255,255,255,0.1);
           border-radius: 16px; padding: 2rem; width: 100%; max-width: 560px;
-          max-height: 90vh; overflow-y: auto;
+          max-height: 90vh; overflow-y: auto; color-scheme: dark;
         }
         .modal-card h2 { font-size: 1.3rem; margin-bottom: 1.5rem; font-weight: 600; }
+        /* The form scrolls inside the card, not the card itself: the title and
+           Save stay in view, and the scrollbar sits within the rounded corners. */
+        .modal-form { display: flex; flex-direction: column; overflow: hidden; }
+        .modal-form h2 { flex-shrink: 0; }
+        .modal-body {
+          flex: 1 1 auto; min-height: 0; overflow-y: auto;
+          margin: 0 -2rem; padding: 0 2rem 1.25rem;
+          scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.18) transparent;
+        }
+        .modal-form .modal-actions {
+          flex-shrink: 0; margin-top: 0; padding-top: 1.25rem;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
         /* minmax(0, 1fr), not 1fr: a 1fr track never shrinks below its widest
            field, and the working-hours row pushed both columns past the modal. (TJ-020) */
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1rem; }
@@ -705,8 +724,18 @@ export default function SecretariesPage() {
           color: rgba(255,255,255,0.45); cursor: pointer;
         }
         .toggle-password:hover { color: #fff; }
-        .doc-section { margin-top: 1.25rem; }
+        .doc-section, .grant-section {
+          margin-top: 1.25rem; padding-top: 1.25rem;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
         .doc-input { font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+        .doc-input::file-selector-button {
+          margin-inline-end: 0.75rem; padding: 0.35rem 0.85rem;
+          background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85);
+          border: 1px solid rgba(255,255,255,0.14); border-radius: 6px;
+          font-family: inherit; font-size: 0.8rem; font-weight: 500; cursor: pointer;
+        }
+        .doc-input::file-selector-button:hover { background: rgba(255,255,255,0.14); }
         .doc-list {
           list-style: none; display: flex; flex-direction: column;
           gap: 0.4rem; margin: 0.5rem 0 0.5rem; padding: 0;
@@ -725,7 +754,6 @@ export default function SecretariesPage() {
         a.doc-name:hover { text-decoration: underline; }
         .doc-row.uploading .doc-name { color: rgba(255,255,255,0.5); }
         .doc-empty { font-size: 0.8rem; color: rgba(255,255,255,0.35); padding: 0.25rem 0; }
-        .grant-section { margin-top: 1.25rem; }
         .grant-row { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
         .grant-row input[type="checkbox"] {
           width: 16px; height: 16px; flex-shrink: 0;
@@ -739,6 +767,7 @@ export default function SecretariesPage() {
           .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
           .modal-overlay { padding: 1rem; }
           .modal-card { padding: 1.25rem; }
+          .modal-body { margin: 0 -1.25rem; padding: 0 1.25rem 1.25rem; }
           .form-grid { grid-template-columns: minmax(0, 1fr); }
           .btn-sm { padding: 0.45rem 0.75rem; }
         }

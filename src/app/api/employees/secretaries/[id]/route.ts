@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { findUserIdsByUsername } from "@/lib/username";
 import { removeUpload } from "@/lib/uploads";
 import bcrypt from "bcryptjs";
 
@@ -51,13 +52,33 @@ export async function PUT(
 
     const { id } = await params;
     const body = await req.json();
-    const { name, email, phone, workingHours, password, pictureUrl, status, adminPassword, canManageContent } = body;
+    const { name, email, phone, workingHours, username, password, pictureUrl, status, adminPassword, canManageContent } = body;
 
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
     if (phone !== undefined) updateData.phone = phone;
     if (workingHours !== undefined) updateData.workingHours = workingHours;
+    if (username !== undefined) {
+        const trimmed = typeof username === "string" ? username.trim() : "";
+        if (!trimmed) {
+            return NextResponse.json(
+                { error: "Username is required" },
+                { status: 400 }
+            );
+        }
+        // Taken in any case by anyone else, the same rule as creating an
+        // account, since sign-in ignores case. Their own id is excluded, so
+        // changing only the case of their own username is allowed. (TJ-060)
+        const takenByOther = (await findUserIdsByUsername(trimmed)).some((other) => other !== id);
+        if (takenByOther) {
+            return NextResponse.json(
+                { error: "Username already taken" },
+                { status: 409 }
+            );
+        }
+        updateData.username = trimmed;
+    }
     // prisma.update returns the new row, not the old one, so the previous
     // picture has to be read before the write or it is unrecoverable. Read it
     // only when the picture is actually in play, so that renames and phone

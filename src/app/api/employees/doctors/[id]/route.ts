@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { findUserIdsByUsername } from "@/lib/username";
 import { removeUpload } from "@/lib/uploads";
 import bcrypt from "bcryptjs";
 
@@ -52,7 +53,7 @@ export async function PUT(
 
     const { id } = await params;
     const body = await req.json();
-    const { name, email, phone, workingHours, password, color, pictureUrl, status, adminPassword, canManageContent } = body;
+    const { name, email, phone, workingHours, username, password, color, pictureUrl, status, adminPassword, canManageContent } = body;
 
     // Build update data
     const updateData: Record<string, unknown> = {};
@@ -60,6 +61,26 @@ export async function PUT(
     if (email !== undefined) updateData.email = email;
     if (phone !== undefined) updateData.phone = phone;
     if (workingHours !== undefined) updateData.workingHours = workingHours;
+    if (username !== undefined) {
+        const trimmed = typeof username === "string" ? username.trim() : "";
+        if (!trimmed) {
+            return NextResponse.json(
+                { error: "Username is required" },
+                { status: 400 }
+            );
+        }
+        // Taken in any case by anyone else, the same rule as creating an
+        // account, since sign-in ignores case. Their own id is excluded, so
+        // changing only the case of their own username is allowed. (TJ-060)
+        const takenByOther = (await findUserIdsByUsername(trimmed)).some((other) => other !== id);
+        if (takenByOther) {
+            return NextResponse.json(
+                { error: "Username already taken" },
+                { status: 409 }
+            );
+        }
+        updateData.username = trimmed;
+    }
     if (color !== undefined) {
         // Exclude the doctor being edited, or saving any other field would
         // reject the colour they already hold.
