@@ -34,10 +34,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const userId = (token.id as string | undefined) ?? token.sub;
             if (!userId) return null;
 
-            const current = await prisma.user.findUnique({
-                where: { id: userId },
-                select: { status: true },
-            });
+            // A failed lookup is not a revoked account. Letting it throw
+            // signs the user out: @auth/core's session action catches the
+            // error and clears the session cookie, exactly as it does for
+            // a null return. So a full pooler or a database blip would sign
+            // out every staff member whose tab refetches the session, and
+            // they could not sign back in for the same reason. Keep the
+            // session instead; the next read that reaches the database
+            // re-checks it. Every route that serves clinic data needs that
+            // same database, so a resigned user gains nothing meanwhile.
+            // (TJ-063a)
+            let current: { status: string } | null;
+            try {
+                current = await prisma.user.findUnique({
+                    where: { id: userId },
+                    select: { status: true },
+                });
+            } catch (err) {
+                console.error("[auth] status check failed; keeping the session:", err);
+                return token;
+            }
             if (!current || current.status !== "ACTIVE") return null;
 
             return token;
