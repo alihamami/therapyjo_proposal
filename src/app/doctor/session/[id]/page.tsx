@@ -97,10 +97,19 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
 
     const fetchData = useCallback(async () => {
         setLoading(true);
-        const [resData, soapData] = await Promise.all([
-            fetch(`/api/reservations/${id}`).then((r) => r.json()),
+        const [resRes, soapData] = await Promise.all([
+            fetch(`/api/reservations/${id}`),
             fetch(`/api/reservations/${id}/soap`).then((r) => r.json()),
         ]);
+        // A missing session, or one on a day that has not opened yet, comes
+        // back 404. Show "Session not found" rather than drawing the error
+        // body as if it were a session. (TJ-064)
+        if (!resRes.ok) {
+            setReservation(null);
+            setLoading(false);
+            return;
+        }
+        const resData = await resRes.json();
 
         setReservation(resData);
         setEditInjury(resData.injuryPlace || "");
