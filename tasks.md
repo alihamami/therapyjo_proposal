@@ -127,9 +127,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-062b | Screens: a colleague's session is read-only to a doctor | DONE — task commit `faa8935`, merged into `claude/exciting-einstein-krgpmv` as `7024348`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-readonly-sessions` |
 | TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT, **complete**: fixed live 2026-10-26 by TJ-063a. P1 and P4 measured; production now connects in **transaction** mode | — |
 | TJ-063a | Move to the transaction pooler, keep staff signed in through a database failure, and stop waiting forever for a connection | DONE — task commit `6e4261a`, merged to `master` as `f3bf68d` with `--no-ff`, pushed and **deployed 2026-10-26 11:13 (Amman)**; **live-verified**: `mode: transaction`, 50/50 requests `200`; **post-peak check clean** (11:13–17:00: no `EMAX`, `CHECKOUT` or `prepared` in the pooler logs) | `bugfix/db-failure-keeps-session` |
-| TJ-064 | Doctors see a day's sessions only once that day opens at 09:30 | SPLIT — **complete**: both halves merged to `master` on 2026-10-26 (09:30, user decision); pushed and **deployed 2026-10-26 ~15:55 (Amman)** as `233e0ea`, Vercel `success`; **live check owed** | — |
-| TJ-064a | Server: send a doctor no session on a day that has not opened | DONE — task commit `8654e9b`, merged to `master` as `55cc269` with `--no-ff` on 2026-10-26; planner-verified; **live check owed** | `feat/doctor-day-release` |
-| TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live check owed** | `feat/doctor-day-release-notice` |
+| TJ-064 | Doctors see a day's sessions only once that day opens at 09:30 | SPLIT — **complete**: both halves merged to `master` on 2026-10-26 (09:30, user decision); pushed and **deployed 2026-10-26 ~15:55 (Amman)** as `233e0ea`, Vercel `success`; **live-checked by the user 2026-10-26** | — |
+| TJ-064a | Server: send a doctor no session on a day that has not opened | DONE — task commit `8654e9b`, merged to `master` as `55cc269` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release` |
+| TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release-notice` |
 
 ---
 
@@ -12311,7 +12311,7 @@ Findings reported by the executor, or surfaced during a pass, that fall outside 
 
 ### TJ-064 — Doctors see a day's sessions only once that day opens at 09:30
 
-- **Status:** SPLIT, **complete**. Passed 2026-10-26 with its one decision taken, and split into **TJ-064a** (server) and **TJ-064b** (screens). Both were executed by the Sonnet executor, verified by the planner and merged to `master` on 2026-10-26: `55cc269` and `9cc9098`. Pushed to `origin/master` at the user's request as `233e0ea` (fast-forward from `be95bfd`) and **deployed 2026-10-26 ~15:55 (Amman)**, Vercel status `success`. Today was already open at deploy time, so doctors lost sight of tomorrow onward at once. **Live check owed:** the four checks under TJ-064b's planner verification. **Rollback target:** the `be95bfd` production deployment, one Instant Rollback away while this record stays unpushed. Nothing executes against this ID.
+- **Status:** SPLIT, **complete**. Passed 2026-10-26 with its one decision taken, and split into **TJ-064a** (server) and **TJ-064b** (screens). Both were executed by the Sonnet executor, verified by the planner and merged to `master` on 2026-10-26: `55cc269` and `9cc9098`. Pushed to `origin/master` at the user's request as `233e0ea` (fast-forward from `be95bfd`) and **deployed 2026-10-26 ~15:55 (Amman)**, Vercel status `success`. Today was already open at deploy time, so doctors lost sight of tomorrow onward at once. **Live-checked by the user on 2026-10-26**, after the deploy, and reported working. The deploy record `7d2aa2b` was pushed after that check, so Instant Rollback now targets the TJ-064 build. The before-09:30 view could not be seen on deploy day, since the deploy came after 09:30; doctors first meet it on the morning of 2026-10-27. Nothing executes against this ID.
 - **Branch:** none of its own. TJ-064a is `feat/doctor-day-release`; TJ-064b is `feat/doctor-day-release-notice`, cut from it.
 - **Why:** User request, 2026-10-26. Employees who are neither secretaries nor the admin should see only today's and past days' reservations. They should see an upcoming day only when that day comes, from the start of working hours. `Role` is `ADMIN | DOCTOR | SECRETARY` (`prisma/schema.prisma`), so this means doctors. Today every route a doctor reads sessions from returns any date, tomorrow and next month included.
 
@@ -12374,7 +12374,7 @@ Every place a doctor can read a session:
 
 ### TJ-064a — Server: send a doctor no session on a day that has not opened
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `8654e9b` on `feat/doctor-day-release`, cut from `817107d`. Planner-verified and merged to `master` with `--no-ff` as `55cc269` on 2026-10-26. **Live check owed:** no agent can sign in to production.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `8654e9b` on `feat/doctor-day-release`, cut from `817107d`. Planner-verified and merged to `master` with `--no-ff` as `55cc269` on 2026-10-26. **Live-checked by the user on 2026-10-26.**
 - **Branch:** `feat/doctor-day-release`, cut from current `master`.
 
 **Planner verification:** 2026-10-26.
@@ -12382,7 +12382,7 @@ Every place a doctor can read a session:
 - **Gates, re-run by the planner in the real checkout:** `npx tsc --noEmit --incremental false` exits **0**, and `npm run build` (Turbopack) exits **0**.
 - **Lint, per changed file (`master` → branch):** **0 → 0** in all six. The repo-wide count the executor reported, 476, is the informational baseline.
 - **Executor's `grep -c` counts** all match the table above.
-- **Runtime: waived** (user directive, 2026-09-15). The live checks under *Done when* are owed.
+- **Runtime: waived** for agents (user directive, 2026-09-15). The user checked the live site on 2026-10-26 and reported it working.
 - **Why:** See TJ-064. Every route a doctor reads sessions from returns any date. **User decision, 2026-10-26:** a day opens to doctors at 09:30 Amman time, and admin and secretary see every day.
 - **Ships with TJ-064b.** On its own this task leaves a doctor's future days reading "0 sessions", which looks like a free day. Merge both before pushing.
 
@@ -12716,7 +12716,7 @@ with:
 
 ### TJ-064b — Screens: a day that has not opened shows a notice, not an empty calendar
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `50f4065` on `feat/doctor-day-release-notice`, cut from `8654e9b`. Planner-verified and merged to `master` with `--no-ff` as `9cc9098` on 2026-10-26. The tree of `9cc9098` is identical to that of `50f4065`. **Live check owed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `50f4065` on `feat/doctor-day-release-notice`, cut from `8654e9b`. Planner-verified and merged to `master` with `--no-ff` as `9cc9098` on 2026-10-26. The tree of `9cc9098` is identical to that of `50f4065`. **Live-checked by the user on 2026-10-26.**
 
 **Planner verification:** 2026-10-26.
 - **The diff is the tested prototype, exactly.** The 5 tested edits were re-applied to `8654e9b`, and `git diff --exit-code` against the branch is empty for `src/`. Only the two Scope files changed, +28/−4.
@@ -12727,7 +12727,7 @@ with:
   2. As a doctor after 09:30, today's sessions appear.
   3. As a doctor, tomorrow shows the notice, and the date picker has no dots after today.
   4. A doctor's patient page lists no future session.
-- **Runtime: waived** (user directive, 2026-09-15). The live checks under *Done when* are owed.
+- **Runtime: waived** for agents (user directive, 2026-09-15). The user checked the live site on 2026-10-26 and reported it working.
 - **Branch:** `feat/doctor-day-release-notice`, cut from `feat/doctor-day-release` once TJ-064a is committed. This task imports `sessionsHiddenFrom` and `SCHEDULE_OPEN_LABEL`, which TJ-064a adds.
 - **Why:** two problems remain once TJ-064a is in.
   - **The empty calendar misleads.** A doctor who pages to tomorrow, or opens today before 09:30, sees "0 sessions", which reads as a free day.
