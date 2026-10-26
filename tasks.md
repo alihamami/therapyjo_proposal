@@ -125,8 +125,8 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-062 | Limit doctors to their own sessions | SPLIT — **complete**: both halves merged to `master` as `7622d50` on 2026-10-12 at the user's request; **live check owed** | — |
 | TJ-062a | Server: a doctor may change only their own sessions | DONE — task commit `30591ee`, merged into `claude/exciting-einstein-krgpmv` as `3a23dd6`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-session-ownership` |
 | TJ-062b | Screens: a colleague's session is read-only to a doctor | DONE — task commit `faa8935`, merged into `claude/exciting-einstein-krgpmv` as `7024348`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-readonly-sessions` |
-| TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT — passed 2026-10-26; **the fix is a production setting the user changes (P1–P4)**; the code half is TJ-063a | — |
-| TJ-063a | Keep staff signed in through a database failure, and stop waiting forever for a connection | BLOCKED — **one decision (Q1)**; the instructions assume the recommended answer | `bugfix/db-failure-keeps-session` |
+| TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT — passed 2026-10-26; **P1 measured: session mode, `pool_size: 15`**; the port switch moved into TJ-063a, because an agent may not type the database password | — |
+| TJ-063a | Move to the transaction pooler, keep staff signed in through a database failure, and stop waiting forever for a connection | READY — Q1 answered 2026-10-26 (keep the session) | `bugfix/db-failure-keeps-session` |
 
 ---
 
@@ -11825,7 +11825,14 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 
 ### TJ-063 — Staff are signed out, and cannot sign back in, while the database pooler is full
 
-- **Status:** SPLIT. Passed 2026-10-26. **The fix is a production setting, steps P1–P4 below, and only the user can make it.** The code half is **TJ-063a**. Nothing executes against this ID.
+- **Status:** SPLIT. Passed 2026-10-26. **P1 is measured** (below). **P2 and P3 are superseded:** the user asked the agents to do every step, the change needs the database password typed into Vercel, and an agent may not type a password. So the port switch moved into code, in **TJ-063a**, and needs no credential at all. P4 and P5 are the planner's, after TJ-063a deploys. Nothing executes against this ID.
+
+**P1 result, measured 2026-10-26 in the Supabase dashboard (project `tqulxfdyfciwmqfmzlme`, read-only):**
+- **Pooler logs, 25 Oct 11:00 to 26 Oct 12:00, search "max client": 71 entries, 14:34–14:35 on 25 Oct.** Every one reads `(EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15`, some wrapped as `ECHECKOUTFAILED`.
+- **Today's live traffic is session mode.** A `Connection authenticated` entry at 11:02:37 carries `mode: session`, user `postgres`, and peer `3.94.255.128`, an AWS `us-east-1` address, which is Vercel's `iad1`. It lines up with Vercel's request log at 10:59.
+- **The Connect dialog** gives the session pooler as `postgresql://postgres.tqulxfdyfciwmqfmzlme:[YOUR-PASSWORD]@aws-1-eu-west-1.pooler.supabase.com:5432/`, and the transaction pooler as the **same string with port `6543`**.
+- Project home: Postgres at **11/60** connections, compute Nano, no backups.
+- **Vercel's logs could not show the incident.** Hobby keeps about 30 minutes of request logs, and that window held only `200`s.
 - **Branch:** none of its own.
 - **Why:** User report, 2026-10-26: during clinic hours, signing in to the admin dashboard is slow and then fails outright, and the logs say "max clients reached".
 
@@ -11891,12 +11898,21 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 
 ### TJ-063a — Keep staff signed in through a database failure, and stop waiting forever for a connection
 
-- **Status:** BLOCKED. One decision, **Q1** below. It becomes READY when Q1 is answered; the instructions assume the recommended answer.
+- **Status:** READY. Q1 answered by the user on 2026-10-26: **keep the session.** The port switch was added to this task the same day; see *Revision* below.
 - **Branch:** `bugfix/db-failure-keeps-session`, cut from `master`.
-- **Why:** See TJ-063. With P2 done the pool has room, but any database failure (a pooler restart, a Supabase blip, a full pool) still signs out every staff member whose tab refetches the session, and requests still wait with no time limit. **Independent of P1–P4**: it can ship before or after them.
+- **Why:** See TJ-063. Three changes, all about the database connection:
+  - **Switch the app's runtime pool to the transaction pooler.** This is the fix for the outage.
+  - **Keep sessions alive through a failed status check.** Any database failure (a pooler restart, a Supabase blip, a full pool) otherwise signs out every staff member whose tab refetches the session.
+  - **Time out waiting for a connection** instead of waiting forever.
 
-**Decision for the user:**
-- **Q1. When the status check cannot reach the database, keep the session or end it?**
+**Revision, 2026-10-26: the port switch moves into code.** TJ-063's P2 needed the database password pasted into Vercel's `DATABASE_URL`. That value is marked Sensitive, so it cannot be read back and edited, and an agent may not type a password. Measured in Supabase's Connect dialog: the transaction pooler differs from the session pooler **only by port**. Rewriting `:5432` to `:6543` on the pooler host, inside `prisma.ts`, therefore makes exactly P2's switch, and the secret is never read, copied or retyped. Two side effects, both wanted:
+- No one can bring the outage back by pasting a session-pooler string later.
+- Local development's runtime moves to transaction mode too, which `Production_Cutover.md` already recommended.
+
+The Prisma CLI is not affected: `prisma.config.ts` reads the raw variable, and `prisma/seed*.ts` build their own pools from it.
+
+**Decision, answered:**
+- **Q1. When the status check cannot reach the database, keep the session or end it?** **Answer: keep it** (user, 2026-10-26).
   - **Keep it (recommended).** An outage signs nobody out. A resigned user is revoked on the next read that reaches the database, and while it is unreachable every route that serves clinic data fails anyway, so they reach nothing.
   - **End it (today's behaviour).** TJ-007's revocation stays strict even during an outage, at the cost of signing the whole clinic out.
 
@@ -11915,12 +11931,14 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 | A: `GET /api/auth/session`, database refused | `200`, body `null`. Two `Set-Cookie` lines: middleware's re-issue, then **`authjs.session-token=; Max-Age=0`**. Log: `JWTSessionError` caused by `PrismaClientKnownRequestError` | `200`, body carries `"role":"ADMIN"`. Both `Set-Cookie` lines carry a token, and **no `Max-Age=0`**. Log: `[auth] status check failed; keeping the session` |
 | B: `GET /api/employees/doctors`, silent listener | **No response in 60 s** (curl exit 28) | **`500` at 20.2 s**. Log: `Connection terminated due to connection timeout` |
 
+The port switch came later, in the *Revision*, and so is **not** part of this prototype. Its rule was checked separately against the rewrite-rule table in Verification, and neither probe URL is a pooler host, so both probes run identically with or without it.
+
 **Scope — touch only these:**
 - `src/lib/auth.ts`
 - `src/lib/prisma.ts`
 - `.env.example`
 
-**Do not touch:** `src/lib/auth.config.ts` (imported by Edge middleware, must stay Prisma-free), `src/app/SessionExpiryNotice.tsx`, `prisma.config.ts`, and every `.env*` file other than `.env.example`. **Never run `prisma db push`, `db seed` or Studio, and never point a probe at the Supabase database.** Runtime verification against production is waived (standing directive, 2026-09-15); the local probes below are not.
+**Do not touch:** `src/lib/auth.config.ts` (imported by Edge middleware, must stay Prisma-free), `src/app/SessionExpiryNotice.tsx`, `prisma.config.ts`, `prisma/seed*.ts`, and every `.env*` file other than `.env.example`. Change no Vercel or Supabase setting, and open neither dashboard. **Never run `prisma db push`, `db seed` or Studio, and never point a probe at the Supabase database.** Runtime verification against production is waived (standing directive, 2026-09-15); the local probes below are not.
 
 **Instructions:**
 
@@ -11963,6 +11981,10 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 2. `src/lib/prisma.ts`. Replace this anchor, verbatim:
 
    ```ts
+   function createPrismaClient() {
+       const pool = new pg.Pool({
+           connectionString: process.env.DATABASE_URL!,
+           ssl: { rejectUnauthorized: false },
            max: 3,
        });
    ```
@@ -11970,6 +11992,26 @@ Runtime, against a local database with sessions today for two doctors. Every bul
    with:
 
    ```ts
+   // Supabase's session pooler (port 5432) gives every open client one of
+   // only 15 slots at Nano, busy or idle, and a busy clinic afternoon ran
+   // out: "(EMAXCONNSESSION) max clients reached in session mode - max
+   // clients are limited to pool_size: 15", 71 times in the pooler logs on
+   // 2026-10-25. The transaction pooler is the same host, user and password
+   // on port 6543, and holds a slot only while a query runs. Switch to it
+   // here rather than in the Vercel variable: that value is marked Sensitive
+   // and cannot be read back, and doing it in code means a pasted
+   // session-pooler string can never bring the outage back. A URL already on
+   // 6543, a direct connection and localhost all pass through unchanged.
+   // Only this runtime pool switches: prisma.config.ts hands the raw variable
+   // to the Prisma CLI, which stays in session mode. (TJ-063a)
+   function transactionPoolerUrl(url: string): string {
+       return url.replace(/@([^@/?#]+\.pooler\.supabase\.com):5432(?=[/?#]|$)/, "@$1:6543");
+   }
+
+   function createPrismaClient() {
+       const pool = new pg.Pool({
+           connectionString: transactionPoolerUrl(process.env.DATABASE_URL!),
+           ssl: { rejectUnauthorized: false },
            max: 3,
            // pg-pool waits for a connection with no time limit by default.
            // When the pooler is full, a request then hangs until the pooler
@@ -11980,7 +12022,7 @@ Runtime, against a local database with sessions today for two doctors. Every bul
        });
    ```
 
-   Leave `max: 3` and `idleTimeoutMillis` alone; TJ-063 says why.
+   Leave `max: 3` and `idleTimeoutMillis` alone; TJ-063 says why. The rewrite touches only the `host:port` after the last `@`, so the userinfo, and with it the password, is never re-encoded.
 
 3. `.env.example`. Replace these three lines, verbatim:
 
@@ -11993,22 +12035,35 @@ Runtime, against a local database with sessions today for two doctors. Every bul
    with:
 
    ```
-   # PRODUCTION: use Supabase's TRANSACTION pooler string: the pooler host,
-   # port 6543. Not the direct connection, and not the session pooler on port
-   # 5432 of the same host. src/lib/prisma.ts opens a pg.Pool per instance, and
-   # session mode caps the whole app at the pool size (15 on Nano); past that,
-   # requests queue and then fail with "max clients reached" (TJ-063).
+   # Use Supabase's POOLED string (host *.pooler.supabase.com), not the direct
+   # one. Session pooler (port 5432) or transaction pooler (port 6543) both
+   # work: src/lib/prisma.ts moves the app's own pool from 5432 to 6543 by
+   # itself, because session mode caps the whole app at the pool size (15 on
+   # Nano) and fails past it with "max clients reached" (TJ-063). The Prisma
+   # CLI (db push, Studio, seeds) reads this variable as written, through
+   # prisma.config.ts, so keep 5432 here for it.
    # Do not add ?pgbouncer=true: the app reaches Postgres through Prisma's pg
    # driver adapter, which never names its statements.
-   # LOCAL: port 5432 is fine. prisma.config.ts hands this same variable to the
-   # Prisma CLI (db push, Studio), and the CLI should not go through port 6543.
    ```
 
-4. Commit on the branch: `Keep staff signed in through a database failure, and time out waiting for a connection (TJ-063a)`.
+4. Commit on the branch: `Use the transaction pooler, keep staff signed in through a database failure, and time out waiting for a connection (TJ-063a)`.
 
 **Verification:**
 - `npx tsc --noEmit --incremental false` exits 0, and `npm run build` exits 0. If a failure is confined to `.claude/worktrees/` (TJ-050) or `.next/dev/types` (stale dev types), report it and do not fix it.
 - Lint is informational. The bar is that the three changed files add nothing.
+- **The rewrite rule, extracted from the shipped file.** A scratch Node script reads `src/lib/prisma.ts`, pulls out the regex literal and replacement string from `transactionPoolerUrl`, and applies them to these made-up inputs. No real URL, ever:
+
+  | Input | Expected output |
+  |---|---|
+  | `postgresql://postgres.ref:pw@aws-1-eu-west-1.pooler.supabase.com:5432/postgres` | same, with `:6543` |
+  | `postgresql://postgres.ref:pw@aws-1-eu-west-1.pooler.supabase.com:5432/` | same, with `:6543` |
+  | `postgresql://postgres.ref:pw@aws-1-eu-west-1.pooler.supabase.com:5432` | same, with `:6543` |
+  | `postgresql://postgres.ref:pw@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require` | same, with `:6543` |
+  | `postgresql://postgres.ref:p%40ss%3A5432@aws-1-eu-west-1.pooler.supabase.com:5432/postgres` | only the port after the host changes; the userinfo is byte-identical |
+  | `postgresql://postgres.ref:pw@aws-1-eu-west-1.pooler.supabase.com:6543/postgres` | unchanged |
+  | `postgresql://postgres:pw@db.ref.supabase.co:5432/postgres` | unchanged |
+  | `postgresql://u:p@localhost:5432/db` | unchanged |
+  | `postgresql://probe:probe@127.0.0.1:1/probe` | unchanged |
 - **Local probes: no database, no credentials.** Run each probe on `master` first and then on the branch, with identical commands, and report both results as a table.
   - Start the build with `npx next start -p 3100` and these variables set in the process environment, which takes precedence over `.env`:
     - `DATABASE_URL`: the probe's value, below
@@ -12032,7 +12087,13 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 - [ ] tsc and build exit 0.
 - [ ] Probes A and B are reported before and after, and match the expectations above.
 - [ ] The revocation line is byte-identical.
-- [ ] **Live check owed after merge and push:** sign in on `therapyjo.com` once, and confirm Vercel's logs show no `[auth] status check failed` lines on a normal day.
+- [ ] The rewrite-rule table passes, row for row.
+- [ ] **Live check, planner, after merge and push (TJ-063 P4):**
+  - the deployment is Ready;
+  - `GET https://therapyjo.com/api/public/blog` returns `200`;
+  - new pooler-log entries from Vercel's peer read `mode: transaction`, with no `EMAXCONN`;
+  - Vercel's logs show no `500`s, `prepared statement` lines or `[auth] status check failed` lines.
+  - **Rollback:** Vercel Instant Rollback to the previous production deployment, which goes straight back to session mode.
 
 ---
 
