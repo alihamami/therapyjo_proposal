@@ -386,7 +386,10 @@ export default function DoctorsPage() {
                                         {doc.status}
                                     </span>
                                 </td>
-                                <td>{doc.name}</td>
+                                <td>
+                                    <div>{doc.name}</div>
+                                    {doc.username && <div className="employee-username">{doc.username}</div>}
+                                </td>
                                 <td>{doc.phone || "—"}</td>
                                 <td>{doc.email || "—"}</td>
                                 <td>{doc.workingHours || "—"}</td>
@@ -707,6 +710,7 @@ export default function DoctorsPage() {
           color: rgba(255,255,255,0.85);
         }
         .data-table tr:hover { background: rgba(255,255,255,0.02); }
+        .employee-username { margin-top: 0.15rem; font-size: 0.78rem; color: rgba(255,255,255,0.45); }
         .status-badge {
           padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
         }

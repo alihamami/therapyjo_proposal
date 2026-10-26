@@ -354,7 +354,10 @@ export default function SecretariesPage() {
                                         {sec.status}
                                     </span>
                                 </td>
-                                <td>{sec.name}</td>
+                                <td>
+                                    <div>{sec.name}</div>
+                                    {sec.username && <div className="employee-username">{sec.username}</div>}
+                                </td>
                                 <td>{sec.phone || "—"}</td>
                                 <td>{sec.email || "—"}</td>
                                 <td>{sec.workingHours || "—"}</td>
@@ -636,6 +639,7 @@ export default function SecretariesPage() {
           border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.85);
         }
         .data-table tr:hover { background: rgba(255,255,255,0.02); }
+        .employee-username { margin-top: 0.15rem; font-size: 0.78rem; color: rgba(255,255,255,0.45); }
         .status-badge { padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .status-badge.active { background: rgba(16,185,129,0.15); color: #6ee7b7; }
         .status-badge.resigned { background: rgba(239,68,68,0.15); color: #fca5a5; }
