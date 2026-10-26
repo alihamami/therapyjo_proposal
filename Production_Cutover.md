@@ -617,7 +617,7 @@ Set in the Vercel project, Production scope, never committed. `.gitignore` ignor
 
 | Variable | Notes for production |
 |---|---|
-| `DATABASE_URL` | **Supabase's pooled (Supavisor transaction, port `6543`) string, not the direct one.** `src/lib/prisma.ts` opens a `pg.Pool` per instance; against the direct connection, instance count multiplies that until Postgres runs out of slots. Simplest way to be certain: overwrite it with the Transaction-pooler string from Supabase's *Connect* dialog rather than trying to audit what is there — the value is Sensitive and cannot be read back. **`pg.Pool`'s `max: 3` should stay at 3 — see Hazard 8, this reverses earlier advice in this file.** |
+| `DATABASE_URL` | **Supabase's pooled (Supavisor transaction, port `6543`) string, not the direct one.** `src/lib/prisma.ts` opens a `pg.Pool` per instance; against the direct connection, instance count multiplies that until Postgres runs out of slots. Simplest way to be certain: overwrite it with the Transaction-pooler string from Supabase's *Connect* dialog rather than trying to audit what is there — the value is Sensitive and cannot be read back. **`pg.Pool`'s `max: 3` should stay at 3 — see Hazard 8, this reverses earlier advice in this file.** **Since 2026-10-26 (TJ-063a), either pooler port works:** `prisma.ts` moves `:5432` to `:6543` on the pooler host itself. |
 | `AUTH_SECRET` | Generate a **new** value for production. Never reuse the development secret. |
 | `AUTH_URL` | Must match the hostname actually being served. `https://new.therapyjo.com` in Phase 3, `https://therapyjo.com` in Phase 4. **A stale value here is the #1 cause of a login that loops forever.** |
 | `LEGACY_ORIGIN` | **New.** `https://www.therapyjo.com`. Absent, `/clinic` 404s instead of proxying — correct preview-deployment behaviour. **This one is a BUILD-time variable, and that is a trap.** `rewrites()` runs during `next build` and its result is baked into `.next/routes-manifest.json` as a literal string — verified 2026-08-23, the manifest contains the origin URL spelled out. A deployment built without it has **no proxy at all**, and `/clinic` 404s with nothing in any log to explain why. Setting it and restarting is not enough; it must be present **when the build runs**, and changing it requires a genuine rebuild, not a cache-reusing redeploy. |
@@ -674,7 +674,7 @@ Recorded so a later reader does not mistake these for oversights and "fix" them 
 
 | Item | Decision | Consequence carried |
 |---|---|---|
-| `DATABASE_URL` port | **Not changed.** Account owner states it is already `6543` | Unverifiable from here (the value is Sensitive). If true, production runs **transaction** mode while local runs **session** mode — so the `prepared statement … already exists` failure mode is live in production and cannot reproduce locally. |
+| `DATABASE_URL` port | **Not changed.** Account owner states it is already `6543` | **Measured false, 2026-10-26:** Supabase's pooler logs showed production on `mode: session`, i.e. port `5432`. The app now switches the port itself (TJ-063a), so the variable can stay as it is. The `prepared statement` worry does not apply: the app uses Prisma's `pg` driver adapter, which sends only unnamed statements. |
 | Service-role key scope | **Stays on Preview** | Accepted. Reachable surface is nil today — every route using it is behind `await auth()` and previews cannot mint sessions. Becomes real only if a future handler touches `supabaseAdmin` before checking a session. |
 | Function region | **Stays `iad1`** | Every database query crosses the Atlantic. Affects the app's own pages only — **not** `/clinic/*`, which is proxied at Vercel's edge and never enters a function. |
 | Plan | **Stays Hobby** | Two distinct consequences, below. |
@@ -835,7 +835,7 @@ repo changes.
 
 | Variable | Scope | Assessment |
 |---|---|---|
-| `DATABASE_URL` | **Production only** | Present. Pooled-vs-direct **still unknown** — the value is marked Sensitive so Vercel does not display it. Outstanding. |
+| `DATABASE_URL` | **Production only** | Present. **Settled 2026-10-26:** it is the **session** pooler, measured from Supabase's pooler logs rather than read from Vercel. The app moves it to the transaction pooler in code (TJ-063a). |
 | `AUTH_SECRET` | Production + Preview | Present |
 | `AUTH_URL` | **Production only** | Present. Changes twice more — 2b and Phase 4. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production + **Preview** | Present. See the note below — Preview scope is a real exposure. |
@@ -1664,9 +1664,13 @@ reasoning does not hold here: the project has Fluid Compute enabled.** Fluid ins
 concurrent requests, so a pool of 1 would serialise every database call behind a single
 connection and turn the pool into the bottleneck. `max: 3` stays.
 
-The ceiling is not tight. Supabase reports pool size **15** to Postgres and **200** max client
-connections at Nano compute — and Fluid means few instances, not many. There is room to raise
-`max` if connection wait time shows up under load; there is no reason to lower it.
+~~The ceiling is not tight.~~ **Wrong, measured 2026-10-26 (TJ-063).** Production was on the
+**session** pooler, where every open client holds one of the **15** pool slots, busy or idle. The
+**200** limit applies only in transaction mode. A busy afternoon on 25 Oct hit it 71 times
+(`EMAXCONNSESSION … pool_size: 15`), and staff were signed out and could not sign back in.
+**Fixed in code, TJ-063a, deployed 2026-10-26 as `f3bf68d`:** `src/lib/prisma.ts` moves the app's
+runtime pool from `:5432` to `:6543` on the pooler host, and new connections now log
+`mode: transaction`. `max: 3` stays.
 
 The measurements that matter after launch are Supavisor's client-connection count and, if it
 appears, `remaining connection slots` in the Postgres logs.

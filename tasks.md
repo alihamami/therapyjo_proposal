@@ -125,8 +125,8 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-062 | Limit doctors to their own sessions | SPLIT — **complete**: both halves merged to `master` as `7622d50` on 2026-10-12 at the user's request; **live check owed** | — |
 | TJ-062a | Server: a doctor may change only their own sessions | DONE — task commit `30591ee`, merged into `claude/exciting-einstein-krgpmv` as `3a23dd6`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-session-ownership` |
 | TJ-062b | Screens: a colleague's session is read-only to a doctor | DONE — task commit `faa8935`, merged into `claude/exciting-einstein-krgpmv` as `7024348`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-readonly-sessions` |
-| TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT — passed 2026-10-26; **P1 measured: session mode, `pool_size: 15`**; the port switch moved into TJ-063a, because an agent may not type the database password | — |
-| TJ-063a | Move to the transaction pooler, keep staff signed in through a database failure, and stop waiting forever for a connection | READY — Q1 answered 2026-10-26 (keep the session) | `bugfix/db-failure-keeps-session` |
+| TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT, **complete**: fixed live 2026-10-26 by TJ-063a. P1 and P4 measured; production now connects in **transaction** mode | — |
+| TJ-063a | Move to the transaction pooler, keep staff signed in through a database failure, and stop waiting forever for a connection | DONE — task commit `6e4261a`, merged to `master` as `f3bf68d` with `--no-ff`, pushed and **deployed 2026-10-26 11:13 (Amman)**; **live-verified**: `mode: transaction`, 50/50 requests `200`. **A full clinic day is still to watch** | `bugfix/db-failure-keeps-session` |
 
 ---
 
@@ -11825,7 +11825,8 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 
 ### TJ-063 — Staff are signed out, and cannot sign back in, while the database pooler is full
 
-- **Status:** SPLIT. Passed 2026-10-26. **P1 is measured** (below). **P2 and P3 are superseded:** the user asked the agents to do every step, the change needs the database password typed into Vercel, and an agent may not type a password. So the port switch moved into code, in **TJ-063a**, and needs no credential at all. P4 and P5 are the planner's, after TJ-063a deploys. Nothing executes against this ID.
+- **Status:** SPLIT, **complete**. Fixed live on 2026-10-26 by **TJ-063a** (`f3bf68d`). P4's results are recorded there, and P5 is done: `Production_Cutover.md` has been corrected in Hazard 8, the env table and *Declined, deliberately*. Nothing executes against this ID.
+- **History:** Passed 2026-10-26. **P1 is measured** (below). **P2 and P3 are superseded:** the user asked the agents to do every step, the change needs the database password typed into Vercel, and an agent may not type a password. So the port switch moved into code, in **TJ-063a**, and needs no credential at all. P4 and P5 are the planner's, after TJ-063a deploys. Nothing executes against this ID.
 
 **P1 result, measured 2026-10-26 in the Supabase dashboard (project `tqulxfdyfciwmqfmzlme`, read-only):**
 - **Pooler logs, 25 Oct 11:00 to 26 Oct 12:00, search "max client": 71 entries, 14:34–14:35 on 25 Oct.** Every one reads `(EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15`, some wrapped as `ECHECKOUTFAILED`.
@@ -11898,7 +11899,25 @@ Runtime, against a local database with sessions today for two doctors. Every bul
 
 ### TJ-063a — Keep staff signed in through a database failure, and stop waiting forever for a connection
 
-- **Status:** READY. Q1 answered by the user on 2026-10-26: **keep the session.** The port switch was added to this task the same day; see *Revision* below.
+- **Status:** DONE. Task commit `6e4261a`, from the Sonnet executor, on `bugfix/db-failure-keeps-session`. Merged to `master` with `--no-ff` as `f3bf68d`, pushed by SHA, and deployed to Production at about 11:13 Amman on 2026-10-26, during clinic hours, at the user's request. Q1 was answered by the user the same day: **keep the session.**
+
+**Planner verification, 2026-10-26.** None of this rests on the executor's report.
+- **Diff:** read in full, `master...6e4261a`. Exactly the three Scope files, and exactly the task's three replacement blocks. `max: 3` and the revocation line are unchanged. No line-ending noise.
+- **Gates, re-run on the branch:** `npx tsc --noEmit --incremental false` exit **0**; `npm run build` exit **0**; the rewrite-rule table against the shipped `prisma.ts`, **9/9 pass**.
+- **Probes, re-run on the branch build:** A returns `200` with `"role":"ADMIN"`, both `Set-Cookie` lines carry a token, and the log shows `[auth] status check failed; keeping the session`. B returns `500` at **20.2 s**, with `Connection terminated due to connection timeout`. Both match the executor's numbers, and are compared against the "before" run on `9e0ff07` above. Ports 3100 and 5999 were free afterwards, and the probe logs were deleted.
+- **Live, after the deploy (TJ-063 P4):**
+
+  | Check | Result |
+  |---|---|
+  | Vercel deployment `f3bf68d` | **Ready**, Production. The previous one, `9e0ff07` (14 Oct), is the Instant Rollback target |
+  | `GET /api/public/blog` (`updateMany`, then `findMany`) | **`200`** three times, at 2.2 s, then 0.79 s and 0.75 s. `/api/public/doctors`, `/`, `/login` and `/clinic/` also return `200` |
+  | Supabase pooler log, first connection after the deploy (11:14:03) | **`mode: transaction`**, peer `54.211.39.244` (AWS `us-east-1`, which is Vercel). Before the deploy: `mode: session` |
+  | Pooler logs, last hour, `EMAX` and `prepared` | **No results** for either |
+  | Vercel request log, 11:13:39–11:14:23 | **50/50 `200`**, including staff traffic on `/api/reservations`, `/api/employees/doctors` and `/api/auth/session`. Warning, Error and Fatal all **0** |
+  | Vercel log search, `status check failed` and `prepared` | **No matches** for either |
+
+- **Not yet proven:** that a full busy clinic day stays clean. The incident ran at 14:34–14:35, so the next afternoon peak is the real test. Two things to watch: Supabase pooler logs for `EMAX`, and Vercel's logs for `[auth] status check failed`, which would mean the database was unreachable even though nobody was signed out.
+- **Waived:** TJ-007's revocation exercised against a real `RESIGNED` user. It is proven by the diff only.
 - **Branch:** `bugfix/db-failure-keeps-session`, cut from `master`.
 - **Why:** See TJ-063. Three changes, all about the database connection:
   - **Switch the app's runtime pool to the transaction pooler.** This is the fix for the outage.
