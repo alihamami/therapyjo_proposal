@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { canAccessClinical, canManagePatients, canViewPatientContact } from "@/lib/permissions";
+import { canAccessClinical, canManagePatients, canViewPatientContact, sessionsHiddenFrom } from "@/lib/permissions";
 import { removeUpload } from "@/lib/uploads";
 import { logPatientActivity } from "@/lib/audit";
 
@@ -29,6 +29,8 @@ export async function GET(
     const clinical = canAccessClinical(session.user);
     // Same idiom for the phones: omitted for a doctor, not refused. (TJ-054)
     const contact = canViewPatientContact(session.user);
+    // And the session list stops at the last day this user may see. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
 
     const patient = await prisma.patient.findUnique({
         where: { id: patientId },
@@ -39,6 +41,7 @@ export async function GET(
                 orderBy: { uploadedAt: "desc" },
             },
             reservations: {
+                ...(hiddenFrom && { where: { sessionDate: { lt: hiddenFrom } } }),
                 include: {
                     doctor: { select: { id: true, name: true, color: true } },
                     soapNote: clinical,

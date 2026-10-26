@@ -39,3 +39,37 @@ export function checkClinicWindow(
     }
     return { ok: true };
 }
+
+// When each day's schedule opens to doctors, in Amman time. Before it a doctor
+// sees every day up to yesterday; from it, today as well; no later day, ever.
+// Admin and secretary see every day at any time (sessionsHiddenFrom in
+// src/lib/permissions.ts). User decision, 2026-10-26: 09:30, although a
+// session may start as early as CLINIC_OPEN_HOUR. (TJ-064)
+export const SCHEDULE_OPEN_HOUR = 9;
+export const SCHEDULE_OPEN_MINUTE = 30;
+export const SCHEDULE_OPEN_LABEL = "9:30 AM";
+
+/**
+ * The first calendar day, as "YYYY-MM-DD", that a doctor may not see yet.
+ *
+ * Read in Asia/Amman explicitly rather than from the process timezone, as
+ * src/instrumentation.ts asks of every new "today" boundary, so the server
+ * and a doctor's browser agree wherever either one runs.
+ */
+export function firstHiddenScheduleDay(now: Date = new Date()): string {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Amman",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+    }).formatToParts(now);
+    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+    const opened =
+        get("hour") * 60 + get("minute") >= SCHEDULE_OPEN_HOUR * 60 + SCHEDULE_OPEN_MINUTE;
+    // Date.UTC rolls the 32nd into the next month, and December into January.
+    const day = new Date(Date.UTC(get("year"), get("month") - 1, get("day") + (opened ? 1 : 0)));
+    return day.toISOString().split("T")[0];
+}

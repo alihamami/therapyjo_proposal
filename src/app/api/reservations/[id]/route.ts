@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { canAccessClinical, canDeleteReservation, canViewPatientContact, canWriteSession } from "@/lib/permissions";
+import { canAccessClinical, canDeleteReservation, canViewPatientContact, canWriteSession, sessionsHiddenFrom } from "@/lib/permissions";
 import { logPatientActivity } from "@/lib/audit";
 import { checkClinicWindow } from "@/lib/clinicHours";
 
@@ -44,7 +44,10 @@ export async function GET(
         },
     });
 
-    if (!reservation) {
+    // A session on a day that has not opened yet is answered to a doctor as
+    // missing, the same as one that does not exist. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!reservation || (hiddenFrom && reservation.sessionDate >= hiddenFrom)) {
         return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
     }
 
@@ -80,9 +83,11 @@ export async function PUT(
     // A doctor may change only a session booked under them. (TJ-062)
     const target = await prisma.reservation.findUnique({
         where: { id: parseInt(id, 10) },
-        select: { doctorId: true },
+        select: { doctorId: true, sessionDate: true },
     });
-    if (!target) {
+    // Nor may a doctor change a session they cannot see, as in GET. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!target || (hiddenFrom && target.sessionDate >= hiddenFrom)) {
         return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
     }
     if (!canWriteSession(session.user, target.doctorId)) {
@@ -197,10 +202,12 @@ export async function PATCH(
 
     const reservation = await prisma.reservation.findUnique({
         where: { id: parseInt(id, 10) },
-        select: { id: true, status: true, patientId: true, doctorId: true },
+        select: { id: true, status: true, patientId: true, doctorId: true, sessionDate: true },
     });
 
-    if (!reservation) {
+    // Nor move one they cannot see, as in GET. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!reservation || (hiddenFrom && reservation.sessionDate >= hiddenFrom)) {
         return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
     }
 
