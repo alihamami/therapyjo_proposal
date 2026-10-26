@@ -126,7 +126,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-062a | Server: a doctor may change only their own sessions | DONE — task commit `30591ee`, merged into `claude/exciting-einstein-krgpmv` as `3a23dd6`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-session-ownership` |
 | TJ-062b | Screens: a colleague's session is read-only to a doctor | DONE — task commit `faa8935`, merged into `claude/exciting-einstein-krgpmv` as `7024348`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-readonly-sessions` |
 | TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT, **complete**: fixed live 2026-10-26 by TJ-063a. P1 and P4 measured; production now connects in **transaction** mode | — |
-| TJ-063a | Move to the transaction pooler, keep staff signed in through a database failure, and stop waiting forever for a connection | DONE — task commit `6e4261a`, merged to `master` as `f3bf68d` with `--no-ff`, pushed and **deployed 2026-10-26 11:13 (Amman)**; **live-verified**: `mode: transaction`, 50/50 requests `200`. **A full clinic day is still to watch** | `bugfix/db-failure-keeps-session` |
+| TJ-063a | Move to the transaction pooler, keep staff signed in through a database failure, and stop waiting forever for a connection | DONE — task commit `6e4261a`, merged to `master` as `f3bf68d` with `--no-ff`, pushed and **deployed 2026-10-26 11:13 (Amman)**; **live-verified**: `mode: transaction`, 50/50 requests `200`; **post-peak check clean** (11:13–17:00: no `EMAX`, `CHECKOUT` or `prepared` in the pooler logs) | `bugfix/db-failure-keeps-session` |
 
 ---
 
@@ -11916,7 +11916,18 @@ Runtime, against a local database with sessions today for two doctors. Every bul
   | Vercel request log, 11:13:39–11:14:23 | **50/50 `200`**, including staff traffic on `/api/reservations`, `/api/employees/doctors` and `/api/auth/session`. Warning, Error and Fatal all **0** |
   | Vercel log search, `status check failed` and `prepared` | **No matches** for either |
 
-- **Not yet proven:** that a full busy clinic day stays clean. The incident ran at 14:34–14:35, so the next afternoon peak is the real test. Two things to watch: Supabase pooler logs for `EMAX`, and Vercel's logs for `[auth] status check failed`, which would mean the database was unreachable even though nobody was signed out.
+- **Post-peak check, 2026-10-26 about 17:15 Amman.** The incident ran at 14:34–14:35 the day before, so the afternoon peak was the real test. It came back clean:
+
+  | Check | Result |
+  |---|---|
+  | Supabase pooler logs, 11:13–17:00, searched for `EMAX`, `CHECKOUT` and `prepared` | **No results** for any of the three. Control: `Connection authenticated` over the same window returns rows up to 16:59, so the search and the window both work. |
+  | Pooler mode during the peak hour, 14:00–15:00 | **100+** `Connection authenticated` entries. The 14:59:47 entry reads **`mode: transaction`**, peer `3.92.180.29` (AWS `us-east-1`, which is Vercel). |
+  | Vercel request log, 17:05–17:14 (Hobby keeps about 30 min) | **49 × `200`, 1 × `302`, 0 errors.** Warning, Error and Fatal all 0. Real staff traffic: reservations, SOAP, patients, doctors and session checks. |
+  | Vercel log search, `status check failed` and `prepared` | **No matches** for either |
+  | Production deployment | Still **`f3bf68d`**, Ready |
+
+  **Limit:** Vercel's own logs covered only the last half-hour, not the peak. The pooler logs, which keep about a day, are the evidence for the peak itself.
+- **The scheduled 15:17 check never ran.** The session restarted, and session-only jobs don't survive that. The check was run by hand once Chrome was reconnected. The close-out `cc15523` was held until then, because Vercel Hobby's Instant Rollback reaches only the previous production deployment.
 - **Waived:** TJ-007's revocation exercised against a real `RESIGNED` user. It is proven by the diff only.
 - **Branch:** `bugfix/db-failure-keeps-session`, cut from `master`.
 - **Why:** See TJ-063. Three changes, all about the database connection:
