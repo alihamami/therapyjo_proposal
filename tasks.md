@@ -127,6 +127,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-062b | Screens: a colleague's session is read-only to a doctor | DONE — task commit `faa8935`, merged into `claude/exciting-einstein-krgpmv` as `7024348`, then to `master` as `7622d50` with `--no-ff` on 2026-10-12 at the user's request; planner-reviewed and QA-verified locally; **live check owed** | `feat/doctor-readonly-sessions` |
 | TJ-063 | Staff are signed out, and cannot sign back in, while the database pooler is full | SPLIT, **complete**: fixed live 2026-10-26 by TJ-063a. P1 and P4 measured; production now connects in **transaction** mode | — |
 | TJ-063a | Move to the transaction pooler, keep staff signed in through a database failure, and stop waiting forever for a connection | DONE — task commit `6e4261a`, merged to `master` as `f3bf68d` with `--no-ff`, pushed and **deployed 2026-10-26 11:13 (Amman)**; **live-verified**: `mode: transaction`, 50/50 requests `200`; **post-peak check clean** (11:13–17:00: no `EMAX`, `CHECKOUT` or `prepared` in the pooler logs) | `bugfix/db-failure-keeps-session` |
+| TJ-064 | Doctors see a day's sessions only once that day opens at 09:30 | SPLIT — passed 2026-10-26 (09:30, user decision); see TJ-064a, TJ-064b | — |
+| TJ-064a | Server: send a doctor no session on a day that has not opened | READY | `feat/doctor-day-release` |
+| TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | READY — run after TJ-064a | `feat/doctor-day-release-notice` |
 
 ---
 
@@ -12303,3 +12306,524 @@ Findings reported by the executor, or surfaced during a pass, that fall outside 
   - Fixture `sessionDate` values must be written the way `POST /api/reservations` writes them (`new Date("YYYY-MM-DD")`, UTC midnight). Otherwise the month counts land on the previous day. (Recorded during the TJ-054 review, 2026-09-28.)
 - **Two `/api/auth/session` checks fire every time a staff tab comes back into view.** `SessionProvider` already refetches on `visibilitychange` (`next-auth/react.js`, `refetchOnWindowFocus` defaults to true), and `SessionExpiryNotice.tsx` adds its own fetch on the same event. Each check runs the TJ-007 status query. Dropping the component's fetch halves that load, but its comment defends it as "belt-and-braces", so it needs a pass that checks whether the provider's refetch covers the hidden-tab case. (Found during the TJ-063 pass, 2026-10-26.)
 - **The login page reports every failure as "Invalid username or password".** `login/page.tsx` shows that message for any `result?.error`, including a database error inside `authorize()`. So whenever the pooler is full, staff with correct passwords are told they are wrong. Distinguishing `CredentialsSignin` from other errors would fix it. Needs a pass. (Found during the TJ-063 pass, 2026-10-26.)
+
+---
+
+### TJ-064 — Doctors see a day's sessions only once that day opens at 09:30
+
+- **Status:** SPLIT. Passed 2026-10-26 with its one decision taken, and split into **TJ-064a** (server) and **TJ-064b** (screens). Nothing executes against this ID.
+- **Branch:** none of its own. TJ-064a is `feat/doctor-day-release`; TJ-064b is `feat/doctor-day-release-notice`, cut from it.
+- **Why:** User request, 2026-10-26. Employees who are neither secretaries nor the admin should see only today's and past days' reservations. They should see an upcoming day only when that day comes, from the start of working hours. `Role` is `ADMIN | DOCTOR | SECRETARY` (`prisma/schema.prisma`), so this means doctors. Today every route a doctor reads sessions from returns any date, tomorrow and next month included.
+
+**Decision, 2026-10-26 (user): a day opens to doctors at 09:30 Amman time.**
+- **Why it was asked:** the clinic takes bookings from 07:00 (`CLINIC_OPEN_HOUR`, `src/lib/clinicHours.ts`). A 09:00 release would hide a doctor's early patients until after those sessions start.
+- **Options offered:** 07:00 (recommended), 09:00 or midnight. The user answered **"9:30 am"**.
+- **Consequences of that answer:**
+  - A session from 07:00 to 09:29 stays hidden from every doctor until 09:30 that day, its own doctor included. The front desk still sees it.
+  - Before 09:30 a doctor sees every day up to yesterday. From 09:30 they see today too. They never see a later day.
+  - Calendar notes (`isNote` rows) are reservations and follow the same rule. Staff Notes (`/api/notes`) are a different model and are untouched.
+
+**Planning pass:** 2026-10-26, on `master` at `be95bfd`. Files read:
+- **Reservation routes:** `src/app/api/reservations/route.ts` (`GET` in all three modes, and `POST`); `.../[id]/route.ts` (all four handlers); `.../[id]/soap/route.ts`; `.../[id]/duplicate/route.ts`.
+- **Patient routes:** `src/app/api/patients/[id]/route.ts` (`GET`), `.../[id]/audit/route.ts` and `src/app/api/patients/duplicates/route.ts`.
+- **Shared code:** `src/lib/permissions.ts`, `src/lib/clinicHours.ts`, `src/instrumentation.ts`, the `/doctor` guard in `src/lib/auth.config.ts`, and `Role` and `Reservation` in `prisma/schema.prisma`.
+- **Doctor screens:** `src/app/doctor/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, the data loading in `src/app/doctor/patients/[id]/page.tsx`, and `src/app/components/DatePicker.tsx`.
+
+Every place a doctor can read a session:
+
+| Surface | Route | Today | After TJ-064a |
+|---|---|---|---|
+| Calendar, day view | `GET /api/reservations?date=` | any day | days before the cut-off only |
+| Date-picker dots | `GET /api/reservations?month=` | every day counted | counts stop at the cut-off |
+| Session page, earlier sessions | `GET /api/reservations?patientId=` | every session, future included | capped |
+| Patient page, Sessions tab | `GET /api/patients/[id]` (`reservations`) | every session | capped |
+| A session opened by URL | `GET /api/reservations/[id]` | any | **404** "Reservation not found" |
+| Its SOAP note | `GET` and `PUT …/soap` | any | **404** |
+| Status and details writes | `PATCH` and `PUT /api/reservations/[id]` | own sessions, any day | **404** on a hidden day |
+
+- **Already closed to doctors, so no change:**
+  - the audit log: `GET …/audit` is ADMIN-only;
+  - `POST /api/reservations` and Duplicate, which refuse doctors (TJ-061);
+  - `DELETE`, which refuses them through `canDeleteReservation`;
+  - `/api/patients/duplicates`, which refuses anyone without `canViewPatientContact`;
+  - the patient list, which carries only `lastVisitDate`.
+
+  No doctor page reads Prisma directly.
+- **Confirmed: `sessionDate` is UTC midnight of its day on every write path.** `POST` (`new Date(sessionDate)`), Duplicate and `PUT`'s reschedule all build it from a `"YYYY-MM-DD"` string. So the cut-off is one comparison: a session is hidden when `sessionDate >= new Date("<first hidden day>")`. The day view keeps its own server-local range.
+- **The cut-off is read in Asia/Amman explicitly** (`Intl.DateTimeFormat`, `timeZone: "Asia/Amman"`), not from `process.env.TZ`. `src/instrumentation.ts` asks this of every new "today" boundary. It also lets the browser work out the same day for TJ-064b's notice.
+- **One rule, two helpers:**
+  - `firstHiddenScheduleDay(now)` and the 09:30 constants go in `clinicHours.ts`, beside the clinic window.
+  - `sessionsHiddenFrom(user)` goes in `permissions.ts`. It returns `null` for ADMIN and SECRETARY and a `Date` for anyone else. Like its neighbours it names the roles that may, so a role added later is held back.
+- **A hidden session returns 404, not 403.** That way a doctor cannot tell that a booking exists on a day they cannot see: the answer is the same as for a missing id.
+- **Admin and secretary are untouched:**
+  - `sessionsHiddenFrom` returns `null` for them, and every new filter is a spread of that `null`;
+  - the SOAP `GET`'s extra lookup runs only when there is a cut-off.
+- **Out of scope, and older than this task:** the doctor page's "Today" button uses the browser's UTC date (`new Date().toISOString()`). So between 00:00 and 03:00 Amman it opens yesterday. That is harmless here, because yesterday is visible.
+
+**Prototyped** on `be95bfd` in a throwaway worktree. Both halves were applied by script, and every anchor matched exactly once: 18 for TJ-064a, 5 for TJ-064b.
+- **TJ-064a alone:** `npx tsc --noEmit --incremental false` exits **0**. 6 files, +102/−14.
+- **With TJ-064b:** `tsc` exits **0**, and `next build --webpack` exits **0**. Turbopack refuses a junctioned `node_modules` (see TJ-063a). 8 files, +130/−18.
+- **The shipped `firstHiddenScheduleDay` was extracted and run** against 8 instants. All pass, both in Asia/Amman (this machine's own timezone) and with `TZ=UTC`. The instants:
+  - 09:29:59 and 09:30:00 Amman;
+  - 00:00 and 02:30 Amman, when the UTC date is still the day before;
+  - month end, year end and a leap day.
+
+**Runtime proof is waived** (user directive, 2026-09-15): no agent can sign in, and the only database is production. Every row of the table above is unproven until a doctor checks it live.
+
+---
+
+### TJ-064a — Server: send a doctor no session on a day that has not opened
+
+- **Status:** READY
+- **Branch:** `feat/doctor-day-release`, cut from current `master`.
+- **Why:** See TJ-064. Every route a doctor reads sessions from returns any date. **User decision, 2026-10-26:** a day opens to doctors at 09:30 Amman time, and admin and secretary see every day.
+- **Ships with TJ-064b.** On its own this task leaves a doctor's future days reading "0 sessions", which looks like a free day. Merge both before pushing.
+
+**Planning pass:** 2026-10-26. TJ-064 lists the files read, the surface table and the prototype. Every anchor below was checked by machine against `be95bfd`.
+
+**Scope — touch only these:**
+- `src/lib/clinicHours.ts`: append the 09:30 constants and `firstHiddenScheduleDay`.
+- `src/lib/permissions.ts`: add one import, and append `sessionsHiddenFrom`.
+- `src/app/api/reservations/route.ts`: the import and the three `GET` modes.
+- `src/app/api/reservations/[id]/route.ts`: the import, and the lookups in `GET`, `PUT` and `PATCH`.
+- `src/app/api/reservations/[id]/soap/route.ts`: the import, the `GET` and the `PUT`.
+- `src/app/api/patients/[id]/route.ts`: the import, and the `reservations` include in `GET`.
+
+**Do not touch:**
+- `POST /api/reservations`, `DELETE /api/reservations/[id]`, the duplicate route, the audit route and `/api/notes`.
+- `checkClinicWindow`, `CLINIC_OPEN_HOUR` and `CLINIC_CLOSE_HOUR`. Booking hours do not change.
+- Every page. The screens are TJ-064b.
+- `prisma/schema.prisma`. There is no schema change. Never run `prisma db push` or `db seed`.
+
+**Instructions.**
+- **Line endings:** all six files are LF in the repository and check out as CRLF on this Windows machine (`core.autocrlf=true`). The anchors are shown with LF; the Edit tool matches them either way.
+- **Anchors:** each occurs exactly once in its file at the moment its step runs, checked by machine against `be95bfd`.
+- **Order:** apply the steps in order. A later step on a file can depend on an earlier one.
+- **Indentation:** fenced blocks show each file's own indentation.
+
+
+**Step 1.** In `src/lib/clinicHours.ts`, replace:
+```ts
+    return { ok: true };
+}
+```
+with:
+```ts
+    return { ok: true };
+}
+
+// When each day's schedule opens to doctors, in Amman time. Before it a doctor
+// sees every day up to yesterday; from it, today as well; no later day, ever.
+// Admin and secretary see every day at any time (sessionsHiddenFrom in
+// src/lib/permissions.ts). User decision, 2026-10-26: 09:30, although a
+// session may start as early as CLINIC_OPEN_HOUR. (TJ-064)
+export const SCHEDULE_OPEN_HOUR = 9;
+export const SCHEDULE_OPEN_MINUTE = 30;
+export const SCHEDULE_OPEN_LABEL = "9:30 AM";
+
+/**
+ * The first calendar day, as "YYYY-MM-DD", that a doctor may not see yet.
+ *
+ * Read in Asia/Amman explicitly rather than from the process timezone, as
+ * src/instrumentation.ts asks of every new "today" boundary, so the server
+ * and a doctor's browser agree wherever either one runs.
+ */
+export function firstHiddenScheduleDay(now: Date = new Date()): string {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Amman",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+    }).formatToParts(now);
+    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+    const opened =
+        get("hour") * 60 + get("minute") >= SCHEDULE_OPEN_HOUR * 60 + SCHEDULE_OPEN_MINUTE;
+    // Date.UTC rolls the 32nd into the next month, and December into January.
+    const day = new Date(Date.UTC(get("year"), get("month") - 1, get("day") + (opened ? 1 : 0)));
+    return day.toISOString().split("T")[0];
+}
+```
+
+**Step 2.** In `src/lib/permissions.ts`, replace:
+```ts
+import type { Session } from "next-auth";
+```
+with:
+```ts
+import type { Session } from "next-auth";
+import { firstHiddenScheduleDay } from "@/lib/clinicHours";
+```
+
+**Step 3.** In `src/lib/permissions.ts`, replace:
+```ts
+    return user.role === "DOCTOR" && sessionDoctorId !== null && sessionDoctorId === user.id;
+}
+```
+with:
+```ts
+    return user.role === "DOCTOR" && sessionDoctorId !== null && sessionDoctorId === user.id;
+}
+
+/**
+ * From which instant are sessions hidden from this user? null means none are.
+ *
+ * ADMIN and SECRETARY see every day: they book and run the calendar. Anyone
+ * else, which today means DOCTOR, sees a day only once it has opened: every
+ * past day, today from SCHEDULE_OPEN_HOUR:SCHEDULE_OPEN_MINUTE Amman time, and
+ * no later day at all (src/lib/clinicHours.ts). Like the helpers above, it
+ * names the roles that may, so a role added later is held back until someone
+ * decides otherwise.
+ *
+ * Compare it against Reservation.sessionDate with `lt`. Every write path
+ * stores that column as `new Date("YYYY-MM-DD")`, UTC midnight of its day, and
+ * this returns UTC midnight of the first hidden day. User decision,
+ * 2026-10-26. (TJ-064)
+ */
+export function sessionsHiddenFrom(
+    user: Session["user"] | undefined | null,
+    now: Date = new Date()
+): Date | null {
+    if (user && (user.role === "ADMIN" || user.role === "SECRETARY")) return null;
+    return new Date(firstHiddenScheduleDay(now));
+}
+```
+
+**Step 4.** In `src/app/api/reservations/route.ts`, replace:
+```ts
+import { canViewPatientContact } from "@/lib/permissions";
+```
+with:
+```ts
+import { canViewPatientContact, sessionsHiddenFrom } from "@/lib/permissions";
+```
+
+**Step 5.** In `src/app/api/reservations/route.ts`, replace:
+```ts
+    const contact = canViewPatientContact(session.user);
+```
+with:
+```ts
+    const contact = canViewPatientContact(session.user);
+    // A doctor is sent no session on a day that has not opened yet. All three
+    // modes below cap sessionDate here, so the day view, the patient history
+    // and the date picker's counts agree. null for admin and secretary. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+```
+
+**Step 6.** In `src/app/api/reservations/route.ts`, replace:
+```ts
+                sessionDate: { gte: startOfMonth, lte: endOfMonth },
+```
+with:
+```ts
+                sessionDate: { gte: startOfMonth, lte: endOfMonth, ...(hiddenFrom && { lt: hiddenFrom }) },
+```
+
+**Step 7.** In `src/app/api/reservations/route.ts`, replace:
+```ts
+            where: { patientId: parseInt(patientId, 10) },
+```
+with:
+```ts
+            where: { patientId: parseInt(patientId, 10), ...(hiddenFrom && { sessionDate: { lt: hiddenFrom } }) },
+```
+
+**Step 8.** In `src/app/api/reservations/route.ts`, replace:
+```ts
+        sessionDate: { gte: date, lte: nextDay },
+```
+with:
+```ts
+        sessionDate: { gte: date, lte: nextDay, ...(hiddenFrom && { lt: hiddenFrom }) },
+```
+
+**Step 9.** In `src/app/api/reservations/[id]/route.ts`, replace:
+```ts
+import { canAccessClinical, canDeleteReservation, canViewPatientContact, canWriteSession } from "@/lib/permissions";
+```
+with:
+```ts
+import { canAccessClinical, canDeleteReservation, canViewPatientContact, canWriteSession, sessionsHiddenFrom } from "@/lib/permissions";
+```
+
+**Step 10.** In `src/app/api/reservations/[id]/route.ts`, replace:
+```ts
+    if (!reservation) {
+        return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
+    }
+
+    // Fetch previous session note for this patient
+```
+with:
+```ts
+    // A session on a day that has not opened yet is answered to a doctor as
+    // missing, the same as one that does not exist. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!reservation || (hiddenFrom && reservation.sessionDate >= hiddenFrom)) {
+        return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
+    }
+
+    // Fetch previous session note for this patient
+```
+
+**Step 11.** In `src/app/api/reservations/[id]/route.ts`, replace:
+```ts
+        select: { doctorId: true },
+    });
+    if (!target) {
+```
+with:
+```ts
+        select: { doctorId: true, sessionDate: true },
+    });
+    // Nor may a doctor change a session they cannot see, as in GET. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!target || (hiddenFrom && target.sessionDate >= hiddenFrom)) {
+```
+
+**Step 12.** In `src/app/api/reservations/[id]/route.ts`, replace:
+```ts
+        select: { id: true, status: true, patientId: true, doctorId: true },
+    });
+
+    if (!reservation) {
+```
+with:
+```ts
+        select: { id: true, status: true, patientId: true, doctorId: true, sessionDate: true },
+    });
+
+    // Nor move one they cannot see, as in GET. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!reservation || (hiddenFrom && reservation.sessionDate >= hiddenFrom)) {
+```
+
+**Step 13.** In `src/app/api/reservations/[id]/soap/route.ts`, replace:
+```ts
+import { canAccessClinical, canWriteSession } from "@/lib/permissions";
+```
+with:
+```ts
+import { canAccessClinical, canWriteSession, sessionsHiddenFrom } from "@/lib/permissions";
+```
+
+**Step 14.** In `src/app/api/reservations/[id]/soap/route.ts`, replace:
+```ts
+    const { id } = await params;
+    const soap = await prisma.sOAPNote.findUnique({
+```
+with:
+```ts
+    const { id } = await params;
+
+    // A doctor cannot read the note of a session they cannot see. Admin skips
+    // the lookup and keeps the old answer for a missing id. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (hiddenFrom) {
+        const reservation = await prisma.reservation.findUnique({
+            where: { id: parseInt(id, 10) },
+            select: { sessionDate: true },
+        });
+        if (!reservation || reservation.sessionDate >= hiddenFrom) {
+            return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
+        }
+    }
+
+    const soap = await prisma.sOAPNote.findUnique({
+```
+
+**Step 15.** In `src/app/api/reservations/[id]/soap/route.ts`, replace:
+```ts
+        select: { patientId: true, doctorId: true },
+    });
+    if (!reservation) {
+```
+with:
+```ts
+        select: { patientId: true, doctorId: true, sessionDate: true },
+    });
+    // Nor write one, as in GET. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+    if (!reservation || (hiddenFrom && reservation.sessionDate >= hiddenFrom)) {
+```
+
+**Step 16.** In `src/app/api/patients/[id]/route.ts`, replace:
+```ts
+import { canAccessClinical, canManagePatients, canViewPatientContact } from "@/lib/permissions";
+```
+with:
+```ts
+import { canAccessClinical, canManagePatients, canViewPatientContact, sessionsHiddenFrom } from "@/lib/permissions";
+```
+
+**Step 17.** In `src/app/api/patients/[id]/route.ts`, replace:
+```ts
+    const contact = canViewPatientContact(session.user);
+```
+with:
+```ts
+    const contact = canViewPatientContact(session.user);
+    // And the session list stops at the last day this user may see. (TJ-064)
+    const hiddenFrom = sessionsHiddenFrom(session.user);
+```
+
+**Step 18.** In `src/app/api/patients/[id]/route.ts`, replace:
+```ts
+            reservations: {
+                include: {
+```
+with:
+```ts
+            reservations: {
+                ...(hiddenFrom && { where: { sessionDate: { lt: hiddenFrom } } }),
+                include: {
+```
+
+**Verification:**
+- `npx tsc --noEmit --incremental false` exits 0.
+- `npm run build` exits 0. If it fails on a path under `.next/dev/types`, that is a stale cache, not a source bug: delete that folder and re-run.
+- `npm run lint` is informational only, because the repo-wide baseline already fails on a pre-existing rule. Report the count, and do not fix other files.
+- `git diff --stat master` lists exactly the six Scope files.
+- `grep -c "firstHiddenScheduleDay" src/lib/clinicHours.ts` returns **1**, and these `grep -c` counts hold:
+
+| File | `sessionsHiddenFrom` | `TJ-064` |
+|---|---|---|
+| `src/lib/permissions.ts` | 1 | 1 |
+| `src/app/api/reservations/route.ts` | 2 | 1 |
+| `src/app/api/reservations/[id]/route.ts` | 4 | 3 |
+| `src/app/api/reservations/[id]/soap/route.ts` | 3 | 2 |
+| `src/app/api/patients/[id]/route.ts` | 2 | 1 |
+
+- **Runtime checks are waived.** Do not start a dev server: the only database is the clinic's production one, and signing in needs a real password. Report every runtime bullet as waived, not as passed.
+
+**Done when:**
+- [ ] Only the six Scope files changed, and the diff matches the steps.
+- [ ] `tsc` and `npm run build` exit 0.
+- [ ] Admin and secretary paths are unchanged. Every new filter sits behind `hiddenFrom`, which is `null` for them.
+- [ ] Live, as a doctor: no route in the TJ-064 table returns tomorrow's sessions, and today's appear from 09:30.
+
+---
+
+### TJ-064b — Screens: a day that has not opened shows a notice, not an empty calendar
+
+- **Status:** READY. Run it after TJ-064a.
+- **Branch:** `feat/doctor-day-release-notice`, cut from `feat/doctor-day-release` once TJ-064a is committed. This task imports `sessionsHiddenFrom` and `SCHEDULE_OPEN_LABEL`, which TJ-064a adds.
+- **Why:** two problems remain once TJ-064a is in.
+  - **The empty calendar misleads.** A doctor who pages to tomorrow, or opens today before 09:30, sees "0 sessions", which reads as a free day.
+  - **The session page crashes on a 404.** A hidden session opened by URL returns 404, and `doctor/session/[id]/page.tsx` stores the error body as the session. Its `if (!reservation)` guard passes, because an error object is truthy. The render then reads `reservation.patient.name` and throws. A missing id already does this today.
+
+**Planning pass:** 2026-10-26. See TJ-064 for the files read and the prototype.
+- **No other screen needs a change:**
+  - `DatePicker.tsx` draws its dots from the month counts, which TJ-064a caps.
+  - `doctor/patients/[id]/page.tsx` draws its Sessions tab from what `GET /api/patients/[id]` sends.
+- **Admin is unaffected.** An admin may open `/doctor` (`auth.config.ts`), but `sessionsHiddenFrom` returns `null` for them, so they never see the notice.
+- **Copy:** the dashboards are English-only, with no `ar` strings on any `/doctor` page. So there is one string, built from the page's existing `formatDate()`. Example: *This day's schedule opens at 9:30 AM on Tuesday, October 27, 2026.*
+- **The notice does not refresh itself at 09:30.** A doctor on that screen at 09:30 sees today's sessions on the next render: pressing Today, changing the day, or a reload. Accepted, to keep this task small.
+
+**Scope — touch only these:**
+- `src/app/doctor/page.tsx`: two imports, `dayLocked`, the session count and the calendar block.
+- `src/app/doctor/session/[id]/page.tsx`: the first fetch in `fetchData`.
+
+**Do not touch:** the API (TJ-064a), `Calendar.tsx`, `DatePicker.tsx`, `DatePickerPopover.tsx`, the admin and secretary dashboards, and `doctor/patients/[id]/page.tsx`.
+
+**Instructions.** Both files are LF in the repository and CRLF in this checkout, as in TJ-064a. Every anchor occurs exactly once, checked by machine against `be95bfd` with TJ-064a applied.
+
+
+**Step 1.** In `src/app/doctor/page.tsx`, replace:
+```tsx
+import DatePickerPopover from "@/app/components/DatePickerPopover";
+```
+with:
+```tsx
+import DatePickerPopover from "@/app/components/DatePickerPopover";
+import { sessionsHiddenFrom } from "@/lib/permissions";
+import { SCHEDULE_OPEN_LABEL } from "@/lib/clinicHours";
+```
+
+**Step 2.** In `src/app/doctor/page.tsx`, replace:
+```tsx
+    const ownerId = session?.user?.role === "ADMIN" ? undefined : (doctorId ?? "");
+```
+with:
+```tsx
+    const ownerId = session?.user?.role === "ADMIN" ? undefined : (doctorId ?? "");
+
+    // A day that has not opened yet shows a notice, not an empty calendar: the
+    // server sends a doctor nothing for it, and "0 sessions" would read as a
+    // free day. selectedDate parses as UTC midnight, the instant the server
+    // compares against. An admin sees every day. (TJ-064)
+    const hiddenFrom = session ? sessionsHiddenFrom(session.user) : null;
+    const dayLocked = hiddenFrom !== null && new Date(selectedDate) >= hiddenFrom;
+```
+
+**Step 3.** In `src/app/doctor/page.tsx`, replace:
+```tsx
+                <span className="session-count">{reservations.length} session{reservations.length !== 1 ? "s" : ""}</span>
+```
+with:
+```tsx
+                {!dayLocked && (
+                    <span className="session-count">{reservations.length} session{reservations.length !== 1 ? "s" : ""}</span>
+                )}
+```
+
+**Step 4.** In `src/app/doctor/page.tsx`, replace:
+```tsx
+                    {loading ? (
+```
+with:
+```tsx
+                    {dayLocked ? (
+                        <div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem", textAlign: "center" }}>
+                            {`This day's schedule opens at ${SCHEDULE_OPEN_LABEL} on ${formatDate()}.`}
+                        </div>
+                    ) : loading ? (
+```
+
+**Step 5.** In `src/app/doctor/session/[id]/page.tsx`, replace:
+```tsx
+        const [resData, soapData] = await Promise.all([
+            fetch(`/api/reservations/${id}`).then((r) => r.json()),
+            fetch(`/api/reservations/${id}/soap`).then((r) => r.json()),
+        ]);
+
+        setReservation(resData);
+```
+with:
+```tsx
+        const [resRes, soapData] = await Promise.all([
+            fetch(`/api/reservations/${id}`),
+            fetch(`/api/reservations/${id}/soap`).then((r) => r.json()),
+        ]);
+        // A missing session, or one on a day that has not opened yet, comes
+        // back 404. Show "Session not found" rather than drawing the error
+        // body as if it were a session. (TJ-064)
+        if (!resRes.ok) {
+            setReservation(null);
+            setLoading(false);
+            return;
+        }
+        const resData = await resRes.json();
+
+        setReservation(resData);
+```
+
+**Verification:**
+- `npx tsc --noEmit --incremental false` and `npm run build` both exit 0.
+- `git diff --stat feat/doctor-day-release` lists exactly the two Scope files.
+- These counts hold:
+  - `grep -c "sessionsHiddenFrom" src/app/doctor/page.tsx` returns **2**;
+  - `grep -c "SCHEDULE_OPEN_LABEL" src/app/doctor/page.tsx` returns **2**;
+  - `grep -c "resRes.ok" "src/app/doctor/session/[id]/page.tsx"` returns **1**.
+- **Runtime checks are waived, as in TJ-064a.** Do not start a dev server.
+
+**Done when:**
+- [ ] Only the two Scope files changed, and the diff matches the steps.
+- [ ] `tsc` and `npm run build` exit 0.
+- [ ] Live, as a doctor before 09:30: Today shows the notice and no session count.
+- [ ] Live, as a doctor after 09:30: Today shows today's sessions, and Tomorrow shows the notice.
+- [ ] Live, as an admin on `/doctor`: Tomorrow shows its sessions, with no notice.
+- [ ] Live: a hidden session's URL shows "Session not found", not a crash.
