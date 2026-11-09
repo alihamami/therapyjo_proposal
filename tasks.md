@@ -130,6 +130,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-064 | Doctors see a day's sessions only once that day opens at 09:30 | SPLIT — **complete**: both halves merged to `master` on 2026-10-26 (09:30, user decision); pushed and **deployed 2026-10-26 ~15:55 (Amman)** as `233e0ea`, Vercel `success`; **live-checked by the user 2026-10-26** | — |
 | TJ-064a | Server: send a doctor no session on a day that has not opened | DONE — task commit `8654e9b`, merged to `master` as `55cc269` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release` |
 | TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release-notice` |
+| TJ-065 | Admin: see and edit every session's SOAP note | READY — passed 2026-11-09; prototyped, 12/12 anchors exact | `feat/admin-soap-notes` |
 
 ---
 
@@ -12845,3 +12846,374 @@ with:
 - [ ] Live, as a doctor after 09:30: Today shows today's sessions, and Tomorrow shows the notice.
 - [ ] Live, as an admin on `/doctor`: Tomorrow shows its sessions, with no notice.
 - [ ] Live: a hidden session's URL shows "Session not found", not a crash.
+
+---
+
+### TJ-065 — Admin: see and edit every session's SOAP note
+
+- **Status:** READY. Passed 2026-11-09.
+- **Branch:** `feat/admin-soap-notes`, cut from current `master` (`ac6f071` plus this task's `tasks.md` commit).
+- **Why:** User request, 2026-11-09: the admin should be able to see SOAP notes and edit them. Today an admin can do neither in practice:
+  - **The patient file never draws them.** `GET /api/patients/[id]` already sends every session's `soapNote` to an admin, but the Sessions tab of `src/app/admin/patients/[id]/page.tsx` shows only Date, Doctor, Status, Payment and Injury. Its `Reservation` interface does not even declare the field.
+  - **The dashboard shows them read-only, and only sometimes.** The Session Details modal in `src/app/admin/page.tsx` (card menu → Session Details) prints S/O/A/P only when at least one has text. An empty note shows nothing at all, so there is no sign the feature exists, and nothing on any admin screen writes one.
+  - **The only editor is the doctor's.** An admin may open `/doctor/session/[id]` (`auth.config.ts` lets ADMIN into `/doctor`), and that page gives an admin every action. But nothing links an admin there, it renders inside the doctor nav ("My Schedule", "My Profile"), and its Back button goes to `/doctor`. It is not an admin screen.
+
+**Planning pass:** 2026-11-09, on `master` at `ac6f071`. Files read in full:
+- **Server:** `src/app/api/reservations/[id]/soap/route.ts` (both handlers), `src/app/api/reservations/[id]/route.ts` (`GET`, `PUT`), `src/app/api/patients/[id]/route.ts` (`GET`, `PUT`), `src/lib/permissions.ts`, `src/lib/auth.config.ts`, and `SOAPNote` and `Reservation` in `prisma/schema.prisma`.
+- **Screens:** `src/app/admin/page.tsx`, `src/app/admin/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, `src/app/doctor/layout.tsx`, `src/lib/useUnsavedChanges.ts`, and the `useSearchParams` pattern in `src/app/admin/reservations/new/page.tsx`.
+
+Confirmed against the code:
+- **No server change is needed. The API already allows all of this for an admin:**
+  - `canAccessClinical` is true for ADMIN, so both SOAP handlers admit them, and `GET /api/patients/[id]` includes `soapNote` on every reservation (`soapNote: clinical`).
+  - `canWriteSession(ADMIN, …)` is true for any session, including one whose doctor was hard-deleted (`doctorId` null).
+  - `sessionsHiddenFrom(ADMIN)` is `null`, so TJ-064's day cut-off never applies.
+  - The SOAP `PUT` returns the saved row and logs `SOAP_NOTE_UPDATED` under the acting user. The patient file's `ACTION_LABELS` already labels it "SOAP note updated".
+- **Secretaries are untouched.** `/admin/*` is ADMIN-only: `/admin/patients` is not in `CONTENT_PATHS`, so a content grant does not reach it. The secretary's patient page is a separate file, and the API omits `soapNote` for them.
+- **Where the editor goes:** a modal on the admin patient file, opened from a new "SOAP Note" column in the Sessions tab. It reuses the page's existing `.modal-overlay` / `.modal-card` / `.form-stack` styles (the Edit Info modal's). A modal rather than an expanding table row, because `.data-table` has `min-width: 600px` inside a horizontally scrolling card, so an inline editor would scroll sideways on a phone.
+- **The dashboard links into it.** Session Details always draws its SOAP section ("No SOAP note yet." when empty) and gains an "Edit SOAP Note" button to `/admin/patients/<patientId>?soap=<reservationId>`. The patient file opens that session's note once, on first load. `/admin/patients/[id]` builds as dynamic (`ƒ`), so `useSearchParams` needs no Suspense boundary there.
+- **The SOAP save must not refetch the patient.** `fetchPatient()` repopulates the Clinical Assessment form, so refetching would discard unsaved edits there. The save patches the one reservation in `patient` state from the `PUT` response instead.
+- **The SOAP form gets its own unsaved-text guard.** That is a second `useUnsavedChanges(soapDirty)`: browser close and reload warn, and so does closing the modal, by Close or by clicking the backdrop. The intake guard and its messages are unchanged. Back, upload and file removal sit under the modal's backdrop while it is open, so none of them can be reached with unsaved SOAP text.
+- **`SOAPNote.injuryPlace` is nulled on every SOAP save, by the doctor's editor today as well.** The `PUT` writes `body.injuryPlace ?? null`, and neither editor sends it. Nothing in `src/` reads that column; the session's real Injury Place is `Reservation.injuryPlace`. So this is not a regression and is left alone.
+- **`Reservation.isNote` is never set by any code in `src/`**, so there are no calendar-note rows to special-case in the Sessions tab.
+
+**Prototyped** on `ac6f071` in a throwaway worktree outside the repo. The steps below were applied by script, and every anchor matched exactly once (12 of 12).
+- `npx tsc --noEmit --incremental false` exits **0**.
+- `next build --webpack` exits **0**, with the placeholder env below. Turbopack refuses the prototype's symlinked `node_modules`, which is a harness limit, not a code one.
+- `git diff --shortstat`: 2 files changed, **163 insertions(+), 13 deletions(-)**.
+- ESLint on the two files: **4** and **2** findings, the same as `master`. All are the existing `react-hooks/set-state-in-effect` findings on the data-loading pattern; nothing is new.
+
+**Regression risks, and where each is checked:**
+1. Saving a SOAP note discards unsaved Clinical Assessment text. The save patches state and does not call `fetchPatient()`; the planner checks this at runtime.
+2. The deep link reopens the modal after Edit Info, an upload or a file removal. It is guarded by `soapLinkHandled`; runtime.
+3. A render loop from an unstable `fetchPatient` dependency. `soapParam` is a string, so the dependency is stable; runtime, by counting requests.
+4. The doctor's and secretary's screens. Not in Scope, and checked by `git diff --stat`.
+5. Phone width. The modal's styles already handle 640px and below; the planner looks at 320px.
+
+**Scope — touch only these:**
+- `src/app/admin/patients/[id]/page.tsx`: imports, the `Reservation` interface, new SOAP constants, SOAP state, `fetchPatient`'s tail, three handlers, the modal, one Sessions column, and two style rules.
+- `src/app/admin/page.tsx`: the Session Details SOAP block and its action buttons, and the `.soap-field` rule.
+
+**Do not touch:** every API route, `src/lib/*`, `src/app/doctor/**`, `src/app/secretary/**`, `src/app/components/Calendar.tsx`, `prisma/schema.prisma` and `tasks.md`.
+
+**Instructions.** Both files are LF in this checkout. Every anchor below occurs exactly once in its file on `master`, checked by machine. Apply the steps in order, each as an exact string replacement. Change nothing else, including whitespace.
+
+**Step 1 — imports.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+import { useState, useEffect, useCallback, use } from "react";
+import { useRouter } from "next/navigation";
+```
+with:
+```tsx
+import { useState, useEffect, useCallback, use, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+```
+
+**Step 2 — Reservation.soapNote + SoapNote type.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+    doctorNameSnapshot: string | null;
+    doctorColorSnapshot: string | null;
+}
+```
+with:
+```tsx
+    doctorNameSnapshot: string | null;
+    doctorColorSnapshot: string | null;
+    soapNote: SoapNote | null;
+}
+
+interface SoapNote {
+    subjective: string | null;
+    objective: string | null;
+    assessment: string | null;
+    plan: string | null;
+}
+```
+
+**Step 3 — SOAP constants and helpers.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+export default function PatientProfilePage(
+```
+with:
+```tsx
+const SOAP_FIELDS = [
+    { key: "subjective", label: "Subjective" },
+    { key: "objective", label: "Objective" },
+    { key: "assessment", label: "Assessment" },
+    { key: "plan", label: "Plan" },
+] as const;
+
+type SoapForm = Record<(typeof SOAP_FIELDS)[number]["key"], string>;
+
+const soapFormFrom = (n: SoapNote | null): SoapForm => ({
+    subjective: n?.subjective ?? "",
+    objective: n?.objective ?? "",
+    assessment: n?.assessment ?? "",
+    plan: n?.plan ?? "",
+});
+
+const hasSoap = (n: SoapNote | null) => !!n && SOAP_FIELDS.some((f) => !!n[f.key]?.trim());
+
+export default function PatientProfilePage(
+```
+
+**Step 4 — SOAP state and its own unsaved-text guard.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+    const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+```
+with:
+```tsx
+    const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+
+    // One session's SOAP note at a time, in a modal. Opened from the Sessions
+    // tab, or from the dashboard's Session Details via ?soap=<reservationId>.
+    // The API has always let an admin read and write every session's note
+    // (canAccessClinical, canWriteSession); this page never drew it. (TJ-065)
+    const soapParam = useSearchParams().get("soap");
+    const soapLinkHandled = useRef(false);
+    const [soapSession, setSoapSession] = useState<Reservation | null>(null);
+    const [soapForm, setSoapForm] = useState<SoapForm>(soapFormFrom(null));
+    const [soapBaseline, setSoapBaseline] = useState<string>(JSON.stringify(soapFormFrom(null)));
+    const [savingSoap, setSavingSoap] = useState(false);
+    const [soapSaved, setSoapSaved] = useState(false);
+    const [soapError, setSoapError] = useState("");
+    const soapDirty = soapSession !== null && JSON.stringify(soapForm) !== soapBaseline;
+    const { confirmDiscard: confirmDiscardSoap } = useUnsavedChanges(soapDirty);
+```
+
+**Step 5 — deep link handled once inside fetchPatient.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+        setIntakeForm(intake);
+        setIntakeBaseline(JSON.stringify(intake));
+        setLoading(false);
+    }, [id, router]);
+```
+with:
+```tsx
+        setIntakeForm(intake);
+        setIntakeBaseline(JSON.stringify(intake));
+
+        // Arrived from the dashboard's Session Details: open that session's
+        // SOAP note, once. A later refetch (after Edit Info, an upload or a
+        // file removal) must not reopen it. (TJ-065)
+        if (soapParam && !soapLinkHandled.current) {
+            soapLinkHandled.current = true;
+            const target = (data.reservations as Reservation[]).find((r) => String(r.id) === soapParam);
+            if (target) {
+                const form = soapFormFrom(target.soapNote);
+                setActiveTab("sessions");
+                setSoapSession(target);
+                setSoapForm(form);
+                setSoapBaseline(JSON.stringify(form));
+            }
+        }
+        setLoading(false);
+    }, [id, router, soapParam]);
+```
+
+**Step 6 — open / close / save handlers.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+    const handleArchiveToggle = async () => {
+```
+with:
+```tsx
+    const openSoap = (r: Reservation) => {
+        const form = soapFormFrom(r.soapNote);
+        setSoapSession(r);
+        setSoapForm(form);
+        setSoapBaseline(JSON.stringify(form));
+        setSoapError("");
+        setSoapSaved(false);
+    };
+
+    const closeSoap = () => {
+        if (!confirmDiscardSoap("You have unsaved SOAP note text. Close without saving?")) return;
+        setSoapSession(null);
+        setSoapError("");
+    };
+
+    const saveSoap = async () => {
+        if (!soapSession) return;
+        const sent = soapForm;
+        setSavingSoap(true);
+        setSoapError("");
+        const res = await fetch(`/api/reservations/${soapSession.id}/soap`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(sent),
+        });
+        setSavingSoap(false);
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setSoapError(data.error || "Could not save the SOAP note.");
+            return;
+        }
+        const saved: SoapNote = await res.json();
+        // Patch the one row rather than refetch: fetchPatient() repopulates
+        // the Clinical Assessment form and would discard unsaved edits there.
+        setPatient((p) => p && {
+            ...p,
+            reservations: p.reservations.map((r) => (r.id === soapSession.id ? { ...r, soapNote: saved } : r)),
+        });
+        setSoapBaseline(JSON.stringify(sent));
+        // The save wrote an audit entry; drop the cached log so the History
+        // tab fetches it again on its next visit.
+        setAuditLog([]);
+        setSoapSaved(true);
+        setTimeout(() => setSoapSaved(false), 2000);
+    };
+
+    const handleArchiveToggle = async () => {
+```
+
+**Step 7 — SOAP modal, after the Edit Info modal.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+            {/* Tabs */}
+            <div className="tabs">
+```
+with:
+```tsx
+            {/* SOAP Note Modal (TJ-065) */}
+            {soapSession && (
+                <div className="modal-overlay" onClick={closeSoap}>
+                    <div className="modal-card modal-wide" onClick={(e) => e.stopPropagation()}>
+                        <h2>SOAP Note</h2>
+                        <p className="modal-sub">
+                            {formatDate(soapSession.sessionDate)} · {soapSession.doctor?.name ?? soapSession.doctorNameSnapshot ?? "—"}
+                        </p>
+                        {soapError && <div className="error-msg" role="alert">{soapError}</div>}
+                        <div className="form-stack">
+                            {SOAP_FIELDS.map((f) => (
+                                <div className="form-group" key={f.key}>
+                                    <label htmlFor={`soap-${f.key}`}>{f.label}</label>
+                                    <textarea
+                                        id={`soap-${f.key}`}
+                                        rows={3}
+                                        value={soapForm[f.key]}
+                                        onChange={(e) => setSoapForm({ ...soapForm, [f.key]: e.target.value })}
+                                        placeholder={`Enter ${f.key}…`}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="modal-actions">
+                            <button className="btn-cancel" onClick={closeSoap}>Close</button>
+                            <button className="btn-save" onClick={saveSoap} disabled={savingSoap}>
+                                {savingSoap ? "Saving…" : soapSaved ? "✓ Saved" : "Save SOAP Note"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Tabs */}
+            <div className="tabs">
+```
+
+**Step 8 — Sessions table header.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+                                    <th>Injury</th>
+```
+with:
+```tsx
+                                    <th>Injury</th>
+                                    <th>SOAP Note</th>
+```
+
+**Step 9 — Sessions table cell.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+                                        <td>{r.injuryPlace || "—"}</td>
+```
+with:
+```tsx
+                                        <td>{r.injuryPlace || "—"}</td>
+                                        <td>
+                                            <button type="button" className="btn-sm btn-edit" onClick={() => openSoap(r)}>
+                                                {hasSoap(r.soapNote) ? "View / Edit" : "Add"}
+                                            </button>
+                                        </td>
+```
+
+**Step 10 — modal width and subtitle styles.** In `src/app/admin/patients/[id]/page.tsx`, replace:
+```tsx
+                .modal-card h2 { font-size: 1.2rem; margin-bottom: 1.25rem; font-weight: 600; }
+```
+with:
+```tsx
+                .modal-card h2 { font-size: 1.2rem; margin-bottom: 1.25rem; font-weight: 600; }
+                .modal-wide { max-width: 640px; }
+                .modal-sub { margin: -0.9rem 0 1.25rem; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
+```
+
+**Step 11 — Session Details: always show the SOAP section.** In `src/app/admin/page.tsx`, replace:
+```tsx
+                        {detail.soapNote && (detail.soapNote.subjective || detail.soapNote.objective || detail.soapNote.assessment || detail.soapNote.plan) && (
+                            <div className="soap-section">
+                                <h3>SOAP Note</h3>
+                                {detail.soapNote.subjective && <div className="soap-field"><strong>S:</strong> {detail.soapNote.subjective}</div>}
+                                {detail.soapNote.objective && <div className="soap-field"><strong>O:</strong> {detail.soapNote.objective}</div>}
+                                {detail.soapNote.assessment && <div className="soap-field"><strong>A:</strong> {detail.soapNote.assessment}</div>}
+                                {detail.soapNote.plan && <div className="soap-field"><strong>P:</strong> {detail.soapNote.plan}</div>}
+                            </div>
+                        )}
+                        <div className="modal-actions">
+                            <button className="btn-cancel" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
+                        </div>
+```
+with:
+```tsx
+                        {/* Drawn whether or not the note has text, with a way into
+                            its editor on the patient file. (TJ-065) */}
+                        <div className="soap-section">
+                            <h3>SOAP Note</h3>
+                            {detail.soapNote && (detail.soapNote.subjective || detail.soapNote.objective || detail.soapNote.assessment || detail.soapNote.plan) ? (
+                                <>
+                                    {detail.soapNote.subjective && <div className="soap-field"><strong>S:</strong> {detail.soapNote.subjective}</div>}
+                                    {detail.soapNote.objective && <div className="soap-field"><strong>O:</strong> {detail.soapNote.objective}</div>}
+                                    {detail.soapNote.assessment && <div className="soap-field"><strong>A:</strong> {detail.soapNote.assessment}</div>}
+                                    {detail.soapNote.plan && <div className="soap-field"><strong>P:</strong> {detail.soapNote.plan}</div>}
+                                </>
+                            ) : (
+                                <div className="soap-field">No SOAP note yet.</div>
+                            )}
+                        </div>
+                        <div className="modal-actions">
+                            <button className="btn-cancel" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
+                            <button className="btn-save" onClick={() => router.push(`/admin/patients/${detail.patient.id}?soap=${detail.id}`)}>Edit SOAP Note</button>
+                        </div>
+```
+
+**Step 12 — keep line breaks in SOAP text.** In `src/app/admin/page.tsx`, replace:
+```tsx
+                .soap-field { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-bottom: 0.3rem; }
+```
+with:
+```tsx
+                .soap-field { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-bottom: 0.3rem; white-space: pre-wrap; }
+```
+
+**Verification** (run from the repo root on `feat/admin-soap-notes`):
+- `npx tsc --noEmit --incremental false` exits 0.
+- `npm run build` exits 0. This checkout has no `.env`. Without one, page-data collection fails on `supabaseUrl is required`, which is not this task. Export these placeholders first, in the same shell:
+  ```
+  export NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder DATABASE_URL=postgresql://u:p@127.0.0.1:5432/db AUTH_SECRET=build-placeholder
+  ```
+- `git diff --stat master` lists exactly the two Scope files: **163 insertions(+), 13 deletions(-)**.
+- `npx eslint src/app/admin/page.tsx "src/app/admin/patients/[id]/page.tsx"` reports **6 problems**, 4 in the first file and 2 in the second, every one `react-hooks/set-state-in-effect`. That is the same as `master`.
+- These counts hold:
+  - `grep -c "TJ-065" "src/app/admin/patients/[id]/page.tsx"` returns **3**;
+  - `grep -c "TJ-065" src/app/admin/page.tsx` returns **1**;
+  - `grep -c "soapFormFrom" "src/app/admin/patients/[id]/page.tsx"` returns **5**;
+  - `grep -c "confirmDiscardSoap" "src/app/admin/patients/[id]/page.tsx"` returns **2**;
+  - `grep -c "?soap=" src/app/admin/page.tsx` returns **1**.
+- **Runtime checks are the planner's**, against a local database. Do not start a dev or production server.
+
+**Done when:**
+- [ ] Only the two Scope files changed, and the diff matches the steps exactly.
+- [ ] `tsc` and `npm run build` exit 0, and the lint counts match `master`.
+- [ ] As admin, the patient file's Sessions tab has a SOAP Note column: "View / Edit" on a session with a note, and "Add" on one without.
+- [ ] The modal shows the note, saves it, and the saved text survives a reload. The History tab then shows "SOAP note updated" by the admin.
+- [ ] Unsaved Clinical Assessment text survives a SOAP save.
+- [ ] Closing the modal with unsaved SOAP text asks first.
+- [ ] Dashboard → Session Details always shows the SOAP section. "Edit SOAP Note" opens the patient file with that session's note open, and it does not reopen after Edit Info.
+- [ ] The modal is usable at 320px and at desktop width.
+- [ ] Unchanged: a doctor's own SOAP editor on `/doctor/session/[id]`, and the secretary patient page, which shows no SOAP.
