@@ -460,17 +460,24 @@ export default function AdminDashboard() {
                                 </div>
                             )}
                         </div>
-                        {detail.soapNote && (detail.soapNote.subjective || detail.soapNote.objective || detail.soapNote.assessment || detail.soapNote.plan) && (
-                            <div className="soap-section">
-                                <h3>SOAP Note</h3>
-                                {detail.soapNote.subjective && <div className="soap-field"><strong>S:</strong> {detail.soapNote.subjective}</div>}
-                                {detail.soapNote.objective && <div className="soap-field"><strong>O:</strong> {detail.soapNote.objective}</div>}
-                                {detail.soapNote.assessment && <div className="soap-field"><strong>A:</strong> {detail.soapNote.assessment}</div>}
-                                {detail.soapNote.plan && <div className="soap-field"><strong>P:</strong> {detail.soapNote.plan}</div>}
-                            </div>
-                        )}
+                        {/* Drawn whether or not the note has text, with a way into
+                            its editor on the patient file. (TJ-065) */}
+                        <div className="soap-section">
+                            <h3>SOAP Note</h3>
+                            {detail.soapNote && (detail.soapNote.subjective || detail.soapNote.objective || detail.soapNote.assessment || detail.soapNote.plan) ? (
+                                <>
+                                    {detail.soapNote.subjective && <div className="soap-field"><strong>S:</strong> {detail.soapNote.subjective}</div>}
+                                    {detail.soapNote.objective && <div className="soap-field"><strong>O:</strong> {detail.soapNote.objective}</div>}
+                                    {detail.soapNote.assessment && <div className="soap-field"><strong>A:</strong> {detail.soapNote.assessment}</div>}
+                                    {detail.soapNote.plan && <div className="soap-field"><strong>P:</strong> {detail.soapNote.plan}</div>}
+                                </>
+                            ) : (
+                                <div className="soap-field">No SOAP note yet.</div>
+                            )}
+                        </div>
                         <div className="modal-actions">
                             <button className="btn-cancel" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
+                            <button className="btn-save" onClick={() => router.push(`/admin/patients/${detail.patient.id}?soap=${detail.id}`)}>Edit SOAP Note</button>
                         </div>
                     </div>
                 </div>
@@ -608,7 +615,7 @@ export default function AdminDashboard() {
                 .prev-note { background: rgba(255,255,255,0.03); padding: 0.5rem 0.65rem; border-radius: var(--radius-sm, 2px); border-left: 2px solid rgba(255,255,255,0.1); }
                 .soap-section { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
                 .soap-section h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
-                .soap-field { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-bottom: 0.3rem; }
+                .soap-field { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-bottom: 0.3rem; white-space: pre-wrap; }
 
                 @media (max-width: 768px) {
                     .calendar-col { width: 100%; }
