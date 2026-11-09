@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, use } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, use, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { clinicalFileUrl } from "@/lib/storageUrl";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 
@@ -63,6 +63,14 @@ interface Reservation {
     doctor: { id: string; name: string; color: string | null } | null;
     doctorNameSnapshot: string | null;
     doctorColorSnapshot: string | null;
+    soapNote: SoapNote | null;
+}
+
+interface SoapNote {
+    subjective: string | null;
+    objective: string | null;
+    assessment: string | null;
+    plan: string | null;
 }
 
 const ACTION_LABELS: Record<string, string> = {
@@ -95,6 +103,24 @@ const INTAKE_FIELDS = [
     { key: "nextSessionTreatment", label: "Next Session Treatment", type: "textarea" },
 ];
 
+const SOAP_FIELDS = [
+    { key: "subjective", label: "Subjective" },
+    { key: "objective", label: "Objective" },
+    { key: "assessment", label: "Assessment" },
+    { key: "plan", label: "Plan" },
+] as const;
+
+type SoapForm = Record<(typeof SOAP_FIELDS)[number]["key"], string>;
+
+const soapFormFrom = (n: SoapNote | null): SoapForm => ({
+    subjective: n?.subjective ?? "",
+    objective: n?.objective ?? "",
+    assessment: n?.assessment ?? "",
+    plan: n?.plan ?? "",
+});
+
+const hasSoap = (n: SoapNote | null) => !!n && SOAP_FIELDS.some((f) => !!n[f.key]?.trim());
+
 export default function PatientProfilePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
@@ -119,6 +145,21 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     const intakeDirty = JSON.stringify(intakeForm) !== intakeBaseline;
     const { confirmDiscard } = useUnsavedChanges(intakeDirty);
 
+    // One session's SOAP note at a time, in a modal. Opened from the Sessions
+    // tab, or from the dashboard's Session Details via ?soap=<reservationId>.
+    // The API has always let an admin read and write every session's note
+    // (canAccessClinical, canWriteSession); this page never drew it. (TJ-065)
+    const soapParam = useSearchParams().get("soap");
+    const soapLinkHandled = useRef(false);
+    const [soapSession, setSoapSession] = useState<Reservation | null>(null);
+    const [soapForm, setSoapForm] = useState<SoapForm>(soapFormFrom(null));
+    const [soapBaseline, setSoapBaseline] = useState<string>(JSON.stringify(soapFormFrom(null)));
+    const [savingSoap, setSavingSoap] = useState(false);
+    const [soapSaved, setSoapSaved] = useState(false);
+    const [soapError, setSoapError] = useState("");
+    const soapDirty = soapSession !== null && JSON.stringify(soapForm) !== soapBaseline;
+    const { confirmDiscard: confirmDiscardSoap } = useUnsavedChanges(soapDirty);
+
     const fetchPatient = useCallback(async () => {
         const res = await fetch(`/api/patients/${id}`);
         if (!res.ok) { router.push("/admin/patients"); return; }
@@ -138,8 +179,23 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
         }
         setIntakeForm(intake);
         setIntakeBaseline(JSON.stringify(intake));
+
+        // Arrived from the dashboard's Session Details: open that session's
+        // SOAP note, once. A later refetch (after Edit Info, an upload or a
+        // file removal) must not reopen it. (TJ-065)
+        if (soapParam && !soapLinkHandled.current) {
+            soapLinkHandled.current = true;
+            const target = (data.reservations as Reservation[]).find((r) => String(r.id) === soapParam);
+            if (target) {
+                const form = soapFormFrom(target.soapNote);
+                setActiveTab("sessions");
+                setSoapSession(target);
+                setSoapForm(form);
+                setSoapBaseline(JSON.stringify(form));
+            }
+        }
         setLoading(false);
-    }, [id, router]);
+    }, [id, router, soapParam]);
 
     useEffect(() => { fetchPatient(); }, [fetchPatient]);
 
@@ -179,6 +235,52 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
         setIntakeMsg("Assessment saved!");
         setTimeout(() => setIntakeMsg(""), 2500);
         fetchPatient();
+    };
+
+    const openSoap = (r: Reservation) => {
+        const form = soapFormFrom(r.soapNote);
+        setSoapSession(r);
+        setSoapForm(form);
+        setSoapBaseline(JSON.stringify(form));
+        setSoapError("");
+        setSoapSaved(false);
+    };
+
+    const closeSoap = () => {
+        if (!confirmDiscardSoap("You have unsaved SOAP note text. Close without saving?")) return;
+        setSoapSession(null);
+        setSoapError("");
+    };
+
+    const saveSoap = async () => {
+        if (!soapSession) return;
+        const sent = soapForm;
+        setSavingSoap(true);
+        setSoapError("");
+        const res = await fetch(`/api/reservations/${soapSession.id}/soap`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(sent),
+        });
+        setSavingSoap(false);
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setSoapError(data.error || "Could not save the SOAP note.");
+            return;
+        }
+        const saved: SoapNote = await res.json();
+        // Patch the one row rather than refetch: fetchPatient() repopulates
+        // the Clinical Assessment form and would discard unsaved edits there.
+        setPatient((p) => p && {
+            ...p,
+            reservations: p.reservations.map((r) => (r.id === soapSession.id ? { ...r, soapNote: saved } : r)),
+        });
+        setSoapBaseline(JSON.stringify(sent));
+        // The save wrote an audit entry; drop the cached log so the History
+        // tab fetches it again on its next visit.
+        setAuditLog([]);
+        setSoapSaved(true);
+        setTimeout(() => setSoapSaved(false), 2000);
     };
 
     const handleArchiveToggle = async () => {
@@ -337,6 +439,39 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 </div>
             )}
 
+            {/* SOAP Note Modal (TJ-065) */}
+            {soapSession && (
+                <div className="modal-overlay" onClick={closeSoap}>
+                    <div className="modal-card modal-wide" onClick={(e) => e.stopPropagation()}>
+                        <h2>SOAP Note</h2>
+                        <p className="modal-sub">
+                            {formatDate(soapSession.sessionDate)} · {soapSession.doctor?.name ?? soapSession.doctorNameSnapshot ?? "—"}
+                        </p>
+                        {soapError && <div className="error-msg" role="alert">{soapError}</div>}
+                        <div className="form-stack">
+                            {SOAP_FIELDS.map((f) => (
+                                <div className="form-group" key={f.key}>
+                                    <label htmlFor={`soap-${f.key}`}>{f.label}</label>
+                                    <textarea
+                                        id={`soap-${f.key}`}
+                                        rows={3}
+                                        value={soapForm[f.key]}
+                                        onChange={(e) => setSoapForm({ ...soapForm, [f.key]: e.target.value })}
+                                        placeholder={`Enter ${f.key}…`}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="modal-actions">
+                            <button className="btn-cancel" onClick={closeSoap}>Close</button>
+                            <button className="btn-save" onClick={saveSoap} disabled={savingSoap}>
+                                {savingSoap ? "Saving…" : soapSaved ? "✓ Saved" : "Save SOAP Note"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Tabs */}
             <div className="tabs">
                 <button className={`tab ${activeTab === "intake" ? "active" : ""}`} onClick={() => setActiveTab("intake")}>Clinical Assessment</button>
@@ -391,6 +526,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                                     <th>Status</th>
                                     <th>Payment</th>
                                     <th>Injury</th>
+                                    <th>SOAP Note</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -408,6 +544,11 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                                         </td>
                                         <td>{r.paymentType || "—"}</td>
                                         <td>{r.injuryPlace || "—"}</td>
+                                        <td>
+                                            <button type="button" className="btn-sm btn-edit" onClick={() => openSoap(r)}>
+                                                {hasSoap(r.soapNote) ? "View / Edit" : "Add"}
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -630,6 +771,8 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     max-height: 85vh; overflow-y: auto;
                 }
                 .modal-card h2 { font-size: 1.2rem; margin-bottom: 1.25rem; font-weight: 600; }
+                .modal-wide { max-width: 640px; }
+                .modal-sub { margin: -0.9rem 0 1.25rem; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
                 .form-stack { display: flex; flex-direction: column; gap: 0.9rem; }
                 .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
                 .btn-cancel {
