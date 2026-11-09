@@ -130,7 +130,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-064 | Doctors see a day's sessions only once that day opens at 09:30 | SPLIT — **complete**: both halves merged to `master` on 2026-10-26 (09:30, user decision); pushed and **deployed 2026-10-26 ~15:55 (Amman)** as `233e0ea`, Vercel `success`; **live-checked by the user 2026-10-26** | — |
 | TJ-064a | Server: send a doctor no session on a day that has not opened | DONE — task commit `8654e9b`, merged to `master` as `55cc269` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release` |
 | TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release-notice` |
-| TJ-065 | Admin: see and edit every session's SOAP note | READY — passed 2026-11-09; prototyped, 12/12 anchors exact | `feat/admin-soap-notes` |
+| TJ-065 | Admin: see and edit every session's SOAP note | DONE — task commit `840e309`, merged to `master` as `cc0c1d3` with `--no-ff` on 2026-11-09; planner-verified, runtime- and visually reviewed against a local database (44/44); pushed at the user's request; **live check owed** | `feat/admin-soap-notes` |
 
 ---
 
@@ -12851,7 +12851,43 @@ with:
 
 ### TJ-065 — Admin: see and edit every session's SOAP note
 
-- **Status:** READY. Passed 2026-11-09.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `840e309` on `feat/admin-soap-notes`, cut from `6433ce9`. Planner-verified, runtime- and visually reviewed, and merged to `master` with `--no-ff` as `cc0c1d3` on 2026-11-09. The tree of `cc0c1d3` is identical to that of `840e309`. Pushed to `origin/master` at the user's request. **Live check owed.**
+
+**Planner verification:** 2026-11-09.
+- **The diff is the tested prototype, exactly.** Both Scope files on the branch are byte-identical to the prototype, and nothing else changed. `tasks.md` is untouched on the branch.
+- **Gates, re-run by the planner in the real checkout:**
+  - `tsc` exits **0**.
+  - `npm run build` (Turbopack) exits **0**; `/admin/patients/[id]` is `ƒ`.
+  - Lint is **4 → 4** and **2 → 2**, all `react-hooks/set-state-in-effect`.
+- **Runtime and visual review: PASSED, 44/44.** Run against a `next start` of that build on port 3100. The served HTML carried its `BUILD_ID` (`zIr5sEIOwza5S3YJJeLpj`), so the bytes reviewed were the build under test.
+  - **Harness:** a throwaway local Postgres 16 with `ssl = on` (recipe in Notes for the planner), with `prisma db push` and fixtures: one user of each role; one patient with an intake; and three sessions, one with a multi-line note, one without, and one whose doctor was hard-deleted (`doctorId` null).
+  - **Sign-in:** real credential sign-ins over `/api/auth/callback/credentials`. Chromium ran with `timezoneId: "Asia/Amman"`.
+- **What was proven, as admin:**
+  - **The Sessions column:** it is drawn, reading "View / Edit" on a session with a note and "Add" on one without.
+  - **Loading:** exactly one `GET /api/patients/1` per load, so there is no fetch loop.
+  - **The modal:** shows the existing note with its line break intact.
+  - **Saving:** returns 200; the text lands in `SOAPNote`, and the button reads "✓ Saved". The save does **not** refetch the patient, and unsaved Clinical Assessment text survived it. History then lists "SOAP note updated — Review Admin (ADMIN)".
+  - **Hard-deleted doctor:** a session whose doctor was deleted saves (200), and its modal shows the snapshot name.
+  - **The guards:**
+    - Close with unsaved text asks "You have unsaved SOAP note text. Close without saving?". Dismissing keeps the modal open; a backdrop click asks too; the discarded text is not stored.
+    - A failed save shows the server's `error` and keeps the text unsaved.
+- **What was proven on the dashboard:**
+  - Session Details always draws the SOAP section, with "No SOAP note yet." when it is empty.
+  - "Edit SOAP Note" lands on `/admin/patients/1?soap=3` with the Sessions tab selected and that note open.
+  - The note does **not** reopen after Edit Info's refetch.
+  - A note with a line break renders on two lines (`white-space: pre-wrap`).
+  - No console errors. The only one seen came from the review's own simulated 500, and a re-run without it logged none.
+- **Widths:**
+  - **320px:** the modal fits (x=16, w=288) with no page-level horizontal scroll, and Save is reachable inside it. The Sessions table scrolls sideways inside its card, as it already did before.
+  - **2560px:** the modal is centred at 640px.
+- **Untouched roles:**
+  - The secretary's API response carries no `soapNote`, their Sessions tab shows no SOAP column, and `/admin/patients/1` sends them to `/unauthorized`.
+  - The doctor's own `/doctor/session/[id]` shows the admin's text and still saves (200).
+- **Accepted behaviour:** reloading a URL that still carries `?soap=` reopens that note. The link is handled once per page load, not once ever.
+- **Live check owed.** No agent can sign in to production. As admin on the live site:
+  1. Open a patient, then Sessions → View / Edit; change a line and save.
+  2. Reload and confirm the change stuck.
+  3. From the dashboard, open a card's ⋮ → Session Details → Edit SOAP Note.
 - **Branch:** `feat/admin-soap-notes`, cut from current `master` (`ac6f071` plus this task's `tasks.md` commit).
 - **Why:** User request, 2026-11-09: the admin should be able to see SOAP notes and edit them. Today an admin can do neither in practice:
   - **The patient file never draws them.** `GET /api/patients/[id]` already sends every session's `soapNote` to an admin, but the Sessions tab of `src/app/admin/patients/[id]/page.tsx` shows only Date, Doctor, Status, Payment and Injury. Its `Reservation` interface does not even declare the field.
