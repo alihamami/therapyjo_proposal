@@ -131,7 +131,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-064a | Server: send a doctor no session on a day that has not opened | DONE — task commit `8654e9b`, merged to `master` as `55cc269` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release` |
 | TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release-notice` |
 | TJ-065 | Admin: see and edit every session's SOAP note | DONE — task commit `840e309`, merged to `master` as `cc0c1d3` with `--no-ff` on 2026-11-09; planner-verified, runtime- and visually reviewed against a local database (44/44); pushed at the user's request; **live check owed** | `feat/admin-soap-notes` |
-| TJ-066 | Reviews: refresh from Google once a day, not hourly | READY — **hold the push** until billing is active on the Google Cloud project and the live reviews return | `feat/reviews-daily-refresh` |
+| TJ-066 | Reviews: refresh from Google once a day, not hourly | DONE — task commit `964e7c2`, merged to `master` as `d1e7218` with `--no-ff` on 2026-11-13; planner-verified; pushed after billing was restored; Console daily cap set to 30 | `feat/reviews-daily-refresh` |
 
 ---
 
@@ -13259,7 +13259,14 @@ with:
 
 ### TJ-066 — Reviews: refresh from Google once a day, not hourly
 
-- **Status:** READY. **Hold the push** until billing is active on the Google Cloud project and the live `/api/public/reviews` returns `"available":true`. See *Deploy order* below.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `964e7c2` on `feat/reviews-daily-refresh`, cut from `617c4e4`. Planner-verified and merged to `master` with `--no-ff` as `d1e7218` on 2026-11-13. The tree of `d1e7218` is identical to that of `964e7c2`. Pushed to `origin/master` once billing was restored.
+
+**Planner verification:** 2026-11-13.
+- **The diff is the spec, exactly.** One file, 6 insertions and 4 deletions, and both anchors replaced as written. `tasks.md` is untouched on the branch.
+- **Gates, re-run by the planner on the merged `master`:** `tsc` exits **0**. `npm run build` exits **0**, and the route table reads `○ /api/public/reviews  1d  1y` (it read `1h` before). The build log has no `[reviews]` warning, so the build-time Places call succeeded.
+- **Billing restored first, as the hold required.** The billing account (`My Billing Account`, 01E793-04399C-2173CB) was **closed**. The Visa on file had been declined, so the account was "not in good standing" and could not be reopened. The user fixed the card on 2026-11-13. The planner then upgraded the account to a full paid account in the Console with the card already on file. Google's dialog said: pay only for what you use, billing starts once the trial ends. The account then showed as open with `therapyjo-web` linked. A direct Places call with an IDs-only field mask (the free Essentials IDs Only SKU) then returned **HTTP 200**.
+- **Deviation from the hold, on purpose.** The hold said to push only once the live endpoint returned `"available":true`. Its purpose was to make sure Places worked before a build cached the result. The direct 200 proved that, and the push itself makes the fresh build that replaces the cached `available:false`. Waiting for the old deployment's hourly refresh would have added nothing.
+- **Paired Console step, done:** in Places API (New) → Quotas, **`GetPlaceRequest per day` was lowered from 125,000 to 30** (Google's ">10% reduction" confirmation accepted). 30 a day × 31 days = 930, under the 1,000 free Enterprise + Atmosphere calls a month, so this SKU cannot bill. The cap counts every Place Details call: the daily refresh, one per build (production, preview, and local `npm run build`), and any manual probe. If a heavy deploy day reaches 30, the section falls back to its honest shell until Google's daily reset (midnight Pacific) and the next refresh. Raise the cap, not the refresh rate, if that ever bites.
 - **Branch:** `feat/reviews-daily-refresh`, cut from current `master`.
 - **Why:** The $300 free trial on Google Cloud project `therapyjo-web` (set up for TJ-004 on 2026-08-14) ended on 2026-11-12. Since then:
   - Places answers `403 PERMISSION_DENIED`, checked directly with the `.env` key on 2026-11-13.
@@ -13321,7 +13328,7 @@ with:
 - No runtime check, per the standing waiver. The live check follows the push.
 
 **Done when:**
-- [ ] Both literals read `86400`, and the comment says daily.
-- [ ] `tsc` and `npm run build` exit 0.
-- [ ] Pushed only after the live endpoint returns `"available":true`.
-- [ ] Live, after the push: `/api/public/reviews` still returns `"available":true`.
+- [x] Both literals read `86400`, and the comment says daily.
+- [x] `tsc` and `npm run build` exit 0.
+- [x] Pushed only once Places worked again. That was proven by a direct HTTP 200, not by the live endpoint; see the deviation note under Planner verification.
+- [x] Live, after the push (`d1e7218`, Vercel `success` about 60s after the push, 2026-11-13 ~20:04 UTC): `/api/public/reviews` returns `"available":true`, rating **4.9** from **377** reviews, 5 quotes, `X-Vercel-Cache: PRERENDER` then `HIT`.
