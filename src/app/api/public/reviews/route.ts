@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 
 // GET /api/public/reviews — real Google reviews for the public site.
 // Server-only: GOOGLE_PLACES_API_KEY must never reach the browser.
-// Revalidated hourly. Place Details calls that include `reviews` bill in
-// Google's most expensive Places tier, so this cache is a cost control.
-export const revalidate = 3600;
+// Revalidated daily. Place Details calls that include `reviews` bill as
+// Place Details Enterprise + Atmosphere, which has 1,000 free calls a month.
+// Daily is ~30 calls a month plus one per build; hourly was ~720. This cache
+// is a cost control: do not shorten it without checking the bill.
+export const revalidate = 86400;
 
 const MAX_QUOTE_CHARS = 320;
 
@@ -53,7 +55,7 @@ export async function GET() {
                 "X-Goog-Api-Key": key,
                 "X-Goog-FieldMask": "rating,userRatingCount,googleMapsUri,reviews",
             },
-            next: { revalidate: 3600 },
+            next: { revalidate: 86400 },
         });
 
         if (!res.ok) {
