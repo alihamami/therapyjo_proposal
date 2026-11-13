@@ -131,6 +131,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-064a | Server: send a doctor no session on a day that has not opened | DONE — task commit `8654e9b`, merged to `master` as `55cc269` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release` |
 | TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release-notice` |
 | TJ-065 | Admin: see and edit every session's SOAP note | DONE — task commit `840e309`, merged to `master` as `cc0c1d3` with `--no-ff` on 2026-11-09; planner-verified, runtime- and visually reviewed against a local database (44/44); pushed at the user's request; **live check owed** | `feat/admin-soap-notes` |
+| TJ-066 | Reviews: refresh from Google once a day, not hourly | READY — **hold the push** until billing is active on the Google Cloud project and the live reviews return | `feat/reviews-daily-refresh` |
 
 ---
 
@@ -13253,3 +13254,74 @@ with:
 - [ ] Dashboard → Session Details always shows the SOAP section. "Edit SOAP Note" opens the patient file with that session's note open, and it does not reopen after Edit Info.
 - [ ] The modal is usable at 320px and at desktop width.
 - [ ] Unchanged: a doctor's own SOAP editor on `/doctor/session/[id]`, and the secretary patient page, which shows no SOAP.
+
+---
+
+### TJ-066 — Reviews: refresh from Google once a day, not hourly
+
+- **Status:** READY. **Hold the push** until billing is active on the Google Cloud project and the live `/api/public/reviews` returns `"available":true`. See *Deploy order* below.
+- **Branch:** `feat/reviews-daily-refresh`, cut from current `master`.
+- **Why:** The $300 free trial on Google Cloud project `therapyjo-web` (set up for TJ-004 on 2026-08-14) ended on 2026-11-12. Since then:
+  - Places answers `403 PERMISSION_DENIED`, checked directly with the `.env` key on 2026-11-13.
+  - The live `/api/public/reviews` serves `{"available":false}` (`X-Vercel-Cache: HIT`), so the section shows only its heading and the Google button.
+  - On 2026-11-13 the user chose to upgrade to a paid billing account. A Place Details call that asks for `reviews` bills as **Place Details Enterprise + Atmosphere**: 1,000 free calls a month, then about $25 per 1,000. These prices come from third-party pages; Google's own price list is authoritative.
+  - Hourly revalidation costs about 720 calls a month plus one per build, production and preview alike. That sits close to the free cap. Daily revalidation costs about 30 plus builds.
+  - Google returns at most five reviews, and they rarely change within a day.
+
+**Planning pass:** 2026-11-13, on `master` at `abbfaed`. Read `src/app/api/public/reviews/route.ts` in full (100 lines), plus TJ-004's record: its cost note ("Hourly caching is a cost control") and its rule that the route must never throw.
+
+Confirmed:
+- **`3600` appears exactly twice in `src/`** outside generated code, both in this file: `export const revalidate = 3600;` (line 7) and `next: { revalidate: 3600 },` (line 56). Each anchor below occurs exactly once, checked by machine.
+- **The comment on lines 5–6 says "Revalidated hourly".** It must change with the literal, or it lies.
+- **Route segment config has to be a static literal** for Next (16.1.6) to read it, so the value is written `86400`, not `60 * 60 * 24`.
+
+Accepted trade-off, decided at the pass:
+- **A failure is now cached for up to a day.** Every failure path returns `{ available: false }` with a 200. TJ-004 did that on purpose, because a throw during the build-time prerender would fail the build. ISR caches that response like any other. So if Google fails, or the Console's daily cap is hit, at the moment of a refresh, the reviews stay hidden until the next refresh, up to 24 hours later. The fallback is honest (the heading and the Google button), and a redeploy refreshes it at once. That is not worth extra machinery.
+
+**Deploy order, and the reason for the hold.** Every build prerenders this route and caches the result. Pushed while billing is still off, the build would cache `available:false` for 24 hours, and the reviews would then stay hidden for up to a day after billing comes back. So merge locally whenever you like, but push only once the live endpoint shows `"available":true`. If it ships early anyway, a redeploy after billing is active fixes it.
+
+**Paired Console step, done by the planner and not the executor:** a daily request cap on Places API (New) in project `therapyjo-web`, so the bill cannot run past the free tier. It is recorded here once it is set.
+
+**Scope — touch only this:**
+- `src/app/api/public/reviews/route.ts`
+
+**Do not touch:** `src/app/components/Reviews.tsx`, the field mask, every error path, `MAX_QUOTE_CHARS`, `.env*`, `tasks.md`.
+
+**Instructions.** The file is LF in the index and CRLF in this Windows checkout's working tree; keep whatever it has. Make two exact string replacements and change nothing else.
+
+**Step 1.** Replace:
+```ts
+// Revalidated hourly. Place Details calls that include `reviews` bill in
+// Google's most expensive Places tier, so this cache is a cost control.
+export const revalidate = 3600;
+```
+with:
+```ts
+// Revalidated daily. Place Details calls that include `reviews` bill as
+// Place Details Enterprise + Atmosphere, which has 1,000 free calls a month.
+// Daily is ~30 calls a month plus one per build; hourly was ~720. This cache
+// is a cost control: do not shorten it without checking the bill.
+export const revalidate = 86400;
+```
+
+**Step 2.** Replace:
+```ts
+            next: { revalidate: 3600 },
+```
+with:
+```ts
+            next: { revalidate: 86400 },
+```
+
+**Verification:**
+- `grep -c "3600" src/app/api/public/reviews/route.ts` prints `0`, and `grep -c "86400" src/app/api/public/reviews/route.ts` prints `2`.
+- `git diff --stat` shows exactly 1 file changed.
+- `npx tsc --noEmit --incremental false` exits 0.
+- `npm run build` exits 0, and its route table gives `/api/public/reviews` a revalidate of `1d` (it reads `1h` today). The build calls Places with the local `.env` key. While billing is off, that logs `[reviews] Places API returned 403`. This is expected and must not fail the build.
+- No runtime check, per the standing waiver. The live check follows the push.
+
+**Done when:**
+- [ ] Both literals read `86400`, and the comment says daily.
+- [ ] `tsc` and `npm run build` exit 0.
+- [ ] Pushed only after the live endpoint returns `"available":true`.
+- [ ] Live, after the push: `/api/public/reviews` still returns `"available":true`.
