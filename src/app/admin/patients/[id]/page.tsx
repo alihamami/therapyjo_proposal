@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, use, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clinicalFileUrl } from "@/lib/storageUrl";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
+import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 
 interface PatientData {
     id: number;
@@ -16,7 +17,6 @@ interface PatientData {
     createdAt: string;
     updatedAt: string;
     updatedBy: { name: string; role: string } | null;
-    intake: Intake | null;
     files: PatientFile[];
     reservations: Reservation[];
 }
@@ -27,22 +27,6 @@ interface AuditEntry {
     summary: string | null;
     createdAt: string;
     user: { name: string; role: string } | null;
-}
-
-interface Intake {
-    id: number;
-    injuryPlace: string | null;
-    patientSince: string | null;
-    medicalHistory: string | null;
-    assessment: string | null;
-    aggravators: string | null;
-    relievers: string | null;
-    diagnosis: string | null;
-    treatmentPlan: string | null;
-    recommendedSessions: number | null;
-    clinicExercises: string | null;
-    homeExercises: string | null;
-    nextSessionTreatment: string | null;
 }
 
 interface PatientFile {
@@ -76,6 +60,7 @@ interface SoapNote {
 const ACTION_LABELS: Record<string, string> = {
     DEMOGRAPHICS_UPDATED: "Info updated",
     CLINICAL_INTAKE_UPDATED: "Clinical assessment updated",
+    CLINICAL_INTAKE_ADDED: "Clinical assessment added",
     FILE_ADDED: "File added",
     FILE_REMOVED: "File removed",
     ARCHIVED: "Archived",
@@ -87,21 +72,6 @@ const ACTION_LABELS: Record<string, string> = {
     SESSION_DELETED: "Session deleted",
     SOAP_NOTE_UPDATED: "SOAP note updated",
 };
-
-const INTAKE_FIELDS = [
-    { key: "injuryPlace", label: "Injury Place", type: "text" },
-    { key: "patientSince", label: "Patient Since", type: "text" },
-    { key: "medicalHistory", label: "Medical History", type: "textarea" },
-    { key: "assessment", label: "Assessment", type: "textarea" },
-    { key: "aggravators", label: "Pain Aggravators", type: "textarea" },
-    { key: "relievers", label: "Pain Relievers", type: "textarea" },
-    { key: "diagnosis", label: "Diagnosis", type: "textarea" },
-    { key: "treatmentPlan", label: "Treatment Plan", type: "textarea" },
-    { key: "recommendedSessions", label: "Recommended Sessions", type: "number" },
-    { key: "clinicExercises", label: "Clinic Exercises", type: "textarea" },
-    { key: "homeExercises", label: "Home Exercises", type: "textarea" },
-    { key: "nextSessionTreatment", label: "Next Session Treatment", type: "textarea" },
-];
 
 const SOAP_FIELDS = [
     { key: "subjective", label: "Subjective" },
@@ -129,9 +99,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     const [editingInfo, setEditingInfo] = useState(false);
     const [infoForm, setInfoForm] = useState({ name: "", phone1: "", phone2: "" });
     const [savingInfo, setSavingInfo] = useState(false);
-    const [intakeForm, setIntakeForm] = useState<Record<string, string>>({});
-    const [savingIntake, setSavingIntake] = useState(false);
-    const [intakeMsg, setIntakeMsg] = useState("");
     const [activeTab, setActiveTab] = useState<"intake" | "sessions" | "files" | "history">("intake");
     const [uploadingName, setUploadingName] = useState("");
     const [removingId, setRemovingId] = useState<number | null>(null);
@@ -139,10 +106,10 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     const [auditLog, setAuditLog] = useState<AuditEntry[]>([]);
     const [auditLoading, setAuditLoading] = useState(false);
 
-    // The intake form as the server last gave it to us. Anything typed since
-    // makes the form dirty, and dirty is what the guard below acts on.
-    const [intakeBaseline, setIntakeBaseline] = useState<string>("");
-    const intakeDirty = JSON.stringify(intakeForm) !== intakeBaseline;
+    // Whether the Clinical Assessment has unsaved edits. The form lives in
+    // <ClinicalAssessment>, which reports here; the guard below acts on it.
+    // (TJ-067b)
+    const [intakeDirty, setIntakeDirty] = useState(false);
     const { confirmDiscard } = useUnsavedChanges(intakeDirty);
 
     // One session's SOAP note at a time, in a modal. Opened from the Sessions
@@ -166,19 +133,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
         const data = await res.json();
         setPatient(data);
         setInfoForm({ name: data.name, phone1: data.phone1, phone2: data.phone2 || "" });
-
-        // Populate intake form
-        const intake: Record<string, string> = {};
-        for (const f of INTAKE_FIELDS) {
-            const val = data.intake?.[f.key];
-            if (f.type === "date" && val) {
-                intake[f.key] = new Date(val).toISOString().split("T")[0];
-            } else {
-                intake[f.key] = val != null ? String(val) : "";
-            }
-        }
-        setIntakeForm(intake);
-        setIntakeBaseline(JSON.stringify(intake));
 
         // Arrived from the dashboard's Session Details: open that session's
         // SOAP note, once. A later refetch (after Edit Info, an upload or a
@@ -223,20 +177,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
         fetchPatient();
     };
 
-    const saveIntake = async () => {
-        setSavingIntake(true);
-        setIntakeMsg("");
-        await fetch(`/api/patients/${id}/intake`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(intakeForm),
-        });
-        setSavingIntake(false);
-        setIntakeMsg("Assessment saved!");
-        setTimeout(() => setIntakeMsg(""), 2500);
-        fetchPatient();
-    };
-
     const openSoap = (r: Reservation) => {
         const form = soapFormFrom(r.soapNote);
         setSoapSession(r);
@@ -269,8 +209,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
             return;
         }
         const saved: SoapNote = await res.json();
-        // Patch the one row rather than refetch: fetchPatient() repopulates
-        // the Clinical Assessment form and would discard unsaved edits there.
+        // Patch the one row rather than refetch the whole patient.
         setPatient((p) => p && {
             ...p,
             reservations: p.reservations.map((r) => (r.id === soapSession.id ? { ...r, soapNote: saved } : r)),
@@ -297,10 +236,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        if (!confirmDiscard("Uploading will reload this patient and discard your unsaved Clinical Assessment edits. Continue?")) {
-            e.target.value = "";
-            return;
-        }
         e.target.value = "";   // let the same file be picked again after a failure
         setFileError("");
         setUploadingName(file.name);
@@ -339,7 +274,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     };
 
     const handleRemoveFile = async (fileId: number) => {
-        if (!confirmDiscard("Removing this file will reload this patient and discard your unsaved Clinical Assessment edits. Continue?")) return;
         setFileError("");
         setRemovingId(fileId);
         // res.ok is the only success signal. The response also carries
@@ -480,37 +414,15 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 <button className={`tab ${activeTab === "history" ? "active" : ""}`} onClick={() => setActiveTab("history")}>History</button>
             </div>
 
-            {/* Clinical Intake Tab */}
-            {activeTab === "intake" && (
-                <div className="section-card">
-                    {intakeMsg && <div className="success-msg">{intakeMsg}</div>}
-                    <div className="intake-grid">
-                        {INTAKE_FIELDS.map((f) => (
-                            <div key={f.key} className={`form-group ${f.type === "textarea" ? "full-width" : ""}`}>
-                                <label>{f.label}</label>
-                                {f.type === "textarea" ? (
-                                    <textarea
-                                        rows={3}
-                                        value={intakeForm[f.key] || ""}
-                                        onChange={(e) => setIntakeForm({ ...intakeForm, [f.key]: e.target.value })}
-                                    />
-                                ) : (
-                                    <input
-                                        type={f.type}
-                                        value={intakeForm[f.key] || ""}
-                                        onChange={(e) => setIntakeForm({ ...intakeForm, [f.key]: e.target.value })}
-                                    />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="section-actions">
-                        <button className="btn-save" onClick={saveIntake} disabled={savingIntake}>
-                            {savingIntake ? "Saving…" : "Update Assessment"}
-                        </button>
-                    </div>
-                </div>
-            )}
+            {/* Clinical Assessment Tab. Hidden rather than unmounted while another
+                tab is open, so switching tabs keeps unsaved edits. (TJ-067b) */}
+            <div className="section-card" hidden={activeTab !== "intake"}>
+                <ClinicalAssessment
+                    patientId={patient.id}
+                    onDirtyChange={setIntakeDirty}
+                    onSaved={() => setAuditLog([])}
+                />
+            </div>
 
             {/* Sessions Tab */}
             {activeTab === "sessions" && (
@@ -684,13 +596,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     border-radius: var(--radius-md, 4px); padding: 1.5rem;
                     overflow-x: auto; -webkit-overflow-scrolling: touch;
                 }
-                .success-msg {
-                    background: rgba(76,175,147,0.1); border: 1px solid rgba(76,175,147,0.2);
-                    color: #6ee7b7; padding: 0.5rem 0.85rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; margin-bottom: 1rem;
-                }
-                .intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
-                .full-width { grid-column: 1 / -1; }
                 .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
                 .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
                 .form-group input, .form-group textarea {
@@ -699,7 +604,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical;
                 }
                 .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
-                .section-actions { margin-top: 1.25rem; display: flex; justify-content: flex-end; }
                 .btn-save {
                     background: var(--primary, #4CAF93); color: #fff;
                     border: none; border-radius: var(--radius-sm, 2px);
@@ -783,7 +687,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
 
                 @media (max-width: 640px) {
                     .section-card { padding: 1rem; }
-                    .intake-grid { grid-template-columns: 1fr; }
                     .modal-card { padding: 1.25rem; }
                     .btn-sm { padding: 0.42rem 0.75rem; }
                 }

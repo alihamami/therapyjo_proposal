@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { use } from "react";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
+import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 
 interface ReservationDetail {
     id: number;
@@ -37,21 +38,6 @@ interface PastSession {
     doctorColorSnapshot: string | null;
 }
 
-const INTAKE_FIELDS = [
-    { key: "injuryPlace", label: "Injury Place", type: "text" },
-    { key: "patientSince", label: "Patient Since", type: "text" },
-    { key: "medicalHistory", label: "Medical History", type: "textarea" },
-    { key: "assessment", label: "Assessment", type: "textarea" },
-    { key: "aggravators", label: "Pain Aggravators", type: "textarea" },
-    { key: "relievers", label: "Pain Relievers", type: "textarea" },
-    { key: "diagnosis", label: "Diagnosis", type: "textarea" },
-    { key: "treatmentPlan", label: "Treatment Plan", type: "textarea" },
-    { key: "recommendedSessions", label: "Recommended Sessions", type: "number" },
-    { key: "clinicExercises", label: "Clinic Exercises", type: "textarea" },
-    { key: "homeExercises", label: "Home Exercises", type: "textarea" },
-    { key: "nextSessionTreatment", label: "Next Session Treatment", type: "textarea" },
-];
-
 export default function DoctorSessionPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
@@ -78,21 +64,18 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
     const [savingSoap, setSavingSoap] = useState(false);
     const [soapSaved, setSoapSaved] = useState(false);
 
-    // Clinical intake form
-    const [intakeForm, setIntakeForm] = useState<Record<string, string>>({});
-    const [savingIntake, setSavingIntake] = useState(false);
-    const [intakeSaved, setIntakeSaved] = useState(false);
+    // Whether the Clinical Assessment has unsaved edits; <ClinicalAssessment>
+    // reports it. (TJ-067b)
+    const [intakeDirty, setIntakeDirty] = useState(false);
 
     // Tabs
     const [activeTab, setActiveTab] = useState<"details" | "history" | "soap" | "intake">("details");
 
-    // Both clinical forms are guarded together: fetchData() repopulates both,
-    // so either being dirty is enough to lose work.
+    // Both clinical forms are guarded together: fetchData() repopulates the
+    // SOAP form and, by showing "Loading session…", unmounts the Clinical
+    // Assessment, so either being dirty is enough to lose work.
     const [soapBaseline, setSoapBaseline] = useState<string>("");
-    const [intakeBaseline, setIntakeBaseline] = useState<string>(JSON.stringify({}));
-    const clinicalDirty =
-        JSON.stringify(soapForm) !== soapBaseline ||
-        JSON.stringify(intakeForm) !== intakeBaseline;
+    const clinicalDirty = JSON.stringify(soapForm) !== soapBaseline || intakeDirty;
     const { confirmDiscard } = useUnsavedChanges(clinicalDirty);
 
     const fetchData = useCallback(async () => {
@@ -126,32 +109,16 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
             plan: soapData?.plan || "",
         }));
 
-        // Fetch all past sessions + intake for this patient
+        // Fetch all past sessions for this patient. The Clinical Assessment
+        // loads its own pages. (TJ-067b)
         if (resData.patient?.id) {
-            const [sessRes, intakeRes] = await Promise.all([
-                fetch(`/api/reservations?patientId=${resData.patient.id}`),
-                fetch(`/api/patients/${resData.patient.id}`),
-            ]);
+            const sessRes = await fetch(`/api/reservations?patientId=${resData.patient.id}`);
             const sessData = await sessRes.json();
             setPastSessions(
                 (Array.isArray(sessData) ? sessData : [])
                     .filter((s: PastSession) => s.id !== resData.id)
                     .sort((a: PastSession, b: PastSession) => new Date(b.sessionDate).getTime() - new Date(a.sessionDate).getTime())
             );
-
-            // Populate intake form
-            const patientData = await intakeRes.json();
-            const intake: Record<string, string> = {};
-            for (const f of INTAKE_FIELDS) {
-                const val = patientData.intake?.[f.key];
-                if (f.type === "date" && val) {
-                    intake[f.key] = new Date(val).toISOString().split("T")[0];
-                } else {
-                    intake[f.key] = val != null ? String(val) : "";
-                }
-            }
-            setIntakeForm(intake);
-            setIntakeBaseline(JSON.stringify(intake));
         }
         setLoading(false);
     }, [id]);
@@ -183,20 +150,6 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
         setSavingSoap(false);
         setSoapSaved(true);
         setTimeout(() => setSoapSaved(false), 2000);
-    };
-
-    const handleSaveIntake = async () => {
-        if (!reservation) return;
-        setSavingIntake(true);
-        const res = await fetch(`/api/patients/${reservation.patient.id}/intake`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(intakeForm),
-        });
-        if (res.ok) setIntakeBaseline(JSON.stringify(intakeForm));
-        setSavingIntake(false);
-        setIntakeSaved(true);
-        setTimeout(() => setIntakeSaved(false), 2000);
     };
 
     const handleStatusChange = async (status: string) => {
@@ -346,36 +299,11 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 </div>
             )}
 
-            {/* Clinical Assessment Tab */}
-            {activeTab === "intake" && (
-                <div className="card">
-                    <div className="intake-grid">
-                        {INTAKE_FIELDS.map((f) => (
-                            <div key={f.key} className={`form-group ${f.type === "textarea" ? "full-width" : ""}`}>
-                                <label>{f.label}</label>
-                                {f.type === "textarea" ? (
-                                    <textarea
-                                        rows={3}
-                                        value={intakeForm[f.key] || ""}
-                                        onChange={(e) => setIntakeForm({ ...intakeForm, [f.key]: e.target.value })}
-                                    />
-                                ) : (
-                                    <input
-                                        type={f.type}
-                                        value={intakeForm[f.key] || ""}
-                                        onChange={(e) => setIntakeForm({ ...intakeForm, [f.key]: e.target.value })}
-                                    />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="card-actions">
-                        <button className="btn-save" onClick={handleSaveIntake} disabled={savingIntake}>
-                            {savingIntake ? "Saving…" : intakeSaved ? "✓ Saved" : "Update Assessment"}
-                        </button>
-                    </div>
-                </div>
-            )}
+            {/* Clinical Assessment Tab. Hidden rather than unmounted while another
+                tab is open, so switching tabs keeps unsaved edits. (TJ-067b) */}
+            <div className="card" hidden={activeTab !== "intake"}>
+                <ClinicalAssessment patientId={reservation.patient.id} onDirtyChange={setIntakeDirty} />
+            </div>
 
             {/* History Tab */}
             {activeTab === "history" && (
@@ -427,8 +355,6 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
                 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
                 .soap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-                .intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
-                .full-width { grid-column: 1 / -1; }
                 .form-group { display: flex; flex-direction: column; gap: 0.25rem; }
                 .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; display: flex; align-items: center; gap: 0.35rem; }
                 .soap-letter { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border-radius: 2px; font-weight: 700; font-size: 0.7rem; }
@@ -448,7 +374,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 .mini-status { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
                 .view-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.75rem; cursor: pointer; font-family: inherit; }
                 .view-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-                @media (max-width: 640px) { .form-grid, .soap-grid, .intake-grid { grid-template-columns: 1fr; } }
+                @media (max-width: 640px) { .form-grid, .soap-grid { grid-template-columns: 1fr; } }
             `}</style>
         </div>
     );

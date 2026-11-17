@@ -133,7 +133,7 @@ model Patient {
 
   // Relations
   files          PatientFile[]
-  intake         ClinicalIntake?
+  intakes        ClinicalIntake[] // one per assessment (TJ-067b)
   reservations   Reservation[]
   auditLog       PatientAuditLog[]
   updatedBy      User?            @relation("PatientUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
@@ -161,10 +161,12 @@ model PatientFile {
 }
 
 // ─── Clinical Intake / Assessment ─────────────────────
+// One row per assessment. A patient who comes back with a new injury gets a
+// new row, and the earlier ones stay as written. (TJ-067b)
 
 model ClinicalIntake {
   id                    Int       @id @default(autoincrement())
-  patientId             Int       @unique
+  patientId             Int
   injuryPlace           String?
   patientSince          String?   // free text, e.g. "March 2024" (TJ-067a)
   enrollDate            DateTime? // legacy: copied into patientSince by TJ-067a; no longer read or written
@@ -185,6 +187,7 @@ model ClinicalIntake {
   patient               Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
   updatedBy             User?     @relation("IntakeUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
 
+  @@index([patientId])
   @@index([updatedById])
 }
 
