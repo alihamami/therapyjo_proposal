@@ -25,7 +25,7 @@ interface PatientData {
 interface Intake {
     id: number;
     injuryPlace: string | null;
-    enrollDate: string | null;
+    patientSince: string | null;
     medicalHistory: string | null;
     assessment: string | null;
     aggravators: string | null;
@@ -60,7 +60,7 @@ interface Reservation {
 
 const INTAKE_FIELDS = [
     { key: "injuryPlace", label: "Injury Place", type: "text" },
-    { key: "enrollDate", label: "Enrollment Date", type: "date" },
+    { key: "patientSince", label: "Patient Since", type: "text" },
     { key: "medicalHistory", label: "Medical History", type: "textarea" },
     { key: "assessment", label: "Assessment", type: "textarea" },
     { key: "aggravators", label: "Pain Aggravators", type: "textarea" },

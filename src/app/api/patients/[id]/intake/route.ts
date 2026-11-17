@@ -52,9 +52,12 @@ export async function PUT(
     }
 
     const body = await req.json();
+    // Free text since TJ-067a ("March 2024"). A tab opened before that deploy
+    // still posts the old date field, so take it rather than blank the value.
+    const since = body.patientSince ?? body.enrollDate;
     const data = {
         injuryPlace: body.injuryPlace ?? null,
-        enrollDate: body.enrollDate ? new Date(body.enrollDate) : null,
+        patientSince: typeof since === "string" && since.trim() ? since.trim() : null,
         medicalHistory: body.medicalHistory ?? null,
         assessment: body.assessment ?? null,
         aggravators: body.aggravators ?? null,
