@@ -166,7 +166,8 @@ model ClinicalIntake {
   id                    Int       @id @default(autoincrement())
   patientId             Int       @unique
   injuryPlace           String?
-  enrollDate            DateTime?
+  patientSince          String?   // free text, e.g. "March 2024" (TJ-067a)
+  enrollDate            DateTime? // legacy: copied into patientSince by TJ-067a; no longer read or written
   medicalHistory        String?
   assessment            String?
   aggravators           String?   // What movements trigger pain

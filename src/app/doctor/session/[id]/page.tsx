@@ -39,7 +39,7 @@ interface PastSession {
 
 const INTAKE_FIELDS = [
     { key: "injuryPlace", label: "Injury Place", type: "text" },
-    { key: "enrollDate", label: "Enrollment Date", type: "date" },
+    { key: "patientSince", label: "Patient Since", type: "text" },
     { key: "medicalHistory", label: "Medical History", type: "textarea" },
     { key: "assessment", label: "Assessment", type: "textarea" },
     { key: "aggravators", label: "Pain Aggravators", type: "textarea" },
