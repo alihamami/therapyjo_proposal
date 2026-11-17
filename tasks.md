@@ -133,8 +133,8 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-065 | Admin: see and edit every session's SOAP note | DONE — task commit `840e309`, merged to `master` as `cc0c1d3` with `--no-ff` on 2026-11-09; planner-verified, runtime- and visually reviewed against a local database (44/44); pushed at the user's request; **live check owed** | `feat/admin-soap-notes` |
 | TJ-066 | Reviews: refresh from Google once a day, not hourly | DONE — task commit `964e7c2`, merged to `master` as `d1e7218` with `--no-ff` on 2026-11-13; planner-verified; pushed after billing was restored; Console daily cap set to 30 | `feat/reviews-daily-refresh` |
 | TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — passed 2026-11-18; see TJ-067a, TJ-067b. **Merge held for the user to see the changes first** | — |
-| TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | READY — merge held for the user's review | `feat/patient-since-text` |
-| TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | READY — stacked on TJ-067a; merge held for the user's review | `feat/assessment-pages` |
+| TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | REVIEW passed — task commit `db28223`; planner-verified 2026-11-18; **awaiting the user's look before merge** | `feat/patient-since-text` |
+| TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | REVIEW passed — task commit `48c9cb2` (stacked on `db28223`); planner-verified and preview-checked 2026-11-18; **awaiting the user's look before merge** | `feat/assessment-pages` |
 
 ---
 
@@ -13377,7 +13377,12 @@ The legacy `enrollDate` column stays in the database and in `schema.prisma`. The
 
 ### TJ-067a — "Patient Since" replaces "Enrollment Date", as free text
 
-- **Status:** READY. **Merge held for the user's review** (directive under TJ-067).
+- **Status:** REVIEW passed, **merge held for the user's look** (directive under TJ-067). Executed by the Sonnet executor: task commit `db28223` on `feat/patient-since-text`, cut from `411e7d6`.
+
+**Planner verification:** 2026-11-18.
+- **The diff is the spec, exactly.** 5 files, 11 insertions and 7 deletions, every replacement as written. `tasks.md` is untouched on the branch.
+- **Gates:** re-run by the planner on the stacked branch `feat/assessment-pages`, which contains this commit; see TJ-067b. The executor reported `tsc` and `npm run build` exit 0 on this commit alone.
+- **Unproven until live:** the SQL back-fill (TJ-067 steps 1 and 1b) and a real save. Most worth checking live: an existing patient's old Enrollment Date now shows as `YYYY-MM-DD` under Patient Since.
 - **Branch:** `feat/patient-since-text`, cut from current `master`.
 - **Why:** The user wants the field labelled **Patient Since** and typed as free text ("March 2024", "2019"), not picked from a calendar. The column is `DateTime?`, so the value moves to a new text column. See the database table under TJ-067.
 
@@ -13464,7 +13469,30 @@ with:
 
 ### TJ-067b — Several assessment pages per patient, on every screen that shows the assessment
 
-- **Status:** READY, stacked on TJ-067a. **Merge held for the user's review** (directive under TJ-067).
+- **Status:** REVIEW passed, **merge held for the user's look** (directive under TJ-067). Executed by the Sonnet executor: task commit `48c9cb2` on `feat/assessment-pages`, cut from `db28223`.
+
+**Planner verification:** 2026-11-18.
+- **The diff is the spec, exactly.** 7 files, 494 insertions and 361 deletions. The intake route and `ClinicalAssessment.tsx` are **byte-identical** to the spec blocks (machine-compared as LF blobs: 7,167 and 14,800 bytes). Every screen, schema and route edit was read line by line against its step. `tasks.md` is untouched.
+- **Gates, re-run by the planner** in the real checkout on `feat/assessment-pages`:
+  - `npx prisma generate` succeeds.
+  - `tsc --noEmit --incremental false` exits **0**.
+  - `npm run build` exits **0**; `/api/patients/[id]/intake`, `/admin/patients/[id]`, `/doctor/patients/[id]` and `/doctor/session/[id]` are all `ƒ`.
+  - After switching back, `prisma generate` was re-run on `master`, and master's `tsc` exits 0, so the shared checkout is consistent.
+- **Lint (informational, executor's count):** only `react-hooks/set-state-in-effect`. The component adds 1; the admin, doctor and session pages read 2, 1 and 1.
+- **Preview check, 10/10, against a mock.**
+  - **Setup:** the real component from this branch, run from a throwaway worktree outside the repo (`next dev --webpack` on :3100, placeholder env, no database). It was mounted in a copy of the admin patient chrome, with `fetch` mocked for `/api/patients/542/intake`.
+  - **What was proven:**
+    1. It opens on the **latest** page. Patient Since is `type="text"` with the placeholder "e.g. March 2024". An Arabic injury place renders in its pill.
+    2. Switching pages with nothing unsaved asks nothing.
+    3. Typing reports dirty to the page, which is the Back guard's input.
+    4. Switching pages while dirty asks "Switch pages without saving them?". Cancel keeps the text and the page.
+    5. Another tab hides the card (`display: none`). Coming back finds the unsaved text intact.
+    6. Update saves by PUT with `intakeId`, reloads, stays on that page and clears dirty.
+    7. **+ New Assessment** shows a draft, "Assessment 3 · New, not saved yet", carrying **Patient Since and Medical History only**. It starts clean, and the button reads "Save New Assessment".
+    8. Saving the draft POSTs, then selects the new Assessment 3; + New Assessment returns.
+    9. A failed save (simulated 500) shows the server's error, keeps the text and stays dirty.
+    10. **At 320px:** `scrollWidth` is 320, the grid drops to one column, and the pills and Save sit inside the card. No console errors.
+- **Not provable here, so owed live:** the real API against Postgres, the three real screens behind sign-in, and TJ-067 SQL step 3. Most worth checking live: on a patient who already has an assessment, **Save New Assessment succeeds after step 3**. Before step 3 it fails, by design.
 - **Branch:** `feat/assessment-pages`, cut from **TJ-067a's task commit**, not from `master`.
 - **Why:** A patient treated for one injury may come back with another. Today a patient holds exactly one `ClinicalIntake` (`patientId @unique`), so the new injury's assessment can only overwrite the old one. After this task, the Clinical Assessment tab shows a row of pages above the form (Assessment 1, Assessment 2, …) and a **+ New Assessment** button. Earlier pages stay as written and stay editable. All three screens get it from one shared component.
 
