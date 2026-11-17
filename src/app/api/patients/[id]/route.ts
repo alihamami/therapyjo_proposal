@@ -5,7 +5,8 @@ import { canAccessClinical, canManagePatients, canViewPatientContact, sessionsHi
 import { removeUpload } from "@/lib/uploads";
 import { logPatientActivity } from "@/lib/audit";
 
-// GET /api/patients/[id] — single patient with intake + reservations
+// GET /api/patients/[id] — single patient with files + reservations. The
+// clinical assessments have their own endpoint, ./intake. (TJ-067b)
 export async function GET(
     _req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -36,7 +37,6 @@ export async function GET(
         where: { id: patientId },
         omit: { phone1: !contact, phone2: !contact },
         include: {
-            intake: clinical,
             files: {
                 orderBy: { uploadedAt: "desc" },
             },
