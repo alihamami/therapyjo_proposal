@@ -132,9 +132,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release-notice` |
 | TJ-065 | Admin: see and edit every session's SOAP note | DONE — task commit `840e309`, merged to `master` as `cc0c1d3` with `--no-ff` on 2026-11-09; planner-verified, runtime- and visually reviewed against a local database (44/44); pushed at the user's request; **live check owed** | `feat/admin-soap-notes` |
 | TJ-066 | Reviews: refresh from Google once a day, not hourly | DONE — task commit `964e7c2`, merged to `master` as `d1e7218` with `--no-ff` on 2026-11-13; planner-verified; pushed after billing was restored; Console daily cap set to 30 | `feat/reviews-daily-refresh` |
-| TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — passed 2026-11-18; see TJ-067a, TJ-067b. **Merge held for the user to see the changes first** | — |
-| TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | REVIEW passed — task commit `db28223`; planner-verified 2026-11-18; **awaiting the user's look before merge** | `feat/patient-since-text` |
-| TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | REVIEW passed — task commit `48c9cb2` (stacked on `db28223`); planner-verified and preview-checked 2026-11-18; **awaiting the user's look before merge** | `feat/assessment-pages` |
+| TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — **complete**: both halves merged after the user's review, SQL steps 0–3 run, pushed and **deployed 2026-11-18 01:17 (Amman)** as `3883b82`; live reads verified on all three screens; **one live write check owed** (see TJ-067) | — |
+| TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | DONE — task commit `db28223`, merged to `master` as `0745fac` with `--no-ff` on 2026-11-18 after the user's review; back-filled 57/57; live-verified | `feat/patient-since-text` |
+| TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | DONE — task commit `48c9cb2`, merged to `master` as `3883b82` with `--no-ff` on 2026-11-18 after the user's review; unique index dropped; live reads verified; **live write check owed** | `feat/assessment-pages` |
 
 ---
 
@@ -13338,7 +13338,25 @@ with:
 
 ### TJ-067 — Clinical Assessment: "Patient Since" as text, and several assessments per patient
 
-- **Status:** SPLIT. Planning pass 2026-11-18. Nothing executes against this ID; see TJ-067a and TJ-067b.
+- **Status:** SPLIT, **complete**. Planning pass 2026-11-18. Nothing executes against this ID; see TJ-067a and TJ-067b.
+
+**Deploy record, 2026-11-18 (overnight, clinic closed).** The user saw the preview, then said "Yes, ship it". Every SQL step ran in the Supabase SQL Editor (org allawis, project TherapyJo, branch `main` PRODUCTION) through the user's Chrome; the user signed in to Supabase themselves when the session had expired.
+
+| Step | Result |
+|---|---|
+| 0 (read-only) | The unique index is `ClinicalIntake_patientId_key`: a unique **index**, not a constraint. `enrollDate` is `timestamp without time zone`. **243** assessments, **57** with a date. No `patientSince` column yet |
+| 1 + 2, one transaction | `patientSince` added; **57/57** back-filled as `YYYY-MM-DD`, **0** mismatches; `ClinicalIntake_patientId_idx` created |
+| Merge | `0745fac` (TJ-067a), `3883b82` (TJ-067b). The merged tree equals `48c9cb2` except `tasks.md`. `tsc` 0 and `npm run build` 0 on the merged `master` |
+| Push | `6f87f7c..3883b82` by SHA, a fast-forward. Vercel `success` at 01:17:35 Amman |
+| 1b | Re-run: **0** still missing. The newest assessment `updatedAt` is 2026-11-17 14:07 UTC, so nothing was saved during the window |
+| Live reads (admin session in the user's Chrome, read-only) | Patient #531 (Patient Since copied as `2026-11-15`, one assessment). On `/admin/patients/531`, `/doctor/patients/531` and `/doctor/session/2603`: the label reads **Patient Since**, the input is `type=text` with value `2026-11-15`, the pill reads "Assessment 1", and **+ New Assessment** is present. On the session page the card is mounted and `hidden` until its tab is clicked. `GET /api/patients/531/intake` returns 200 with an array of 1 carrying `patientSince`. `GET /api/patients/531` no longer carries `intake` |
+| 3 | `DROP INDEX IF EXISTS "ClinicalIntake_patientId_key"`, confirmed through Supabase's "Potential issue detected" dialog. The remaining indexes are `ClinicalIntake_pkey`, `ClinicalIntake_patientId_idx` and `ClinicalIntake_updatedById_idx`, so the database now matches `schema.prisma` |
+
+**Owed live: one write, left to staff on purpose.** No agent creates clinical records on a real patient. On a patient who already has an assessment, press **+ New Assessment**, fill a field, then **Save New Assessment**. Expect "New assessment saved!" and an Assessment 2 pill, and the admin History tab should list "Clinical assessment added · Assessment 2". If it errors, check `pg_indexes` first: the unique index must be gone.
+
+**Rollback note.** An Instant Rollback to the pre-TJ-067 deployment would now break saving: the old upsert needs the unique index. Recreating that index works only while no patient has two assessments. Fix forward instead.
+
+**Later cleanup, not yet a task:** drop the legacy `enrollDate` column and its schema line once TJ-067 has run for a few weeks. Its values are preserved in `patientSince`.
 - **Reported by the user, 2026-11-18,** with screenshots of `/admin/patients/542`:
   1. Rename the **Enrollment Date** field to **Patient Since**, and make it a text field.
   2. A patient may finish treatment for one injury and come back later with another. The Clinical Assessment must be able to hold more than one assessment ("add assessment pages").
@@ -13377,7 +13395,7 @@ The legacy `enrollDate` column stays in the database and in `schema.prisma`. The
 
 ### TJ-067a — "Patient Since" replaces "Enrollment Date", as free text
 
-- **Status:** REVIEW passed, **merge held for the user's look** (directive under TJ-067). Executed by the Sonnet executor: task commit `db28223` on `feat/patient-since-text`, cut from `411e7d6`.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `db28223` on `feat/patient-since-text`, cut from `411e7d6`. Merged to `master` with `--no-ff` as `0745fac` on 2026-11-18, after the user saw the preview. Deployed with `3883b82`; see the deploy record under TJ-067.
 
 **Planner verification:** 2026-11-18.
 - **The diff is the spec, exactly.** 5 files, 11 insertions and 7 deletions, every replacement as written. `tasks.md` is untouched on the branch.
@@ -13469,7 +13487,7 @@ with:
 
 ### TJ-067b — Several assessment pages per patient, on every screen that shows the assessment
 
-- **Status:** REVIEW passed, **merge held for the user's look** (directive under TJ-067). Executed by the Sonnet executor: task commit `48c9cb2` on `feat/assessment-pages`, cut from `db28223`.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `48c9cb2` on `feat/assessment-pages`, cut from `db28223`. Merged to `master` with `--no-ff` as `3883b82` on 2026-11-18, after the user saw the preview. Deployed and live-read-verified; **one live write check owed**, see the deploy record under TJ-067.
 
 **Planner verification:** 2026-11-18.
 - **The diff is the spec, exactly.** 7 files, 494 insertions and 361 deletions. The intake route and `ClinicalAssessment.tsx` are **byte-identical** to the spec blocks (machine-compared as LF blobs: 7,167 and 14,800 bytes). Every screen, schema and route edit was read line by line against its step. `tasks.md` is untouched.
