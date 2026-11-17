@@ -132,6 +132,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-064b | Screens: a day that has not opened shows a notice, not an empty calendar | DONE — task commit `50f4065`, merged to `master` as `9cc9098` with `--no-ff` on 2026-10-26; planner-verified; **live-checked by the user 2026-10-26** | `feat/doctor-day-release-notice` |
 | TJ-065 | Admin: see and edit every session's SOAP note | DONE — task commit `840e309`, merged to `master` as `cc0c1d3` with `--no-ff` on 2026-11-09; planner-verified, runtime- and visually reviewed against a local database (44/44); pushed at the user's request; **live check owed** | `feat/admin-soap-notes` |
 | TJ-066 | Reviews: refresh from Google once a day, not hourly | DONE — task commit `964e7c2`, merged to `master` as `d1e7218` with `--no-ff` on 2026-11-13; planner-verified; pushed after billing was restored; Console daily cap set to 30 | `feat/reviews-daily-refresh` |
+| TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — passed 2026-11-18; see TJ-067a, TJ-067b. **Merge held for the user to see the changes first** | — |
+| TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | READY — merge held for the user's review | `feat/patient-since-text` |
+| TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | READY — stacked on TJ-067a; merge held for the user's review | `feat/assessment-pages` |
 
 ---
 
@@ -13332,3 +13335,910 @@ with:
 - [x] `tsc` and `npm run build` exit 0.
 - [x] Pushed only once Places worked again. That was proven by a direct HTTP 200, not by the live endpoint; see the deviation note under Planner verification.
 - [x] Live, after the push (`d1e7218`, Vercel `success` about 60s after the push, 2026-11-13 ~20:04 UTC): `/api/public/reviews` returns `"available":true`, rating **4.9** from **377** reviews, 5 quotes, `X-Vercel-Cache: PRERENDER` then `HIT`.
+
+### TJ-067 — Clinical Assessment: "Patient Since" as text, and several assessments per patient
+
+- **Status:** SPLIT. Planning pass 2026-11-18. Nothing executes against this ID; see TJ-067a and TJ-067b.
+- **Reported by the user, 2026-11-18,** with screenshots of `/admin/patients/542`:
+  1. Rename the **Enrollment Date** field to **Patient Since**, and make it a text field.
+  2. A patient may finish treatment for one injury and come back later with another. The Clinical Assessment must be able to hold more than one assessment ("add assessment pages").
+  3. Both changes must reach **every user who has access to the information**.
+- **User directive, 2026-11-18: "don't merge before i see the changes."** For this task it overrides the usual merge-then-check-live flow. The planner verifies, then shows the user the diff and a visual preview. Merging, the SQL steps and the push all wait for the user's go-ahead.
+
+**Who sees the Clinical Assessment today** (confirmed 2026-11-18 with `grep -rn "INTAKE_FIELDS\|clinicalIntake\|/intake" src`):
+
+| Screen | File | Who |
+|---|---|---|
+| Patient page, Clinical Assessment tab | `src/app/admin/patients/[id]/page.tsx` | Admin |
+| Patient page, Clinical Assessment tab | `src/app/doctor/patients/[id]/page.tsx` | Doctor (and an admin who opens it) |
+| Session page, Clinical Assessment tab | `src/app/doctor/session/[id]/page.tsx` | Doctor (and an admin who opens it) |
+| Patient page | `src/app/secretary/patients/[id]/page.tsx` | Secretary: **no** clinical tab, by design (TJ-023). `canAccessClinical` refuses secretaries on the server too. Unchanged. |
+
+Each of the three screens has its own copy of `INTAKE_FIELDS` and of the form code. So TJ-067b moves the form into one shared component: one implementation, three mount points. A later change then cannot reach one screen and miss another.
+
+**The data model today:** `ClinicalIntake.patientId` is `@unique` and `Patient.intake` is `ClinicalIntake?`, so a patient has at most one assessment. `PUT /api/patients/[id]/intake` upserts on `patientId`. `enrollDate` is `DateTime?`.
+
+**Database changes.** The planner does these, not the executor, in the Supabase SQL Editor, after the user's go-ahead. There are no migrations here, and the only database is the clinic's production Supabase. Each statement is ordered so that the code live in production at that moment keeps working:
+
+| Step | When | SQL | Why it is safe at that moment |
+|---|---|---|---|
+| 0 | first | `SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'ClinicalIntake';` and `SELECT count(*) AS rows, count("enrollDate") AS dated FROM "ClinicalIntake";` | Read-only. Confirms the unique index's real name before step 3 |
+| 1 | before the push | `ALTER TABLE "ClinicalIntake" ADD COLUMN IF NOT EXISTS "patientSince" TEXT;` then `UPDATE "ClinicalIntake" SET "patientSince" = to_char("enrollDate", 'YYYY-MM-DD') WHERE "enrollDate" IS NOT NULL AND "patientSince" IS NULL;` | Today's code does not know the column and never selects it |
+| 2 | before the push | `CREATE INDEX IF NOT EXISTS "ClinicalIntake_patientId_idx" ON "ClinicalIntake"("patientId");` | Additive. It is the index `@@index([patientId])` names |
+| — | push | merge TJ-067a and TJ-067b, push by SHA | The new code reads `patientSince`, which step 1 created |
+| 1b | right after the deploy is Ready | re-run step 1's `UPDATE` | Catches any assessment the old code saved between step 1 and the deploy |
+| 3 | after the new code is live and its read paths check out | `DROP INDEX IF EXISTS "ClinicalIntake_patientId_key";` (use the name step 0 returned) | **Not before the push.** Today's upsert compiles to `INSERT … ON CONFLICT ("patientId")`, which fails without this unique index. Until step 3, the new code still reads and edits every assessment; only **saving a second assessment** for a patient fails |
+
+The legacy `enrollDate` column stays in the database and in `schema.prisma`. The schema then matches the database, and a Vercel Instant Rollback to today's code still finds the column it reads. Dropping the column is a later cleanup, once TJ-067 has been live for a while.
+
+**Timing:** off-hours. The clinic is closed overnight (Amman), so steps 1–3 and the push land while nobody is editing.
+
+---
+
+### TJ-067a — "Patient Since" replaces "Enrollment Date", as free text
+
+- **Status:** READY. **Merge held for the user's review** (directive under TJ-067).
+- **Branch:** `feat/patient-since-text`, cut from current `master`.
+- **Why:** The user wants the field labelled **Patient Since** and typed as free text ("March 2024", "2019"), not picked from a calendar. The column is `DateTime?`, so the value moves to a new text column. See the database table under TJ-067.
+
+**Planning pass:** 2026-11-18, on `master` at `6f87f7c`. Read in full: `prisma/schema.prisma` (`Patient`, `PatientFile`, `ClinicalIntake`, `PatientAuditLog`, `SOAPNote`), `src/app/api/patients/[id]/intake/route.ts`, `src/app/api/patients/[id]/route.ts`, `src/app/admin/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, `src/lib/permissions.ts` (`canAccessClinical`), `src/lib/audit.ts`, `src/lib/useUnsavedChanges.ts`, `.gitignore`.
+
+Confirmed:
+- **`enrollDate` appears in exactly 6 places** outside `src/generated`: the schema line, the route's `new Date(body.enrollDate)`, the 3 pages' `INTAKE_FIELDS` entries, and 2 `Intake` interfaces (admin and doctor patient pages). The session page has no `Intake` interface. No seed, script or other route reads it.
+- **`src/generated/prisma` is gitignored** and `postinstall` runs `prisma generate`. The executor runs `npx prisma generate` locally and commits nothing from it.
+- **The 3 pages' populate loops** have an `if (f.type === "date" && val)` branch. After this task no field has type `date`, so the branch is dead. **Leave it.** TJ-067b deletes those loops.
+- **A browser tab opened before the deploy** still posts `enrollDate` and no `patientSince`. The route falls back to `enrollDate`, so a save from such a tab keeps the value instead of blanking it.
+
+**Scope — touch only these:**
+- `prisma/schema.prisma`
+- `src/app/api/patients/[id]/intake/route.ts`
+- `src/app/admin/patients/[id]/page.tsx`
+- `src/app/doctor/patients/[id]/page.tsx`
+- `src/app/doctor/session/[id]/page.tsx`
+
+**Do not touch:** `src/generated/**`, `tasks.md`, or any other file. **Never run `prisma db push`, `db seed` or `migrate`.** The only database is production.
+
+**Instructions.** The files are LF in the index and CRLF in this checkout's working tree; keep whatever each has. Make exactly these replacements.
+
+**Step 1 — `prisma/schema.prisma`.** Replace:
+```prisma
+  enrollDate            DateTime?
+```
+with:
+```prisma
+  patientSince          String?   // free text, e.g. "March 2024" (TJ-067a)
+  enrollDate            DateTime? // legacy: copied into patientSince by TJ-067a; no longer read or written
+```
+
+**Step 2 — `src/app/api/patients/[id]/intake/route.ts`.** Two replacements. Replace:
+```ts
+    const body = await req.json();
+    const data = {
+```
+with:
+```ts
+    const body = await req.json();
+    // Free text since TJ-067a ("March 2024"). A tab opened before that deploy
+    // still posts the old date field, so take it rather than blank the value.
+    const since = body.patientSince ?? body.enrollDate;
+    const data = {
+```
+Then replace:
+```ts
+        enrollDate: body.enrollDate ? new Date(body.enrollDate) : null,
+```
+with:
+```ts
+        patientSince: typeof since === "string" && since.trim() ? since.trim() : null,
+```
+
+**Step 3 — `src/app/admin/patients/[id]/page.tsx`.** Replace `    enrollDate: string | null;` with `    patientSince: string | null;`. Then replace:
+```ts
+    { key: "enrollDate", label: "Enrollment Date", type: "date" },
+```
+with:
+```ts
+    { key: "patientSince", label: "Patient Since", type: "text" },
+```
+
+**Step 4 — `src/app/doctor/patients/[id]/page.tsx`.** The same two replacements as Step 3.
+
+**Step 5 — `src/app/doctor/session/[id]/page.tsx`.** Only the `INTAKE_FIELDS` replacement from Step 3. This file has no `Intake` interface.
+
+**Verification:**
+- `npx prisma generate` succeeds.
+- `grep -rn "enrollDate" src/app src/lib prisma/schema.prisma` prints exactly 2 lines: the schema's legacy line, and the route's `const since = body.patientSince ?? body.enrollDate;`.
+- `grep -rn "Enrollment Date" src/app` prints nothing. `grep -c '"Patient Since"'` prints `1` for each of the 3 pages.
+- `git diff --stat` lists exactly the 5 scoped files.
+- `npx tsc --noEmit --incremental false` exits 0.
+- `npm run build` exits 0. The build makes one Google Places call for the reviews route; a `[reviews]` warning does not fail it.
+- **Runtime checks are waived, not passed.** Do not start a dev server: it would read and write production data. The planner does the visual review.
+
+**Done when:**
+- [ ] The label reads **Patient Since**, and the input is `type="text"`, on all three screens.
+- [ ] The server writes `patientSince` trimmed, an empty value as `null`, with the `enrollDate` fallback.
+- [ ] The schema has both columns, with `enrollDate` marked legacy.
+- [ ] `tsc` and `npm run build` exit 0.
+
+---
+
+### TJ-067b — Several assessment pages per patient, on every screen that shows the assessment
+
+- **Status:** READY, stacked on TJ-067a. **Merge held for the user's review** (directive under TJ-067).
+- **Branch:** `feat/assessment-pages`, cut from **TJ-067a's task commit**, not from `master`.
+- **Why:** A patient treated for one injury may come back with another. Today a patient holds exactly one `ClinicalIntake` (`patientId @unique`), so the new injury's assessment can only overwrite the old one. After this task, the Clinical Assessment tab shows a row of pages above the form (Assessment 1, Assessment 2, …) and a **+ New Assessment** button. Earlier pages stay as written and stay editable. All three screens get it from one shared component.
+
+**Planning pass:** 2026-11-18, on `master` at `6f87f7c`. The same reads as TJ-067a, plus: `src/app/components/ReservationSlot.tsx`, `DatePicker.tsx` and `Calendar.tsx` (heads: shared staff components live in this folder, as `"use client"` default exports styled with `<style jsx>`, imported as `@/app/components/<Name>`), `src/app/globals.css` (searched: no rule for `[hidden]`, `.section-card` or `.card`), `src/middleware.ts` (head).
+
+Confirmed:
+- **The only reader of `Patient.intake` is `GET /api/patients/[id]`** (`intake: clinical`), and its only consumers of that field are the three screens. **`GET /api/patients/[id]/intake` has no caller today**; this task gives it one.
+- **The session page fetches `/api/patients/[id]` only for the intake** (`intakeRes`). The component loads its own data, so that fetch goes.
+- **`styled-jsx` is scoped per component.** The component cannot use its parents' `.intake-grid`, `.form-group` or `.btn-save` rules, so it carries its own copies. The values are copied from the admin page.
+- **Tab bodies unmount on a tab switch** (`{activeTab === "intake" && …}`). Today the form survives a switch because its state lives in the page. Once the state moves into the component, an unmount would silently drop unsaved text. So the intake tab body is **hidden, not unmounted**: `<div className="section-card" hidden={activeTab !== "intake"}>`. Neither `.section-card` nor `.card` sets `display`, and `globals.css` has no `[hidden]` rule, so the attribute hides it.
+- **Admin and doctor patient pages: an upload or a file removal no longer discards assessment edits.** `fetchPatient()` stops touching the form, and the component stays mounted. Their "Uploading will reload this patient and discard your unsaved Clinical Assessment edits" prompts become false, so they are deleted. The **Back** button prompt stays.
+- **Session page: its prompts stay.** `fetchData()` sets `loading`, the page then returns "Loading session…", and the component unmounts. So saving session details or changing the status still loses unsaved assessment text, and the existing combined prompt stays true. The component reports `false` when it unmounts, so the page does not go on guarding edits that are gone.
+- **The admin SOAP modal (TJ-065)** has its own `useUnsavedChanges(soapDirty)` and does not touch the intake. Unaffected. One comment in `saveSoap` cites the intake form as its reason and is corrected.
+- **Permissions are unchanged.** All three handlers keep `canAccessClinical` (admin and doctor). A doctor may edit a patient's assessment from a colleague's session, as today: the assessment belongs to the patient, not to the session. TJ-062 limited sessions, not the intake.
+- **The old upsert vs. the dropped unique index:** see step 3 of the database table under TJ-067. The new route never upserts.
+
+Decided at the pass (planner defaults; the user may veto at review):
+- **A new page carries over Patient Since and Medical History** from the latest page. They describe the patient, not the injury. Every other field starts blank.
+- **A new page is a draft until it is saved.** **+ New Assessment** shows a blank page marked "New, not saved yet", and the first **Save New Assessment** creates the row. A misclick leaves nothing behind, so no delete is needed. There is no delete for a saved page; none was asked for.
+- **Pages are numbered by age:** Assessment 1 is the oldest. The tab opens on the **latest**.
+- **History (admin):** a new page logs `CLINICAL_INTAKE_ADDED`, shown as "Clinical assessment added". Both that and `CLINICAL_INTAKE_UPDATED` carry the summary "Assessment N".
+
+**Constraint check:** 7 files, over the ~4-file guideline, kept as one task on purpose. Three of the files are the three screens, and the user's requirement is that all three change together. Splitting the server from the screens leaves a build that passes `tsc` and breaks at runtime, because the screens read `data.intake` from untyped JSON. Splitting off a refactor-only commit produces a component that the next commit rewrites. The three screen edits are deletions plus one mount each; the two files with real substance are given in full below.
+
+**Scope — touch only these:**
+- `prisma/schema.prisma`
+- `src/app/api/patients/[id]/intake/route.ts` (replace the whole file)
+- `src/app/api/patients/[id]/route.ts`
+- `src/app/components/ClinicalAssessment.tsx` (new)
+- `src/app/admin/patients/[id]/page.tsx`
+- `src/app/doctor/patients/[id]/page.tsx`
+- `src/app/doctor/session/[id]/page.tsx`
+
+**Do not touch:** the secretary patient page, the SOAP route, `src/lib/useUnsavedChanges.ts`, `src/generated/**`, `tasks.md`. **Never run `prisma db push`, `db seed` or `migrate`.**
+
+**Instructions.** Keep each existing file's line endings. Every anchor below is quoted as it reads **after TJ-067a**.
+
+**Step 1 — `prisma/schema.prisma`.** Three replacements.
+
+(a) In `model Patient`, replace:
+```prisma
+  intake         ClinicalIntake?
+```
+with:
+```prisma
+  intakes        ClinicalIntake[] // one per assessment (TJ-067b)
+```
+
+(b) Replace:
+```prisma
+// ─── Clinical Intake / Assessment ─────────────────────
+
+model ClinicalIntake {
+  id                    Int       @id @default(autoincrement())
+  patientId             Int       @unique
+```
+with:
+```prisma
+// ─── Clinical Intake / Assessment ─────────────────────
+// One row per assessment. A patient who comes back with a new injury gets a
+// new row, and the earlier ones stay as written. (TJ-067b)
+
+model ClinicalIntake {
+  id                    Int       @id @default(autoincrement())
+  patientId             Int
+```
+
+(c) Replace:
+```prisma
+  updatedBy             User?     @relation("IntakeUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([updatedById])
+```
+with:
+```prisma
+  updatedBy             User?     @relation("IntakeUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([patientId])
+  @@index([updatedById])
+```
+
+**Step 2 — replace the whole of `src/app/api/patients/[id]/intake/route.ts` with:**
+```ts
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { canAccessClinical } from "@/lib/permissions";
+import { logPatientActivity } from "@/lib/audit";
+
+// A patient may have several clinical assessments, one per injury or course
+// of treatment, each a ClinicalIntake row. Screens number them by position in
+// id order, so "Assessment 1" is the oldest. (TJ-067b)
+
+// What the form posts. Every field is optional; an empty string clears it.
+interface IntakeBody {
+    intakeId?: number | string | null;
+    injuryPlace?: string | null;
+    patientSince?: string | null;
+    enrollDate?: string | null; // sent by tabs opened before TJ-067a; see intakeData()
+    medicalHistory?: string | null;
+    assessment?: string | null;
+    aggravators?: string | null;
+    relievers?: string | null;
+    diagnosis?: string | null;
+    treatmentPlan?: string | null;
+    recommendedSessions?: number | string | null;
+    clinicExercises?: string | null;
+    homeExercises?: string | null;
+    nextSessionTreatment?: string | null;
+}
+
+// The editable fields, read the same way by POST and PUT.
+function intakeData(body: IntakeBody) {
+    // Free text since TJ-067a ("March 2024"). A tab opened before that deploy
+    // still posts the old date field, so take it rather than blank the value.
+    const since = body.patientSince ?? body.enrollDate;
+    const sessions = body.recommendedSessions ? parseInt(String(body.recommendedSessions), 10) : NaN;
+    return {
+        injuryPlace: body.injuryPlace ?? null,
+        patientSince: typeof since === "string" && since.trim() ? since.trim() : null,
+        medicalHistory: body.medicalHistory ?? null,
+        assessment: body.assessment ?? null,
+        aggravators: body.aggravators ?? null,
+        relievers: body.relievers ?? null,
+        diagnosis: body.diagnosis ?? null,
+        treatmentPlan: body.treatmentPlan ?? null,
+        recommendedSessions: Number.isNaN(sessions) ? null : sessions,
+        clinicExercises: body.clinicExercises ?? null,
+        homeExercises: body.homeExercises ?? null,
+        nextSessionTreatment: body.nextSessionTreatment ?? null,
+    };
+}
+
+// "Assessment N" for the History tab: the row's position among this
+// patient's assessments, oldest first.
+async function assessmentLabel(patientId: number, intakeId: number) {
+    const n = await prisma.clinicalIntake.count({ where: { patientId, id: { lte: intakeId } } });
+    return `Assessment ${n}`;
+}
+
+// GET /api/patients/[id]/intake — every assessment for this patient, oldest first
+export async function GET(
+    _req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const session = await auth();
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (!canAccessClinical(session.user)) {
+        return NextResponse.json({ error: "Not permitted to view clinical records" }, { status: 403 });
+    }
+
+    const { id } = await params;
+    const patientId = parseInt(id, 10);
+    if (isNaN(patientId)) {
+        return NextResponse.json({ error: "Invalid patient ID" }, { status: 400 });
+    }
+
+    const intakes = await prisma.clinicalIntake.findMany({
+        where: { patientId },
+        orderBy: { id: "asc" },
+    });
+
+    return NextResponse.json(intakes);
+}
+
+// POST /api/patients/[id]/intake — start a new assessment for this patient
+export async function POST(
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const session = await auth();
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    // Same predicate as GET, so read and write cannot drift apart.
+    if (!canAccessClinical(session.user)) {
+        return NextResponse.json({ error: "Secretaries cannot edit clinical intake" }, { status: 403 });
+    }
+
+    const { id } = await params;
+    const patientId = parseInt(id, 10);
+    if (isNaN(patientId)) {
+        return NextResponse.json({ error: "Invalid patient ID" }, { status: 400 });
+    }
+
+    const patient = await prisma.patient.findUnique({ where: { id: patientId }, select: { id: true } });
+    if (!patient) {
+        return NextResponse.json({ error: "Patient not found" }, { status: 404 });
+    }
+
+    const body: IntakeBody = await req.json();
+    const intake = await prisma.clinicalIntake.create({
+        data: { patientId, ...intakeData(body), updatedById: session.user.id },
+    });
+
+    await logPatientActivity({
+        patientId,
+        userId: session.user.id,
+        action: "CLINICAL_INTAKE_ADDED",
+        summary: await assessmentLabel(patientId, intake.id),
+    });
+
+    return NextResponse.json(intake, { status: 201 });
+}
+
+// PUT /api/patients/[id]/intake — update one assessment, named by intakeId in
+// the body. Without an intakeId it updates the latest, or creates the first:
+// that is how this endpoint behaved before TJ-067b, and how a tab opened
+// before that deploy still calls it.
+export async function PUT(
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const session = await auth();
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    // Same predicate as GET, so read and write cannot drift apart.
+    if (!canAccessClinical(session.user)) {
+        return NextResponse.json({ error: "Secretaries cannot edit clinical intake" }, { status: 403 });
+    }
+
+    const { id } = await params;
+    const patientId = parseInt(id, 10);
+    if (isNaN(patientId)) {
+        return NextResponse.json({ error: "Invalid patient ID" }, { status: 400 });
+    }
+
+    const body: IntakeBody = await req.json();
+    const data = { ...intakeData(body), updatedById: session.user.id };
+
+    let targetId: number | null = null;
+    if (body.intakeId != null && body.intakeId !== "") {
+        const intakeId = Number(body.intakeId);
+        if (!Number.isInteger(intakeId)) {
+            return NextResponse.json({ error: "Invalid assessment ID" }, { status: 400 });
+        }
+        // Scoped to this patient, so one patient's URL cannot edit another's assessment.
+        const target = await prisma.clinicalIntake.findFirst({
+            where: { id: intakeId, patientId },
+            select: { id: true },
+        });
+        if (!target) {
+            return NextResponse.json({ error: "Assessment not found" }, { status: 404 });
+        }
+        targetId = target.id;
+    } else {
+        const latest = await prisma.clinicalIntake.findFirst({
+            where: { patientId },
+            orderBy: { id: "desc" },
+            select: { id: true },
+        });
+        targetId = latest?.id ?? null;
+    }
+
+    const intake = targetId !== null
+        ? await prisma.clinicalIntake.update({ where: { id: targetId }, data })
+        : await prisma.clinicalIntake.create({ data: { patientId, ...data } });
+
+    await logPatientActivity({
+        patientId,
+        userId: session.user.id,
+        action: "CLINICAL_INTAKE_UPDATED",
+        summary: await assessmentLabel(patientId, intake.id),
+    });
+
+    return NextResponse.json(intake);
+}
+```
+
+**Step 3 — `src/app/api/patients/[id]/route.ts`.** Two replacements. Replace:
+```ts
+// GET /api/patients/[id] — single patient with intake + reservations
+```
+with:
+```ts
+// GET /api/patients/[id] — single patient with files + reservations. The
+// clinical assessments have their own endpoint, ./intake. (TJ-067b)
+```
+Then replace:
+```ts
+        include: {
+            intake: clinical,
+            files: {
+```
+with:
+```ts
+        include: {
+            files: {
+```
+`clinical` is still used by `soapNote: clinical`; keep that line and the `const clinical` declaration.
+
+**Step 4 — create `src/app/components/ClinicalAssessment.tsx` with exactly:**
+```tsx
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+
+// A patient's clinical assessments, one page each. A patient who comes back
+// with a new injury gets a new page, and the earlier ones stay as written.
+// Every screen that shows the Clinical Assessment mounts this one component
+// (the admin and doctor patient pages, and the doctor's session page), so a
+// change here reaches all of them. (TJ-067b)
+
+interface Intake {
+    id: number;
+    createdAt: string;
+    injuryPlace: string | null;
+    patientSince: string | null;
+    medicalHistory: string | null;
+    assessment: string | null;
+    aggravators: string | null;
+    relievers: string | null;
+    diagnosis: string | null;
+    treatmentPlan: string | null;
+    recommendedSessions: number | null;
+    clinicExercises: string | null;
+    homeExercises: string | null;
+    nextSessionTreatment: string | null;
+}
+
+type FieldKey = Exclude<keyof Intake, "id" | "createdAt">;
+
+interface Field {
+    key: FieldKey;
+    label: string;
+    type: "text" | "number" | "textarea";
+    placeholder?: string;
+}
+
+const INTAKE_FIELDS: Field[] = [
+    { key: "injuryPlace", label: "Injury Place", type: "text" },
+    { key: "patientSince", label: "Patient Since", type: "text", placeholder: "e.g. March 2024" },
+    { key: "medicalHistory", label: "Medical History", type: "textarea" },
+    { key: "assessment", label: "Assessment", type: "textarea" },
+    { key: "aggravators", label: "Pain Aggravators", type: "textarea" },
+    { key: "relievers", label: "Pain Relievers", type: "textarea" },
+    { key: "diagnosis", label: "Diagnosis", type: "textarea" },
+    { key: "treatmentPlan", label: "Treatment Plan", type: "textarea" },
+    { key: "recommendedSessions", label: "Recommended Sessions", type: "number" },
+    { key: "clinicExercises", label: "Clinic Exercises", type: "textarea" },
+    { key: "homeExercises", label: "Home Exercises", type: "textarea" },
+    { key: "nextSessionTreatment", label: "Next Session Treatment", type: "textarea" },
+];
+
+// Copied from the latest page into a new one: they describe the patient,
+// not the injury. Every other field starts blank.
+const CARRIED_OVER: FieldKey[] = ["patientSince", "medicalHistory"];
+
+type Form = Record<FieldKey, string>;
+
+function formFrom(intake: Intake | null): Form {
+    const form = {} as Form;
+    for (const f of INTAKE_FIELDS) {
+        const val = intake?.[f.key];
+        form[f.key] = val != null ? String(val) : "";
+    }
+    return form;
+}
+
+const formatDate = (d: string) =>
+    new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+interface ClinicalAssessmentProps {
+    patientId: number;
+    // Told whenever the form gains or loses unsaved edits, so the page can
+    // guard its Back button and the browser's close (TJ-022). Pass a state
+    // setter, which is stable, not a new arrow function on every render.
+    onDirtyChange?: (dirty: boolean) => void;
+    // Called after a save lands.
+    onSaved?: () => void;
+}
+
+export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }: ClinicalAssessmentProps) {
+    const [intakes, setIntakes] = useState<Intake[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
+    // The page on screen: a saved assessment's id, or "new" for one not saved yet.
+    const [selected, setSelected] = useState<number | "new">("new");
+    const [form, setForm] = useState<Form>(() => formFrom(null));
+    // The form as last loaded or saved. Anything typed since makes it dirty.
+    const [baseline, setBaseline] = useState(() => JSON.stringify(formFrom(null)));
+    const [saving, setSaving] = useState(false);
+    const [msg, setMsg] = useState("");
+    const [error, setError] = useState("");
+
+    const dirty = JSON.stringify(form) !== baseline;
+
+    // The cleanup reports clean when this unmounts. The session page drops it
+    // while it reloads, and must not go on guarding edits that are gone.
+    useEffect(() => {
+        onDirtyChange?.(dirty);
+        return () => onDirtyChange?.(false);
+    }, [dirty, onDirtyChange]);
+
+    const show = useCallback((page: number | "new", f: Form) => {
+        setSelected(page);
+        setForm(f);
+        setBaseline(JSON.stringify(f));
+        setMsg("");
+        setError("");
+    }, []);
+
+    // Loads every page, then shows `focus`, or the latest when focus is not
+    // given or not found.
+    const load = useCallback(async (focus?: number) => {
+        const res = await fetch(`/api/patients/${patientId}/intake`);
+        if (!res.ok) {
+            setLoadError("Could not load the clinical assessment. Reload the page to try again.");
+            setLoading(false);
+            return;
+        }
+        const data = await res.json();
+        const list: Intake[] = Array.isArray(data) ? data : [];
+        const shown = list.find((i) => i.id === focus) ?? list[list.length - 1] ?? null;
+        setIntakes(list);
+        show(shown ? shown.id : "new", formFrom(shown));
+        setLoadError("");
+        setLoading(false);
+    }, [patientId, show]);
+
+    useEffect(() => { load(); }, [load]);
+
+    const openPage = (intake: Intake) => {
+        if (intake.id === selected) return;
+        if (dirty && !window.confirm("You have unsaved Clinical Assessment edits. Switch pages without saving them?")) return;
+        show(intake.id, formFrom(intake));
+    };
+
+    const startNew = () => {
+        if (dirty && !window.confirm("You have unsaved Clinical Assessment edits. Start a new assessment without saving them?")) return;
+        const latest = intakes[intakes.length - 1] ?? null;
+        const f = formFrom(null);
+        for (const key of CARRIED_OVER) {
+            const val = latest?.[key];
+            f[key] = val != null ? String(val) : "";
+        }
+        // Clean until something is typed: the carried-over fields alone are
+        // not work to lose.
+        show("new", f);
+    };
+
+    const save = async () => {
+        const isNew = selected === "new";
+        setSaving(true);
+        setMsg("");
+        setError("");
+        const res = await fetch(`/api/patients/${patientId}/intake`, {
+            method: isNew ? "POST" : "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(isNew ? form : { ...form, intakeId: selected }),
+        });
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setSaving(false);
+            setError(data.error || "Could not save the assessment. Your text is still here; try again.");
+            return;
+        }
+        const saved: Intake = await res.json();
+        await load(saved.id);
+        setSaving(false);
+        setMsg(isNew ? "New assessment saved!" : "Assessment saved!");
+        setTimeout(() => setMsg(""), 2500);
+        onSaved?.();
+    };
+
+    const saveLabel =
+        selected !== "new" ? "Update Assessment" : intakes.length > 0 ? "Save New Assessment" : "Save Assessment";
+
+    return (
+        <div>
+            {loading ? (
+                <p className="empty-text">Loading…</p>
+            ) : loadError ? (
+                <div className="error-msg" role="alert">{loadError}</div>
+            ) : (
+                <>
+                    {intakes.length > 0 && (
+                        <div className="assessment-pages" role="group" aria-label="Assessments">
+                            {intakes.map((it, i) => (
+                                <button
+                                    key={it.id}
+                                    type="button"
+                                    className={`page-pill ${selected === it.id ? "active" : ""}`}
+                                    aria-pressed={selected === it.id}
+                                    onClick={() => openPage(it)}
+                                >
+                                    <span className="pill-title">Assessment {i + 1}</span>
+                                    <span className="pill-meta" dir="auto">{it.injuryPlace?.trim() || "No injury place"}</span>
+                                    <span className="pill-meta">{formatDate(it.createdAt)}</span>
+                                </button>
+                            ))}
+                            {selected === "new" ? (
+                                <span className="page-pill active draft" aria-current="true">
+                                    <span className="pill-title">Assessment {intakes.length + 1}</span>
+                                    <span className="pill-meta">New, not saved yet</span>
+                                </span>
+                            ) : (
+                                <button type="button" className="btn-new" onClick={startNew}>+ New Assessment</button>
+                            )}
+                        </div>
+                    )}
+
+                    {msg && <div className="success-msg">{msg}</div>}
+                    {error && <div className="error-msg" role="alert">{error}</div>}
+
+                    <div className="intake-grid">
+                        {INTAKE_FIELDS.map((f) => (
+                            <div key={f.key} className={`form-group ${f.type === "textarea" ? "full-width" : ""}`}>
+                                <label htmlFor={`intake-${f.key}`}>{f.label}</label>
+                                {f.type === "textarea" ? (
+                                    <textarea
+                                        id={`intake-${f.key}`}
+                                        rows={3}
+                                        value={form[f.key]}
+                                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                                    />
+                                ) : (
+                                    <input
+                                        id={`intake-${f.key}`}
+                                        type={f.type}
+                                        placeholder={f.placeholder}
+                                        value={form[f.key]}
+                                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                                    />
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="section-actions">
+                        <button type="button" className="btn-save" onClick={save} disabled={saving}>
+                            {saving ? "Saving…" : saveLabel}
+                        </button>
+                    </div>
+                </>
+            )}
+
+            <style jsx>{`
+                .assessment-pages {
+                    display: flex; flex-wrap: wrap; gap: 0.5rem;
+                    margin-bottom: 1.25rem; padding-bottom: 1rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.06);
+                }
+                .page-pill {
+                    display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem;
+                    min-width: 0; max-width: 220px; padding: 0.45rem 0.8rem;
+                    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+                    border-radius: var(--radius-sm, 2px); color: rgba(255,255,255,0.6);
+                    font-family: inherit; text-align: start; cursor: pointer;
+                    transition: background 0.15s, border-color 0.15s;
+                }
+                .page-pill:hover { background: rgba(255,255,255,0.07); }
+                .page-pill.active {
+                    background: rgba(76,175,147,0.1); border-color: var(--primary, #4CAF93);
+                    color: var(--primary, #4CAF93);
+                }
+                .page-pill.draft { cursor: default; }
+                .pill-title { font-size: 0.82rem; font-weight: 600; }
+                .pill-meta {
+                    max-width: 100%; font-size: 0.72rem; color: rgba(255,255,255,0.4);
+                    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+                }
+                .btn-new {
+                    padding: 0.45rem 0.9rem;
+                    background: none; border: 1px dashed rgba(255,255,255,0.18);
+                    border-radius: var(--radius-sm, 2px); color: rgba(255,255,255,0.6);
+                    font-size: 0.82rem; font-weight: 500; font-family: inherit; cursor: pointer;
+                }
+                .btn-new:hover { color: #fff; border-color: var(--primary, #4CAF93); }
+                .success-msg {
+                    background: rgba(76,175,147,0.1); border: 1px solid rgba(76,175,147,0.2);
+                    color: #6ee7b7; padding: 0.5rem 0.85rem; border-radius: var(--radius-sm, 2px);
+                    font-size: 0.82rem; margin-bottom: 1rem;
+                }
+                .error-msg {
+                    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
+                    color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
+                    font-size: 0.82rem; margin-bottom: 1rem;
+                }
+                .intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+                .full-width { grid-column: 1 / -1; }
+                .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
+                .form-group input, .form-group textarea {
+                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+                    border-radius: var(--radius-sm, 2px); padding: 0.55rem 0.75rem; color: #fff;
+                    font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical;
+                }
+                .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
+                .section-actions { margin-top: 1.25rem; display: flex; justify-content: flex-end; }
+                .btn-save {
+                    background: var(--primary, #4CAF93); color: #fff;
+                    border: none; border-radius: var(--radius-sm, 2px);
+                    padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 600;
+                    cursor: pointer; font-family: inherit;
+                }
+                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+                .empty-text { color: rgba(255,255,255,0.35); text-align: center; padding: 2rem 0; }
+
+                @media (max-width: 640px) {
+                    .intake-grid { grid-template-columns: 1fr; }
+                    .page-pill { max-width: 100%; }
+                }
+            `}</style>
+        </div>
+    );
+}
+```
+
+**Step 5 — `src/app/admin/patients/[id]/page.tsx`.**
+1. After `import { useUnsavedChanges } from "@/lib/useUnsavedChanges";` add the line `import ClinicalAssessment from "@/app/components/ClinicalAssessment";`.
+2. In `interface PatientData`, delete the line `    intake: Intake | null;`.
+3. Delete the whole `interface Intake { … }` block, from `interface Intake {` through its closing `}`, and the blank line after it.
+4. In `ACTION_LABELS`, after `    CLINICAL_INTAKE_UPDATED: "Clinical assessment updated",` add the line `    CLINICAL_INTAKE_ADDED: "Clinical assessment added",`.
+5. Delete the whole `const INTAKE_FIELDS = [ … ];` block and the blank line after it.
+6. Delete these three lines:
+```tsx
+    const [intakeForm, setIntakeForm] = useState<Record<string, string>>({});
+    const [savingIntake, setSavingIntake] = useState(false);
+    const [intakeMsg, setIntakeMsg] = useState("");
+```
+7. Replace:
+```tsx
+    // The intake form as the server last gave it to us. Anything typed since
+    // makes the form dirty, and dirty is what the guard below acts on.
+    const [intakeBaseline, setIntakeBaseline] = useState<string>("");
+    const intakeDirty = JSON.stringify(intakeForm) !== intakeBaseline;
+    const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+```
+with:
+```tsx
+    // Whether the Clinical Assessment has unsaved edits. The form lives in
+    // <ClinicalAssessment>, which reports here; the guard below acts on it.
+    // (TJ-067b)
+    const [intakeDirty, setIntakeDirty] = useState(false);
+    const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+```
+8. In `fetchPatient`, delete the block from the blank line before `        // Populate intake form` through `        setIntakeBaseline(JSON.stringify(intake));`, inclusive.
+9. Delete the whole `const saveIntake = async () => { … };` function and the blank line after it.
+10. In `saveSoap`, replace:
+```tsx
+        // Patch the one row rather than refetch: fetchPatient() repopulates
+        // the Clinical Assessment form and would discard unsaved edits there.
+```
+with:
+```tsx
+        // Patch the one row rather than refetch the whole patient.
+```
+11. In `handleUpload`, delete:
+```tsx
+        if (!confirmDiscard("Uploading will reload this patient and discard your unsaved Clinical Assessment edits. Continue?")) {
+            e.target.value = "";
+            return;
+        }
+```
+12. In `handleRemoveFile`, delete the line:
+```tsx
+        if (!confirmDiscard("Removing this file will reload this patient and discard your unsaved Clinical Assessment edits. Continue?")) return;
+```
+13. Replace the whole Clinical Intake tab block, from `            {/* Clinical Intake Tab */}` through the `            )}` that closes it (the line before the blank line and `            {/* Sessions Tab */}`), with:
+```tsx
+            {/* Clinical Assessment Tab. Hidden rather than unmounted while another
+                tab is open, so switching tabs keeps unsaved edits. (TJ-067b) */}
+            <div className="section-card" hidden={activeTab !== "intake"}>
+                <ClinicalAssessment
+                    patientId={patient.id}
+                    onDirtyChange={setIntakeDirty}
+                    onSaved={() => setAuditLog([])}
+                />
+            </div>
+```
+14. In the `<style jsx>` block, delete these rules, which nothing in this file uses any more: the 5-line `.success-msg { … }` rule, the line `.intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }`, the line `.full-width { grid-column: 1 / -1; }`, the line `.section-actions { margin-top: 1.25rem; display: flex; justify-content: flex-end; }`, and inside `@media (max-width: 640px)` the line `.intake-grid { grid-template-columns: 1fr; }`. **Keep** `.form-group`, `.btn-save` and `.error-msg`: the Edit Info modal, the SOAP modal and the Files tab use them.
+
+**Step 6 — `src/app/doctor/patients/[id]/page.tsx`.**
+1. Add the same `ClinicalAssessment` import after the `useUnsavedChanges` import.
+2. In `interface PatientData`, delete `    intake: Intake | null;`.
+3. Delete the whole `interface Intake { … }` block and the blank line after it.
+4. Delete the whole `const INTAKE_FIELDS = [ … ];` block and the blank line after it.
+5. Delete the same three state lines as Step 5.6.
+6. Make the same replacement as Step 5.7.
+7. In `fetchPatient`, delete the same populate block as Step 5.8.
+8. Delete the whole `saveIntake` function and the blank line after it.
+9. In `handleUpload`, delete the same four lines as Step 5.11.
+10. Replace the whole Clinical Intake tab block as in Step 5.13, but **without** the `onSaved` prop (this page has no History tab):
+```tsx
+            {/* Clinical Assessment Tab. Hidden rather than unmounted while another
+                tab is open, so switching tabs keeps unsaved edits. (TJ-067b) */}
+            <div className="section-card" hidden={activeTab !== "intake"}>
+                <ClinicalAssessment patientId={patient.id} onDirtyChange={setIntakeDirty} />
+            </div>
+```
+11. In the `<style jsx>` block, delete the contiguous run of rules from `.success-msg {` through `.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }`, inclusive: `.success-msg`, `.intake-grid`, `.full-width`, the four `.form-group` rules, `.section-actions`, `.btn-save` and `.btn-save:disabled`. Nothing else on this page uses them. Keep `.error-msg` (the Files tab uses it).
+
+**Step 7 — `src/app/doctor/session/[id]/page.tsx`.**
+1. Add the same `ClinicalAssessment` import after the `useUnsavedChanges` import.
+2. Delete the whole `const INTAKE_FIELDS = [ … ];` block and the blank line after it.
+3. Replace:
+```tsx
+    // Clinical intake form
+    const [intakeForm, setIntakeForm] = useState<Record<string, string>>({});
+    const [savingIntake, setSavingIntake] = useState(false);
+    const [intakeSaved, setIntakeSaved] = useState(false);
+```
+with:
+```tsx
+    // Whether the Clinical Assessment has unsaved edits; <ClinicalAssessment>
+    // reports it. (TJ-067b)
+    const [intakeDirty, setIntakeDirty] = useState(false);
+```
+4. Replace:
+```tsx
+    // Both clinical forms are guarded together: fetchData() repopulates both,
+    // so either being dirty is enough to lose work.
+    const [soapBaseline, setSoapBaseline] = useState<string>("");
+    const [intakeBaseline, setIntakeBaseline] = useState<string>(JSON.stringify({}));
+    const clinicalDirty =
+        JSON.stringify(soapForm) !== soapBaseline ||
+        JSON.stringify(intakeForm) !== intakeBaseline;
+```
+with:
+```tsx
+    // Both clinical forms are guarded together: fetchData() repopulates the
+    // SOAP form and, by showing "Loading session…", unmounts the Clinical
+    // Assessment, so either being dirty is enough to lose work.
+    const [soapBaseline, setSoapBaseline] = useState<string>("");
+    const clinicalDirty = JSON.stringify(soapForm) !== soapBaseline || intakeDirty;
+```
+5. In `fetchData`, replace the whole block from `        // Fetch all past sessions + intake for this patient` through the `        }` that closes its `if (resData.patient?.id) {` with:
+```tsx
+        // Fetch all past sessions for this patient. The Clinical Assessment
+        // loads its own pages. (TJ-067b)
+        if (resData.patient?.id) {
+            const sessRes = await fetch(`/api/reservations?patientId=${resData.patient.id}`);
+            const sessData = await sessRes.json();
+            setPastSessions(
+                (Array.isArray(sessData) ? sessData : [])
+                    .filter((s: PastSession) => s.id !== resData.id)
+                    .sort((a: PastSession, b: PastSession) => new Date(b.sessionDate).getTime() - new Date(a.sessionDate).getTime())
+            );
+        }
+```
+6. Delete the whole `const handleSaveIntake = async () => { … };` function and the blank line after it.
+7. Replace the whole Clinical Assessment tab block, from `            {/* Clinical Assessment Tab */}` through the `            )}` that closes it (the line before the blank line and `            {/* History Tab */}`), with:
+```tsx
+            {/* Clinical Assessment Tab. Hidden rather than unmounted while another
+                tab is open, so switching tabs keeps unsaved edits. (TJ-067b) */}
+            <div className="card" hidden={activeTab !== "intake"}>
+                <ClinicalAssessment patientId={reservation.patient.id} onDirtyChange={setIntakeDirty} />
+            </div>
+```
+8. In the `<style jsx>` block, delete the line `.intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }` and the line `.full-width { grid-column: 1 / -1; }`, and replace `@media (max-width: 640px) { .form-grid, .soap-grid, .intake-grid { grid-template-columns: 1fr; } }` with `@media (max-width: 640px) { .form-grid, .soap-grid { grid-template-columns: 1fr; } }`. Keep the session page's prompts in `handleSaveDetails`, `handleStatusChange` and the Back button unchanged.
+
+**Verification:**
+- `npx prisma generate` succeeds.
+- `grep -rn "INTAKE_FIELDS" src/app` matches only `src/app/components/ClinicalAssessment.tsx`.
+- `grep -rn "intakeForm\|intakeBaseline\|saveIntake\|handleSaveIntake\|intakeMsg\|intakeSaved" src/app` prints nothing.
+- `grep -rn "intake: clinical\|data\.intake\|patientData\.intake" src/app` prints nothing.
+- `grep -n "upsert\|findUnique" "src/app/api/patients/[id]/intake/route.ts"` prints only the POST's `prisma.patient.findUnique`.
+- `grep -c "ClinicalAssessment"` prints at least `2` for each of the 3 pages (the import and the mount).
+- `grep -rn "discard your unsaved Clinical Assessment" src/app` prints nothing (the upload and remove prompts are gone), and `grep -rn "Leave without saving" "src/app/admin/patients/[id]/page.tsx" "src/app/doctor/patients/[id]/page.tsx"` still prints one **Back** prompt per page.
+- `git diff --stat <TJ-067a task commit>..HEAD` lists exactly the 7 scoped files.
+- `npx tsc --noEmit --incremental false` exits 0.
+- `npm run build` exits 0.
+- `npx eslint` on the 7 files is **informational** (the repo-wide baseline fails). Report the counts. The new code may add `react-hooks/set-state-in-effect` findings, the rule the whole app's fetch-on-mount pattern trips, and must add no other rule.
+- **Runtime checks are waived, not passed.** Do not start a dev server. The planner does the visual review.
+
+**Done when:**
+- [ ] The three screens mount `<ClinicalAssessment>` and keep no intake form code of their own.
+- [ ] The tab shows Assessment 1…N, oldest first, opens on the latest, and offers **+ New Assessment** as a draft that only a save creates.
+- [ ] A new page carries over Patient Since and Medical History, and nothing else.
+- [ ] Switching tabs keeps unsaved assessment text; switching pages or starting a new one with unsaved text asks first.
+- [ ] Admin and doctor patient pages no longer prompt on upload or file removal; every Back prompt and the session page's prompts are unchanged.
+- [ ] `GET /intake` lists every page, `POST` creates one, `PUT` updates the page named by `intakeId` and only within the patient in the URL, and `PUT` without `intakeId` still updates the latest.
+- [ ] `tsc` and `npm run build` exit 0.
