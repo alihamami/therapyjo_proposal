@@ -135,7 +135,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — **complete**: both halves merged after the user's review, SQL steps 0–3 run, pushed and **deployed 2026-11-18 01:17 (Amman)** as `3883b82`; live reads verified on all three screens; **one live write check owed** (see TJ-067) | — |
 | TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | DONE — task commit `db28223`, merged to `master` as `0745fac` with `--no-ff` on 2026-11-18 after the user's review; back-filled 57/57; live-verified | `feat/patient-since-text` |
 | TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | DONE — task commit `48c9cb2`, merged to `master` as `3883b82` with `--no-ff` on 2026-11-18 after the user's review; unique index dropped; live reads verified; **live write check owed** | `feat/assessment-pages` |
-| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2a = TJ-068e1–e3 + TJ-068g (READY), batch 2b = TJ-068f1–f3 | — |
+| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2a = TJ-068e1–e3 + TJ-068g (READY), batch 2b = TJ-068f1 (READY), TJ-068f2–f3 | — |
 | TJ-068a | Remove the unreachable "Add Reservation" popups | DONE — task commit `45a7d32`, merged to `master` as `ad2539b` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `refactor/remove-dead-booking-modals` |
 | TJ-068b | Admin menu bar: one row, solid, lined up with the page | DONE — task commit `d6f9087`, merged to `master` as `2f7e6f2` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/admin-menu-one-row` |
 | TJ-068c | Restore styles that never reached links | DONE — task commit `1659a30`, merged to `master` as `ee9f6f8` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/link-styles-restored` |
@@ -145,7 +145,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068e2 | Design 4A buttons: dashboards, booking, patients | READY — stacked on TJ-068e1 | `feat/staff-buttons-booking-patients` |
 | TJ-068e3 | Design 4A buttons: blog, website doctors, employees, notes, doctor portal | READY — stacked on TJ-068e2 | `feat/staff-buttons-content-team` |
 | TJ-068g | Admin menu bar stays on one row down to 861px | READY — stacked on TJ-068e3 | `feat/admin-menu-narrow-fit` |
-| TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | BACKLOG — design decided; pass runs on top of TJ-068g | — |
+| TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | READY — passed 2026-11-22; stacked on TJ-068g | `feat/patient-row-actions` |
 | TJ-068f2 | Row actions (design 5B): Employees | BACKLOG — after TJ-068f1 | — |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | BACKLOG — after TJ-068f1 | — |
 | TJ-069 | Staff portal refresh, phase 1: shared foundations | BACKLOG — no planning pass | — |
@@ -14984,8 +14984,445 @@ and `admin/patients/new/page.tsx`: `<button className="btn-save" onClick={handle
 
 ### TJ-068f1 — Row actions (design 5B): shared menu, patient lists and patient file
 
-- **Status:** BACKLOG. The design is decided (see TJ-068). The pass runs on top of TJ-068g.
-- **Shape, for the pass:** one shared `RowMenu` client component in `src/app/components/` (lucide icons, keyboard and outside-click handling, logical positioning, a destructive group after a divider). Clickable rows with a chevron on the admin and secretary patient lists. On both patient files: **Edit Info** as a small secondary button with `Pencil`, and `⋯` holding Archive. Existing `confirm()` prompts stay as they are; replacing them belongs to phase 1.
+- **Status:** READY
+- **Branch:** `feat/patient-row-actions`, cut from the tip of `feat/admin-menu-narrow-fit` (TJ-068g).
+- **Why:** see the 5B decision under TJ-068. On the patient lists, "View" is a small pill and Archive sits next to it as a same-size amber button, one click from a confirm. On the patient file, Edit Info and Archive are two equal pills. With 5B the row itself opens the file, the less common action moves into a `⋯` menu, and Restore stays visible where it applies.
+
+**Planning pass:** 2026-11-22, on `master` at `29d1602`; the lines this task changes are not touched by TJ-068e1–g, except the `lucide-react` import line TJ-068e2 adds to the two active patient lists, which is used as an anchor below. Read: all five patient list pages and both editable patient files (header and CSS). Decisions:
+- **Keyboard and screen readers:** the patient's name becomes a real `<Link>` (focusable, middle-click, announced as a link). The row click is a mouse shortcut only; the `<tr>` gets no role or tabindex, so table semantics stay intact. A row click that lands on a link, button, form control or the menu does nothing extra, and neither does a click that ends a text selection (`shouldOpenRow`).
+- **The menu is portalled to `<body>` with fixed positioning.** The list tables sit in containers with `overflow: hidden` / `overflow-x: auto`, which would clip an absolutely positioned menu on the last rows. It opens below the button, or above it when there is no room, aligned to the button's inline end (mirrors under `dir="rtl"`), and closes on outside click, Escape (focus returns to the button), Tab, scroll and resize. React events from a portal still bubble through the React tree, so the menu stops propagation itself.
+- **Which pages get a menu:** only where there is a second action. Admin patient list: `⋯` → Archive. Secretary and doctor lists have no other action: clickable row and chevron only. Archived lists (admin, secretary): clickable row, Restore stays a visible blue button. Patient files (admin, secretary): Edit Info as a small secondary button with `Pencil`; `⋯` → Archive; an archived patient shows a visible blue Restore instead of the menu. Archive keeps its existing `confirm()`; the menu runs the action after it has closed. The doctor's patient file has no edit or archive actions and is out of scope.
+- `lucide-react` exports `Archive`, `ChevronRight`, `MoreHorizontal`, `Pencil` and the `LucideIcon` type in `^0.564.0`.
+
+**Scope — touch only these (10, two of them new):**
+- `src/app/globals.css`
+- `src/app/components/RowMenu.tsx` (new)
+- `src/lib/rowLink.ts` (new)
+- `src/app/admin/patients/page.tsx`, `src/app/secretary/patients/page.tsx`, `src/app/doctor/patients/page.tsx`
+- `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/archived/page.tsx`
+- `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`
+
+**Do not touch:** any other file; `handleArchive`, `handleRestore`, `handleArchiveToggle` and their `confirm()` prompts; the SOAP "View / Edit" `btn-sm btn-edit` button and the `.btn-sm`/`.btn-edit` rules in `admin/patients/[id]/page.tsx`; the Edit Info modals.
+
+**Instructions.** CRLF in the working tree (the two new files may be CRLF or LF; match `src/lib/phone.ts`). Every anchor below occurs once in its file at the TJ-068g tip.
+
+**1. `src/app/globals.css`** — append at the end (after the TJ-068e block):
+```css
+
+/* Lists and row actions, design 5B (TJ-068f1). A row's whole surface opens
+   the record: the name is the real link (keyboard, middle-click, screen
+   readers), the row click is a mouse shortcut, and a muted chevron at the
+   end says so. Other actions sit in the ⋯ menu (components/RowMenu.tsx). */
+.staff-btn-sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 0.78rem;
+}
+.staff-row-link {
+  cursor: pointer;
+}
+.staff-row-name {
+  color: inherit;
+  font-weight: 500;
+  text-decoration: none;
+}
+.staff-row-name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.staff-row-name:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.staff-row-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.staff-row-chevron {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.3);
+}
+.staff-row-link:hover .staff-row-chevron {
+  color: rgba(255, 255, 255, 0.6);
+}
+```
+
+**2. `src/lib/rowLink.ts`** (new), exactly:
+```ts
+import type { MouseEvent } from "react";
+
+/**
+ * Whether a click on a list row should open the row's record (design 5B,
+ * TJ-068f1). Not when it landed on a link, button, form control or a row
+ * menu (they do their own thing), and not when it ended a text selection.
+ */
+export function shouldOpenRow(e: MouseEvent): boolean {
+    const target = e.target as HTMLElement;
+    if (target.closest("a, button, input, select, textarea, label, [role='menu']")) return false;
+    if (window.getSelection()?.toString()) return false;
+    return true;
+}
+```
+
+**3. `src/app/components/RowMenu.tsx`** (new), exactly:
+```tsx
+"use client";
+
+// Row actions, design 5B (TJ-068f1). A ⋯ button that opens a small menu of
+// the actions other than "open the record". The menu is portalled to <body>
+// with fixed positioning, so a table's overflow never clips it, and it is
+// aligned to the button's inline end, so it mirrors under dir="rtl".
+// Keyboard: Enter/Space on the button opens it and focuses the first item;
+// ArrowUp/ArrowDown move; Escape closes and returns focus; Tab closes.
+// Destructive items come last, after a divider.
+
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
+import { createPortal } from "react-dom";
+import { MoreHorizontal } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+export interface RowMenuItem {
+    label: string;
+    icon?: LucideIcon;
+    onSelect: () => void;
+    destructive?: boolean;
+}
+
+interface Props {
+    items: RowMenuItem[];
+    /** Accessible name of the ⋯ button, e.g. "More actions for Sara Khalil". */
+    label: string;
+}
+
+type Pos = { top: number; left?: number; right?: number };
+
+export default function RowMenu({ items, label }: Props) {
+    const [open, setOpen] = useState(false);
+    const [pos, setPos] = useState<Pos | null>(null);
+    const btnRef = useRef<HTMLButtonElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const menuId = useId();
+
+    const close = (returnFocus: boolean) => {
+        setOpen(false);
+        setPos(null);
+        if (returnFocus) btnRef.current?.focus();
+    };
+
+    // Place the menu once it has rendered and can be measured: below the
+    // button, or above it when there is no room below.
+    useLayoutEffect(() => {
+        if (!open || !btnRef.current || !menuRef.current) return;
+        const r = btnRef.current.getBoundingClientRect();
+        const h = menuRef.current.offsetHeight;
+        const below = r.bottom + 4;
+        const above = r.top - 4 - h;
+        const top = below + h > window.innerHeight && above >= 0 ? above : below;
+        const rtl = getComputedStyle(btnRef.current).direction === "rtl";
+        setPos(rtl ? { top, left: r.left } : { top, right: document.documentElement.clientWidth - r.right });
+    }, [open]);
+
+    // Focus the first item once the menu is placed (a hidden element cannot take focus).
+    useEffect(() => {
+        if (open && pos) menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus({ preventScroll: true });
+    }, [open, pos]);
+
+    useEffect(() => {
+        if (!open) return;
+        const onDown = (e: globalThis.MouseEvent) => {
+            const t = e.target as Node;
+            if (!menuRef.current?.contains(t) && !btnRef.current?.contains(t)) close(false);
+        };
+        const onMove = () => close(false);
+        document.addEventListener("mousedown", onDown);
+        window.addEventListener("scroll", onMove, true);
+        window.addEventListener("resize", onMove);
+        return () => {
+            document.removeEventListener("mousedown", onDown);
+            window.removeEventListener("scroll", onMove, true);
+            window.removeEventListener("resize", onMove);
+        };
+    }, [open]);
+
+    const onMenuKey = (e: KeyboardEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+        const els = Array.from(menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]') ?? []);
+        const i = els.indexOf(document.activeElement as HTMLButtonElement);
+        if (e.key === "ArrowDown") { e.preventDefault(); els[(i + 1) % els.length]?.focus(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); els[(i - 1 + els.length) % els.length]?.focus(); }
+        else if (e.key === "Escape") { e.preventDefault(); close(true); }
+        else if (e.key === "Tab") { close(false); }
+    };
+
+    const renderItem = (item: RowMenuItem) => {
+        const Icon = item.icon;
+        return (
+            <button
+                key={item.label}
+                type="button"
+                role="menuitem"
+                tabIndex={-1}
+                className={item.destructive ? "row-menu-item danger" : "row-menu-item"}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    close(true);
+                    // After the menu has gone, so a confirm() does not open over it.
+                    window.setTimeout(item.onSelect, 0);
+                }}
+            >
+                {Icon && <Icon size={15} aria-hidden="true" />}
+                {item.label}
+            </button>
+        );
+    };
+
+    const normal = items.filter((i) => !i.destructive);
+    const danger = items.filter((i) => i.destructive);
+
+    return (
+        <span className="row-menu" onClick={(e) => e.stopPropagation()}>
+            <button
+                ref={btnRef}
+                type="button"
+                className="row-menu-trigger"
+                aria-label={label}
+                aria-haspopup="menu"
+                aria-expanded={open}
+                aria-controls={open ? menuId : undefined}
+                onClick={() => (open ? close(false) : setOpen(true))}
+            >
+                <MoreHorizontal size={16} aria-hidden="true" />
+            </button>
+            {open && createPortal(
+                <div
+                    ref={menuRef}
+                    id={menuId}
+                    role="menu"
+                    aria-label={label}
+                    className="row-menu-panel"
+                    style={pos ? { top: pos.top, left: pos.left, right: pos.right } : { top: 0, left: 0, visibility: "hidden" }}
+                    onKeyDown={onMenuKey}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {normal.map(renderItem)}
+                    {normal.length > 0 && danger.length > 0 && <div className="row-menu-divider" role="separator" />}
+                    {danger.map(renderItem)}
+                </div>,
+                document.body
+            )}
+            <style jsx>{`
+                .row-menu { display: inline-flex; }
+                .row-menu-trigger {
+                    display: inline-flex; align-items: center; justify-content: center;
+                    width: 30px; height: 30px; padding: 0; border-radius: 8px;
+                    background: transparent; border: 1px solid transparent;
+                    color: rgba(255, 255, 255, 0.55); cursor: pointer;
+                    transition: background-color 0.15s ease, color 0.15s ease;
+                }
+                .row-menu-trigger:hover,
+                .row-menu-trigger[aria-expanded="true"] { background: rgba(255, 255, 255, 0.08); color: #fff; }
+                .row-menu-trigger:focus-visible { outline: 2px solid #a7f3d0; outline-offset: 2px; }
+                .row-menu-panel {
+                    position: fixed; z-index: 1100; min-width: 168px; padding: 4px;
+                    background: #243b44; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px;
+                    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+                }
+                .row-menu-item {
+                    display: flex; align-items: center; gap: 8px; width: 100%;
+                    padding: 8px 10px; border: none; border-radius: 6px; background: none;
+                    color: rgba(255, 255, 255, 0.88); font-family: inherit; font-size: 0.82rem;
+                    text-align: start; cursor: pointer;
+                }
+                .row-menu-item:hover,
+                .row-menu-item:focus { background: rgba(255, 255, 255, 0.07); outline: none; }
+                .row-menu-item.danger { color: #fca5a5; }
+                .row-menu-item.danger:hover,
+                .row-menu-item.danger:focus { background: rgba(220, 38, 38, 0.14); }
+                .row-menu-divider { height: 1px; margin: 4px 2px; background: rgba(255, 255, 255, 0.08); }
+            `}</style>
+        </span>
+    );
+}
+```
+
+**4. `src/app/admin/patients/page.tsx`**
+1. Replace `import { Plus } from "lucide-react";` with these three lines:
+   ```tsx
+   import { Archive, ChevronRight, Plus } from "lucide-react";
+   import RowMenu from "@/app/components/RowMenu";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. Replace `                            <th>Actions</th>` with `                            <th></th>`.
+3. Replace
+   ```tsx
+                               <tr key={p.id}>
+                                   <td className="id-cell">{p.id}</td>
+                                   <td className="name-cell">{p.name}</td>
+   ```
+   with
+   ```tsx
+                               <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/admin/patients/${p.id}`); }}>
+                                   <td className="id-cell">{p.id}</td>
+                                   <td className="name-cell"><Link href={`/admin/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
+   ```
+4. Replace
+   ```tsx
+                                       <div className="action-buttons">
+                                           <Link href={`/admin/patients/${p.id}`} className="btn-sm btn-view">View</Link>
+                                           <button className="btn-sm btn-archive" onClick={() => handleArchive(p.id)}>Archive</button>
+                                       </div>
+   ```
+   with
+   ```tsx
+                                       <div className="staff-row-end">
+                                           <RowMenu
+                                               label={`More actions for ${p.name}`}
+                                               items={[{ label: "Archive", icon: Archive, onSelect: () => handleArchive(p.id) }]}
+                                           />
+                                           <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
+                                       </div>
+   ```
+5. In `<style jsx>` delete: the line `.action-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }`; the 5-line `:global(.btn-sm) {` … `}` block outside `@media`; the lines `:global(.btn-view) {…}`, `:global(.btn-view:hover) {…}`, `.btn-archive {…}`, `.btn-archive:hover {…}`; and inside `@media (max-width: 560px)` the line `:global(.btn-sm) { padding: 0.42rem 0.75rem; }`.
+
+**5. `src/app/secretary/patients/page.tsx`**
+1. Replace `import { Plus } from "lucide-react";` with:
+   ```tsx
+   import { ChevronRight, Plus } from "lucide-react";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. Replace `<th>Last Visit</th><th>Action</th></tr>` with `<th>Last Visit</th><th></th></tr>`.
+3. Replace
+   ```tsx
+                               <tr key={p.id}>
+                                   <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                   <td>{p.name}</td>
+   ```
+   with
+   ```tsx
+                               <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/secretary/patients/${p.id}`); }}>
+                                   <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                   <td><Link href={`/secretary/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
+   ```
+4. Replace `                                <td><Link href={`/secretary/patients/${p.id}`} className="btn-sm btn-view">View</Link></td>` with `                                <td><div className="staff-row-end"><ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" /></div></td>`.
+5. In `<style jsx>` delete the lines that begin `:global(.btn-sm) {`, `:global(.btn-view) {` and `:global(.btn-view:hover) {`.
+
+**6. `src/app/doctor/patients/page.tsx`**
+1. After `import Link from "next/link";` insert:
+   ```tsx
+   import { useRouter } from "next/navigation";
+   import { ChevronRight } from "lucide-react";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. After `export default function DoctorPatientsPage() {` insert the line `    const router = useRouter();`.
+3. Replace `<th>Last Visit</th><th>Action</th></tr>` with `<th>Last Visit</th><th></th></tr>`.
+4. Replace
+   ```tsx
+                               <tr key={p.id}>
+                                   <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                   <td>{p.name}</td>
+   ```
+   with
+   ```tsx
+                               <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/doctor/patients/${p.id}`); }}>
+                                   <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                   <td><Link href={`/doctor/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
+   ```
+5. Replace `                                <td><Link href={`/doctor/patients/${p.id}`} className="btn-sm btn-view">View</Link></td>` with `                                <td><div className="staff-row-end"><ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" /></div></td>`.
+6. In `<style jsx>` delete the lines that begin `:global(.btn-sm) {`, `:global(.btn-view) {` and `:global(.btn-view:hover) {`.
+
+**7. `src/app/admin/patients/archived/page.tsx`** and **8. `src/app/secretary/patients/archived/page.tsx`** — the same edits in both; `<base>` is `/admin/patients` and `/secretary/patients` respectively:
+1. After `import { isMissingPhone } from "@/lib/phone";` insert:
+   ```tsx
+   import { useRouter } from "next/navigation";
+   import { ChevronRight } from "lucide-react";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. After the `export default function …() {` line (`ArchivedPatientsPage` / `SecretaryArchivedPatientsPage`) insert `    const router = useRouter();`.
+3. Replace `                            <th>Actions</th>` with `                            <th></th>`.
+4. Replace
+   ```tsx
+                               <tr key={p.id}>
+                                   <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                   <td>{p.name}</td>
+   ```
+   with
+   ```tsx
+                               <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`<base>/${p.id}`); }}>
+                                   <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                   <td><Link href={`<base>/${p.id}`} className="staff-row-name">{p.name}</Link></td>
+   ```
+5. Replace
+   ```tsx
+                                       <div className="action-buttons">
+                                           <Link href={`<base>/${p.id}`} className="btn-sm btn-view">View</Link>
+                                           <button className="btn-sm btn-restore" onClick={() => handleRestore(p.id)}>Restore</button>
+                                       </div>
+   ```
+   with
+   ```tsx
+                                       <div className="staff-row-end">
+                                           <button className="btn-sm btn-restore" onClick={() => handleRestore(p.id)}>Restore</button>
+                                           <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
+                                       </div>
+   ```
+6. In `<style jsx>` delete the `.action-buttons {…}` line and the lines `:global(.btn-view) {…}` and `:global(.btn-view:hover) {…}`. Keep `:global(.btn-sm)` (Restore uses it) and `.btn-restore`.
+
+**9. `src/app/admin/patients/[id]/page.tsx`**
+1. After `import { isMissingPhone } from "@/lib/phone";` insert:
+   ```tsx
+   import { Archive, Pencil } from "lucide-react";
+   import RowMenu from "@/app/components/RowMenu";
+   ```
+2. Replace
+   ```tsx
+                           <button className="btn-sm btn-edit" onClick={() => setEditingInfo(true)}>Edit Info</button>
+                           <button className="btn-sm btn-archive" onClick={handleArchiveToggle}>
+                               {patient.archived ? "Restore" : "Archive"}
+                           </button>
+   ```
+   with
+   ```tsx
+                           <button className="staff-btn staff-btn-secondary staff-btn-sm" onClick={() => setEditingInfo(true)}>
+                               <Pencil size={14} aria-hidden="true" />Edit Info
+                           </button>
+                           {patient.archived ? (
+                               <button className="staff-btn staff-btn-sm btn-restore" onClick={handleArchiveToggle}>Restore</button>
+                           ) : (
+                               <RowMenu
+                                   label="More actions for this patient"
+                                   items={[{ label: "Archive", icon: Archive, onSelect: handleArchiveToggle }]}
+                               />
+                           )}
+   ```
+3. In `<style jsx>` replace the two lines
+   ```
+                   .btn-archive { background: rgba(251,191,36,0.12); color: #fbbf24; }
+                   .btn-archive:hover { background: rgba(251,191,36,0.22); }
+   ```
+   with
+   ```
+                   .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; border: 1px solid transparent; }
+                   .btn-restore:hover { background: rgba(96,165,250,0.22); }
+   ```
+
+**10. `src/app/secretary/patients/[id]/page.tsx`** — steps 1–3 exactly as in 9 (the header JSX is identical; the CSS lines are one-liners with the same text at 16-space indent).
+
+**Verification:**
+- `grep -rn "btn-view\|btn-archive\|action-buttons" src/app/admin/patients/page.tsx src/app/secretary/patients/page.tsx src/app/doctor/patients/page.tsx src/app/admin/patients/archived/page.tsx src/app/secretary/patients/archived/page.tsx "src/app/admin/patients/[id]/page.tsx" "src/app/secretary/patients/[id]/page.tsx"` prints nothing.
+- `grep -c "staff-row-link"` prints `1` in each of the five list pages; `grep -c "staff-row-chevron"` prints `1` in each; `grep -c "<RowMenu"` prints `1` in `admin/patients/page.tsx` and both `[id]` pages and `0` elsewhere; `grep -c "btn-restore"` prints `3` in each `[id]` page (button + two rules) and is unchanged (`3`) in each archived page.
+- `git diff --stat` against the TJ-068g commit lists exactly the 10 files (2 added).
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0.
+- **Runtime checks are waived, not passed.** Do not start a dev server. The planner tests the menu (mouse, keyboard, last-row placement, outside click) in the mocked preview.
+
+**Done when:**
+- [ ] On all five patient lists the name is a link and a row click opens the file; clicks on Restore, the `⋯` button or its menu do not.
+- [ ] The admin list's Archive lives in the `⋯` menu and still asks for confirmation.
+- [ ] Both patient files show Edit Info (secondary, `Pencil`) plus `⋯` → Archive, or a visible blue Restore when archived.
+- [ ] `tsc` and the build exit 0.
 
 ### TJ-068f2 — Row actions (design 5B): Employees
 
