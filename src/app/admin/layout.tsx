@@ -193,7 +193,7 @@ export default function AdminLayout({
                     </div>
 
                     <div className="nav-user">
-                        <div className="user-avatar">
+                        <div className="user-avatar" title={session?.user?.name || "Admin"}>
                             {(session?.user?.name?.[0] || "A").toUpperCase()}
                         </div>
                         <span className="user-name">{session?.user?.name || "Admin"}</span>
@@ -224,22 +224,21 @@ export default function AdminLayout({
                 /* ── Navbar ── */
                 .admin-nav {
                     display: flex;
-                    flex-direction: column;
-                    padding: 0.5rem 2rem;
+                    align-items: center;
+                    gap: 2rem;
+                    /* Side padding puts the wordmark on the page content's left
+                       edge: .admin-content is a centred 1400px column with 2rem
+                       padding. (TJ-068b) */
+                    padding: 0.5rem max(2rem, calc((100% - 1400px) / 2 + 2rem));
                     box-sizing: border-box;
-                    background: rgba(26, 46, 53, 0.7);
-                    backdrop-filter: blur(20px);
-                    -webkit-backdrop-filter: blur(20px);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    /* Solid. At 70% opacity, form fields scrolled visibly behind
+                       the links. The blur, and the WebKit compositing hack it
+                       needed, went with it. (TJ-068b) */
+                    background: var(--bg-dark, #1a2e35);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
                     position: sticky;
                     top: 0;
                     z-index: 100;
-                    /* Force its own compositing layer: sticky + backdrop-filter repaints
-                       incorrectly on scroll in mobile Safari/WebKit without this, leaving
-                       ghosted content behind the blur. */
-                    transform: translateZ(0);
-                    -webkit-transform: translateZ(0);
-                    will-change: transform;
                 }
                 .nav-top-row {
                     display: flex;
@@ -247,7 +246,7 @@ export default function AdminLayout({
                     justify-content: space-between;
                     min-height: 44px;
                 }
-                .nav-brand a {
+                .nav-brand :global(a) {
                     font-family: var(--font-outfit, 'Outfit', sans-serif);
                     color: var(--primary, #4CAF93);
                     font-size: 1.1rem;
@@ -294,7 +293,9 @@ export default function AdminLayout({
                     flex-wrap: wrap;
                     row-gap: 0.35rem;
                     gap: 1.5rem;
-                    min-height: 56px;
+                    min-height: 44px;
+                    flex: 1;
+                    min-width: 0;
                 }
                 .nav-links {
                     display: flex;
@@ -461,8 +462,14 @@ export default function AdminLayout({
                     margin: 0 auto;
                 }
 
+                /* One row needs ~1,090px with the user's name. Below 1180px the
+                   name goes first; it stays in the avatar's tooltip. (TJ-068b) */
+                @media (min-width: 861px) and (max-width: 1180px) {
+                    .user-name { display: none; }
+                }
+
                 @media (max-width: 860px) {
-                    .admin-nav { padding: 0.5rem 1rem; }
+                    .admin-nav { padding: 0.5rem 1rem; flex-direction: column; align-items: stretch; gap: 0; }
                     .nav-hamburger { display: block; }
 
                     .nav-collapsible {
