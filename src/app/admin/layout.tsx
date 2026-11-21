@@ -200,13 +200,15 @@ export default function AdminLayout({
                         <button
                             onClick={() => signOut({ callbackUrl: "/login" })}
                             className="logout-btn"
+                            aria-label="Sign out"
+                            title="Sign out"
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                 <polyline points="16 17 21 12 16 7" />
                                 <line x1="21" y1="12" x2="9" y2="12" />
                             </svg>
-                            Sign Out
+                            <span className="logout-label">Sign Out</span>
                         </button>
                     </div>
                 </div>
@@ -466,6 +468,16 @@ export default function AdminLayout({
                    name goes first; it stays in the avatar's tooltip. (TJ-068b) */
                 @media (min-width: 861px) and (max-width: 1180px) {
                     .user-name { display: none; }
+                }
+
+                /* 861–1040px: tighter spacing and an icon-only Sign Out keep
+                   the bar on one row, with room for a two-digit Approvals
+                   badge (8px to spare at 861px). (TJ-068g) */
+                @media (min-width: 861px) and (max-width: 1040px) {
+                    .admin-nav { gap: 1rem; }
+                    .nav-collapsible { gap: 0.75rem; }
+                    :global(.nav-link) { padding: 0.4rem 0.5rem; }
+                    .logout-label { display: none; }
                 }
 
                 @media (max-width: 860px) {
