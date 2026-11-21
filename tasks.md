@@ -135,11 +135,11 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — **complete**: both halves merged after the user's review, SQL steps 0–3 run, pushed and **deployed 2026-11-18 01:17 (Amman)** as `3883b82`; live reads verified on all three screens; **one live write check owed** (see TJ-067) | — |
 | TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | DONE — task commit `db28223`, merged to `master` as `0745fac` with `--no-ff` on 2026-11-18 after the user's review; back-filled 57/57; live-verified | `feat/patient-since-text` |
 | TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | DONE — task commit `48c9cb2`, merged to `master` as `3883b82` with `--no-ff` on 2026-11-18 after the user's review; unique index dropped; live reads verified; **live write check owed** | `feat/assessment-pages` |
-| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, batch 2 = TJ-068e, TJ-068f1–f3 | — |
-| TJ-068a | Remove the unreachable "Add Reservation" popups | READY | `refactor/remove-dead-booking-modals` |
-| TJ-068b | Admin menu bar: one row, solid, lined up with the page | READY — stacked on TJ-068a | `feat/admin-menu-one-row` |
-| TJ-068c | Restore styles that never reached links | READY — stacked on TJ-068b | `bugfix/link-styles-restored` |
-| TJ-068d | "No phone" instead of a bare 0 | READY — stacked on TJ-068c | `feat/no-phone-label` |
+| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2 = TJ-068e, TJ-068f1–f3 | — |
+| TJ-068a | Remove the unreachable "Add Reservation" popups | DONE — task commit `45a7d32`, merged to `master` as `ad2539b` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `refactor/remove-dead-booking-modals` |
+| TJ-068b | Admin menu bar: one row, solid, lined up with the page | DONE — task commit `d6f9087`, merged to `master` as `2f7e6f2` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/admin-menu-one-row` |
+| TJ-068c | Restore styles that never reached links | DONE — task commit `1659a30`, merged to `master` as `ee9f6f8` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/link-styles-restored` |
+| TJ-068d | "No phone" instead of a bare 0 | DONE — task commit `281a7f1`, merged to `master` as `6b3b4f6` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/no-phone-label` |
 | TJ-068e | One primary button for the staff portal (design 4A) | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | BACKLOG — design decided; pass runs on top of TJ-068e | — |
 | TJ-068f2 | Row actions (design 5B): Employees | BACKLOG — after TJ-068f1 | — |
@@ -14312,7 +14312,7 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 
 ### TJ-068 — Staff portal refresh, phase 0: quick wins
 
-- **Status:** SPLIT. Batch 1 (TJ-068a–d) is `READY`. Batch 2 (TJ-068e, TJ-068f1–f3) gets its pass on top of batch 1, so its anchors are read from the code it will actually change.
+- **Status:** SPLIT. Batch 1 (TJ-068a–d) is `DONE`: merged 2026-11-22, not pushed. Batch 2 (TJ-068e, TJ-068f1–f3) gets its pass on top of batch 1, so its anchors are read from the code it will actually change.
 - **Why:** Visible defects with small, safe fixes, and two design decisions the user made on 2026-11-21 against the planner's before/after mockup (private artifact `https://claude.ai/artifact/UoRvJmBksMqNArx5nEpgDp`).
 - **Execution:** one executor at a time. Each sub-task gets its own branch, **stacked**: TJ-068a is cut from `master`, and each later one from the previous one's branch tip. The planner merges them in order with `--no-ff`. **Per the user's standing rule (2026-11-18), nothing merges, and nothing is pushed, until the user has seen the real screens.**
 
@@ -14331,6 +14331,14 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 - The menu must work from the keyboard (Enter/Space opens, Esc closes and returns focus) and close on an outside click. It is positioned with logical properties so it would mirror correctly in RTL.
 - "Restore" on archive pages keeps its own visible button and colour.
 
+**Batch 1 — verified and merged (2026-11-22):**
+- **Diffs:** the planner read all four against their specs. 23 files, 129 insertions, 399 deletions, nothing out of scope, `tasks.md` untouched on every branch.
+- **Gates:** re-run by the planner on the stack tip `281a7f1`: `npx tsc --noEmit --incremental false` exit 0, `npx next build --webpack` exit 0 (the only warning is the workspace-root notice caused by the nested worktree).
+- **Preview:** a throwaway, uncommitted worktree mounted the real admin, secretary and doctor layouts and pages under `/preview/*`, with every `/api` call answered in the browser from made-up data, every write refused, and no `DATABASE_URL`. Measured: the admin bar is 61px (was about 116), solid, and the wordmark's left edge equals the `h1`'s; the duplicates chip is amber; View pills are teal and Back links grey on all list pages; the secretary and doctor wordmarks and the doctor menu are styled; "No phone" shows only for blank or all-zero numbers, and a real second number is used when the first is "0"; the 375px menu opens with no horizontal overflow. Between about 861px and 990px wide "Approvals" wraps to a second line inside the bar (an expected fallback band; a tweak is folded into batch 2).
+- **Spec error (planner's):** TJ-068a said `grep -c modal-overlay` would print 3 in `admin/page.tsx`; it prints 4, because a phone-width `@media` rule also names it. Nothing extra was removed.
+- **Merged** in order with `--no-ff`: `ad2539b` (a), `2f7e6f2` (b), `ee9f6f8` (c), `6b3b4f6` (d). The merged tree is identical to `281a7f1`.
+- **Found for batch 2:** three more unreachable add popups, in `admin/patients/page.tsx`, `secretary/patients/page.tsx` and `secretary/notes/page.tsx` (`showAdd` is never set true).
+
 **Data the user can fix by hand (not code):** two doctor names are stored in lowercase ("maya", "razan"), and every doctor's Email field holds their username.
 
 **Found during the review, not phase 0:** an orphaned folder `.claude/worktrees/agent-abe4a2c7c69b8c700` holds a full copy of `src/` (68 `.tsx` files) but is not a registered git worktree. Because `tsconfig.json` excludes only `node_modules`, it can pollute `tsc` and lint run in the main checkout (see TJ-050). Left in place; deleting it is the user's call.
@@ -14339,7 +14347,7 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 
 ### TJ-068a — Remove the unreachable "Add Reservation" popups
 
-- **Status:** READY
+- **Status:** DONE. Executed by the Sonnet executor: task commit `45a7d32` on `refactor/remove-dead-booking-modals`, cut from `e6a4fab`. Merged to `master` with `--no-ff` as `ad2539b` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later"). Verification: see "Batch 1 — verified and merged" under TJ-068.
 - **Branch:** `refactor/remove-dead-booking-modals`, cut from `master`.
 - **Why:** The admin and secretary dashboards each still carry a booking modal and its state, search effect, handlers and CSS. Nothing opens it: `openAddModal` is never called, and "+ Add Reservation" and empty-slot clicks both navigate to the booking page (TJ-045). About 300 dead lines that TJ-068e and phase 3 would otherwise have to restyle. Nothing on screen changes.
 
@@ -14416,7 +14424,7 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 
 ### TJ-068b — Admin menu bar: one row, solid, lined up with the page
 
-- **Status:** READY
+- **Status:** DONE. Executed by the Sonnet executor: task commit `d6f9087` on `feat/admin-menu-one-row`, cut from `45a7d32`. Merged to `master` with `--no-ff` as `2f7e6f2` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later"). Verification: see "Batch 1 — verified and merged" under TJ-068.
 - **Branch:** `feat/admin-menu-one-row`, cut from the tip of `refactor/remove-dead-booking-modals`.
 - **Why:** On desktop the admin bar is two rows. `.admin-nav` is `flex-direction: column`, so the wordmark sits alone above the links: about 116px of chrome. It is padded `2rem` from the window edge while `.admin-content` is a centred 1400px column, so the wordmark never lines up with the page. Its background is `rgba(26, 46, 53, 0.7)`, and on the live patient file the planner saw form labels ("Pain Relievers") scroll visibly behind the links. Also, `.nav-brand a` never matches: the `<a>` comes from `<Link>`, which styled-jsx does not tag (see TJ-068c). So the wordmark renders white in the body font instead of teal Outfit.
 
@@ -14503,7 +14511,7 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 
 ### TJ-068c — Restore styles that never reached links
 
-- **Status:** READY
+- **Status:** DONE. Executed by the Sonnet executor: task commit `1659a30` on `bugfix/link-styles-restored`, cut from `d6f9087`. Merged to `master` with `--no-ff` as `ee9f6f8` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later"). Verification: see "Batch 1 — verified and merged" under TJ-068.
 - **Branch:** `bugfix/link-styles-restored`, cut from the tip of `feat/admin-menu-one-row`.
 - **Why:** styled-jsx adds its scoping class (`jsx-…`) only to plain HTML elements written in a component. `<Link>` is a component, so the `<a>` it renders never gets the class, and a scoped rule naming the Link's own class never matches. The admin layout already works around this with `:global(.nav-link)`. The pages below never did. Seen live on 2026-11-21: the duplicates warning on the dashboard renders as plain white text instead of an amber chip, and **View** in the patient list is plain text. From code: the secretary and doctor wordmarks render unstyled, and **the doctor portal's whole menu** (`doctor/layout.tsx` maps its four items to `<Link className="nav-link …">`) gets none of its link, hover or active styles. 14 `<Link>` sites in 10 files (the admin wordmark is fixed in TJ-068b).
 
@@ -14556,7 +14564,7 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 
 ### TJ-068d — "No phone" instead of a bare 0
 
-- **Status:** READY
+- **Status:** DONE. Executed by the Sonnet executor: task commit `281a7f1` on `feat/no-phone-label`, cut from `1659a30`. Merged to `master` with `--no-ff` as `6b3b4f6` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later"). Verification: see "Batch 1 — verified and merged" under TJ-068.
 - **Branch:** `feat/no-phone-label`, cut from the tip of `bugfix/link-styles-restored`.
 - **Why:** Patients saved with `"0"` as their phone show **0** as if it were a number. Seen live on 2026-11-21 on calendar cards and in the patient list (`phone1` is a required `String`, so blank numbers are stored as `"0"` or `""`). An empty or all-zero phone now reads as a muted "No phone". The stored value never changes, and real numbers display exactly as typed.
 
