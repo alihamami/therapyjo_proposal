@@ -135,7 +135,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — **complete**: both halves merged after the user's review, SQL steps 0–3 run, pushed and **deployed 2026-11-18 01:17 (Amman)** as `3883b82`; live reads verified on all three screens; **one live write check owed** (see TJ-067) | — |
 | TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | DONE — task commit `db28223`, merged to `master` as `0745fac` with `--no-ff` on 2026-11-18 after the user's review; back-filled 57/57; live-verified | `feat/patient-since-text` |
 | TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | DONE — task commit `48c9cb2`, merged to `master` as `3883b82` with `--no-ff` on 2026-11-18 after the user's review; unique index dropped; live reads verified; **live write check owed** | `feat/assessment-pages` |
-| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2a = TJ-068e1–e3 + TJ-068g (READY), batch 2b = TJ-068f1 (READY), TJ-068f2–f3 | — |
+| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2a = TJ-068e1–e3 + TJ-068g (READY), batch 2b = TJ-068f1–f3 (READY) | — |
 | TJ-068a | Remove the unreachable "Add Reservation" popups | DONE — task commit `45a7d32`, merged to `master` as `ad2539b` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `refactor/remove-dead-booking-modals` |
 | TJ-068b | Admin menu bar: one row, solid, lined up with the page | DONE — task commit `d6f9087`, merged to `master` as `2f7e6f2` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/admin-menu-one-row` |
 | TJ-068c | Restore styles that never reached links | DONE — task commit `1659a30`, merged to `master` as `ee9f6f8` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/link-styles-restored` |
@@ -146,8 +146,8 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068e3 | Design 4A buttons: blog, website doctors, employees, notes, doctor portal | READY — stacked on TJ-068e2 | `feat/staff-buttons-content-team` |
 | TJ-068g | Admin menu bar stays on one row down to 861px | READY — stacked on TJ-068e3 | `feat/admin-menu-narrow-fit` |
 | TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | READY — passed 2026-11-22; stacked on TJ-068g | `feat/patient-row-actions` |
-| TJ-068f2 | Row actions (design 5B): Employees | BACKLOG — after TJ-068f1 | — |
-| TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | BACKLOG — after TJ-068f1 | — |
+| TJ-068f2 | Row actions (design 5B): Employees | READY — passed 2026-11-22; stacked on TJ-068f1 | `feat/employee-row-actions` |
+| TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | READY — passed 2026-11-22; stacked on TJ-068f2 | `feat/content-row-actions` |
 | TJ-069 | Staff portal refresh, phase 1: shared foundations | BACKLOG — no planning pass | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
@@ -15426,11 +15426,195 @@ export default function RowMenu({ items, label }: Props) {
 
 ### TJ-068f2 — Row actions (design 5B): Employees
 
-- **Status:** BACKLOG, after TJ-068f1. Doctors and secretaries tables: the row opens Edit; `⋯` holds Edit, then Resign and Delete permanently after a divider.
+- **Status:** READY
+- **Branch:** `feat/employee-row-actions`, cut from the tip of `feat/patient-row-actions` (TJ-068f1).
+- **Why:** The Doctors and Secretaries tables end in two or three pills per row (Edit, Resign, or Re-enrol and Delete permanently), red next to blue at the same size. With 5B the row opens the editor and the rest moves into `⋯`, with Resign and Delete permanently last, in red, after a divider.
+
+**Planning pass:** 2026-11-22, on `master` at `bfc31dd`; anchors re-checked at the TJ-068g tip `489b520`. Both pages read at the table and CSS; the two are line-for-line twins (`doc` vs `sec`, 7 vs 6 columns). The editor is a modal (`openEdit`), not a page, so the name becomes a `<button>` rather than a link; a `button.staff-row-name` reset is added to `globals.css`. `handleResign`, `handleReEnrol` and `openDelete` are reused unchanged, with their existing confirmations. `.btn-sm` and `.btn-delete` stay (the edit modal's photo button uses them); `.btn-edit` and `.action-buttons` are used only by the row and go. The `lucide-react` import line is the one TJ-068e3 adds. Every anchor below was checked by script to occur once (the import line at the TJ-068e3 tip).
+
+**Scope — touch only:** `src/app/globals.css`, `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/secretaries/page.tsx`.
+
+**Instructions** (CRLF):
+
+**1. `src/app/globals.css`** — append at the end:
+```css
+
+/* A row name that opens an editor in place rather than a page (TJ-068f2). */
+button.staff-row-name {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
+```
+
+**2. `src/app/admin/employees/doctors/page.tsx`** (`item` = `doc`) and **3. `src/app/admin/employees/secretaries/page.tsx`** (`item` = `sec`) — the same edits in both:
+1. Replace `import { Plus } from "lucide-react";` with:
+   ```tsx
+   import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
+   import RowMenu from "@/app/components/RowMenu";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. Replace `                            <th>Actions</th>` with `                            <th></th>`.
+3. Replace `                            <tr key={item.id}>` with `                            <tr key={item.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) openEdit(item); }}>`.
+4. Replace `                                    <div>{item.name}</div>` with `                                    <button type="button" className="staff-row-name" onClick={() => openEdit(item)}>{item.name}</button>`.
+5. Replace the whole block from `                                    <div className="action-buttons">` through its closing `                                    </div>` (the Edit / Resign / Re-enrol / Delete permanently buttons, 11 lines) with:
+   ```tsx
+                                       <div className="staff-row-end">
+                                           <RowMenu
+                                               label={`More actions for ${item.name}`}
+                                               items={item.status === "ACTIVE" ? [
+                                                   { label: "Edit", icon: Pencil, onSelect: () => openEdit(item) },
+                                                   { label: "Resign", icon: UserX, onSelect: () => handleResign(item.id), destructive: true },
+                                               ] : [
+                                                   { label: "Edit", icon: Pencil, onSelect: () => openEdit(item) },
+                                                   { label: "Re-enrol", icon: RotateCcw, onSelect: () => handleReEnrol(item.id) },
+                                                   { label: "Delete permanently", icon: Trash2, onSelect: () => openDelete(item), destructive: true },
+                                               ]}
+                                           />
+                                           <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
+                                       </div>
+   ```
+6. In the `<style jsx>` block delete the lines `.action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }`, `.btn-edit { background: rgba(96,165,250,0.15); color: #93c5fd; }` and `.btn-edit:hover { background: rgba(96,165,250,0.25); }`. Keep `.btn-sm`, `.btn-delete` and `.btn-delete:hover`.
+
+**Verification:**
+- `grep -c "action-buttons\|btn-edit" <both pages>` prints `0`; `grep -c "<RowMenu"` prints `1` in each; `grep -c "btn-delete"` prints `3` in each (the modal's button and its two rules).
+- `git diff --stat` against the TJ-068f1 commit lists exactly the 3 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. Runtime checks are waived; no dev server.
+
+**Done when:**
+- [ ] On both tables a row click or the name opens the editor; `⋯` holds Edit (and Re-enrol for a resigned person), then Resign or Delete permanently in red after a divider.
+- [ ] Resign, Re-enrol and Delete permanently behave exactly as before.
+- [ ] `tsc` and the build exit 0.
+
+---
 
 ### TJ-068f3 — Row actions (design 5B): Blog, website Doctors, Notes
 
-- **Status:** BACKLOG, after TJ-068f1. The same pattern on the blog table, the website-doctor cards (keep drag-to-reorder working) and the notes table.
+- **Status:** READY
+- **Branch:** `feat/content-row-actions`, cut from the tip of `feat/employee-row-actions` (TJ-068f2).
+- **Why:** The same pattern on the three remaining admin lists with row buttons.
+
+**Planning pass:** 2026-11-22, on `master` at `bfc31dd`; anchors re-checked at the TJ-068g tip `489b520`. Read at the rows/cards and CSS: `admin/blog/page.tsx` (table; Edit is a page, so the title becomes a `<Link>`; archived posts keep a visible Restore, per 5B), `admin/doctors/page.tsx` (draggable cards; Edit is a modal, so the name becomes a button; a click never fires after a drag, so a card click can open the editor without breaking drag-to-reorder; Show/Hide moves into `⋯` with Archive), `admin/notes/page.tsx` (table; Edit is a modal; Delete is a hard delete with a `confirm()` and goes last, in red). `confirm()` prompts are kept. In `admin/doctors/page.tsx` every `btn-sm`/`btn-edit`/`btn-toggle`/`btn-archive` use is in the card, so those rules go; in `admin/blog/page.tsx` `.btn-sm` and `.btn-restore` stay for Restore; in `admin/notes/page.tsx` all row-button rules go. A scoped class on a `<Link>` does not apply (TJ-068c), so the blog title keeps its `title-cell` wrapper `<div>` and the link inside it carries only the global `staff-row-name`. The `lucide-react` import lines are the ones TJ-068e3 adds. Every anchor below was checked by script to occur once.
+
+**Scope — touch only:** `src/app/admin/blog/page.tsx`, `src/app/admin/doctors/page.tsx`, `src/app/admin/notes/page.tsx`.
+
+**Instructions** (CRLF):
+
+**1. `src/app/admin/blog/page.tsx`**
+1. Replace `import { Plus } from "lucide-react";` with:
+   ```tsx
+   import Link from "next/link";
+   import { Archive, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
+   import RowMenu from "@/app/components/RowMenu";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. Replace `                            <th>Actions</th>` with `                            <th></th>`.
+3. Replace `                            <tr key={post.id}>` with `                            <tr key={post.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/admin/blog/${post.id}`); }}>`.
+4. Replace `                                    <div className="title-cell">{post.title || "(untitled)"}</div>` with `                                    <div className="title-cell"><Link href={`/admin/blog/${post.id}`} className="staff-row-name">{post.title || "(untitled)"}</Link></div>`.
+5. Replace the block from `                                    <div className="action-buttons">` through its closing `                                    </div>` (Edit / Archive / Restore / Delete permanently, 11 lines) with:
+   ```tsx
+                                       <div className="staff-row-end">
+                                           {post.status === "ARCHIVED" && (
+                                               <button className="btn-sm btn-restore" onClick={() => restore(post.id)}>Restore</button>
+                                           )}
+                                           <RowMenu
+                                               label={`More actions for ${post.title || "this post"}`}
+                                               items={post.status !== "ARCHIVED" ? [
+                                                   { label: "Edit", icon: Pencil, onSelect: () => router.push(`/admin/blog/${post.id}`) },
+                                                   { label: "Archive", icon: Archive, onSelect: () => archive(post.id) },
+                                               ] : [
+                                                   { label: "Edit", icon: Pencil, onSelect: () => router.push(`/admin/blog/${post.id}`) },
+                                                   { label: "Delete permanently", icon: Trash2, onSelect: () => openDelete(post), destructive: true },
+                                               ]}
+                                           />
+                                           <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
+                                       </div>
+   ```
+6. In `<style jsx>` delete the one-line rules `.action-buttons {…}`, `.btn-edit {…}`, `.btn-edit:hover {…}`, `.btn-archive {…}`, `.btn-archive:hover {…}`, `.btn-delete {…}`, `.btn-delete:hover {…}`. Keep `.btn-sm`, `.btn-restore`, `.btn-restore:hover`, `.btn-danger*`.
+
+**2. `src/app/admin/doctors/page.tsx`**
+1. Replace `import { Plus } from "lucide-react";` with:
+   ```tsx
+   import { Archive, Eye, EyeOff, Pencil, Plus } from "lucide-react";
+   import RowMenu from "@/app/components/RowMenu";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. Replace `                        onDrop={() => onDrop(doc.id)}` with these two lines:
+   ```tsx
+                           onDrop={() => onDrop(doc.id)}
+                           onClick={(e) => { if (shouldOpenRow(e)) openEdit(doc); }}
+   ```
+3. Replace the block from `                            <h3>{doc.name}</h3>` through the closing `                            </div>` of `card-actions` (9 lines: the `h3`, the `doc-title` paragraph, and the `card-actions` div with its three buttons) with:
+   ```tsx
+                               <div className="card-text">
+                                   <h3><button type="button" className="staff-row-name" onClick={() => openEdit(doc)}>{doc.name}</button></h3>
+                                   <p className="doc-title">{doc.title}</p>
+                               </div>
+                               <RowMenu
+                                   label={`More actions for ${doc.name}`}
+                                   items={[
+                                       { label: "Edit", icon: Pencil, onSelect: () => openEdit(doc) },
+                                       { label: doc.hidden ? "Show on the site" : "Hide from the site", icon: doc.hidden ? Eye : EyeOff, onSelect: () => toggleHidden(doc) },
+                                       { label: "Archive", icon: Archive, onSelect: () => archiveDoctor(doc) },
+                                   ]}
+                               />
+   ```
+4. In `<style jsx>`:
+   - replace `                .card-body { padding: 0.9rem 1rem; }` with
+     ```
+                     .card-body { padding: 0.9rem 1rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+                     .card-text { min-width: 0; }
+                     .card-body h3 .staff-row-name { font-weight: 700; }
+     ```
+   - replace `                .doc-title { font-size: 0.8rem; color: #6ec4ab; margin: 0 0 0.75rem; }` with `                .doc-title { font-size: 0.8rem; color: #6ec4ab; margin: 0; }`
+   - delete the lines `.card-actions {…}`, `.btn-sm {…}`, `.btn-edit {…}`, `.btn-edit:hover {…}`, `.btn-toggle {…}`, `.btn-toggle:hover {…}`, `.btn-archive {…}`, `.btn-archive:hover {…}`, and inside the `@media` block the line `                    .btn-sm { padding: 0.45rem 0.7rem; }`.
+
+**3. `src/app/admin/notes/page.tsx`**
+1. Replace `import { Plus } from "lucide-react";` with:
+   ```tsx
+   import { ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
+   import RowMenu from "@/app/components/RowMenu";
+   import { shouldOpenRow } from "@/lib/rowLink";
+   ```
+2. Replace `                            <th>Actions</th>` with `                            <th></th>`.
+3. Replace `                            <tr key={n.id}>` with `                            <tr key={n.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) openEdit(n); }}>`.
+4. Replace `                                <td className="note-name">{n.name}</td>` with `                                <td className="note-name"><button type="button" className="staff-row-name" onClick={() => openEdit(n)}>{n.name}</button></td>`.
+5. Replace
+   ```tsx
+                                       <div className="action-buttons">
+                                           <button className="btn-sm btn-edit" onClick={() => openEdit(n)}>Edit</button>
+                                           <button className="btn-sm btn-delete" onClick={() => handleDelete(n.id)}>Delete</button>
+                                       </div>
+   ```
+   with
+   ```tsx
+                                       <div className="staff-row-end">
+                                           <RowMenu
+                                               label={`More actions for ${n.name}`}
+                                               items={[
+                                                   { label: "Edit", icon: Pencil, onSelect: () => openEdit(n) },
+                                                   { label: "Delete", icon: Trash2, onSelect: () => handleDelete(n.id), destructive: true },
+                                               ]}
+                                           />
+                                           <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
+                                       </div>
+   ```
+6. In `<style jsx>` delete `.action-buttons {…}`, the multi-line `.btn-sm {` … `}` block, `.btn-edit {…}`, `.btn-edit:hover {…}`, `.btn-delete {…}`, `.btn-delete:hover {…}`. (No `@media` rule in this file names `.btn-sm`.)
+
+**Verification:**
+- `grep -c "action-buttons\|btn-edit\|btn-archive\|btn-delete" src/app/admin/blog/page.tsx src/app/admin/notes/page.tsx` prints `0` for both; `grep -c "btn-sm\|btn-edit\|btn-toggle\|btn-archive\|card-actions" src/app/admin/doctors/page.tsx` prints `0`; `grep -c "<RowMenu"` prints `1` in each of the three files; `grep -c "draggable" src/app/admin/doctors/page.tsx` is unchanged.
+- `git diff --stat` against the TJ-068f2 commit lists exactly the 3 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. Runtime checks are waived; no dev server.
+
+**Done when:**
+- [ ] Blog: a row click or the title opens the editor page; `⋯` holds Edit and Archive, or Edit then Delete permanently (red) for an archived post, which also keeps a visible Restore.
+- [ ] Website Doctors: a card click or the name opens the editor; drag-to-reorder is unchanged; `⋯` holds Edit, Show/Hide and Archive.
+- [ ] Notes: a row click or the name opens the editor; `⋯` holds Edit, then Delete in red.
+- [ ] `tsc` and the build exit 0.
 
 ---
 
