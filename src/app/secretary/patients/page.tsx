@@ -151,9 +151,9 @@ export default function SecretaryPatientsPage() {
                 .data-table th { text-align: left; padding: 0.85rem 1rem; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06); font-weight: 600; }
                 .data-table td { padding: 0.75rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); }
                 .data-table tr:hover { background: rgba(255,255,255,0.02); }
-                .btn-sm { padding: 0.28rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; text-decoration: none; display: inline-block; }
-                .btn-view { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                .btn-view:hover { background: rgba(76,175,147,0.22); }
+                :global(.btn-sm) { padding: 0.28rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; text-decoration: none; display: inline-block; }
+                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
+                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
                 .pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem; }
                 .pagination button { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); cursor: pointer; font-size: 0.82rem; font-family: inherit; }
                 .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }

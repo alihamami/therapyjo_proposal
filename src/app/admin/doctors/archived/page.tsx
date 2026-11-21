@@ -139,8 +139,8 @@ export default function ArchivedDoctorsPage() {
                 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; }
                 .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
-                .btn-back { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
-                .btn-back:hover { color: #fff; }
+                :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
+                :global(.btn-back:hover) { color: #fff; }
                 .table-container {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
                     border-radius: 10px; overflow-x: auto; overflow-y: hidden;

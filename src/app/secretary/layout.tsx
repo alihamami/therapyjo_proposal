@@ -139,7 +139,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                     padding: 0 1.5rem; height: 56px;
                     background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06);
                 }
-                .logo { font-weight: 700; font-size: 1.1rem; color: var(--primary, #4CAF93); text-decoration: none; }
+                .nav :global(.logo) { font-weight: 700; font-size: 1.1rem; color: var(--primary, #4CAF93); text-decoration: none; }
                 .nav-links { display: flex; align-items: center; gap: 0.25rem; }
                 :global(.nav-link) {
                     display: flex; align-items: center; gap: 0.35rem;
