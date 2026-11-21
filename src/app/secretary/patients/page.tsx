@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { isMissingPhone } from "@/lib/phone";
-import { Plus } from "lucide-react";
+import { ChevronRight, Plus } from "lucide-react";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface Patient {
     id: number;
@@ -60,7 +61,7 @@ export default function SecretaryPatientsPage() {
             <div className="table-container">
                 <table className="data-table">
                     <thead>
-                        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Last Visit</th><th>Action</th></tr>
+                        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Last Visit</th><th></th></tr>
                     </thead>
                     <tbody>
                         {loading ? (
@@ -68,12 +69,12 @@ export default function SecretaryPatientsPage() {
                         ) : patients.length === 0 ? (
                             <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No patients found</td></tr>
                         ) : patients.map((p) => (
-                            <tr key={p.id}>
+                            <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/secretary/patients/${p.id}`); }}>
                                 <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
-                                <td>{p.name}</td>
+                                <td><Link href={`/secretary/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
                                 <td>{isMissingPhone(p.phone1) ? <span className="no-phone">No phone</span> : p.phone1}</td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
-                                <td><Link href={`/secretary/patients/${p.id}`} className="btn-sm btn-view">View</Link></td>
+                                <td><div className="staff-row-end"><ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" /></div></td>
                             </tr>
                         ))}
                     </tbody>
@@ -99,9 +100,6 @@ export default function SecretaryPatientsPage() {
                 .data-table th { text-align: left; padding: 0.85rem 1rem; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06); font-weight: 600; }
                 .data-table td { padding: 0.75rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); }
                 .data-table tr:hover { background: rgba(255,255,255,0.02); }
-                :global(.btn-sm) { padding: 0.28rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; text-decoration: none; display: inline-block; }
-                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
                 .pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem; }
                 .pagination button { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); cursor: pointer; font-size: 0.82rem; font-family: inherit; }
                 .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }

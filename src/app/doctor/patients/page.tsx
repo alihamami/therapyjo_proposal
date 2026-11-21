@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface Patient {
     id: number;
@@ -11,6 +14,7 @@ interface Patient {
 }
 
 export default function DoctorPatientsPage() {
+    const router = useRouter();
     const [patients, setPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -53,7 +57,7 @@ export default function DoctorPatientsPage() {
             <div className="table-container">
                 <table className="data-table">
                     <thead>
-                        <tr><th>ID</th><th>Name</th><th>Last Visit</th><th>Action</th></tr>
+                        <tr><th>ID</th><th>Name</th><th>Last Visit</th><th></th></tr>
                     </thead>
                     <tbody>
                         {loading ? (
@@ -61,11 +65,11 @@ export default function DoctorPatientsPage() {
                         ) : patients.length === 0 ? (
                             <tr><td colSpan={4} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No patients found</td></tr>
                         ) : patients.map((p) => (
-                            <tr key={p.id}>
+                            <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/doctor/patients/${p.id}`); }}>
                                 <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
-                                <td>{p.name}</td>
+                                <td><Link href={`/doctor/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
-                                <td><Link href={`/doctor/patients/${p.id}`} className="btn-sm btn-view">View</Link></td>
+                                <td><div className="staff-row-end"><ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" /></div></td>
                             </tr>
                         ))}
                     </tbody>
@@ -91,9 +95,6 @@ export default function DoctorPatientsPage() {
                 .data-table th { text-align: left; padding: 0.85rem 1rem; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06); font-weight: 600; }
                 .data-table td { padding: 0.75rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); }
                 .data-table tr:hover { background: rgba(255,255,255,0.02); }
-                :global(.btn-sm) { padding: 0.28rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; text-decoration: none; display: inline-block; }
-                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
                 .pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem; }
                 .pagination button { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); cursor: pointer; font-size: 0.82rem; font-family: inherit; }
                 .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
