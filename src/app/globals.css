@@ -1935,3 +1935,14 @@ ol {
 .staff-row-link:hover .staff-row-chevron {
   color: rgba(255, 255, 255, 0.6);
 }
+
+/* A row name that opens an editor in place rather than a page (TJ-068f2). */
+button.staff-row-name {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
