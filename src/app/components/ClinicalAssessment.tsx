@@ -235,7 +235,7 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
                     </div>
 
                     <div className="section-actions">
-                        <button type="button" className="btn-save" onClick={save} disabled={saving}>
+                        <button type="button" className="staff-btn staff-btn-primary" aria-busy={saving} onClick={save} disabled={saving}>
                             {saving ? "Saving…" : saveLabel}
                         </button>
                     </div>
@@ -295,13 +295,6 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
                 }
                 .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
                 .section-actions { margin-top: 1.25rem; display: flex; justify-content: flex-end; }
-                .btn-save {
-                    background: var(--primary, #4CAF93); color: #fff;
-                    border: none; border-radius: var(--radius-sm, 2px);
-                    padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 600;
-                    cursor: pointer; font-family: inherit;
-                }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
                 .empty-text { color: rgba(255,255,255,0.35); text-align: center; padding: 2rem 0; }
 
                 @media (max-width: 640px) {

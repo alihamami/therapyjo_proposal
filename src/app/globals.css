@@ -1814,3 +1814,84 @@ ol {
   color: rgba(255, 255, 255, 0.4);
   font-style: italic;
 }
+
+/* Buttons, design 4A (TJ-068e). Primary: bright teal with dark text, 5.7:1
+   (white on #4CAF93 is 2.7:1 and fails AA). Secondary: the quiet companion
+   for Cancel and Close. A button that is saving sets aria-busy="true" and
+   shows a ring spinner before its label. Every Add, Save and Create button in
+   the staff portal uses these; pages keep only layout rules of their own. */
+.staff-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.staff-btn:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 2px;
+}
+.staff-btn:disabled {
+  cursor: not-allowed;
+}
+.staff-btn-primary {
+  background: #4CAF93;
+  color: #0d2a22;
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.staff-btn-primary:hover:not(:disabled) {
+  background: #5dbda0;
+}
+.staff-btn-primary:disabled {
+  background: rgba(76, 175, 147, 0.32);
+  color: rgba(13, 42, 34, 0.6);
+  box-shadow: none;
+}
+.staff-btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 500;
+}
+.staff-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+.staff-btn-secondary:disabled {
+  opacity: 0.5;
+}
+/* Working: full colour although disabled, with a spinner before the label. */
+.staff-btn-primary[aria-busy="true"]:disabled {
+  background: #4CAF93;
+  color: #0d2a22;
+  cursor: progress;
+}
+.staff-btn[aria-busy="true"]::before {
+  content: "";
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: staff-spin 0.7s linear infinite;
+}
+@keyframes staff-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .staff-btn[aria-busy="true"]::before { animation-duration: 1.6s; }
+}

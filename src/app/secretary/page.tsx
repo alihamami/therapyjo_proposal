@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
+import { Plus } from "lucide-react";
 
 interface Doctor {
     id: string;
@@ -146,7 +147,7 @@ export default function SecretaryDashboard() {
                         <option value="all">All Doctors</option>
                         {doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
                     </select>
-                    <button className="btn-add" onClick={() => { window.location.href = `/secretary/reservations/new?date=${selectedDate}`; }}>+ Add Reservation</button>
+                    <button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = `/secretary/reservations/new?date=${selectedDate}`; }}><Plus size={15} aria-hidden="true" />Add Reservation</button>
                 </div>
             </div>
 
@@ -189,7 +190,6 @@ export default function SecretaryDashboard() {
                 .controls-right { display: flex; align-items: center; gap: 0.5rem; }
                 .doctor-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; font-family: inherit; }
                 .doctor-select option { background: #1a2e35; }
-                .btn-add { background: var(--primary, #4CAF93); color: #fff; border: none; padding: 0.45rem 1rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; }
                 .date-trigger-row { margin-bottom: 1rem; }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }

@@ -141,8 +141,8 @@ export default function SecretaryNewPatientPage() {
 
                     {/* Action buttons */}
                     <div className="form-actions">
-                        <button className="btn-cancel" onClick={() => router.push("/secretary/patients")}>Cancel</button>
-                        <button className="btn-save" onClick={handleSubmit} disabled={saving}>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => router.push("/secretary/patients")}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>
                             {saving ? "Creating…" : "Create Patient"}
                         </button>
                     </div>
@@ -212,19 +212,6 @@ export default function SecretaryNewPatientPage() {
                 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
                 .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem; }
-                .btn-cancel {
-                    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
-                    border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px);
-                    padding: 0.55rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
-                }
-                .btn-cancel:hover { background: rgba(255,255,255,0.1); color: #fff; }
-                .btn-save {
-                    background: var(--primary, #4CAF93); color: #fff; border: none;
-                    border-radius: var(--radius-sm, 2px); padding: 0.55rem 1.5rem; font-size: 0.88rem;
-                    font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s;
-                }
-                .btn-save:hover { background: var(--primary-dark, #3a8f77); }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
                 @media (max-width: 640px) {
                     .form-layout { flex-direction: column; }
