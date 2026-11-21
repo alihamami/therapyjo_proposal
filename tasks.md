@@ -135,6 +135,19 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — **complete**: both halves merged after the user's review, SQL steps 0–3 run, pushed and **deployed 2026-11-18 01:17 (Amman)** as `3883b82`; live reads verified on all three screens; **one live write check owed** (see TJ-067) | — |
 | TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | DONE — task commit `db28223`, merged to `master` as `0745fac` with `--no-ff` on 2026-11-18 after the user's review; back-filled 57/57; live-verified | `feat/patient-since-text` |
 | TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | DONE — task commit `48c9cb2`, merged to `master` as `3883b82` with `--no-ff` on 2026-11-18 after the user's review; unique index dropped; live reads verified; **live write check owed** | `feat/assessment-pages` |
+| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, batch 2 = TJ-068e, TJ-068f1–f3 | — |
+| TJ-068a | Remove the unreachable "Add Reservation" popups | READY | `refactor/remove-dead-booking-modals` |
+| TJ-068b | Admin menu bar: one row, solid, lined up with the page | READY — stacked on TJ-068a | `feat/admin-menu-one-row` |
+| TJ-068c | Restore styles that never reached links | READY — stacked on TJ-068b | `bugfix/link-styles-restored` |
+| TJ-068d | "No phone" instead of a bare 0 | READY — stacked on TJ-068c | `feat/no-phone-label` |
+| TJ-068e | One primary button for the staff portal (design 4A) | BACKLOG — design decided; pass runs on top of batch 1 | — |
+| TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | BACKLOG — design decided; pass runs on top of TJ-068e | — |
+| TJ-068f2 | Row actions (design 5B): Employees | BACKLOG — after TJ-068f1 | — |
+| TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | BACKLOG — after TJ-068f1 | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | BACKLOG — no planning pass | — |
+| TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
+| TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
+| TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
 
 ---
 
@@ -14288,3 +14301,396 @@ with:
 - [ ] Admin and doctor patient pages no longer prompt on upload or file removal; every Back prompt and the session page's prompts are unchanged.
 - [ ] `GET /intake` lists every page, `POST` creates one, `PUT` updates the page named by `intakeId` and only within the patient in the URL, and `PUT` without `intakeId` still updates the latest.
 - [ ] `tsc` and `npm run build` exit 0.
+
+---
+
+## Staff portal refresh — review of 2026-11-21
+
+The user asked for the employee dashboard to look better ("it has gotten a little all over the place"). The planner reviewed the live admin portal (read-only, in the user's signed-in Chrome) and the code of all three staff portals. Secretary and doctor were reviewed from code only. The root cause: no shared staff styles. Each of 41 staff files carries its own `<style jsx>` copy of modal, button and table rules (popup styles in 16 files, Save button in 22, table in 17), with 25 distinct font sizes, ~1,570 literal colours and emoji icons in 13 files, although `lucide-react` is installed and unused there.
+
+The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to TJ-072, captured below as `BACKLOG`.
+
+### TJ-068 — Staff portal refresh, phase 0: quick wins
+
+- **Status:** SPLIT. Batch 1 (TJ-068a–d) is `READY`. Batch 2 (TJ-068e, TJ-068f1–f3) gets its pass on top of batch 1, so its anchors are read from the code it will actually change.
+- **Why:** Visible defects with small, safe fixes, and two design decisions the user made on 2026-11-21 against the planner's before/after mockup (private artifact `https://claude.ai/artifact/UoRvJmBksMqNArx5nEpgDp`).
+- **Execution:** one executor at a time. Each sub-task gets its own branch, **stacked**: TJ-068a is cut from `master`, and each later one from the previous one's branch tip. The planner merges them in order with `--no-ff`. **Per the user's standing rule (2026-11-18), nothing merges, and nothing is pushed, until the user has seen the real screens.**
+
+**Decided — P0-4, design 4A, "bright teal, dark text"** (feeds TJ-068e):
+- Fill `#4CAF93` (`--primary`), text `#0d2a22`, contrast 5.7 : 1. White on `#4CAF93` is 2.7 : 1 and fails AA, which is why the text is dark.
+- Height 34px, radius 8px, font 0.8rem / 600, Title Case, no `text-transform`, no hover lift. Shadow `inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 2px rgba(0,0,0,0.35)`.
+- Hover `#5dbda0`. Keyboard focus `outline: 2px solid #a7f3d0; outline-offset: 2px`. Disabled: background `rgba(76,175,147,0.32)`, text `rgba(13,42,34,0.6)`, no shadow. Working: a 13px ring spinner in the text colour plus "Saving…".
+- "Add" actions carry the lucide `Plus` icon at 15px.
+- The companion secondary button (Cancel) is the same size, background `rgba(255,255,255,0.06)`, border `1px solid rgba(255,255,255,0.14)`, text `rgba(255,255,255,0.88)`, weight 500.
+- It applies to every Add, Save and Create button in the staff portal, defined once in `globals.css` under the staff section. It replaces the CMS handoff's `linear-gradient(135deg, #059669, #10b981)` and ends the leak of the homepage's global `.btn-primary` (uppercase, letter-spacing, `translateY(-2px)` hover) into the four admin pages that reuse that class name.
+
+**Decided — P0-5, design 5B, "row opens, extra actions in a menu"** (feeds TJ-068f1–f3):
+- Clicking anywhere on a list row opens the record: a patient opens their file, an employee or post opens its editor. A muted chevron at the row end signals it.
+- Every other action lives in a `⋯` menu button (30×30, radius 8px). Menu: background `#243b44`, border `rgba(255,255,255,0.1)`, radius 10px, items with 15px lucide icons. Destructive items (Resign, Delete permanently) come last, after a divider, in `#fca5a5`.
+- Patient file header: **Edit Info** as a small secondary button with the `Pencil` icon, plus a `⋯` menu holding Archive.
+- The menu must work from the keyboard (Enter/Space opens, Esc closes and returns focus) and close on an outside click. It is positioned with logical properties so it would mirror correctly in RTL.
+- "Restore" on archive pages keeps its own visible button and colour.
+
+**Data the user can fix by hand (not code):** two doctor names are stored in lowercase ("maya", "razan"), and every doctor's Email field holds their username.
+
+**Found during the review, not phase 0:** an orphaned folder `.claude/worktrees/agent-abe4a2c7c69b8c700` holds a full copy of `src/` (68 `.tsx` files) but is not a registered git worktree. Because `tsconfig.json` excludes only `node_modules`, it can pollute `tsc` and lint run in the main checkout (see TJ-050). Left in place; deleting it is the user's call.
+
+---
+
+### TJ-068a — Remove the unreachable "Add Reservation" popups
+
+- **Status:** READY
+- **Branch:** `refactor/remove-dead-booking-modals`, cut from `master`.
+- **Why:** The admin and secretary dashboards each still carry a booking modal and its state, search effect, handlers and CSS. Nothing opens it: `openAddModal` is never called, and "+ Add Reservation" and empty-slot clicks both navigate to the booking page (TJ-045). About 300 dead lines that TJ-068e and phase 3 would otherwise have to restyle. Nothing on screen changes.
+
+**Planning pass:** 2026-11-21, on `master` at `0f992a1`. Read in full: `src/app/admin/page.tsx`, `src/app/secretary/page.tsx` (both are self-contained client pages). Confirmed by grep: `openAddModal` is defined and never referenced in either file, and `setShowAdd(true)` occurs only inside it, so `showAdd` can never be true. In admin, `.form-row`, `.checkbox-label`, `.modal-date` and `.search-*` are used only by the add modal. The duplicate and detail modals use `.modal-overlay`, `.modal-card`, `.form-group`, `.modal-actions`, `.btn-cancel` and `.btn-save`, so those **stay** in admin. In secretary the add modal is the only modal, so all modal and form CSS goes. `statusError` (both files) and `doctors` (both files, used by the filter) stay. Every anchor below was checked by script to occur exactly once in its file.
+
+**Scope — touch only these:**
+- `src/app/admin/page.tsx`
+- `src/app/secretary/page.tsx`
+
+**Do not touch:** anything else. Keep `statusError`/`setStatusError`, `.error-msg`, `.status-error`, `.dismiss-error`, and in admin every rule the duplicate and detail modals use.
+
+**Instructions.** Files are CRLF in the working tree; keep that. "Delete from A through B" means both anchor lines and everything between.
+
+`src/app/admin/page.tsx`:
+1. Delete the whole `interface PatientResult {` block (5 lines) and the blank line after it.
+2. Delete from `    // Add Reservation modal` through `    const [addError, setAddError] = useState("");`. Then delete the single line `    const [saving, setSaving] = useState(false);`. The line `    const [statusError, setStatusError] = useState("");` stays.
+3. Delete from `    // Patient search for add modal` through the first `    }, [patientSearch]);` after it, plus the blank line that follows.
+4. Delete from `    const openAddModal = () => {` up to, **not including**, `    const goDay = (offset: number) => {`. This removes `openAddModal` and `submitAdd` and leaves one blank line before `goDay`.
+5. Delete from `            {/* Add Reservation Modal */}` up to, not including, `            {/* Duplicate Modal */}`, leaving one blank line.
+6. Replace the comment above `handleEmptyClick`:
+   ```
+       // Mirrors the "+ Add Reservation" button, which navigates rather than
+       // opening the in-file modal (that modal is unreachable — see TJ-045).
+       // Carries the clicked hour so the form opens on the right time.
+   ```
+   with:
+   ```
+       // Mirrors the "+ Add Reservation" button: both go to the booking page.
+       // (The old in-file booking modal was removed in TJ-068a.) Carries the
+       // clicked hour so the form opens on the right time.
+   ```
+7. In the `<style jsx>` block, delete these rules (whole rule, including any continuation lines up to its closing `}`):
+   - `.modal-date { … }`
+   - the line `.form-row { display: flex; gap: 0.75rem; }`
+   - the line `.form-row .form-group { flex: 1; }`
+   - the multi-line `.checkbox-label { … }` block
+   - `.checkbox-label input[type="checkbox"] { width: auto; }`
+   - the multi-line `.search-results { … }` and `.search-item { … }` blocks, `.search-item:hover { … }` and `.search-phone { … }`
+   - inside `@media (max-width: 768px)`, the line `.form-row { flex-direction: column; gap: 0; }`
+
+`src/app/secretary/page.tsx`:
+1. Delete the whole `interface PatientResult {` block and the blank line after it.
+2. Delete from `    // Add Reservation modal` through `    const [addError, setAddError] = useState("");`. This includes the `saving` state, which sits inside that range here. `statusError` stays.
+3. Delete the whole `useEffect` whose first body line is `        if (patientSearch.length < 2) { setPatientResults([]); return; }`, from its `    useEffect(() => {` line through `    }, [patientSearch]);`, plus the blank line that follows.
+4. Delete from `    const openAddModal = () => {` up to, not including, `    const goDay = (offset: number) => {`.
+5. Delete from `            {/* Add Reservation Modal */}` up to, not including, `            <style jsx>{\``, leaving one blank line.
+6. Replace the comment above `handleEmptyClick`:
+   ```
+       // Mirrors the "+ Add Reservation" button, which navigates rather than
+       // opening the in-file modal (that modal is unreachable — see TJ-045).
+   ```
+   with:
+   ```
+       // Mirrors the "+ Add Reservation" button: both go to the booking page.
+       // (The old in-file booking modal was removed in TJ-068a.)
+   ```
+7. In the `<style jsx>` block, delete the one-line rules that begin with: `.modal-overlay {`, `.modal-card {`, `.modal-card h2 {`, `.form-group {`, `.form-row {`, `.form-row .form-group {`, `.form-group label {`, `.form-group input, .form-group textarea, .form-group select {`, `.form-group select option {`, `.form-group input:focus, .form-group textarea:focus {`, `.search-results {`, `.search-item {`, `.search-item:hover {`, `.search-phone {`, `.modal-actions {`, `.btn-cancel {`, `.btn-save {`, `.btn-save:disabled {`. Keep `.error-msg`, `.status-error`, `.dismiss-error` and everything else.
+
+**Verification:**
+- `grep -nE "showAdd|patientSearch|patientResults|selectedPatient|addForm|addError|submitAdd|openAddModal|PatientResult|setSaving|search-item|search-results|checkbox-label|modal-date|form-row" src/app/admin/page.tsx src/app/secretary/page.tsx` prints nothing.
+- `grep -nE "modal-overlay|form-group|btn-save|btn-cancel|modal-actions" src/app/secretary/page.tsx` prints nothing.
+- `grep -c "modal-overlay" src/app/admin/page.tsx` prints `3` (two modals plus the CSS rule).
+- `git diff --stat` lists exactly the 2 files, with the deletions far outnumbering the insertions (the insertions are the two rewritten comments).
+- `npx tsc --noEmit --incremental false` exits 0.
+- `npm run build` (or `npx next build --webpack` in a worktree with a junctioned `node_modules`) exits 0.
+- **Runtime checks are waived, not passed.** Do not start a dev server: the only database is production.
+
+**Done when:**
+- [ ] Neither dashboard contains the add modal, its state, its effect, its handlers or its CSS.
+- [ ] Admin's duplicate and detail modals and their CSS are byte-identical to before.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-068b — Admin menu bar: one row, solid, lined up with the page
+
+- **Status:** READY
+- **Branch:** `feat/admin-menu-one-row`, cut from the tip of `refactor/remove-dead-booking-modals`.
+- **Why:** On desktop the admin bar is two rows. `.admin-nav` is `flex-direction: column`, so the wordmark sits alone above the links: about 116px of chrome. It is padded `2rem` from the window edge while `.admin-content` is a centred 1400px column, so the wordmark never lines up with the page. Its background is `rgba(26, 46, 53, 0.7)`, and on the live patient file the planner saw form labels ("Pain Relievers") scroll visibly behind the links. Also, `.nav-brand a` never matches: the `<a>` comes from `<Link>`, which styled-jsx does not tag (see TJ-068c). So the wordmark renders white in the body font instead of teal Outfit.
+
+**Planning pass:** 2026-11-21. Read in full: `src/app/admin/layout.tsx`. Checked against the live site, 2026-11-21, read-only. Confirmed: `.admin-content { padding: 2rem; max-width: 1400px; margin: 0 auto; }` and the global `box-sizing: border-box` (`globals.css` reset). So the content's left edge is `max(2rem, (100% − 1400px) / 2 + 2rem)`, and the new nav padding uses exactly that expression. The mobile menu (`max-width: 860px`) is unchanged. The `translateZ(0)` / `will-change` hack exists only for sticky plus `backdrop-filter` (its own comment says so), so it goes with the blur. Estimated one-row width at desktop: about 1,090px with the user's name, about 990px without. Hence the name hides from 861px to 1180px. Between 861px and about 990px the user block may still wrap onto a second line inside the bar. That is an acceptable fallback, and the executor reports it rather than fixing it. Anchors were checked by script. `.nav-collapsible {` occurs twice, so step 4 replaces the whole base block.
+
+**Scope — touch only these:**
+- `src/app/admin/layout.tsx`
+
+**Do not touch:** the JSX structure, the dropdowns, the hamburger, or any rule inside `@media (max-width: 860px)` other than the one named in step 5.
+
+**Instructions:**
+1. Replace `<div className="user-avatar">` with `<div className="user-avatar" title={session?.user?.name || "Admin"}>`.
+2. Replace the whole `.admin-nav { … }` rule, from `                .admin-nav {` through the `}` after `                    will-change: transform;`, with:
+   ```css
+                   .admin-nav {
+                       display: flex;
+                       align-items: center;
+                       gap: 2rem;
+                       /* Side padding puts the wordmark on the page content's left
+                          edge: .admin-content is a centred 1400px column with 2rem
+                          padding. (TJ-068b) */
+                       padding: 0.5rem max(2rem, calc((100% - 1400px) / 2 + 2rem));
+                       box-sizing: border-box;
+                       /* Solid. At 70% opacity, form fields scrolled visibly behind
+                          the links. The blur, and the WebKit compositing hack it
+                          needed, went with it. (TJ-068b) */
+                       background: var(--bg-dark, #1a2e35);
+                       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+                       position: sticky;
+                       top: 0;
+                       z-index: 100;
+                   }
+   ```
+3. Replace `                .nav-brand a {` with `                .nav-brand :global(a) {`. Leave the rule body as it is.
+4. Replace the base block:
+   ```css
+                   .nav-collapsible {
+                       display: flex;
+                       align-items: center;
+                       flex-wrap: wrap;
+                       row-gap: 0.35rem;
+                       gap: 1.5rem;
+                       min-height: 56px;
+                   }
+   ```
+   with:
+   ```css
+                   .nav-collapsible {
+                       display: flex;
+                       align-items: center;
+                       flex-wrap: wrap;
+                       row-gap: 0.35rem;
+                       gap: 1.5rem;
+                       min-height: 44px;
+                       flex: 1;
+                       min-width: 0;
+                   }
+   ```
+5. Inside `@media (max-width: 860px)`, replace `                    .admin-nav { padding: 0.5rem 1rem; }` with `                    .admin-nav { padding: 0.5rem 1rem; flex-direction: column; align-items: stretch; gap: 0; }`.
+6. Immediately before the line `                @media (max-width: 860px) {`, insert:
+   ```css
+                   /* One row needs ~1,090px with the user's name. Below 1180px the
+                      name goes first; it stays in the avatar's tooltip. (TJ-068b) */
+                   @media (min-width: 861px) and (max-width: 1180px) {
+                       .user-name { display: none; }
+                   }
+
+   ```
+
+**Verification:**
+- `grep -nE "backdrop-filter|translateZ|will-change|rgba\(26, 46, 53, 0\.7\)" src/app/admin/layout.tsx` prints only the two `backdrop-filter` lines inside `:global(.dropdown-inner)`. The dropdown keeps its blur.
+- `grep -n "nav-brand" src/app/admin/layout.tsx` shows `.nav-brand :global(a) {`.
+- `git diff --stat` against the TJ-068a commit lists only this file.
+- `npx tsc --noEmit --incremental false` exits 0, and the build exits 0.
+- **Runtime checks are waived, not passed.** The planner previews the layout in a mocked page. Report anything about the 861–1180px band that the code makes you doubt.
+
+**Done when:**
+- [ ] At desktop width the wordmark, links and user block sit on one row, and the wordmark's left edge equals the page content's.
+- [ ] The bar is opaque `#1a2e35` and the dropdown panels still blur.
+- [ ] The wordmark renders in teal Outfit.
+- [ ] At 860px and below the hamburger menu behaves exactly as before.
+
+---
+
+### TJ-068c — Restore styles that never reached links
+
+- **Status:** READY
+- **Branch:** `bugfix/link-styles-restored`, cut from the tip of `feat/admin-menu-one-row`.
+- **Why:** styled-jsx adds its scoping class (`jsx-…`) only to plain HTML elements written in a component. `<Link>` is a component, so the `<a>` it renders never gets the class, and a scoped rule naming the Link's own class never matches. The admin layout already works around this with `:global(.nav-link)`. The pages below never did. Seen live on 2026-11-21: the duplicates warning on the dashboard renders as plain white text instead of an amber chip, and **View** in the patient list is plain text. From code: the secretary and doctor wordmarks render unstyled, and **the doctor portal's whole menu** (`doctor/layout.tsx` maps its four items to `<Link className="nav-link …">`) gets none of its link, hover or active styles. 14 `<Link>` sites in 10 files (the admin wordmark is fixed in TJ-068b).
+
+**Planning pass:** 2026-11-21. Every `<Link>` opening tag in `src/app/{admin,secretary,doctor}` and the staff components was enumerated by script, multi-line tags included, and its classes were checked against `:global(` in the same file. The sites below are all those whose classes are styled only by scoped rules. Read the rules named below in each file. Confirmed: `.header-meta a` in the patient pages targets a native `<a href="tel:">`, so it works and stays. `.chip` in `admin/page.tsx` is used only inside `.summary-chips` (which is native), so ancestor-scoping keeps it off the calendar. No staff component defines its own `.chip`. Where a class is wrapped bare, as in `:global(.btn-sm)`, styled-jsx injects it only while that page is mounted. The native buttons that share `.btn-sm` keep working, and their own scoped colour rules (`.btn-archive`, `.btn-restore`) still win because they are more specific. Occurrence counts were checked by script.
+
+**Scope — touch only these:**
+- `src/app/admin/page.tsx`
+- `src/app/admin/doctors/archived/page.tsx`
+- `src/app/admin/patients/page.tsx`
+- `src/app/admin/patients/archived/page.tsx`
+- `src/app/admin/patients/duplicates/page.tsx`
+- `src/app/secretary/layout.tsx`
+- `src/app/secretary/patients/page.tsx`
+- `src/app/secretary/patients/archived/page.tsx`
+- `src/app/doctor/layout.tsx`
+- `src/app/doctor/patients/page.tsx`
+
+**Do not touch:** any JSX, any rule body, or any selector not listed. Only the selector text changes. Keep each line's indentation.
+
+**Instructions.** In each file's `<style jsx>` block, replace the selector text exactly as below, at **every** occurrence in that file (the count is given):
+
+| File | Replace → with |
+|---|---|
+| `admin/page.tsx` | `.chip {` → `.summary-chips :global(.chip) {` (1) · `.chip-warn {` → `.summary-chips :global(.chip-warn) {` (1) · `.chip-warn .chip-val {` → `.summary-chips :global(.chip-warn) .chip-val {` (1) · `.chip-warn:hover {` → `.summary-chips :global(.chip-warn:hover) {` (1). Leave `.chip-val {` alone. |
+| `admin/doctors/archived/page.tsx` | `.btn-back {` → `:global(.btn-back) {` (1) · `.btn-back:hover {` → `:global(.btn-back:hover) {` (1) |
+| `admin/patients/page.tsx` | `.btn-sm {` → `:global(.btn-sm) {` (2, the base rule and the one in `@media (max-width: 560px)`) · `.btn-view {` → `:global(.btn-view) {` (1) · `.btn-view:hover {` → `:global(.btn-view:hover) {` (1) |
+| `admin/patients/archived/page.tsx` | `.btn-back {` (1), `.btn-back:hover {` (1), `.btn-sm {` (2), `.btn-view {` (1), `.btn-view:hover {` (1), each wrapped the same way |
+| `admin/patients/duplicates/page.tsx` | `.btn-back {` (1), `.btn-back:hover {` (1), `.btn-sm {` (2), `.btn-view {` (1), `.btn-view:hover {` (1) |
+| `secretary/patients/page.tsx` | `.btn-sm {` (1), `.btn-view {` (1), `.btn-view:hover {` (1) |
+| `secretary/patients/archived/page.tsx` | `.btn-back {` (1), `.btn-back:hover {` (1), `.btn-sm {` (1), `.btn-view {` (1), `.btn-view:hover {` (1) |
+| `doctor/patients/page.tsx` | `.btn-sm {` (1), `.btn-view {` (1), `.btn-view:hover {` (1) |
+| `secretary/layout.tsx` | `.logo {` → `.nav :global(.logo) {` (1) |
+| `doctor/layout.tsx` | `.logo {` → `.nav :global(.logo) {` (1) · `.nav-link {` → `.nav :global(.nav-link) {` (1) · `.nav-link:hover {` → `.nav :global(.nav-link:hover) {` (1) · `.nav-link.active {` → `.nav :global(.nav-link.active) {` (1). **Not** `.nav-links {`, which styles a native `<div>` and stays. |
+
+"Wrapped the same way" means `.x {` → `:global(.x) {` and `.x:hover {` → `:global(.x:hover) {`.
+
+**Verification:**
+- `grep -nE "^\s*\.(btn-sm|btn-view|btn-back)( |:|\{)" src/app/admin/doctors/archived/page.tsx src/app/admin/patients/page.tsx src/app/admin/patients/archived/page.tsx src/app/admin/patients/duplicates/page.tsx src/app/secretary/patients/page.tsx src/app/secretary/patients/archived/page.tsx src/app/doctor/patients/page.tsx` prints nothing.
+- `grep -nE "^\s*\.chip(-warn)?( |:|\{)" src/app/admin/page.tsx` prints nothing. `.chip-val {` does not match this pattern and stays.
+- `grep -nE "^\s*\.(logo|nav-link)( |:|\.|\{)" src/app/secretary/layout.tsx src/app/doctor/layout.tsx` prints nothing.
+- `git diff --stat` against the TJ-068b commit lists exactly the 10 files. `git diff` shows only selector lines changed.
+- `npx tsc --noEmit --incremental false` exits 0, and the build exits 0.
+- **Runtime checks are waived, not passed.**
+
+**Done when:**
+- [ ] Every listed rule reaches its `<Link>`: the amber duplicates chip, teal **View** pills, grey **← Back** links, teal secretary and doctor wordmarks, and the doctor menu's link, hover and active styles.
+- [ ] Native buttons sharing `.btn-sm` (Archive, Restore) look exactly as before.
+
+---
+
+### TJ-068d — "No phone" instead of a bare 0
+
+- **Status:** READY
+- **Branch:** `feat/no-phone-label`, cut from the tip of `bugfix/link-styles-restored`.
+- **Why:** Patients saved with `"0"` as their phone show **0** as if it were a number. Seen live on 2026-11-21 on calendar cards and in the patient list (`phone1` is a required `String`, so blank numbers are stored as `"0"` or `""`). An empty or all-zero phone now reads as a muted "No phone". The stored value never changes, and real numbers display exactly as typed.
+
+**Planning pass:** 2026-11-21. Every place a patient phone is displayed in `src/app/{admin,secretary,doctor}` and `components/ReservationSlot.tsx` was found by grep and read at the site. Confirmed: **doctors are never sent phones.** `api/reservations/route.ts` selects `phone1: contact`, which is false for a doctor, so the field is absent (`undefined`), and the doctor pages already guard on it (TJ-054). So every guard below hides on `undefined` and shows "No phone" only for a string that holds no number. Otherwise every card on the doctor calendar would say "No phone". `src/lib/phone.ts` has no imports and is safe client-side. The patient-duplicates page already ignores blank phones (`normalizePhone` returns `""`), so it is out of scope. The booking-search lines in `admin/page.tsx` and `secretary/page.tsx` were deleted by TJ-068a. Every anchor below was checked by script to occur exactly once in its file.
+
+**Scope — touch only these (16):**
+- `src/lib/phone.ts`, `src/app/globals.css`, `src/app/components/ReservationSlot.tsx`
+- `src/app/admin/page.tsx`, `src/app/admin/patients/page.tsx`, `src/app/admin/patients/archived/page.tsx`, `src/app/admin/patients/[id]/page.tsx`, `src/app/admin/reservations/new/page.tsx`, `src/app/admin/reservations/[id]/edit/page.tsx`
+- `src/app/secretary/patients/page.tsx`, `src/app/secretary/patients/archived/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/secretary/reservations/new/page.tsx`, `src/app/secretary/reservations/[id]/edit/page.tsx`
+- `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`
+
+More than four files, but one concern and one-line edits throughout. Accepted as a single task.
+
+**Do not touch:** input fields, validation, API routes, `normalizePhone`, or any phone that is a form `value=`.
+
+**Instructions:**
+
+1. **`src/lib/phone.ts`**: append at the end of the file:
+   ```ts
+
+   /**
+    * True when a stored phone holds no number at all: empty, whitespace, or
+    * only zeros ("0", "00"). Some patients are saved that way, and the screens
+    * printed it as if it were a number. Display-only; the stored value is never
+    * changed. (TJ-068d)
+    */
+   export function isMissingPhone(raw: string | null | undefined): boolean {
+       const t = (raw ?? "").trim();
+       return t === "" || /^0+$/.test(t);
+   }
+
+   /** A patient's numbers for a list cell, missing ones skipped; null when none is left. (TJ-068d) */
+   export function joinPhones(...raws: (string | null | undefined)[]): string | null {
+       const shown = raws.filter((r) => !isMissingPhone(r)).map((r) => (r as string).trim());
+       return shown.length ? shown.join(" / ") : null;
+   }
+   ```
+2. **`src/app/globals.css`**: append at the end of the file:
+   ```css
+
+   /* ===== STAFF PORTAL ===== */
+   /* Shared by the admin, secretary and doctor screens (all dark). Phase 0 of
+      the staff refresh starts this section; TJ-068e adds the buttons. */
+   .no-phone {
+     color: rgba(255, 255, 255, 0.4);
+     font-style: italic;
+   }
+   ```
+3. **`src/app/components/ReservationSlot.tsx`**:
+   - After `import type { CSSProperties } from "react";` add `import { isMissingPhone } from "@/lib/phone";`.
+   - Replace:
+     ```tsx
+                         {patientPhone && (
+                             <>
+                                 <span className="slot-phone">{patientPhone}</span>
+     ```
+     with:
+     ```tsx
+                         {/* A doctor is never sent the phone (TJ-054), so undefined
+                             hides it; a stored blank or "0" says so. (TJ-068d) */}
+                         {patientPhone != null && (
+                             <>
+                                 {isMissingPhone(patientPhone)
+                                     ? <span className="slot-phone slot-phone-none">No phone</span>
+                                     : <span className="slot-phone">{patientPhone}</span>}
+     ```
+     The `slot-sep` line and the closing `</>` / `)}` stay as they are.
+   - After the line `                .slot-phone { overflow: hidden; text-overflow: ellipsis; min-width: 0; }` add:
+     `                .slot-phone-none { font-style: italic; color: color-mix(in srgb, currentColor 65%, var(--slot-bg)); }`
+4. **Pages.** In each file, add the import line after the named existing import, then make the replacement. `NP` below stands for `<span className="no-phone">No phone</span>`; write it out in full.
+
+| File | Import, added after | Replace → with |
+|---|---|---|
+| `admin/page.tsx` | `import DatePickerPopover from "@/app/components/DatePickerPopover";` → `import { isMissingPhone } from "@/lib/phone";` | `<span>{detail.patient.phone1}</span></div>` → `<span>{isMissingPhone(detail.patient.phone1) ? NP : detail.patient.phone1}</span></div>` |
+| `admin/patients/page.tsx` | `import Link from "next/link";` → `import { joinPhones } from "@/lib/phone";` | ``<td>{p.phone1}{p.phone2 ? ` / ${p.phone2}` : ""}</td>`` → `<td>{joinPhones(p.phone1, p.phone2) ?? NP}</td>` |
+| `admin/patients/archived/page.tsx`, `secretary/patients/page.tsx`, `secretary/patients/archived/page.tsx` | `import Link from "next/link";` → `import { isMissingPhone } from "@/lib/phone";` | `<td>{p.phone1}</td>` → `<td>{isMissingPhone(p.phone1) ? NP : p.phone1}</td>` |
+| `admin/patients/[id]/page.tsx` | `import ClinicalAssessment from "@/app/components/ClinicalAssessment";` → `import { isMissingPhone } from "@/lib/phone";` | ``<span>📞 <a href={`tel:${patient.phone1}`}>{patient.phone1}</a></span>`` → ``<span>📞 {isMissingPhone(patient.phone1) ? NP : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>`` |
+| `secretary/patients/[id]/page.tsx` | `import { clinicalFileUrl } from "@/lib/storageUrl";` → `import { isMissingPhone } from "@/lib/phone";` | the same replacement as the admin patient file |
+| `doctor/patients/[id]/page.tsx` | `import ClinicalAssessment from "@/app/components/ClinicalAssessment";` → `import { isMissingPhone } from "@/lib/phone";` | ``{patient.phone1 && <span>📞 <a href={`tel:${patient.phone1}`}>{patient.phone1}</a></span>}`` → ``{typeof patient.phone1 === "string" && <span>📞 {isMissingPhone(patient.phone1) ? NP : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>}`` |
+| `doctor/session/[id]/page.tsx` | `import ClinicalAssessment from "@/app/components/ClinicalAssessment";` → `import { isMissingPhone } from "@/lib/phone";` | three replacements: `{reservation.patient.phone1 && (` → `{typeof reservation.patient.phone1 === "string" && (` · `<span>📞 {reservation.patient.phone1}</span>` → `<span>📞 {isMissingPhone(reservation.patient.phone1) ? NP : reservation.patient.phone1}</span>` · `{reservation.patient.phone2 && <span>· {reservation.patient.phone2}</span>}` → `{!isMissingPhone(reservation.patient.phone2) && <span>· {reservation.patient.phone2}</span>}` |
+| `admin/reservations/new/page.tsx`, `secretary/reservations/new/page.tsx` | `import { useRouter, useSearchParams } from "next/navigation";` → `import { isMissingPhone } from "@/lib/phone";` | `<span className="sr-phone">{p.phone1}</span>` → `<span className="sr-phone">{isMissingPhone(p.phone1) ? "No phone" : p.phone1}</span>` · `<span>✓ {selectedPatient.name} — {selectedPatient.phone1}</span>` → ``<span>✓ {selectedPatient.name}{isMissingPhone(selectedPatient.phone1) ? "" : ` — ${selectedPatient.phone1}`}</span>`` |
+| `admin/reservations/[id]/edit/page.tsx`, `secretary/reservations/[id]/edit/page.tsx` | `import { useRouter } from "next/navigation";` → `import { isMissingPhone } from "@/lib/phone";` | `<span className="pr-phone">{patientPhone}</span>` → `<span className="pr-phone">{isMissingPhone(patientPhone) ? "No phone" : patientPhone}</span>` |
+
+**Verification:**
+- `npx tsx -e "import { isMissingPhone, joinPhones } from './src/lib/phone'; console.log(isMissingPhone('0'), isMissingPhone(' 00 '), isMissingPhone(''), isMissingPhone(undefined), isMissingPhone('0791112233'), joinPhones('0', '0791112233'), joinPhones('0', null))"` prints `true true true true false 0791112233 null`.
+- `grep -L -E "isMissingPhone|joinPhones" <the 14 files of steps 3–4>` prints nothing.
+- `git diff --stat` against the TJ-068c commit lists exactly the 16 files.
+- `npx tsc --noEmit --incremental false` exits 0, and the build exits 0.
+- **Runtime checks are waived, not passed.**
+
+**Done when:**
+- [ ] A blank or all-zero phone reads "No phone" (muted, italic) on calendar cards, the patient lists, the patient file headers, the session header, the dashboard's session details, and booking search and edit.
+- [ ] A doctor, who is sent no phone, sees no phone line at all, exactly as before.
+- [ ] Real numbers are unchanged, and `tel:` links appear only for real numbers.
+
+---
+
+### TJ-068e — One primary button for the staff portal (design 4A)
+
+- **Status:** BACKLOG. The design is decided (see TJ-068). The pass runs on top of batch 1.
+- **Why:** Three primary-button looks today. White on teal fails contrast at 2.7 : 1, and the homepage's `.btn-primary` leaks capitals and a hover lift into Employees, Blog and website Doctors.
+- **Shape, for the pass:** define `.staff-btn`, `.staff-btn-primary` and `.staff-btn-secondary`, plus states and a `.staff-spinner`, once in the `globals.css` staff section, with the 4A literals recorded under TJ-068. Swap every staff Add, Save, Create and Cancel button to them: `btn-add`, `btn-save`, `btn-primary`, `btn-cancel` and `btn-secondary` across about 22 files. Delete each file's local copies, and add the lucide `Plus` icon to Add buttons. Verification: no staff file uses `btn-primary` or `btn-secondary` any more. Probably split by area during the pass.
+
+### TJ-068f1 — Row actions (design 5B): shared menu, patient lists and patient file
+
+- **Status:** BACKLOG. The design is decided (see TJ-068). The pass runs on top of TJ-068e.
+- **Shape, for the pass:** one shared `RowMenu` client component in `src/app/components/` (lucide icons, keyboard and outside-click handling, logical positioning, a destructive group after a divider). Clickable rows with a chevron on the admin and secretary patient lists. On both patient files: **Edit Info** as a small secondary button with `Pencil`, and `⋯` holding Archive. Existing `confirm()` prompts stay as they are; replacing them belongs to phase 1.
+
+### TJ-068f2 — Row actions (design 5B): Employees
+
+- **Status:** BACKLOG, after TJ-068f1. Doctors and secretaries tables: the row opens Edit; `⋯` holds Edit, then Resign and Delete permanently after a divider.
+
+### TJ-068f3 — Row actions (design 5B): Blog, website Doctors, Notes
+
+- **Status:** BACKLOG, after TJ-068f1. The same pattern on the blog table, the website-doctor cards (keep drag-to-reorder working) and the notes table.
+
+---
+
+### TJ-069 — Staff portal refresh, phase 1: shared foundations
+
+- **Status:** BACKLOG, no planning pass.
+- **Why:** The root cause of the drift. Build out the `globals.css` staff section TJ-068 starts: a type scale of about six sizes instead of 25; surface, border, text and status colour tokens; and shared modal, confirm dialog (replacing the 16 `alert`/`confirm` calls), data table, page header, form field and empty-state styles. Replace emoji icons with `lucide-react` in the 13 files that use them.
+
+### TJ-070 — Staff portal refresh, phase 2: one layout for every role
+
+- **Status:** BACKLOG, no planning pass.
+- **Why:** Admin, secretary and doctor each have their own nav, built differently. The secretary dropdown opens on hover only, and the secretary and doctor bars have no phone menu (doctor's layout has no media query at all). One shared staff shell where the role decides the links. Group Blog, website Doctors and Approvals under a "Website" menu, since "Doctors" currently appears twice (Employees → Doctors are staff accounts; top-level Doctors are public profiles).
+
+### TJ-071 — Staff portal refresh, phase 3: the dashboard
+
+- **Status:** BACKLOG, no planning pass.
+- **Why:** Six status counters, mostly zeros, crowd the date. Doctor colours are too close: two near-identical greens, and a pink beside a red. Status shows only as a small dot for three statuses. Proposed: a summary that shows only non-zero statuses, a curated set of eight clearly distinct doctor colours, and clearer card states.
+
+### TJ-072 — Staff portal refresh, phase 4: patient file and lists
+
+- **Status:** BACKLOG, no planning pass.
+- **Why:** The clinical assessment is about 13 identical full-width text boxes with Save only at the bottom. Group them into sections (History, Examination, Diagnosis & plan, Exercises) with a Save bar that stays visible. Add a summary line on the patient file (next appointment, doctor, sessions done out of recommended). Empty pages get an icon, a one-line explanation and the create button, instead of three different one-liners. Loading states become skeletons instead of "Loading…" text in 27 places.
