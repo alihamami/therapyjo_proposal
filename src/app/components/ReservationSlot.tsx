@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
+import { isMissingPhone } from "@/lib/phone";
 
 interface SlotAction {
     label: string;
@@ -259,9 +260,13 @@ export default function ReservationSlot({
             <div className="slot-main">
                 <span className={`slot-name ${isVoided ? "strike" : ""}`} dir="auto">{patientName}</span>
                 <span className="slot-sub">
-                    {patientPhone && (
+                    {/* A doctor is never sent the phone (TJ-054), so undefined
+                        hides it; a stored blank or "0" says so. (TJ-068d) */}
+                    {patientPhone != null && (
                         <>
-                            <span className="slot-phone">{patientPhone}</span>
+                            {isMissingPhone(patientPhone)
+                                ? <span className="slot-phone slot-phone-none">No phone</span>
+                                : <span className="slot-phone">{patientPhone}</span>}
                             <span className="slot-sep" aria-hidden="true">·</span>
                         </>
                     )}
@@ -353,6 +358,7 @@ export default function ReservationSlot({
                 }
                 /* The phone is the half that may truncate; the time never is. */
                 .slot-phone { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+                .slot-phone-none { font-style: italic; color: color-mix(in srgb, currentColor 65%, var(--slot-bg)); }
                 .slot-sep { flex-shrink: 0; color: color-mix(in srgb, currentColor 60%, var(--slot-bg)); }
                 .slot-time { flex-shrink: 0; color: color-mix(in srgb, currentColor 85%, var(--slot-bg)); }
                 .slot-note {

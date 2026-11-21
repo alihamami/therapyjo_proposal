@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
+import { isMissingPhone } from "@/lib/phone";
 
 interface Doctor {
     id: string;
@@ -281,7 +282,7 @@ export default function AdminDashboard() {
                     <div className="modal-card modal-lg" onClick={(e) => e.stopPropagation()}>
                         <h2>{detail.patient.name}</h2>
                         <div className="detail-grid">
-                            <div className="detail-item"><span className="detail-label">Phone</span><span>{detail.patient.phone1}</span></div>
+                            <div className="detail-item"><span className="detail-label">Phone</span><span>{isMissingPhone(detail.patient.phone1) ? <span className="no-phone">No phone</span> : detail.patient.phone1}</span></div>
                             <div className="detail-item"><span className="detail-label">Doctor</span><span>{detail.doctor?.name ?? detail.doctorNameSnapshot ?? "—"}</span></div>
                             <div className="detail-item"><span className="detail-label">Status</span><span>{detail.status.replace("_", " ")}</span></div>
                             <div className="detail-item"><span className="detail-label">Payment</span><span>{detail.paymentType || "—"}</span></div>

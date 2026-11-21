@@ -1806,3 +1806,11 @@ ol {
   opacity: 0;
   transform: scale(0.9);
 }
+
+/* ===== STAFF PORTAL ===== */
+/* Shared by the admin, secretary and doctor screens (all dark). Phase 0 of
+   the staff refresh starts this section; TJ-068e adds the buttons. */
+.no-phone {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}

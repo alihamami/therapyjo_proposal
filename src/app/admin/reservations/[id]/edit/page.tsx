@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
+import { isMissingPhone } from "@/lib/phone";
 
 interface Doctor { id: string; name: string; color: string | null; }
 
@@ -127,7 +128,7 @@ export default function EditReservationPage({ params }: { params: Promise<{ id: 
                         <h2>Patient</h2>
                         <div className="patient-readonly">
                             <span className="pr-name">{patientName || "—"}</span>
-                            <span className="pr-phone">{patientPhone}</span>
+                            <span className="pr-phone">{isMissingPhone(patientPhone) ? "No phone" : patientPhone}</span>
                         </div>
                         {patientId !== null && (
                             <button className="pr-link" onClick={() => router.push(`/admin/patients/${patientId}`)}>

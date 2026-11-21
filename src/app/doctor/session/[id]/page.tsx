@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { use } from "react";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
+import { isMissingPhone } from "@/lib/phone";
 
 interface ReservationDetail {
     id: number;
@@ -190,10 +191,10 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                         {reservation.patient.name}
                         {reservation.patient.archived && <span className="badge-archived">ARCHIVED</span>}
                     </h1>
-                    {reservation.patient.phone1 && (
+                    {typeof reservation.patient.phone1 === "string" && (
                         <div className="header-meta">
-                            <span>📞 {reservation.patient.phone1}</span>
-                            {reservation.patient.phone2 && <span>· {reservation.patient.phone2}</span>}
+                            <span>📞 {isMissingPhone(reservation.patient.phone1) ? <span className="no-phone">No phone</span> : reservation.patient.phone1}</span>
+                            {!isMissingPhone(reservation.patient.phone2) && <span>· {reservation.patient.phone2}</span>}
                         </div>
                     )}
                 </div>

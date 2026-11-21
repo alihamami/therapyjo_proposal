@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isMissingPhone } from "@/lib/phone";
 
 interface Doctor { id: string; name: string; color: string | null; }
 interface PatientResult { id: number; name: string; phone1: string; }
@@ -163,14 +164,14 @@ function SecretaryNewReservationForm() {
                                     {patientResults.map((p) => (
                                         <button key={p.id} className="search-item" onClick={() => selectPatient(p)}>
                                             <span className="sr-name">{p.name}</span>
-                                            <span className="sr-phone">{p.phone1}</span>
+                                            <span className="sr-phone">{isMissingPhone(p.phone1) ? "No phone" : p.phone1}</span>
                                         </button>
                                     ))}
                                 </div>
                             )}
                             {selectedPatient && (
                                 <div className="selected-patient">
-                                    <span>✓ {selectedPatient.name} — {selectedPatient.phone1}</span>
+                                    <span>✓ {selectedPatient.name}{isMissingPhone(selectedPatient.phone1) ? "" : ` — ${selectedPatient.phone1}`}</span>
                                     <button className="clear-btn" onClick={() => setSelectedPatient(null)}>Change</button>
                                 </div>
                             )}

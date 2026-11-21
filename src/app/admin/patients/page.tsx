@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { joinPhones } from "@/lib/phone";
 
 interface Patient {
     id: number;
@@ -142,7 +143,7 @@ export default function PatientsPage() {
                             <tr key={p.id}>
                                 <td className="id-cell">{p.id}</td>
                                 <td className="name-cell">{p.name}</td>
-                                <td>{p.phone1}{p.phone2 ? ` / ${p.phone2}` : ""}</td>
+                                <td>{joinPhones(p.phone1, p.phone2) ?? <span className="no-phone">No phone</span>}</td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
                                 <td>{formatDate(p.createdAt)}</td>
                                 <td>

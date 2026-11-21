@@ -215,3 +215,20 @@ export function nameSimilarity(a: string, b: string): number {
     const union = ta.size + tb.size - intersection;
     return union === 0 ? 0 : intersection / union;
 }
+
+/**
+ * True when a stored phone holds no number at all: empty, whitespace, or
+ * only zeros ("0", "00"). Some patients are saved that way, and the screens
+ * printed it as if it were a number. Display-only; the stored value is never
+ * changed. (TJ-068d)
+ */
+export function isMissingPhone(raw: string | null | undefined): boolean {
+    const t = (raw ?? "").trim();
+    return t === "" || /^0+$/.test(t);
+}
+
+/** A patient's numbers for a list cell, missing ones skipped; null when none is left. (TJ-068d) */
+export function joinPhones(...raws: (string | null | undefined)[]): string | null {
+    const shown = raws.filter((r) => !isMissingPhone(r)).map((r) => (r as string).trim());
+    return shown.length ? shown.join(" / ") : null;
+}
