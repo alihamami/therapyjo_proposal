@@ -141,10 +141,10 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068c | Restore styles that never reached links | DONE — task commit `1659a30`, merged to `master` as `ee9f6f8` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/link-styles-restored` |
 | TJ-068d | "No phone" instead of a bare 0 | DONE — task commit `281a7f1`, merged to `master` as `6b3b4f6` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/no-phone-label` |
 | TJ-068e | One primary button for the staff portal (design 4A) | SPLIT — passed 2026-11-22 on `292b890`; TJ-068e1–e3 | — |
-| TJ-068e1 | Remove the three remaining unreachable add popups | READY — cut from `master` | `refactor/remove-dead-add-popups` |
-| TJ-068e2 | Design 4A buttons: dashboards, booking, patients | READY — stacked on TJ-068e1 | `feat/staff-buttons-booking-patients` |
-| TJ-068e3 | Design 4A buttons: blog, website doctors, employees, notes, doctor portal | READY — stacked on TJ-068e2 | `feat/staff-buttons-content-team` |
-| TJ-068g | Admin menu bar stays on one row down to 861px | READY — stacked on TJ-068e3 | `feat/admin-menu-narrow-fit` |
+| TJ-068e1 | Remove the three remaining unreachable add popups | VERIFIED — task commit `331ad3c`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `refactor/remove-dead-add-popups` |
+| TJ-068e2 | Design 4A buttons: dashboards, booking, patients | VERIFIED — task commit `99be01f`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-buttons-booking-patients` |
+| TJ-068e3 | Design 4A buttons: blog, website doctors, employees, notes, doctor portal | VERIFIED — task commit `d44ba1b`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-buttons-content-team` |
+| TJ-068g | Admin menu bar stays on one row down to 861px | VERIFIED — task commit `489b520`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/admin-menu-narrow-fit` |
 | TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | READY — passed 2026-11-22; stacked on TJ-068g | `feat/patient-row-actions` |
 | TJ-068f2 | Row actions (design 5B): Employees | READY — passed 2026-11-22; stacked on TJ-068f1 | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | READY — passed 2026-11-22; stacked on TJ-068f2 | `feat/content-row-actions` |
@@ -14673,11 +14673,19 @@ More than four files, but one concern and one-line edits throughout. Accepted as
 
 **Planning pass:** 2026-11-22, on `master` at `292b890`. Every `className="btn-add|btn-save|btn-primary|btn-cancel|btn-secondary|btn-submit"` in `src/app/{admin,secretary,doctor}` and `components/ClinicalAssessment.tsx` was listed by script (68 sites, all on native `<button>` elements, all a single class), and every local CSS rule naming those classes was extracted with its `@media` context (listed per file below). Layout-only rules inside `@media` blocks were read in context; each is rewritten or dropped as stated. Because the buttons are native elements in the same component, a scoped selector such as `.page-header .staff-btn` still matches them (the TJ-068c `<Link>` problem does not arise). Out of scope and left as they are, deliberately: `btn-danger` (delete confirmations), `btn-approve`, `translate-btn`, `upload-btn`, `new-patient-btn`, `btn-new` ("+ New Assessment", part of the tab strip), and all `btn-sm` row buttons (TJ-068f). The three add popups still in the list pages are unreachable (`setShowAdd(true)` occurs nowhere) and are removed first, in TJ-068e1, so their buttons are not restyled for nothing. `lucide-react` `^0.564.0` is installed and not yet imported anywhere in `src`.
 
+**Batch 2a — verified (2026-11-22), merge held for the user's look:**
+- **TJ-068e1 and TJ-068g:** the planner re-applied both specs by script to the parent commits; the results are byte-identical to `331ad3c` and `489b520`.
+- **TJ-068e2 and TJ-068e3:** every added line is a listed change (class swap, `aria-busy`, `Plus` and its import, the listed layout lines); every removed line is part of an old button rule or a replaced button. The `globals.css` block is the spec block exactly. No `btn-add|btn-save|btn-primary|btn-submit|btn-cancel|btn-secondary` class remains anywhere in the staff portal; `btn-danger` is untouched. Counts as specified (18/13/12/4 and 18/13/12/6).
+- **Spec error (planner's):** the "no old class" grep in e2/e3 lacked a leading guard, so it also matched `staff-btn-primary`. The executor ran the corrected pattern `(^|[^a-z-])btn-(…)([^a-z-]|$)`, which prints nothing. Also, TJ-068g's diff has one deletion, not two (step 1 only inserts lines).
+- **Gates, re-run by the planner on `489b520`:** `tsc` exit 0; `next build --webpack` exit 0; only the workspace-root notice.
+- **Preview (mocked, no database):** 4A measured on 11 screens (dashboards, patient lists, new patient, new reservation, employee doctors and its edit modal, blog, website doctors, notes, doctor profile): `#4CAF93` fill, `#0d2a22` text, 34px, 8px radius, 0.8rem/600, no uppercase, `Plus` on every Add; Cancel/Close secondary. Working state: full colour, 13px spinner, `cursor: progress`; disabled: the faded colours. Menu bar with a 12-item Approvals badge: one row (61px) at 861, 900, 990, 1040, 1041, 1180, 1181 and 1440px; Sign Out icon-only (accessible name kept) only from 861 to 1040px; hamburger at 860px.
+- **Seen, not caused by this batch:** on the New Patient form at about 800px wide, the Phone 2 field overflows its card (the form-row layout; no layout line of that form changed). Candidate for phase 4.
+
 ---
 
 ### TJ-068e1 — Remove the three remaining unreachable add popups
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `331ad3c` on `refactor/remove-dead-add-popups`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
 - **Branch:** `refactor/remove-dead-add-popups`, cut from `master` at the commit that adds this spec.
 - **Why:** The admin patient list, the secretary patient list and the secretary notes list each carry an add modal with its state, handler and CSS. Nothing opens them: `setShowAdd(true)` occurs nowhere, and each page's "+ Add …" button navigates to its `/new` page. Found during the batch 1 review. Nothing on screen changes.
 
@@ -14727,7 +14735,7 @@ More than four files, but one concern and one-line edits throughout. Accepted as
 
 ### TJ-068e2 — Design 4A buttons: dashboards, booking, patients
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `99be01f` on `feat/staff-buttons-booking-patients`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
 - **Branch:** `feat/staff-buttons-booking-patients`, cut from the tip of `refactor/remove-dead-add-popups`.
 - **Why:** Defines the 4A button once in `globals.css` and moves the dashboards, the booking forms, the patient lists, the patient files and the clinical assessment onto it.
 
@@ -14880,7 +14888,7 @@ and `admin/patients/new/page.tsx`: `<button className="btn-save" onClick={handle
 
 ### TJ-068e3 — Design 4A buttons: blog, website doctors, employees, notes, doctor portal
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `d44ba1b` on `feat/staff-buttons-content-team`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
 - **Branch:** `feat/staff-buttons-content-team`, cut from the tip of `feat/staff-buttons-booking-patients`.
 - **Why:** The rest of the staff portal moves onto the 4A button, and the homepage's global `.btn-primary` stops leaking into four admin pages.
 
@@ -14929,7 +14937,7 @@ and `admin/patients/new/page.tsx`: `<button className="btn-save" onClick={handle
 
 ### TJ-068g — Admin menu bar stays on one row down to 861px
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `489b520` on `feat/admin-menu-narrow-fit`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
 - **Branch:** `feat/admin-menu-narrow-fit`, cut from the tip of `feat/staff-buttons-content-team`.
 - **Why:** Seen in the batch 1 preview: between about 861px and 990px wide, "Approvals" wraps to a second line inside the bar (86px instead of 61px). The planner measured a fix in the preview on 2026-11-22: from 861px to 1040px, tighter spacing plus an icon-only Sign Out keeps one row **with a two-digit Approvals badge**, 8px to spare at 861px; from 1041px up the current spacing already fits (30px to spare with a badge).
 
