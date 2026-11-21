@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import Link from "next/link";
+import { Archive, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
+import RowMenu from "@/app/components/RowMenu";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface BlogPost {
     id: string;
@@ -134,14 +137,14 @@ export default function BlogListPage() {
                             <th>Category</th>
                             <th>Status</th>
                             <th>Date</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {visible.map((post) => (
-                            <tr key={post.id}>
+                            <tr key={post.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/admin/blog/${post.id}`); }}>
                                 <td>
-                                    <div className="title-cell">{post.title || "(untitled)"}</div>
+                                    <div className="title-cell"><Link href={`/admin/blog/${post.id}`} className="staff-row-name">{post.title || "(untitled)"}</Link></div>
                                     <div className="sub-line">
                                         {post.linked
                                             ? `${post.linked.lang === "AR" ? "Arabic" : "English"} version linked`
@@ -153,16 +156,21 @@ export default function BlogListPage() {
                                 <td><span className={`status-pill status-${post.status.toLowerCase()}`}>{post.status}</span></td>
                                 <td>{new Date(post.updatedAt).toLocaleDateString()}</td>
                                 <td>
-                                    <div className="action-buttons">
-                                        <button className="btn-sm btn-edit" onClick={() => router.push(`/admin/blog/${post.id}`)}>Edit</button>
-                                        {post.status !== "ARCHIVED" ? (
-                                            <button className="btn-sm btn-archive" onClick={() => archive(post.id)}>Archive</button>
-                                        ) : (
-                                            <>
-                                                <button className="btn-sm btn-restore" onClick={() => restore(post.id)}>Restore</button>
-                                                <button className="btn-sm btn-delete" onClick={() => openDelete(post)}>Delete permanently</button>
-                                            </>
+                                    <div className="staff-row-end">
+                                        {post.status === "ARCHIVED" && (
+                                            <button className="btn-sm btn-restore" onClick={() => restore(post.id)}>Restore</button>
                                         )}
+                                        <RowMenu
+                                            label={`More actions for ${post.title || "this post"}`}
+                                            items={post.status !== "ARCHIVED" ? [
+                                                { label: "Edit", icon: Pencil, onSelect: () => router.push(`/admin/blog/${post.id}`) },
+                                                { label: "Archive", icon: Archive, onSelect: () => archive(post.id) },
+                                            ] : [
+                                                { label: "Edit", icon: Pencil, onSelect: () => router.push(`/admin/blog/${post.id}`) },
+                                                { label: "Delete permanently", icon: Trash2, onSelect: () => openDelete(post), destructive: true },
+                                            ]}
+                                        />
+                                        <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
                                     </div>
                                 </td>
                             </tr>
@@ -256,16 +264,9 @@ export default function BlogListPage() {
                 .status-scheduled { background: rgba(96,165,250,0.15); color: #93c5fd; }
                 .status-archived { background: rgba(245,158,11,0.13); color: #fcd34d; }
                 .status-draft { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
-                .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
                 .btn-sm { padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
-                .btn-edit { background: rgba(96,165,250,0.15); color: #93c5fd; }
-                .btn-edit:hover { background: rgba(96,165,250,0.25); }
-                .btn-archive { background: rgba(245,158,11,0.15); color: #fcd34d; }
-                .btn-archive:hover { background: rgba(245,158,11,0.25); }
                 .btn-restore { background: rgba(16,185,129,0.15); color: #6ee7b7; }
                 .btn-restore:hover { background: rgba(16,185,129,0.25); }
-                .btn-delete { background: rgba(239,68,68,0.15); color: #fca5a5; }
-                .btn-delete:hover { background: rgba(239,68,68,0.25); }
                 .btn-danger {
                     background: #dc2626; color: #fff; border: none; border-radius: 8px;
                     padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600;

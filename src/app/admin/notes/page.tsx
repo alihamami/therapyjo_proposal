@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus } from "lucide-react";
+import { ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
+import RowMenu from "@/app/components/RowMenu";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface Doctor {
     id: string;
@@ -147,7 +149,7 @@ export default function NotesPage() {
                             <th>Doctor</th>
                             <th>Dr. Check</th>
                             <th>Details</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,9 +158,9 @@ export default function NotesPage() {
                         ) : notes.length === 0 ? (
                             <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No notes found</td></tr>
                         ) : notes.map((n) => (
-                            <tr key={n.id}>
+                            <tr key={n.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) openEdit(n); }}>
                                 <td>{formatDate(n.noteDate)}</td>
-                                <td className="note-name">{n.name}</td>
+                                <td className="note-name"><button type="button" className="staff-row-name" onClick={() => openEdit(n)}>{n.name}</button></td>
                                 <td>
                                     <span className="doctor-tag" style={{ borderColor: n.doctor?.color || "#666" }}>
                                         {n.doctor?.name ?? n.doctorNameSnapshot ?? "—"}
@@ -167,9 +169,15 @@ export default function NotesPage() {
                                 <td>{n.doctorCheckNote ? "✅" : "—"}</td>
                                 <td className="note-details">{n.details || "—"}</td>
                                 <td>
-                                    <div className="action-buttons">
-                                        <button className="btn-sm btn-edit" onClick={() => openEdit(n)}>Edit</button>
-                                        <button className="btn-sm btn-delete" onClick={() => handleDelete(n.id)}>Delete</button>
+                                    <div className="staff-row-end">
+                                        <RowMenu
+                                            label={`More actions for ${n.name}`}
+                                            items={[
+                                                { label: "Edit", icon: Pencil, onSelect: () => openEdit(n) },
+                                                { label: "Delete", icon: Trash2, onSelect: () => handleDelete(n.id), destructive: true },
+                                            ]}
+                                        />
+                                        <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
                                     </div>
                                 </td>
                             </tr>
@@ -268,15 +276,6 @@ export default function NotesPage() {
                 .note-name { font-weight: 600; }
                 .note-details { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(255,255,255,0.5); }
                 .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
-                .action-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-                .btn-sm {
-                    padding: 0.28rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem;
-                    border: none; cursor: pointer; font-weight: 500; font-family: inherit;
-                }
-                .btn-edit { background: rgba(96,165,250,0.12); color: #93c5fd; }
-                .btn-edit:hover { background: rgba(96,165,250,0.22); }
-                .btn-delete { background: rgba(220,38,38,0.1); color: #fca5a5; }
-                .btn-delete:hover { background: rgba(220,38,38,0.18); }
                 .pagination {
                     display: flex; align-items: center; justify-content: center; gap: 1rem;
                     margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem;
