@@ -147,7 +147,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068g | Admin menu bar stays on one row down to 861px | VERIFIED — task commit `489b520`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/admin-menu-narrow-fit` |
 | TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | READY — passed 2026-11-22; stacked on TJ-068g | `feat/patient-row-actions` |
 | TJ-068f2 | Row actions (design 5B): Employees | READY — passed 2026-11-22; stacked on TJ-068f1 | `feat/employee-row-actions` |
-| TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | READY — passed 2026-11-22; stacked on TJ-068f2 | `feat/content-row-actions` |
+| TJ-068f1–f3 | (executed) | VERIFIED except one bug — task commits `a91c835`, `fb950ba`, `1653d84`; byte-identical to the spec; gates green; see TJ-068f4 | — |
+| TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | EXECUTED as `1653d84` | `feat/content-row-actions` |
+| TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | READY — stacked on TJ-068f3 | `bugfix/row-menu-item-styles` |
 | TJ-069 | Staff portal refresh, phase 1: shared foundations | BACKLOG — no planning pass | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
@@ -15623,6 +15625,21 @@ button.staff-row-name {
 - [ ] Website Doctors: a card click or the name opens the editor; drag-to-reorder is unchanged; `⋯` holds Edit, Show/Hide and Archive.
 - [ ] Notes: a row click or the name opens the editor; `⋯` holds Edit, then Delete in red.
 - [ ] `tsc` and the build exit 0.
+
+### TJ-068f4 — Fix: row-menu items unstyled (planner's spec bug)
+
+- **Status:** READY. Not yet dispatched (usage limit reached 2026-11-22).
+- **Branch:** `bugfix/row-menu-item-styles`, cut from `1653d84` (TJ-068f3 tip).
+- **Why:** found in the batch 2b preview. In `RowMenu.tsx` the menu items are drawn by the `renderItem` helper, outside the JSX tree that holds `<style jsx>`, so styled-jsx never adds its `jsx-…` class to them. Every `.row-menu-item` rule misses: the item text renders `rgb(0,0,0)` on the dark panel. The executor copied the planner's verbatim component exactly; the bug is in the spec. The panel, trigger and divider are in the tree and styled correctly.
+- **Batch 2b verification so far:** f1–f3 re-applied by script, 16/16 files byte-identical; `tsc` 0 and `next build --webpack` 0 on `1653d84`. Preview passed: row click opens the record (admin patients, employees, blog, notes, website-doctor cards); name link/button; ⋯ and Restore never trigger the row; menu portalled, fixed, end-aligned, opens below or flips above (20px room), stays in view; outside click, scroll, Escape (focus returns) and Tab close it; arrows move and wrap; Archive/Delete keep their `confirm()`; destructive items after a divider; patient file shows Edit Info (30px, Pencil) + ⋯ → Archive, or blue Restore when archived; drag attribute kept on website-doctor cards. Not yet checked: secretary, doctor and archived patient lists in the preview.
+
+**Instructions** — in `src/app/components/RowMenu.tsx`, inside `<style jsx>`, change only these selectors (rule bodies unchanged):
+- `.row-menu-item {` → `.row-menu-panel :global(.row-menu-item) {`
+- `.row-menu-item:hover,` / `.row-menu-item:focus {` → `.row-menu-panel :global(.row-menu-item:hover),` / `.row-menu-panel :global(.row-menu-item:focus) {`
+- `.row-menu-item.danger { color: #fca5a5; }` → `.row-menu-panel :global(.row-menu-item.danger) { color: #fca5a5; }`
+- `.row-menu-item.danger:hover,` / `.row-menu-item.danger:focus {` → `.row-menu-panel :global(.row-menu-item.danger:hover),` / `.row-menu-panel :global(.row-menu-item.danger:focus) {`
+
+**Verification:** `git diff --stat` lists only `RowMenu.tsx`; `tsc` and `next build --webpack` exit 0. The planner checks in the preview that items compute `rgba(255, 255, 255, 0.88)` and danger items `rgb(252, 165, 165)`.
 
 ---
 
