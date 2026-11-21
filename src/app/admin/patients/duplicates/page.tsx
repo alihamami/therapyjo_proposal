@@ -111,11 +111,11 @@ export default function DuplicatePatientsPage() {
                 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; }
                 .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
-                .btn-back {
+                :global(.btn-back) {
                     color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
                     transition: color 0.15s;
                 }
-                .btn-back:hover { color: #fff; }
+                :global(.btn-back:hover) { color: #fff; }
                 .loading-text { color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; }
                 .empty-card {
                     background: rgba(76,175,147,0.06); border: 1px solid rgba(76,175,147,0.12);
@@ -169,17 +169,17 @@ export default function DuplicatePatientsPage() {
                     color: rgba(255,255,255,0.8);
                 }
                 .data-table tr:hover { background: rgba(255,255,255,0.02); }
-                .btn-sm {
+                :global(.btn-sm) {
                     padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
                 }
-                .btn-view { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                .btn-view:hover { background: rgba(76,175,147,0.22); }
+                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
+                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
 
                 @media (max-width: 560px) {
                     .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-                    .btn-sm { padding: 0.42rem 0.75rem; }
+                    :global(.btn-sm) { padding: 0.42rem 0.75rem; }
                 }
             `}</style>
         </div>

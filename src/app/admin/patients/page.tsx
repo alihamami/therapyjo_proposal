@@ -241,13 +241,13 @@ export default function PatientsPage() {
                 .id-cell { color: rgba(255,255,255,0.35); font-variant-numeric: tabular-nums; }
                 .name-cell { font-weight: 500; color: #fff; }
                 .action-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-                .btn-sm {
+                :global(.btn-sm) {
                     padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
                 }
-                .btn-view { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                .btn-view:hover { background: rgba(76,175,147,0.22); }
+                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
+                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
                 .btn-archive { background: rgba(251,191,36,0.12); color: #fbbf24; }
                 .btn-archive:hover { background: rgba(251,191,36,0.22); }
                 .pagination {
@@ -304,7 +304,7 @@ export default function PatientsPage() {
                     .btn-add { width: 100%; padding: 0.65rem 1.2rem; }
                     .search-bar input { max-width: 100%; }
                     .modal-card { padding: 1.25rem; }
-                    .btn-sm { padding: 0.42rem 0.75rem; }
+                    :global(.btn-sm) { padding: 0.42rem 0.75rem; }
                 }
             `}</style>
         </div>

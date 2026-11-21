@@ -355,7 +355,7 @@ export default function AdminDashboard() {
                 .calendar-col { min-width: 0; }
                 .sub-header-start { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
                 .summary-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-                .chip {
+                .summary-chips :global(.chip) {
                     display: inline-flex; align-items: center; gap: 0.3rem;
                     background: rgba(255,255,255,0.04);
                     border: 1px solid rgba(255,255,255,0.08);
@@ -365,12 +365,12 @@ export default function AdminDashboard() {
                     white-space: nowrap;
                 }
                 .chip-val { font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
-                .chip-warn {
+                .summary-chips :global(.chip-warn) {
                     background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.2);
                     color: #fbbf24; text-decoration: none;
                 }
-                .chip-warn .chip-val { color: #fbbf24; }
-                .chip-warn:hover { background: rgba(251,191,36,0.14); }
+                .summary-chips :global(.chip-warn) .chip-val { color: #fbbf24; }
+                .summary-chips :global(.chip-warn:hover) { background: rgba(251,191,36,0.14); }
                 .modal-overlay {
                     position: fixed; inset: 0; background: rgba(0,0,0,0.6);
                     display: flex; align-items: center; justify-content: center;

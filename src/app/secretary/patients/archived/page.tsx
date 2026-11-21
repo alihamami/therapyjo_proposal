@@ -99,8 +99,8 @@ export default function SecretaryArchivedPatientsPage() {
                 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; }
                 .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
-                .btn-back { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
-                .btn-back:hover { color: #fff; }
+                :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
+                :global(.btn-back:hover) { color: #fff; }
                 .table-container {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
                     border-radius: var(--radius-md, 4px); overflow: hidden;
@@ -119,13 +119,13 @@ export default function SecretaryArchivedPatientsPage() {
                 }
                 .data-table tr:hover { background: rgba(255,255,255,0.02); }
                 .action-buttons { display: flex; gap: 0.4rem; }
-                .btn-sm {
+                :global(.btn-sm) {
                     padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
                 }
-                .btn-view { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                .btn-view:hover { background: rgba(76,175,147,0.22); }
+                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
+                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
                 .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; }
                 .btn-restore:hover { background: rgba(96,165,250,0.22); }
                 .pagination {
