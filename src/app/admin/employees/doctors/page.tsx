@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { parseWorkingHours, formatWorkingHours, isLegacyWorkingHours } from "@/lib/workingHours";
 import { clinicalFileUrl } from "@/lib/storageUrl";
+import { Plus } from "lucide-react";
 
 interface Doctor {
     id: string;
@@ -327,7 +328,7 @@ export default function DoctorsPage() {
         <div>
             <div className="page-header">
                 <h1>Doctors</h1>
-                <button className="btn-primary" onClick={() => router.push("/admin/employees/doctors/new")}>+ Add Doctor</button>
+                <button className="staff-btn staff-btn-primary" onClick={() => router.push("/admin/employees/doctors/new")}><Plus size={15} aria-hidden="true" />Add Doctor</button>
             </div>
 
             <div className="filter-row">
@@ -593,13 +594,14 @@ export default function DoctorsPage() {
                         </div>
 
                         <div className="modal-actions">
-                            <button className="btn-secondary" onClick={() => setEditingDoctor(null)}>Cancel</button>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => setEditingDoctor(null)}>Cancel</button>
                             <button
-                                className="btn-primary"
+                                className="staff-btn staff-btn-primary"
+                                aria-busy={saving}
                                 onClick={handleSave}
                                 disabled={saving || !form.name || !form.username.trim()}
                             >
-                                {saving ? "Saving..." : "Save"}
+                                {saving ? "Saving…" : "Save"}
                             </button>
                         </div>
                     </div>
@@ -624,7 +626,7 @@ export default function DoctorsPage() {
                             />
                         </div>
                         <div className="modal-actions">
-                            <button className="btn-secondary" onClick={() => setDeleteTarget(null)}>Cancel</button>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)}>Cancel</button>
                             <button
                                 className="btn-danger"
                                 onClick={handleHardDelete}
@@ -654,20 +656,6 @@ export default function DoctorsPage() {
         .chip.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
         .chip-count { color: rgba(255,255,255,0.4); font-weight: 500; }
         .chip.active .chip-count { color: rgba(255,255,255,0.7); }
-        .btn-primary {
-          background: linear-gradient(135deg, #059669, #10b981); color: #fff;
-          border: none; border-radius: 10px; padding: 0.6rem 1.25rem;
-          font-size: 0.9rem; font-weight: 600; cursor: pointer;
-          transition: opacity 0.2s; font-family: inherit;
-        }
-        .btn-primary:hover:not(:disabled) { opacity: 0.85; }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-secondary {
-          background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
-          border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
-          padding: 0.6rem 1.25rem; font-size: 0.9rem; cursor: pointer;
-          font-family: inherit;
-        }
         .table-container {
           background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
           border-radius: 12px; overflow-x: auto; overflow-y: hidden;

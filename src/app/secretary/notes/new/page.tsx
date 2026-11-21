@@ -87,8 +87,8 @@ export default function SecretaryNewNotePage() {
                     </div>
 
                     <div className="form-actions">
-                        <button className="btn-cancel" onClick={() => router.push("/secretary/notes")}>Cancel</button>
-                        <button className="btn-save" onClick={handleSubmit} disabled={saving}>{saving ? "Creating…" : "Create Note"}</button>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => router.push("/secretary/notes")}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>{saving ? "Creating…" : "Create Note"}</button>
                     </div>
                 </div>
             </div>
@@ -115,11 +115,6 @@ export default function SecretaryNewNotePage() {
                 .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--primary, #4CAF93); }
                 .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.2); }
                 .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
-                .btn-cancel { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px); padding: 0.55rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
-                .btn-cancel:hover { background: rgba(255,255,255,0.1); color: #fff; }
-                .btn-save { background: var(--primary, #4CAF93); color: #fff; border: none; border-radius: var(--radius-sm, 2px); padding: 0.55rem 1.5rem; font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: inherit; }
-                .btn-save:hover { background: var(--primary-dark, #3a8f77); }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
                 @media (max-width: 640px) { .form-layout { flex-direction: column; } }
             `}</style>
         </div>

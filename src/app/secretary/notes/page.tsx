@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Plus } from "lucide-react";
 
 interface Doctor {
     id: string;
@@ -56,7 +57,7 @@ export default function SecretaryNotesPage() {
         <div>
             <div className="page-header">
                 <h1>Notes <span className="count">({total})</span></h1>
-                <button className="btn-add" onClick={() => { window.location.href = "/secretary/notes/new"; }}>+ Add Note</button>
+                <button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = "/secretary/notes/new"; }}><Plus size={15} aria-hidden="true" />Add Note</button>
             </div>
             <div className="filters">
                 <input className="search-input" placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
@@ -98,7 +99,6 @@ export default function SecretaryNotesPage() {
                 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; }
                 .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
-                .btn-add { background: var(--primary, #4CAF93); color: #fff; border: none; padding: 0.45rem 1rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; }
                 .filters { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
                 .search-input { flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.75rem; color: #fff; font-size: 0.85rem; outline: none; font-family: inherit; }
                 .search-input:focus { border-color: var(--primary, #4CAF93); }

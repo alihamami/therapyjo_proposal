@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { Plus } from "lucide-react";
 
 interface DoctorProfile {
     id: string;
@@ -174,7 +175,7 @@ export default function DoctorsCmsPage() {
                     <h1>Doctors</h1>
                     <p className="subtitle">Drag cards to set the order they appear on the public site.</p>
                 </div>
-                <button className="btn-primary" onClick={openAdd}>+ Add Doctor</button>
+                <button className="staff-btn staff-btn-primary" onClick={openAdd}><Plus size={15} aria-hidden="true" />Add Doctor</button>
             </div>
 
             <div className="grid">
@@ -272,8 +273,8 @@ export default function DoctorsCmsPage() {
                         </div>
 
                         <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
-                            <button className="btn-save" onClick={handleSave} disabled={saving || !form.name || !form.title}>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                            <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving || !form.name || !form.title}>
                                 {saving ? "Saving…" : "Save"}
                             </button>
                         </div>
@@ -287,12 +288,6 @@ export default function DoctorsCmsPage() {
                 .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.25rem; }
                 .subtitle { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin: 0; }
-                .btn-primary {
-                    background: linear-gradient(135deg, #059669, #10b981); color: #fff;
-                    border: none; border-radius: 8px; padding: 0.6rem 1.25rem;
-                    font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; flex-shrink: 0;
-                }
-                .btn-primary:hover { opacity: 0.85; }
 
                 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
                 .empty-state { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.35); padding: 3rem; }
@@ -371,17 +366,6 @@ export default function DoctorsCmsPage() {
                 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
                 .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
-                .btn-cancel {
-                    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
-                    border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-                    padding: 0.55rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
-                }
-                .btn-save {
-                    background: var(--primary, #4CAF93); color: #fff; border: none;
-                    border-radius: 8px; padding: 0.55rem 1.5rem; font-size: 0.88rem;
-                    font-weight: 600; cursor: pointer; font-family: inherit;
-                }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
                 .toast {
                     position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1300;
