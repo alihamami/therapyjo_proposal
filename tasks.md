@@ -135,13 +135,17 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — **complete**: both halves merged after the user's review, SQL steps 0–3 run, pushed and **deployed 2026-11-18 01:17 (Amman)** as `3883b82`; live reads verified on all three screens; **one live write check owed** (see TJ-067) | — |
 | TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | DONE — task commit `db28223`, merged to `master` as `0745fac` with `--no-ff` on 2026-11-18 after the user's review; back-filled 57/57; live-verified | `feat/patient-since-text` |
 | TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | DONE — task commit `48c9cb2`, merged to `master` as `3883b82` with `--no-ff` on 2026-11-18 after the user's review; unique index dropped; live reads verified; **live write check owed** | `feat/assessment-pages` |
-| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2 = TJ-068e, TJ-068f1–f3 | — |
+| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2a = TJ-068e1–e3 + TJ-068g (READY), batch 2b = TJ-068f1–f3 | — |
 | TJ-068a | Remove the unreachable "Add Reservation" popups | DONE — task commit `45a7d32`, merged to `master` as `ad2539b` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `refactor/remove-dead-booking-modals` |
 | TJ-068b | Admin menu bar: one row, solid, lined up with the page | DONE — task commit `d6f9087`, merged to `master` as `2f7e6f2` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/admin-menu-one-row` |
 | TJ-068c | Restore styles that never reached links | DONE — task commit `1659a30`, merged to `master` as `ee9f6f8` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/link-styles-restored` |
 | TJ-068d | "No phone" instead of a bare 0 | DONE — task commit `281a7f1`, merged to `master` as `6b3b4f6` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/no-phone-label` |
-| TJ-068e | One primary button for the staff portal (design 4A) | BACKLOG — design decided; pass runs on top of batch 1 | — |
-| TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | BACKLOG — design decided; pass runs on top of TJ-068e | — |
+| TJ-068e | One primary button for the staff portal (design 4A) | SPLIT — passed 2026-11-22 on `292b890`; TJ-068e1–e3 | — |
+| TJ-068e1 | Remove the three remaining unreachable add popups | READY — cut from `master` | `refactor/remove-dead-add-popups` |
+| TJ-068e2 | Design 4A buttons: dashboards, booking, patients | READY — stacked on TJ-068e1 | `feat/staff-buttons-booking-patients` |
+| TJ-068e3 | Design 4A buttons: blog, website doctors, employees, notes, doctor portal | READY — stacked on TJ-068e2 | `feat/staff-buttons-content-team` |
+| TJ-068g | Admin menu bar stays on one row down to 861px | READY — stacked on TJ-068e3 | `feat/admin-menu-narrow-fit` |
+| TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | BACKLOG — design decided; pass runs on top of TJ-068g | — |
 | TJ-068f2 | Row actions (design 5B): Employees | BACKLOG — after TJ-068f1 | — |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | BACKLOG — after TJ-068f1 | — |
 | TJ-069 | Staff portal refresh, phase 1: shared foundations | BACKLOG — no planning pass | — |
@@ -14312,7 +14316,7 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 
 ### TJ-068 — Staff portal refresh, phase 0: quick wins
 
-- **Status:** SPLIT. Batch 1 (TJ-068a–d) is `DONE`: merged 2026-11-22, not pushed. Batch 2 (TJ-068e, TJ-068f1–f3) gets its pass on top of batch 1, so its anchors are read from the code it will actually change.
+- **Status:** SPLIT. Batch 1 (TJ-068a–d) is `DONE`: merged 2026-11-22, not pushed. Batch 2a (TJ-068e1–e3, TJ-068g) is `READY`, passed on top of batch 1 so its anchors are read from the code it will change. Batch 2b (TJ-068f1–f3) gets its pass on top of TJ-068g.
 - **Why:** Visible defects with small, safe fixes, and two design decisions the user made on 2026-11-21 against the planner's before/after mockup (private artifact `https://claude.ai/artifact/UoRvJmBksMqNArx5nEpgDp`).
 - **Execution:** one executor at a time. Each sub-task gets its own branch, **stacked**: TJ-068a is cut from `master`, and each later one from the previous one's branch tip. The planner merges them in order with `--no-ff`. **Per the user's standing rule (2026-11-18), nothing merges, and nothing is pushed, until the user has seen the real screens.**
 
@@ -14664,13 +14668,323 @@ More than four files, but one concern and one-line edits throughout. Accepted as
 
 ### TJ-068e — One primary button for the staff portal (design 4A)
 
-- **Status:** BACKLOG. The design is decided (see TJ-068). The pass runs on top of batch 1.
-- **Why:** Three primary-button looks today. White on teal fails contrast at 2.7 : 1, and the homepage's `.btn-primary` leaks capitals and a hover lift into Employees, Blog and website Doctors.
-- **Shape, for the pass:** define `.staff-btn`, `.staff-btn-primary` and `.staff-btn-secondary`, plus states and a `.staff-spinner`, once in the `globals.css` staff section, with the 4A literals recorded under TJ-068. Swap every staff Add, Save, Create and Cancel button to them: `btn-add`, `btn-save`, `btn-primary`, `btn-cancel` and `btn-secondary` across about 22 files. Delete each file's local copies, and add the lucide `Plus` icon to Add buttons. Verification: no staff file uses `btn-primary` or `btn-secondary` any more. Probably split by area during the pass.
+- **Status:** SPLIT. Passed 2026-11-22 on `master` at `292b890` (the batch 1 code). Batch 2a = TJ-068e1, TJ-068e2, TJ-068e3, plus TJ-068g, stacked in that order. TJ-068f1–f3 get their pass on top of TJ-068g.
+- **Why:** see the 4A decision under TJ-068. Today the staff portal has 68 Add/Save/Create/Cancel buttons drawn by 6 class names, defined again in each of 27 files with 4 different radii, 3 paddings, white text on teal (2.7 : 1), and in 4 admin pages the homepage's global `.btn-primary` leaking in.
+
+**Planning pass:** 2026-11-22, on `master` at `292b890`. Every `className="btn-add|btn-save|btn-primary|btn-cancel|btn-secondary|btn-submit"` in `src/app/{admin,secretary,doctor}` and `components/ClinicalAssessment.tsx` was listed by script (68 sites, all on native `<button>` elements, all a single class), and every local CSS rule naming those classes was extracted with its `@media` context (listed per file below). Layout-only rules inside `@media` blocks were read in context; each is rewritten or dropped as stated. Because the buttons are native elements in the same component, a scoped selector such as `.page-header .staff-btn` still matches them (the TJ-068c `<Link>` problem does not arise). Out of scope and left as they are, deliberately: `btn-danger` (delete confirmations), `btn-approve`, `translate-btn`, `upload-btn`, `new-patient-btn`, `btn-new` ("+ New Assessment", part of the tab strip), and all `btn-sm` row buttons (TJ-068f). The three add popups still in the list pages are unreachable (`setShowAdd(true)` occurs nowhere) and are removed first, in TJ-068e1, so their buttons are not restyled for nothing. `lucide-react` `^0.564.0` is installed and not yet imported anywhere in `src`.
+
+---
+
+### TJ-068e1 — Remove the three remaining unreachable add popups
+
+- **Status:** READY
+- **Branch:** `refactor/remove-dead-add-popups`, cut from `master` at the commit that adds this spec.
+- **Why:** The admin patient list, the secretary patient list and the secretary notes list each carry an add modal with its state, handler and CSS. Nothing opens them: `setShowAdd(true)` occurs nowhere, and each page's "+ Add …" button navigates to its `/new` page. Found during the batch 1 review. Nothing on screen changes.
+
+**Planning pass:** 2026-11-22, on `master` at `292b890`. All three files read in full. In `admin/patients/page.tsx` the modal is the only user of `showAdd`, `saving`, `form`, `pictureFile`, `error`, `handleAdd` and of every rule from `.modal-overlay` to `.btn-save:disabled`; `router`, `useCallback`, `Link` and `joinPhones` stay in use. In `secretary/patients/page.tsx` the same holds for `showAdd`, `addForm`, `pictureFile`, `addError`, `saving` and `handleAdd`; `router` stays (the Add button). In `secretary/notes/page.tsx`, `showAdd`, `form`, `saving` and `handleAdd` are modal-only; `doctors` and `fetchDoctors` stay (the doctor filter uses them). Every anchor below was checked by script to occur exactly once in its file.
+
+**Scope — touch only these:**
+- `src/app/admin/patients/page.tsx`
+- `src/app/secretary/patients/page.tsx`
+- `src/app/secretary/notes/page.tsx`
+
+**Do not touch:** anything else, including each page's `.btn-add` button and its CSS (TJ-068e2/e3 restyle those).
+
+**Instructions.** Files are CRLF in the working tree; keep that. "Delete from A through B" means both anchor lines and everything between; "up to, not including, B" keeps B.
+
+`src/app/admin/patients/page.tsx`:
+1. Delete from `    const [showAdd, setShowAdd] = useState(false);` through `    const [error, setError] = useState("");` (5 lines).
+2. Delete from `    const handleAdd = async () => {` up to, not including, `    const handleArchive = async (id: number) => {`.
+3. Delete from `            {/* Add Patient Modal */}` up to, not including, `            <style jsx>{\``.
+4. In the `<style jsx>` block, delete from `                .modal-overlay {` through `                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }`, and inside `@media (max-width: 560px)` delete the line `                    .modal-card { padding: 1.25rem; }`.
+
+`src/app/secretary/patients/page.tsx`:
+1. Delete from `    // Add patient modal` through `    const [saving, setSaving] = useState(false);`, plus the blank line that follows.
+2. Delete from `    const handleAdd = async () => {` up to, not including, `    const formatDate = (d: string | null) => {`.
+3. Delete from `            {showAdd && (` up to, not including, `            <style jsx>{\``.
+4. In the `<style jsx>` block, delete from `                .modal-overlay {` through `                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }` (13 one-line rules).
+
+`src/app/secretary/notes/page.tsx`:
+1. Delete the three lines that begin `    const [showAdd, setShowAdd]`, `    const [form, setForm]` and `    const [saving, setSaving]`.
+2. Delete from `    const handleAdd = async () => {` up to, not including, `    const formatDate = (d: string) =>`.
+3. Delete from `            {showAdd && (` up to, not including, `            <style jsx>{\``.
+4. In the `<style jsx>` block, delete from `                .modal-overlay {` through `                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }` (15 one-line rules).
+
+**Verification:**
+- `grep -nE "showAdd|handleAdd|addForm|addError|pictureFile|setSaving|modal-|form-group|form-stack|form-row|form-error|error-msg|btn-save|btn-cancel" src/app/admin/patients/page.tsx src/app/secretary/patients/page.tsx src/app/secretary/notes/page.tsx` prints nothing.
+- `grep -c "btn-add"` prints `4` for `admin/patients/page.tsx` (the button, `.btn-add {`, `.btn-add:hover`, the `@media` line) and `2` for each secretary file (the button and its rule).
+- `git diff --numstat` lists exactly the 3 files, each with `0` insertions.
+- `npx tsc --noEmit --incremental false` exits 0.
+- `npx next build --webpack` exits 0.
+- **Runtime checks are waived, not passed.** Do not start a dev server: the only database is production.
+
+**Done when:**
+- [ ] None of the three pages contains an add modal, its state, its handler or its CSS.
+- [ ] Every remaining line of the three files is byte-identical to before.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-068e2 — Design 4A buttons: dashboards, booking, patients
+
+- **Status:** READY
+- **Branch:** `feat/staff-buttons-booking-patients`, cut from the tip of `refactor/remove-dead-add-popups`.
+- **Why:** Defines the 4A button once in `globals.css` and moves the dashboards, the booking forms, the patient lists, the patient files and the clinical assessment onto it.
+
+**Scope — touch only these (14):**
+- `src/app/globals.css`
+- `src/app/admin/page.tsx`, `src/app/secretary/page.tsx`
+- `src/app/admin/patients/page.tsx`, `src/app/secretary/patients/page.tsx`
+- `src/app/admin/patients/new/page.tsx`, `src/app/secretary/patients/new/page.tsx`
+- `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`
+- `src/app/admin/reservations/new/page.tsx`, `src/app/secretary/reservations/new/page.tsx`
+- `src/app/admin/reservations/[id]/edit/page.tsx`, `src/app/secretary/reservations/[id]/edit/page.tsx`
+- `src/app/components/ClinicalAssessment.tsx`
+
+**Do not touch:** any other file; any button whose class is not one of the six listed in rule R1; the homepage's global `.btn-primary`/`.btn-secondary` in `globals.css` (the public site uses them); any `onClick`, `disabled` or label text other than as stated.
+
+**Rules (they apply to every file in scope, here and in TJ-068e3):**
+- **R1 — class swap.** On each `<button>`: `className="btn-add"`, `className="btn-save"`, `className="btn-primary"` and `className="btn-submit"` become `className="staff-btn staff-btn-primary"`. `className="btn-cancel"` and `className="btn-secondary"` become `className="staff-btn staff-btn-secondary"`.
+- **R2 — Add buttons get the icon.** A label of the form `+ Add X` or `+ New X` becomes `<Plus size={15} aria-hidden="true" />Add X` (or `New X`), and the file gains the import line `import { Plus } from "lucide-react";` directly after its last existing `import` line.
+- **R3 — working state.** A primary button whose label is a ternary on a flag (`{saving ? "Saving…" : …}`, `{savingInfo ? …}`, etc.) gets `aria-busy={<that flag>}` directly after its `className`. The label text is otherwise unchanged. The flag for each button is listed below.
+- **R4 — local CSS goes.** In the file's `<style jsx>`, delete every rule whose selector is only one of the six old classes, alone or with `:hover`, `:disabled` or `:hover:not(:disabled)` (whole rule, through its closing `}`). The rules to delete are listed per file below, with their selectors. Layout rules inside `@media` blocks are **not** covered by R4; each is handled by the line given for its file.
+- **R5 — nothing else changes.** No other CSS, markup or logic.
+
+**Step 1 — `src/app/globals.css`.** Append at the end of the file (after the `.no-phone` rule, CRLF line endings like the rest of the file):
+```css
+
+/* Buttons, design 4A (TJ-068e). Primary: bright teal with dark text, 5.7:1
+   (white on #4CAF93 is 2.7:1 and fails AA). Secondary: the quiet companion
+   for Cancel and Close. A button that is saving sets aria-busy="true" and
+   shows a ring spinner before its label. Every Add, Save and Create button in
+   the staff portal uses these; pages keep only layout rules of their own. */
+.staff-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.staff-btn:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 2px;
+}
+.staff-btn:disabled {
+  cursor: not-allowed;
+}
+.staff-btn-primary {
+  background: #4CAF93;
+  color: #0d2a22;
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.staff-btn-primary:hover:not(:disabled) {
+  background: #5dbda0;
+}
+.staff-btn-primary:disabled {
+  background: rgba(76, 175, 147, 0.32);
+  color: rgba(13, 42, 34, 0.6);
+  box-shadow: none;
+}
+.staff-btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 500;
+}
+.staff-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+.staff-btn-secondary:disabled {
+  opacity: 0.5;
+}
+/* Working: full colour although disabled, with a spinner before the label. */
+.staff-btn-primary[aria-busy="true"]:disabled {
+  background: #4CAF93;
+  color: #0d2a22;
+  cursor: progress;
+}
+.staff-btn[aria-busy="true"]::before {
+  content: "";
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: staff-spin 0.7s linear infinite;
+}
+@keyframes staff-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .staff-btn[aria-busy="true"]::before { animation-duration: 1.6s; }
+}
+```
+
+**Step 2 — per file.** "P" = becomes primary, "S" = becomes secondary.
+
+| File | Buttons (R1–R3) | CSS (R4, and layout lines) |
+|---|---|---|
+| `admin/page.tsx` | P `+ Add Reservation` (R2: `Add Reservation`). S `Cancel` (duplicate modal), P `Duplicate` (no flag). S `Close` (detail modal), P `Edit SOAP Note` (no flag). | Delete `.btn-add {…}`, `.btn-add:hover`, `.btn-cancel {…}`, `.btn-save {…}`, `.btn-save:disabled`. Inside `@media (max-width: 640px)` delete the line `                    .btn-add { flex-shrink: 0; }` (`.staff-btn` has `flex-shrink: 0`). |
+| `secretary/page.tsx` | P `+ Add Reservation` (R2). | Delete `.btn-add {…}`. |
+| `admin/patients/page.tsx` | P `+ Add Patient` (R2). | Delete `.btn-add {…}` (5 lines), `.btn-add:hover`. Inside `@media (max-width: 560px)` replace `                    .btn-add { width: 100%; padding: 0.65rem 1.2rem; }` with `                    .page-header .staff-btn { width: 100%; }`. |
+| `secretary/patients/page.tsx` | P `+ Add Patient` (R2). | Delete `.btn-add {…}`. |
+| `admin/patients/new/page.tsx` | S `Cancel`, P `Create Patient`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. Replace `                    .form-actions button { width: 100%; padding: 0.65rem 1.2rem; }` with `                    .form-actions button { width: 100%; }`. |
+| `secretary/patients/new/page.tsx` | S `Cancel`, P `Create Patient`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. |
+| `admin/patients/[id]/page.tsx` | Edit-info modal: S `Cancel`, P `Save`, flag `savingInfo`. SOAP modal: S `Close`, P `Save SOAP Note`, flag `savingSoap`. | Delete `.btn-save`, `.btn-save:disabled`, `.btn-cancel`. |
+| `secretary/patients/[id]/page.tsx` | S `Cancel`, P `Save`, flag `savingInfo`. | Delete `.btn-cancel`, `.btn-save`, `.btn-save:disabled`. |
+| `admin/reservations/new/page.tsx` | Form: S `Cancel`, P `Create Reservation`, flag `saving`. New-patient modal: S `Cancel`, P `Create & Select`, flag `creatingPatient`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. Replace `                    .form-actions .btn-cancel, .form-actions .btn-save { width: 100%; }` with `                    .form-actions .staff-btn { width: 100%; }`. |
+| `secretary/reservations/new/page.tsx` | Form: S `Cancel`, P `Create Reservation`, flag `saving`. New-patient modal: S `Cancel`, P `Create & Select`, flag `creatingPatient`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. |
+| `admin/reservations/[id]/edit/page.tsx` | S `Cancel`, P `Save Changes`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. Replace `                    .form-actions .btn-cancel, .form-actions .btn-save { width: 100%; }` with `                    .form-actions .staff-btn { width: 100%; }`. |
+| `secretary/reservations/[id]/edit/page.tsx` | S `Cancel`, P `Save Changes`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. |
+| `components/ClinicalAssessment.tsx` | P (label `{saving ? "Saving…" : saveLabel}`), flag `saving`. | Delete `.btn-save`, `.btn-save:disabled`. |
+
+Example, `admin/patients/page.tsx`, before and after:
+```tsx
+                <button className="btn-add" onClick={() => router.push("/admin/patients/new")}>+ Add Patient</button>
+```
+```tsx
+                <button className="staff-btn staff-btn-primary" onClick={() => router.push("/admin/patients/new")}><Plus size={15} aria-hidden="true" />Add Patient</button>
+```
+and `admin/patients/new/page.tsx`: `<button className="btn-save" onClick={handleSubmit} disabled={saving}>` becomes `<button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>` (keep whatever attributes the line already has, in order, after the inserted `aria-busy`).
+
+**Verification:**
+- `grep -nE "btn-(add|save|primary|submit|cancel|secondary)([^a-z-]|$)" <the 13 page/component files>` prints nothing.
+- Counts across the 13 files: `staff-btn-primary` 18, `staff-btn-secondary` 13, `aria-busy=` 12, `<Plus ` 4, `from "lucide-react"` 4 (in `admin/page.tsx`, `secretary/page.tsx`, `admin/patients/page.tsx`, `secretary/patients/page.tsx`). Report the per-file counts.
+- `grep -c "staff-btn" src/app/globals.css` is at least 12, and `git diff src/app/globals.css` shows only the appended block.
+- `git diff --stat` against the TJ-068e1 commit lists exactly the 14 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0.
+- **Runtime checks are waived, not passed.** Do not start a dev server.
+
+**Done when:**
+- [ ] The 4A classes exist once, in `globals.css`.
+- [ ] Every Add/Save/Create/Cancel/Close button in the 13 files uses them; Add buttons carry `Plus`; every saving button sets `aria-busy`.
+- [ ] No old button class or local copy of its CSS remains in those files; the layout lines are rewritten as listed.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-068e3 — Design 4A buttons: blog, website doctors, employees, notes, doctor portal
+
+- **Status:** READY
+- **Branch:** `feat/staff-buttons-content-team`, cut from the tip of `feat/staff-buttons-booking-patients`.
+- **Why:** The rest of the staff portal moves onto the 4A button, and the homepage's global `.btn-primary` stops leaking into four admin pages.
+
+**Scope — touch only these (14):**
+- `src/app/admin/blog/page.tsx`, `src/app/admin/blog/BlogEditor.tsx`
+- `src/app/admin/doctors/page.tsx`, `src/app/admin/doctors/archived/page.tsx`
+- `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/doctors/new/page.tsx`
+- `src/app/admin/employees/secretaries/page.tsx`, `src/app/admin/employees/secretaries/new/page.tsx`
+- `src/app/admin/notes/page.tsx`, `src/app/admin/notes/new/page.tsx`
+- `src/app/secretary/notes/page.tsx`, `src/app/secretary/notes/new/page.tsx`
+- `src/app/doctor/profile/page.tsx`, `src/app/doctor/session/[id]/page.tsx`
+
+**Do not touch:** `globals.css` (TJ-068e2 defined the classes); any other file; `btn-danger`, `btn-sm`, `translate-btn`, `upload-btn` and every other button not covered by R1. Rules R1–R5 from TJ-068e2 apply.
+
+| File | Buttons (R1–R3) | CSS (R4, and layout lines) |
+|---|---|---|
+| `admin/blog/page.tsx` | P `+ New Post` (R2: `New Post`). S `Cancel` (delete modal). | Delete the multi-line `.btn-primary {…}` (the first one, outside `@media`), `.btn-primary:hover`, `.btn-secondary {…}`. Inside `@media (max-width: 560px)` replace `                    .btn-primary { width: 100%; }` with `                    .page-header .staff-btn { width: 100%; }`. |
+| `admin/blog/BlogEditor.tsx` | S `Cancel`, P `Save Post`, flag `saving`. | Delete `.btn-cancel`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. Replace `                    .footer-actions .btn-cancel, .footer-actions .btn-save { flex: 1; }` with `                    .footer-actions .staff-btn { flex: 1; }`. |
+| `admin/doctors/page.tsx` | P `+ Add Doctor` (R2). Modal: S `Cancel`, P `Save`, flag `saving`. | Delete `.btn-primary`, `.btn-primary:hover`, `.btn-cancel`, `.btn-save`, `.btn-save:disabled`. |
+| `admin/doctors/archived/page.tsx` | S `Cancel` (delete modal). | Delete `.btn-secondary`. |
+| `admin/employees/doctors/page.tsx` | P `+ Add Doctor` (R2). Edit modal: S `Cancel`, P `Save` (multi-line `<button>`; put `aria-busy={saving}` on its own line after `className`), and change its working label `"Saving..."` to `"Saving…"`. Delete modal: S `Cancel`. | Delete `.btn-primary`, `.btn-primary:hover:not(:disabled)`, `.btn-primary:disabled`, `.btn-secondary`. |
+| `admin/employees/doctors/new/page.tsx` | S `Cancel`, P `Create Doctor`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. The line `.form-actions button { flex: 1 1 auto; }` stays. |
+| `admin/employees/secretaries/page.tsx` | P `+ Add Secretary` (R2). Edit modal: S `Cancel`, P `Save` (multi-line, as above, `"Saving..."` → `"Saving…"`). Delete modal: S `Cancel`. | Delete `.btn-primary`, `.btn-primary:hover:not(:disabled)`, `.btn-primary:disabled`, `.btn-secondary`. |
+| `admin/employees/secretaries/new/page.tsx` | S `Cancel`, P `Create Secretary`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. The line `.form-actions button { flex: 1 1 auto; }` stays. |
+| `admin/notes/page.tsx` | P `+ Add Note` (R2). Modal: S `Cancel`, P (label `{saving ? "Saving…" : editId ? "Update" : "Create"}`), flag `saving`. | Delete `.btn-add`, `.btn-cancel`, `.btn-save`, `.btn-save:disabled`. Inside `@media (max-width: 560px)` replace `                    .btn-add { width: 100%; }` with `                    .page-header .staff-btn { width: 100%; }`. |
+| `admin/notes/new/page.tsx` | S `Cancel`, P `Create Note`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. |
+| `secretary/notes/page.tsx` | P `+ Add Note` (R2). | Delete `.btn-add`. |
+| `secretary/notes/new/page.tsx` | S `Cancel`, P `Create Note`, flag `saving`. | Delete `.btn-cancel`, `.btn-cancel:hover`, `.btn-save`, `.btn-save:hover`, `.btn-save:disabled`. |
+| `doctor/profile/page.tsx` | P `Submit for Approval` (was `btn-submit`), flag `saving`. | Replace the multi-line `.btn-submit {…}` rule with the single line `                .staff-btn { align-self: flex-start; }`. Delete `.btn-submit:hover` and `.btn-submit:disabled`. |
+| `doctor/session/[id]/page.tsx` | P `Update Session`, flag `saving`. P `Save SOAP Note`, flag `savingSoap`. | Delete `.btn-save`, `.btn-save:disabled`. |
+
+**Verification:**
+- `grep -nE "btn-(add|save|primary|submit|cancel|secondary)([^a-z-]|$)" <the 14 files>` prints nothing.
+- And across the whole staff portal: `grep -rnE "btn-(add|save|primary|submit|cancel|secondary)([^a-z-]|$)" src/app/admin src/app/secretary src/app/doctor src/app/components/ClinicalAssessment.tsx` prints nothing.
+- Counts across the 14 files: `staff-btn-primary` 18, `staff-btn-secondary` 13, `aria-busy=` 12, `<Plus ` 6, `from "lucide-react"` 6 (blog page, website doctors, employee doctors, employee secretaries, admin notes, secretary notes). `grep -c "Saving\.\.\." ` on the two employee list pages prints `0`. Report the per-file counts.
+- `git diff --stat` against the TJ-068e2 commit lists exactly the 14 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0.
+- **Runtime checks are waived, not passed.** Do not start a dev server.
+
+**Done when:**
+- [ ] No staff page uses `btn-add`, `btn-save`, `btn-primary`, `btn-submit`, `btn-cancel` or `btn-secondary`, in markup or CSS.
+- [ ] The listed layout lines are rewritten; nothing else changed.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-068g — Admin menu bar stays on one row down to 861px
+
+- **Status:** READY
+- **Branch:** `feat/admin-menu-narrow-fit`, cut from the tip of `feat/staff-buttons-content-team`.
+- **Why:** Seen in the batch 1 preview: between about 861px and 990px wide, "Approvals" wraps to a second line inside the bar (86px instead of 61px). The planner measured a fix in the preview on 2026-11-22: from 861px to 1040px, tighter spacing plus an icon-only Sign Out keeps one row **with a two-digit Approvals badge**, 8px to spare at 861px; from 1041px up the current spacing already fits (30px to spare with a badge).
+
+**Scope — touch only:** `src/app/admin/layout.tsx`.
+
+**Instructions** (CRLF; every anchor occurs once):
+1. Replace
+   ```tsx
+                           <button
+                               onClick={() => signOut({ callbackUrl: "/login" })}
+                               className="logout-btn"
+                           >
+   ```
+   with
+   ```tsx
+                           <button
+                               onClick={() => signOut({ callbackUrl: "/login" })}
+                               className="logout-btn"
+                               aria-label="Sign out"
+                               title="Sign out"
+                           >
+   ```
+2. Replace the line `                            Sign Out` (the text after the `</svg>`) with `                            <span className="logout-label">Sign Out</span>`.
+3. Directly after the block
+   ```
+                   @media (min-width: 861px) and (max-width: 1180px) {
+                       .user-name { display: none; }
+                   }
+   ```
+   insert (a blank line, then):
+   ```
+                   /* 861–1040px: tighter spacing and an icon-only Sign Out keep
+                      the bar on one row, with room for a two-digit Approvals
+                      badge (8px to spare at 861px). (TJ-068g) */
+                   @media (min-width: 861px) and (max-width: 1040px) {
+                       .admin-nav { gap: 1rem; }
+                       .nav-collapsible { gap: 0.75rem; }
+                       :global(.nav-link) { padding: 0.4rem 0.5rem; }
+                       .logout-label { display: none; }
+                   }
+   ```
+
+**Verification:**
+- `grep -c "logout-label" src/app/admin/layout.tsx` prints `2`; `grep -c "TJ-068g" src/app/admin/layout.tsx` prints `1`.
+- `git diff --stat` against the TJ-068e3 commit lists only this file, with no deletions other than the two replaced lines.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0.
+- **Runtime checks are waived, not passed.** The planner re-measures the bar at 861, 900, 1040, 1041 and 1180px in the preview.
+
+**Done when:**
+- [ ] Between 861px and 1040px the bar is one row; Sign Out is icon-only there and keeps its accessible name; outside that band nothing changes.
+- [ ] `tsc` and the build exit 0.
 
 ### TJ-068f1 — Row actions (design 5B): shared menu, patient lists and patient file
 
-- **Status:** BACKLOG. The design is decided (see TJ-068). The pass runs on top of TJ-068e.
+- **Status:** BACKLOG. The design is decided (see TJ-068). The pass runs on top of TJ-068g.
 - **Shape, for the pass:** one shared `RowMenu` client component in `src/app/components/` (lucide icons, keyboard and outside-click handling, logical positioning, a destructive group after a divider). Clickable rows with a chevron on the admin and secretary patient lists. On both patient files: **Edit Info** as a small secondary button with `Pencil`, and `⋯` holding Archive. Existing `confirm()` prompts stay as they are; replacing them belongs to phase 1.
 
 ### TJ-068f2 — Row actions (design 5B): Employees
