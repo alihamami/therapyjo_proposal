@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { isMissingPhone } from "@/lib/phone";
 
 interface Patient {
     id: number;
@@ -73,7 +74,7 @@ export default function SecretaryArchivedPatientsPage() {
                             <tr key={p.id}>
                                 <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
                                 <td>{p.name}</td>
-                                <td>{p.phone1}</td>
+                                <td>{isMissingPhone(p.phone1) ? <span className="no-phone">No phone</span> : p.phone1}</td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
                                 <td>
                                     <div className="action-buttons">

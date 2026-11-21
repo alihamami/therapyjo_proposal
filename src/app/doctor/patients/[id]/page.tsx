@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { clinicalFileUrl } from "@/lib/storageUrl";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
+import { isMissingPhone } from "@/lib/phone";
 
 interface PatientData {
     id: number;
@@ -137,7 +138,7 @@ export default function DoctorPatientProfilePage({ params }: { params: Promise<{
                     <div className="header-info">
                         <h1>{patient.name}</h1>
                         <div className="header-meta">
-                            {patient.phone1 && <span>📞 <a href={`tel:${patient.phone1}`}>{patient.phone1}</a></span>}
+                            {typeof patient.phone1 === "string" && <span>📞 {isMissingPhone(patient.phone1) ? <span className="no-phone">No phone</span> : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>}
                             {patient.phone2 && <span>📞 <a href={`tel:${patient.phone2}`}>{patient.phone2}</a></span>}
                             <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
                             <span>Patient #{patient.id}</span>
