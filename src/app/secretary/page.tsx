@@ -24,12 +24,6 @@ interface Reservation {
     doctorColorSnapshot: string | null;
 }
 
-interface PatientResult {
-    id: number;
-    name: string;
-    phone1: string;
-}
-
 const today = () => new Date().toISOString().split("T")[0];
 
 export default function SecretaryDashboard() {
@@ -40,21 +34,6 @@ export default function SecretaryDashboard() {
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Add Reservation modal
-    const [showAdd, setShowAdd] = useState(false);
-    const [patientSearch, setPatientSearch] = useState("");
-    const [patientResults, setPatientResults] = useState<PatientResult[]>([]);
-    const [selectedPatient, setSelectedPatient] = useState<PatientResult | null>(null);
-    const [addForm, setAddForm] = useState({
-        doctorId: "",
-        sessionTime: "09:00",
-        note: "",
-        showNoteOnCalendar: false,
-        paymentType: "",
-        isTwoHours: false,
-    });
-    const [saving, setSaving] = useState(false);
-    const [addError, setAddError] = useState("");
     const [statusError, setStatusError] = useState("");
 
     const fetchDoctors = useCallback(async () => {
@@ -75,16 +54,6 @@ export default function SecretaryDashboard() {
 
     useEffect(() => { fetchDoctors(); }, [fetchDoctors]);
     useEffect(() => { fetchReservations(); }, [fetchReservations]);
-
-    useEffect(() => {
-        if (patientSearch.length < 2) { setPatientResults([]); return; }
-        const timer = setTimeout(async () => {
-            const res = await fetch(`/api/patients?search=${encodeURIComponent(patientSearch)}&limit=5`);
-            const data = await res.json();
-            setPatientResults(data.patients || []);
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [patientSearch]);
 
     const handleStatusChange = async (id: number, status: string) => {
         setStatusError("");
@@ -110,8 +79,8 @@ export default function SecretaryDashboard() {
         router.push(`/secretary/patients/${r.patient.id}`);
     };
 
-    // Mirrors the "+ Add Reservation" button, which navigates rather than
-    // opening the in-file modal (that modal is unreachable — see TJ-045).
+    // Mirrors the "+ Add Reservation" button: both go to the booking page.
+    // (The old in-file booking modal was removed in TJ-068a.)
     const handleEmptyClick = (hour: number) => {
         const time = `${String(hour).padStart(2, "0")}:00`;
         window.location.href = `/secretary/reservations/new?date=${selectedDate}&time=${time}`;
@@ -142,44 +111,6 @@ export default function SecretaryDashboard() {
             body: JSON.stringify({ sessionDate: date }),
         });
         fetchReservations();
-    };
-
-    const openAddModal = () => {
-        setShowAdd(true);
-        setSelectedPatient(null);
-        setPatientSearch("");
-        setAddError("");
-        setAddForm({
-            doctorId: doctors.length > 0 ? doctors[0].id : "",
-            sessionTime: "09:00",
-            note: "",
-            showNoteOnCalendar: false,
-            paymentType: "",
-            isTwoHours: false,
-        });
-    };
-
-    const submitAdd = async () => {
-        if (!selectedPatient) { setAddError("Select a patient"); return; }
-        setSaving(true);
-        const res = await fetch("/api/reservations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                patientId: selectedPatient.id,
-                doctorId: addForm.doctorId,
-                sessionDate: selectedDate,
-                sessionTime: addForm.sessionTime,
-                note: addForm.note,
-                showNoteOnCalendar: addForm.showNoteOnCalendar,
-                paymentType: addForm.paymentType || null,
-                isTwoHours: addForm.isTwoHours,
-            }),
-        });
-        const data = await res.json();
-        setSaving(false);
-        if (res.ok) { setShowAdd(false); fetchReservations(); }
-        else { setAddError(data.error || "Error"); }
     };
 
     const goDay = (offset: number) => {
@@ -247,53 +178,6 @@ export default function SecretaryDashboard() {
                 </div>
             </div>
 
-            {/* Add Reservation Modal */}
-            {showAdd && (
-                <div className="modal-overlay" onClick={() => setShowAdd(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>Add Reservation — {formatDate()}</h2>
-                        {addError && <div className="error-msg">{addError}</div>}
-                        <div className="form-group">
-                            <label>Patient</label>
-                            <input
-                                placeholder="Search by name or phone..."
-                                value={selectedPatient ? selectedPatient.name : patientSearch}
-                                onChange={(e) => { setPatientSearch(e.target.value); setSelectedPatient(null); }}
-                            />
-                            {patientResults.length > 0 && !selectedPatient && (
-                                <div className="search-results">
-                                    {patientResults.map((p) => (
-                                        <button key={p.id} className="search-item" onClick={() => { setSelectedPatient(p); setPatientSearch(""); setPatientResults([]); }}>
-                                            {p.name} <span className="search-phone">{p.phone1}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Doctor</label>
-                                <select value={addForm.doctorId} onChange={(e) => setAddForm({ ...addForm, doctorId: e.target.value })}>
-                                    {doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Time</label>
-                                <input type="time" min="07:00" max="18:00" value={addForm.sessionTime} onChange={(e) => setAddForm({ ...addForm, sessionTime: e.target.value })} />
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label>Note</label>
-                            <textarea rows={2} value={addForm.note} onChange={(e) => setAddForm({ ...addForm, note: e.target.value })} />
-                        </div>
-                        <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setShowAdd(false)}>Cancel</button>
-                            <button className="btn-save" onClick={submitAdd} disabled={saving}>{saving ? "Saving…" : "Create"}</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             <style jsx>{`
                 .controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem; }
                 .controls-left { display: flex; align-items: center; gap: 1.25rem; }
@@ -309,9 +193,6 @@ export default function SecretaryDashboard() {
                 .date-trigger-row { margin-bottom: 1rem; }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }
-                .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
-                .modal-card { background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md, 4px); padding: 2rem; width: 100%; max-width: 480px; }
-                .modal-card h2 { font-size: 1.1rem; margin-bottom: 1rem; font-weight: 600; }
                 .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2); color: #fca5a5; padding: 0.5rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; margin-bottom: 0.75rem; }
                 .status-error {
                     display: flex; align-items: center; justify-content: space-between;
@@ -322,21 +203,6 @@ export default function SecretaryDashboard() {
                     font-size: 0.78rem; cursor: pointer; font-family: inherit; flex-shrink: 0;
                 }
                 .dismiss-error:hover { color: #fff; }
-                .form-group { margin-bottom: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
-                .form-row { display: flex; gap: 0.75rem; }
-                .form-row .form-group { flex: 1; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
-                .form-group input, .form-group textarea, .form-group select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.7rem; color: #fff; font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical; }
-                .form-group select option { background: #1a2e35; }
-                .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
-                .search-results { background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px); max-height: 160px; overflow-y: auto; }
-                .search-item { display: flex; justify-content: space-between; width: 100%; background: none; border: none; color: #fff; padding: 0.45rem 0.7rem; font-size: 0.82rem; cursor: pointer; font-family: inherit; border-bottom: 1px solid rgba(255,255,255,0.04); }
-                .search-item:hover { background: rgba(255,255,255,0.06); }
-                .search-phone { color: rgba(255,255,255,0.35); font-size: 0.76rem; }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1rem; }
-                .btn-cancel { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; font-family: inherit; }
-                .btn-save { background: var(--primary, #4CAF93); color: #fff; border: none; border-radius: var(--radius-sm, 2px); padding: 0.5rem 1.2rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
                 @media (max-width: 768px) { .controls { flex-direction: column; align-items: flex-start; } }
             `}</style>
         </div>
