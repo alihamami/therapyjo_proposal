@@ -25,12 +25,6 @@ interface Reservation {
     doctorColorSnapshot: string | null;
 }
 
-interface PatientResult {
-    id: number;
-    name: string;
-    phone1: string;
-}
-
 type ReservationDetail = Reservation & {
     nextSessionNote?: string | null;
     paymentType?: string | null;
@@ -56,23 +50,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [dupCount, setDupCount] = useState(0);
 
-    // Add Reservation modal
-    const [showAdd, setShowAdd] = useState(false);
-    const [patientSearch, setPatientSearch] = useState("");
-    const [patientResults, setPatientResults] = useState<PatientResult[]>([]);
-    const [selectedPatient, setSelectedPatient] = useState<PatientResult | null>(null);
-    const [addForm, setAddForm] = useState({
-        doctorId: "",
-        sessionTime: "09:00",
-        note: "",
-        showNoteOnCalendar: false,
-        nextSessionNote: "",
-        paymentType: "",
-        isTwoHours: false,
-    });
-    const [addError, setAddError] = useState("");
     const [statusError, setStatusError] = useState("");
-    const [saving, setSaving] = useState(false);
 
     // Reservation detail modal
     const [detailId, setDetailId] = useState<number | null>(null);
@@ -108,17 +86,6 @@ export default function AdminDashboard() {
     useEffect(() => { fetchDoctors(); }, [fetchDoctors]);
     useEffect(() => { fetchReservations(); }, [fetchReservations]);
     useEffect(() => { fetchDuplicateCount(); }, [fetchDuplicateCount]);
-
-    // Patient search for add modal
-    useEffect(() => {
-        if (patientSearch.length < 2) { setPatientResults([]); return; }
-        const timer = setTimeout(async () => {
-            const res = await fetch(`/api/patients?search=${encodeURIComponent(patientSearch)}&limit=5`);
-            const data = await res.json();
-            setPatientResults(data.patients || []);
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [patientSearch]);
 
     const handleStatusChange = async (id: number, status: string) => {
         setStatusError("");
@@ -158,9 +125,9 @@ export default function AdminDashboard() {
         fetchReservations();
     };
 
-    // Mirrors the "+ Add Reservation" button, which navigates rather than
-    // opening the in-file modal (that modal is unreachable — see TJ-045).
-    // Carries the clicked hour so the form opens on the right time.
+    // Mirrors the "+ Add Reservation" button: both go to the booking page.
+    // (The old in-file booking modal was removed in TJ-068a.) Carries the
+    // clicked hour so the form opens on the right time.
     const handleEmptyClick = (hour: number) => {
         const time = `${String(hour).padStart(2, "0")}:00`;
         window.location.href = `/admin/reservations/new?date=${selectedDate}&time=${time}`;
@@ -184,52 +151,6 @@ export default function AdminDashboard() {
         const data = await res.json();
         setDetail(data);
         setDetailId(id);
-    };
-
-    const openAddModal = () => {
-        setShowAdd(true);
-        setSelectedPatient(null);
-        setPatientSearch("");
-        setAddError("");
-        setAddForm({
-            doctorId: doctors.length > 0 ? doctors[0].id : "",
-            sessionTime: "09:00",
-            note: "",
-            showNoteOnCalendar: false,
-            nextSessionNote: "",
-            paymentType: "",
-            isTwoHours: false,
-        });
-    };
-
-    const submitAdd = async () => {
-        if (!selectedPatient) { setAddError("Select a patient first"); return; }
-        if (!addForm.doctorId) { setAddError("Select a doctor"); return; }
-        setSaving(true);
-        setAddError("");
-        const res = await fetch("/api/reservations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                patientId: selectedPatient.id,
-                doctorId: addForm.doctorId,
-                sessionDate: selectedDate,
-                sessionTime: addForm.sessionTime,
-                note: addForm.note,
-                showNoteOnCalendar: addForm.showNoteOnCalendar,
-                nextSessionNote: addForm.nextSessionNote,
-                paymentType: addForm.paymentType || null,
-                isTwoHours: addForm.isTwoHours,
-            }),
-        });
-        const data = await res.json();
-        setSaving(false);
-        if (res.ok) {
-            setShowAdd(false);
-            fetchReservations();
-        } else {
-            setAddError(data.error || "Failed to create reservation");
-        }
     };
 
     const goDay = (offset: number) => {
@@ -332,93 +253,6 @@ export default function AdminDashboard() {
                     )}
                 </div>
             </div>
-
-            {/* Add Reservation Modal */}
-            {showAdd && (
-                <div className="modal-overlay" onClick={() => setShowAdd(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>Add Reservation</h2>
-                        <p className="modal-date">{formatSelectedDate()}</p>
-                        {addError && <div className="error-msg">{addError}</div>}
-
-                        <div className="form-group">
-                            <label>Patient (search by name or phone)</label>
-                            <input
-                                placeholder="Type to search..."
-                                value={selectedPatient ? selectedPatient.name : patientSearch}
-                                onChange={(e) => {
-                                    setPatientSearch(e.target.value);
-                                    setSelectedPatient(null);
-                                }}
-                            />
-                            {patientResults.length > 0 && !selectedPatient && (
-                                <div className="search-results">
-                                    {patientResults.map((p) => (
-                                        <button
-                                            key={p.id}
-                                            className="search-item"
-                                            onClick={() => {
-                                                setSelectedPatient(p);
-                                                setPatientSearch("");
-                                                setPatientResults([]);
-                                            }}
-                                        >
-                                            <span>{p.name}</span>
-                                            <span className="search-phone">{p.phone1}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Doctor</label>
-                                <select value={addForm.doctorId} onChange={(e) => setAddForm({ ...addForm, doctorId: e.target.value })}>
-                                    {doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Time</label>
-                                <input type="time" min="07:00" max="18:00" value={addForm.sessionTime} onChange={(e) => setAddForm({ ...addForm, sessionTime: e.target.value })} />
-                            </div>
-                        </div>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Payment</label>
-                                <select value={addForm.paymentType} onChange={(e) => setAddForm({ ...addForm, paymentType: e.target.value })}>
-                                    <option value="">—</option>
-                                    <option value="CASH">Cash</option>
-                                    <option value="INSURANCE">Insurance</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label className="checkbox-label">
-                                    <input type="checkbox" checked={addForm.isTwoHours} onChange={(e) => setAddForm({ ...addForm, isTwoHours: e.target.checked })} />
-                                    2-hour session
-                                </label>
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label>Note</label>
-                            <textarea rows={2} value={addForm.note} onChange={(e) => setAddForm({ ...addForm, note: e.target.value })} />
-                            <label className="checkbox-label">
-                                <input type="checkbox" checked={addForm.showNoteOnCalendar} onChange={(e) => setAddForm({ ...addForm, showNoteOnCalendar: e.target.checked })} />
-                                Show note on calendar
-                            </label>
-                        </div>
-                        <div className="form-group">
-                            <label>Next session note</label>
-                            <textarea rows={2} value={addForm.nextSessionNote} onChange={(e) => setAddForm({ ...addForm, nextSessionNote: e.target.value })} />
-                        </div>
-                        <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setShowAdd(false)}>Cancel</button>
-                            <button className="btn-save" onClick={submitAdd} disabled={saving}>
-                                {saving ? "Saving…" : "Create Reservation"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Duplicate Modal */}
             {dupId !== null && (
@@ -550,7 +384,6 @@ export default function AdminDashboard() {
                 .modal-sm { max-width: 360px; }
                 .modal-lg { max-width: 600px; }
                 .modal-card h2 { font-size: 1.15rem; margin-bottom: 0.5rem; font-weight: 600; }
-                .modal-date { font-size: 0.82rem; color: rgba(255,255,255,0.45); margin-bottom: 1rem; }
                 .error-msg {
                     background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
                     color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
@@ -566,8 +399,6 @@ export default function AdminDashboard() {
                 }
                 .dismiss-error:hover { color: #fff; }
                 .form-group { margin-bottom: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
-                .form-row { display: flex; gap: 0.75rem; }
-                .form-row .form-group { flex: 1; }
                 .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
                 .form-group input, .form-group textarea, .form-group select {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
@@ -578,23 +409,6 @@ export default function AdminDashboard() {
                 .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
                     border-color: var(--primary, #4CAF93);
                 }
-                .checkbox-label {
-                    flex-direction: row !important; display: flex; align-items: center; gap: 0.4rem;
-                    font-size: 0.8rem !important; cursor: pointer; margin-top: 0.25rem;
-                }
-                .checkbox-label input[type="checkbox"] { width: auto; }
-                .search-results {
-                    background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: var(--radius-sm, 2px); margin-top: 2px; max-height: 180px; overflow-y: auto;
-                }
-                .search-item {
-                    display: flex; justify-content: space-between; width: 100%;
-                    background: none; border: none; color: #fff; padding: 0.5rem 0.7rem;
-                    font-size: 0.82rem; cursor: pointer; font-family: inherit;
-                    border-bottom: 1px solid rgba(255,255,255,0.04);
-                }
-                .search-item:hover { background: rgba(255,255,255,0.06); }
-                .search-phone { color: rgba(255,255,255,0.35); font-size: 0.76rem; }
                 .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.25rem; }
                 .btn-cancel {
                     background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
@@ -621,7 +435,6 @@ export default function AdminDashboard() {
                     .calendar-col { width: 100%; }
                     .sub-header-start { align-items: flex-start; }
                     .controls { flex-direction: column; align-items: flex-start; }
-                    .form-row { flex-direction: column; gap: 0; }
                 }
 
                 @media (max-width: 640px) {
