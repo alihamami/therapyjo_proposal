@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronRight, Pencil, Plus, Search, StickyNote, Trash2 } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
@@ -53,13 +53,18 @@ export default function NotesPage() {
         setDoctors(data.filter((d: Doctor & { status: string }) => d.status === "ACTIVE"));
     }, []);
 
+    // Only the newest request may fill the list: an older, slower answer is
+    // dropped instead of overwriting a newer one. (TJ-069h)
+    const latest = useRef(0);
     const fetchNotes = useCallback(async () => {
+        const req = ++latest.current;
         setLoading(true);
         const params = new URLSearchParams({ page: String(page), limit: "20" });
         if (search) params.set("search", search);
         if (doctorFilter !== "all") params.set("doctorId", doctorFilter);
         const res = await fetch(`/api/notes?${params}`);
         const data = await res.json();
+        if (req !== latest.current) return;
         setNotes(data.notes || []);
         setTotalPages(data.totalPages || 1);
         setTotal(data.total || 0);
@@ -68,6 +73,14 @@ export default function NotesPage() {
 
     useEffect(() => { fetchDoctors(); }, [fetchDoctors]);
     useEffect(() => { fetchNotes(); }, [fetchNotes]);
+
+    // The box updates as you type; the search waits until typing pauses for
+    // 300ms, as on admin's patient list. (TJ-069h)
+    const [searchInput, setSearchInput] = useState("");
+    useEffect(() => {
+        const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
+        return () => clearTimeout(t);
+    }, [searchInput]);
 
     const openAdd = () => {
         setEditId(null);
@@ -137,8 +150,8 @@ export default function NotesPage() {
                         type="text"
                         aria-label="Search notes"
                         placeholder="Search notes…"
-                        value={search}
-                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                     />
                 </div>
                 <select
