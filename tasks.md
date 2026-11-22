@@ -149,13 +149,13 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 `READY`; then d3, e, f, g | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 **merged 2026-11-22, not pushed**; then d3, e, f, g | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
 | TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | DONE — task commit `67b6563`, merged to `master` as `b9a6a3a` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/secretary-duplicate-popup` |
-| TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | VERIFIED — task commit `9e30040`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-modal` |
-| TJ-069d2 | Delete popups and the website-doctor editor on the shared component | VERIFIED — task commit `53a873c`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-modal-content` |
+| TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | DONE — task commit `9e30040`, merged to `master` as `1c95795` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal` |
+| TJ-069d2 | Delete popups and the website-doctor editor on the shared component | DONE — task commit `53a873c`, merged to `master` as `73ea998` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-content` |
 | TJ-069d3 | The two employee editors on the shared component | BACKLOG — pass after TJ-069d2 | — |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069f | Emoji become line icons | BACKLOG — design decided; pass runs on top of batch 1 | — |
@@ -16843,7 +16843,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 
 ### TJ-069d1 — Popups on one shared component: dashboards, patient files, notes, booking
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `9e30040` on `feat/staff-modal`. Merge held for the user's look. Verification: below, under TJ-069d2.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `9e30040` on `feat/staff-modal`. Merged to `master` with `--no-ff` as `1c95795` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/staff-modal`, cut from `master` at the commit that adds this spec.
 - **Why:** decision P1-2 = **2B**. There are 15 popups in 11 staff files, in 6 different shapes. Instead of repeating the 2B markup 15 times, one `StaffModal` component draws it: header bar with title and ✕, a body that scrolls, a footer bar for the buttons. This step moves 9 popups in 7 files onto it (TJ-069d2 moves 5 more; the two large employee editors are TJ-069d3).
 
@@ -17409,7 +17409,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d2 — Delete popups and the website-doctor editor on the shared component
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `53a873c` on `feat/staff-modal-content`. Merge held for the user's look.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `53a873c` on `feat/staff-modal-content`. Merged to `master` with `--no-ff` as `73ea998` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/staff-modal-content`, cut from the tip of `feat/staff-modal`.
 - **Why:** the 4 "Delete permanently" popups (blog post, archived website doctor, doctor account, secretary account) and the website-doctor editor move onto `StaffModal`. Their red button becomes the shared danger button.
 
