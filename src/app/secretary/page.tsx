@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
-import { Plus } from "lucide-react";
+import { CalendarPlus, Plus, X } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Doctor {
@@ -38,6 +38,13 @@ export default function SecretaryDashboard() {
     const [loading, setLoading] = useState(true);
 
     const [statusError, setStatusError] = useState("");
+    // Duplicate popup (TJ-069c). It replaces a browser prompt that asked for
+    // a typed YYYY-MM-DD date and ignored a failed request.
+    const [dupId, setDupId] = useState<number | null>(null);
+    const [dupDate, setDupDate] = useState("");
+    const [dupTime, setDupTime] = useState("");
+    const [dupSaving, setDupSaving] = useState(false);
+    const [dupError, setDupError] = useState("");
 
     const fetchDoctors = useCallback(async () => {
         const res = await fetch("/api/employees/doctors");
@@ -111,14 +118,36 @@ export default function SecretaryDashboard() {
         fetchReservations();
     };
 
-    const handleDuplicate = async (id: number) => {
-        const date = prompt("Duplicate to which date? (YYYY-MM-DD)");
-        if (!date) return;
-        await fetch(`/api/reservations/${id}/duplicate`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionDate: date }),
-        });
+    const handleDuplicate = (id: number) => {
+        setDupId(id);
+        setDupDate("");
+        setDupTime("");
+        setDupError("");
+    };
+
+    const submitDuplicate = async () => {
+        if (dupId === null || !dupDate) return;
+        setDupSaving(true);
+        setDupError("");
+        let res: Response;
+        try {
+            res = await fetch(`/api/reservations/${dupId}/duplicate`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sessionDate: dupDate, sessionTime: dupTime || undefined }),
+            });
+        } catch {
+            setDupSaving(false);
+            setDupError("Could not reach the server. Check the connection and try again.");
+            return;
+        }
+        setDupSaving(false);
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setDupError(data.error || "Could not duplicate the session. Try again.");
+            return;
+        }
+        setDupId(null);
         fetchReservations();
     };
 
@@ -132,6 +161,8 @@ export default function SecretaryDashboard() {
         new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", {
             weekday: "long", month: "long", day: "numeric", year: "numeric",
         });
+
+    const dupReservation = dupId !== null ? reservations.find((r) => r.id === dupId) : undefined;
 
     return (
         <div>
@@ -186,6 +217,55 @@ export default function SecretaryDashboard() {
                     )}
                 </div>
             </div>
+
+            {/* Duplicate popup (TJ-069c, design 2B) */}
+            {dupId !== null && (
+                <div
+                    className="staff-modal-overlay"
+                    onMouseDown={(e) => { if (e.target === e.currentTarget && !dupSaving) setDupId(null); }}
+                >
+                    <div
+                        className="staff-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="dup-title"
+                        onKeyDown={(e) => { if (e.key === "Escape" && !dupSaving) setDupId(null); }}
+                    >
+                        <div className="staff-modal-head">
+                            <h2 id="dup-title" className="staff-modal-title">Duplicate session</h2>
+                            <button type="button" className="staff-modal-close" aria-label="Close" onClick={() => setDupId(null)} disabled={dupSaving}>
+                                <X size={16} aria-hidden="true" />
+                            </button>
+                        </div>
+                        <div className="staff-modal-body">
+                            {dupReservation && (
+                                <p className="staff-modal-text">
+                                    {dupReservation.patient.name} with {dupReservation.doctor?.name ?? dupReservation.doctorNameSnapshot ?? "no doctor"}
+                                </p>
+                            )}
+                            {dupError && <div className="staff-form-error" role="alert">{dupError}</div>}
+                            <div className="staff-field-row">
+                                <div className="staff-field">
+                                    <label htmlFor="dup-date">New date</label>
+                                    <input id="dup-date" type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} autoFocus />
+                                </div>
+                                <div className="staff-field">
+                                    <label htmlFor="dup-time">New time</label>
+                                    <input id="dup-time" type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
+                                    <span className="staff-field-hint">Leave empty to keep the same time</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="staff-modal-foot">
+                            <button type="button" className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)} disabled={dupSaving}>Cancel</button>
+                            <button type="button" className="staff-btn staff-btn-primary" aria-busy={dupSaving} onClick={submitDuplicate} disabled={!dupDate || dupSaving}>
+                                {!dupSaving && <CalendarPlus size={15} aria-hidden="true" />}
+                                {dupSaving ? "Duplicating…" : "Duplicate"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <style jsx>{`
                 .controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem; }
