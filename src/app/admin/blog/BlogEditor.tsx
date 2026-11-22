@@ -203,8 +203,8 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                     <div className="footer-row">
                         <span className="saved-hint">{lastSaved ? `Last saved ${lastSaved}` : ""}</span>
                         <div className="footer-actions">
-                            <button className="btn-cancel" onClick={() => router.push("/admin/blog")}>Cancel</button>
-                            <button className="btn-save" onClick={handleSave} disabled={saving}>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => router.push("/admin/blog")}>Cancel</button>
+                            <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving}>
                                 {saving ? "Saving…" : "Save Post"}
                             </button>
                         </div>
@@ -330,18 +330,6 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                 .footer-row { display: flex; align-items: center; justify-content: space-between; }
                 .saved-hint { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
                 .footer-actions { display: flex; gap: 0.75rem; }
-                .btn-cancel {
-                    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
-                    border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-                    padding: 0.55rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
-                }
-                .btn-save {
-                    background: var(--primary, #4CAF93); color: #fff; border: none;
-                    border-radius: 8px; padding: 0.55rem 1.5rem; font-size: 0.88rem;
-                    font-weight: 600; cursor: pointer; font-family: inherit;
-                }
-                .btn-save:hover { background: var(--primary-dark, #3a8f77); }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
                 .drop-zone {
                     aspect-ratio: 16/9; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.12);
@@ -372,7 +360,7 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                     .toolbar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
                     .footer-row { flex-direction: column; align-items: stretch; gap: 0.75rem; }
                     .footer-actions { justify-content: stretch; }
-                    .footer-actions .btn-cancel, .footer-actions .btn-save { flex: 1; }
+                    .footer-actions .staff-btn { flex: 1; }
                 }
             `}</style>
         </div>

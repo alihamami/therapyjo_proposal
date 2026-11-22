@@ -122,7 +122,7 @@ export default function ArchivedDoctorsPage() {
                             />
                         </div>
                         <div className="modal-actions">
-                            <button className="btn-secondary" onClick={() => setDeleteTarget(null)}>Cancel</button>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)}>Cancel</button>
                             <button
                                 className="btn-danger"
                                 onClick={handleHardDelete}
@@ -193,11 +193,6 @@ export default function ArchivedDoctorsPage() {
                 }
                 .form-group input:focus { border-color: #6ee7b7; }
                 .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
-                .btn-secondary {
-                    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
-                    border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
-                    padding: 0.6rem 1.25rem; font-size: 0.9rem; cursor: pointer; font-family: inherit;
-                }
                 .btn-danger {
                     background: #dc2626; color: #fff; border: none; border-radius: 10px;
                     padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600;

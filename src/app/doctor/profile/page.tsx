@@ -151,7 +151,7 @@ export default function DoctorProfilePage() {
                         <label>Contact</label>
                         <input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} />
                     </div>
-                    <button className="btn-submit" onClick={handleSubmit} disabled={saving}>
+                    <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>
                         {saving ? "Submitting…" : "Submit for Approval"}
                     </button>
                 </div>
@@ -186,13 +186,7 @@ export default function DoctorProfilePage() {
                     outline: none; font-family: inherit; resize: vertical;
                 }
                 .field input:focus, .field textarea:focus { border-color: var(--primary, #4CAF93); }
-                .btn-submit {
-                    align-self: flex-start; background: var(--primary, #4CAF93); color: #fff; border: none;
-                    border-radius: 8px; padding: 0.6rem 1.4rem; font-size: 0.88rem; font-weight: 600;
-                    cursor: pointer; font-family: inherit;
-                }
-                .btn-submit:hover { background: var(--primary-dark, #3a8f77); }
-                .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+                .staff-btn { align-self: flex-start; }
 
                 @media (max-width: 560px) {
                     .form-layout { flex-direction: column; align-items: center; }

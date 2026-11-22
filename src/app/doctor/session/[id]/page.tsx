@@ -264,7 +264,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                     <p className="field-hint">Date, time, and doctor are set by front-desk staff — contact them to reschedule or reassign this session.</p>
                     {!readOnly && (
                         <div className="card-actions">
-                            <button className="btn-save" onClick={handleSaveDetails} disabled={saving}>{saving ? "Saving…" : "Update Session"}</button>
+                            <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSaveDetails} disabled={saving}>{saving ? "Saving…" : "Update Session"}</button>
                         </div>
                     )}
                 </div>
@@ -292,7 +292,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                     </div>
                     {!readOnly && (
                         <div className="card-actions">
-                            <button className="btn-save" onClick={handleSaveSoap} disabled={savingSoap}>
+                            <button className="staff-btn staff-btn-primary" aria-busy={savingSoap} onClick={handleSaveSoap} disabled={savingSoap}>
                                 {savingSoap ? "Saving…" : soapSaved ? "✓ Saved" : "Save SOAP Note"}
                             </button>
                         </div>
@@ -365,8 +365,6 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 .readonly-value { margin: 0; padding: 0.5rem 0.7rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; }
                 .field-hint { font-size: 0.76rem; color: rgba(255,255,255,0.35); margin: 0.75rem 0 0; }
                 .card-actions { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
-                .btn-save { background: var(--primary, #4CAF93); color: #fff; border: none; border-radius: var(--radius-sm, 2px); padding: 0.5rem 1.2rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
                 .table-container { overflow-x: auto; }
                 .data-table { width: 100%; border-collapse: collapse; }
                 .data-table th { text-align: left; padding: 0.75rem 0.85rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.35); border-bottom: 1px solid rgba(255,255,255,0.06); font-weight: 600; }
