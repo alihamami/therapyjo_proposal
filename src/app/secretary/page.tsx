@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
-import { CalendarPlus, Plus, X } from "lucide-react";
+import { CalendarPlus, Plus } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface Doctor {
     id: string;
@@ -218,53 +219,38 @@ export default function SecretaryDashboard() {
                 </div>
             </div>
 
-            {/* Duplicate popup (TJ-069c, design 2B) */}
+            {/* Duplicate popup (TJ-069c; on the shared component since TJ-069d1) */}
             {dupId !== null && (
-                <div
-                    className="staff-modal-overlay"
-                    onMouseDown={(e) => { if (e.target === e.currentTarget && !dupSaving) setDupId(null); }}
+                <StaffModal
+                    title="Duplicate session"
+                    onClose={() => setDupId(null)}
+                    closeDisabled={dupSaving}
+                    footer={<>
+                        <button type="button" className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)} disabled={dupSaving}>Cancel</button>
+                        <button type="button" className="staff-btn staff-btn-primary" aria-busy={dupSaving} onClick={submitDuplicate} disabled={!dupDate || dupSaving}>
+                            {!dupSaving && <CalendarPlus size={15} aria-hidden="true" />}
+                            {dupSaving ? "Duplicating…" : "Duplicate"}
+                        </button>
+                    </>}
                 >
-                    <div
-                        className="staff-modal"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="dup-title"
-                        onKeyDown={(e) => { if (e.key === "Escape" && !dupSaving) setDupId(null); }}
-                    >
-                        <div className="staff-modal-head">
-                            <h2 id="dup-title" className="staff-modal-title">Duplicate session</h2>
-                            <button type="button" className="staff-modal-close" aria-label="Close" onClick={() => setDupId(null)} disabled={dupSaving}>
-                                <X size={16} aria-hidden="true" />
-                            </button>
+                    {dupReservation && (
+                        <p className="staff-modal-text">
+                            {dupReservation.patient.name} with {dupReservation.doctor?.name ?? dupReservation.doctorNameSnapshot ?? "no doctor"}
+                        </p>
+                    )}
+                    {dupError && <div className="staff-form-error" role="alert">{dupError}</div>}
+                    <div className="staff-field-row">
+                        <div className="staff-field">
+                            <label htmlFor="dup-date">New date</label>
+                            <input id="dup-date" type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} autoFocus />
                         </div>
-                        <div className="staff-modal-body">
-                            {dupReservation && (
-                                <p className="staff-modal-text">
-                                    {dupReservation.patient.name} with {dupReservation.doctor?.name ?? dupReservation.doctorNameSnapshot ?? "no doctor"}
-                                </p>
-                            )}
-                            {dupError && <div className="staff-form-error" role="alert">{dupError}</div>}
-                            <div className="staff-field-row">
-                                <div className="staff-field">
-                                    <label htmlFor="dup-date">New date</label>
-                                    <input id="dup-date" type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} autoFocus />
-                                </div>
-                                <div className="staff-field">
-                                    <label htmlFor="dup-time">New time</label>
-                                    <input id="dup-time" type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
-                                    <span className="staff-field-hint">Leave empty to keep the same time</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="staff-modal-foot">
-                            <button type="button" className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)} disabled={dupSaving}>Cancel</button>
-                            <button type="button" className="staff-btn staff-btn-primary" aria-busy={dupSaving} onClick={submitDuplicate} disabled={!dupDate || dupSaving}>
-                                {!dupSaving && <CalendarPlus size={15} aria-hidden="true" />}
-                                {dupSaving ? "Duplicating…" : "Duplicate"}
-                            </button>
+                        <div className="staff-field">
+                            <label htmlFor="dup-time">New time</label>
+                            <input id="dup-time" type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
+                            <span className="staff-field-hint">Leave empty to keep the same time</span>
                         </div>
                     </div>
-                </div>
+                </StaffModal>
             )}
 
             <style jsx>{`

@@ -5,6 +5,7 @@ import { ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface Doctor {
     id: string;
@@ -202,47 +203,43 @@ export default function NotesPage() {
                 </div>
             )}
 
-            {/* Add/Edit Modal */}
+            {/* Add/Edit Modal (design 2B, TJ-069d1) */}
             {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>{editId ? "Edit Note" : "Add Note"}</h2>
-                        <div className="form-stack">
-                            <div className="form-group">
-                                <label>Name / Title</label>
-                                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                            </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Date</label>
-                                    <input type="date" value={form.noteDate} onChange={(e) => setForm({ ...form, noteDate: e.target.value })} />
-                                </div>
-                                <div className="form-group">
-                                    <label>Doctor</label>
-                                    <select value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>
-                                        {doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label className="checkbox-label">
-                                    <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
-                                    Doctor check note
-                                </label>
-                            </div>
-                            <div className="form-group">
-                                <label>Details</label>
-                                <textarea rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} />
-                            </div>
+                <StaffModal
+                    title={editId ? "Edit Note" : "Add Note"}
+                    onClose={() => setShowModal(false)}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving || !form.name}>
+                            {saving ? "Saving…" : editId ? "Update" : "Create"}
+                        </button>
+                    </>}
+                >
+                    <div className="staff-field">
+                        <label htmlFor="note-name">Name / Title</label>
+                        <input id="note-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoFocus />
+                    </div>
+                    <div className="staff-field-row">
+                        <div className="staff-field">
+                            <label htmlFor="note-date">Date</label>
+                            <input id="note-date" type="date" value={form.noteDate} onChange={(e) => setForm({ ...form, noteDate: e.target.value })} />
                         </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-                            <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving || !form.name}>
-                                {saving ? "Saving…" : editId ? "Update" : "Create"}
-                            </button>
+                        <div className="staff-field">
+                            <label htmlFor="note-doctor">Doctor</label>
+                            <select id="note-doctor" value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>
+                                {doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
+                            </select>
                         </div>
                     </div>
-                </div>
+                    <label className="checkbox-label">
+                        <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
+                        Doctor check note
+                    </label>
+                    <div className="staff-field">
+                        <label htmlFor="note-details">Details</label>
+                        <textarea id="note-details" rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} />
+                    </div>
+                </StaffModal>
             )}
 
             <style jsx>{`
@@ -294,42 +291,16 @@ export default function NotesPage() {
                     cursor: pointer; font-size: 0.82rem; font-family: inherit;
                 }
                 .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-                .modal-overlay {
-                    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000; backdrop-filter: blur(4px); padding: 1rem;
-                }
-                .modal-card {
-                    background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-md, 4px); padding: 2rem; width: 100%; max-width: 480px;
-                    max-height: 85vh; overflow-y: auto;
-                }
-                .modal-card h2 { font-size: 1.15rem; margin-bottom: 1.25rem; font-weight: 600; }
-                .form-stack { display: flex; flex-direction: column; gap: 0.75rem; }
-                .form-row { display: flex; gap: 0.75rem; }
-                .form-row .form-group { flex: 1; }
-                .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
-                .form-group input, .form-group textarea, .form-group select {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px); padding: 0.55rem 0.75rem; color: #fff;
-                    font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical;
-                }
-                .form-group select option { background: #1a2e35; }
-                .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--primary, #4CAF93); }
                 .checkbox-label {
                     flex-direction: row !important; display: flex; align-items: center; gap: 0.4rem;
                     font-size: 0.8rem !important; cursor: pointer;
                 }
                 .checkbox-label input[type="checkbox"] { width: auto; }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
 
                 @media (max-width: 560px) {
                     .page-header { flex-direction: column; align-items: stretch; gap: 0.5rem; }
                     .page-header .staff-btn { width: 100%; }
                     .search-input { min-width: 0; }
-                    .form-row { flex-direction: column; gap: 0.75rem; }
-                    .modal-card { padding: 1.25rem; }
                 }
             `}</style>
         </div>

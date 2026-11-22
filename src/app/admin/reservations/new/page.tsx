@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isMissingPhone } from "@/lib/phone";
+import StaffModal from "@/app/components/StaffModal";
 
 interface Doctor { id: string; name: string; color: string | null; }
 interface PatientResult { id: number; name: string; phone1: string; }
@@ -258,53 +259,54 @@ function NewReservationForm() {
             </div>
 
             {showNewPatient && (
-                <div className="modal-overlay" onClick={() => setShowNewPatient(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>New Patient</h2>
-                        {newPatientError && (
-                            <div className="modal-error">
-                                {newPatientError}
-                                {duplicateMatch && (
-                                    <button className="use-existing" onClick={() => selectPatient(duplicateMatch)}>
-                                        Use {duplicateMatch.name} instead
-                                    </button>
-                                )}
-                            </div>
-                        )}
-                        <div className="modal-stack">
-                            <div className="field">
-                                <label>Patient Name <span className="req">*</span></label>
-                                <input
-                                    value={newPatient.name}
-                                    onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
-                                    autoFocus
-                                />
-                            </div>
-                            <div className="field">
-                                <label>Phone 1 <span className="req">*</span></label>
-                                <input
-                                    value={newPatient.phone1}
-                                    onChange={(e) => setNewPatient({ ...newPatient, phone1: e.target.value })}
-                                    placeholder="e.g. 0791234567"
-                                />
-                            </div>
-                            <div className="field">
-                                <label>Phone 2</label>
-                                <input
-                                    value={newPatient.phone2}
-                                    onChange={(e) => setNewPatient({ ...newPatient, phone2: e.target.value })}
-                                    placeholder="Optional"
-                                />
-                            </div>
+                <StaffModal
+                    title="New Patient"
+                    onClose={() => setShowNewPatient(false)}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setShowNewPatient(false)}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={creatingPatient} onClick={handleCreatePatient} disabled={creatingPatient}>
+                            {creatingPatient ? "Creating…" : "Create & Select"}
+                        </button>
+                    </>}
+                >
+                    {newPatientError && (
+                        <div className="staff-form-error new-patient-error">
+                            {newPatientError}
+                            {duplicateMatch && (
+                                <button className="use-existing" onClick={() => selectPatient(duplicateMatch)}>
+                                    Use {duplicateMatch.name} instead
+                                </button>
+                            )}
                         </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setShowNewPatient(false)}>Cancel</button>
-                            <button className="staff-btn staff-btn-primary" aria-busy={creatingPatient} onClick={handleCreatePatient} disabled={creatingPatient}>
-                                {creatingPatient ? "Creating…" : "Create & Select"}
-                            </button>
-                        </div>
+                    )}
+                    <div className="staff-field">
+                        <label htmlFor="np-name">Patient Name <span className="req">*</span></label>
+                        <input
+                            id="np-name"
+                            value={newPatient.name}
+                            onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+                            autoFocus
+                        />
                     </div>
-                </div>
+                    <div className="staff-field">
+                        <label htmlFor="np-phone1">Phone 1 <span className="req">*</span></label>
+                        <input
+                            id="np-phone1"
+                            value={newPatient.phone1}
+                            onChange={(e) => setNewPatient({ ...newPatient, phone1: e.target.value })}
+                            placeholder="e.g. 0791234567"
+                        />
+                    </div>
+                    <div className="staff-field">
+                        <label htmlFor="np-phone2">Phone 2</label>
+                        <input
+                            id="np-phone2"
+                            value={newPatient.phone2}
+                            onChange={(e) => setNewPatient({ ...newPatient, phone2: e.target.value })}
+                            placeholder="Optional"
+                        />
+                    </div>
+                </StaffModal>
             )}
 
             <style jsx>{`
@@ -369,31 +371,13 @@ function NewReservationForm() {
                     font-family: inherit; transition: all 0.15s;
                 }
                 .new-patient-btn:hover { background: rgba(76,175,147,0.08); border-color: var(--primary, #4CAF93); }
-                .modal-overlay {
-                    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000; backdrop-filter: blur(4px); padding: 1rem;
-                }
-                .modal-card {
-                    background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-md, 4px); padding: 2rem; width: 100%; max-width: 440px;
-                    max-height: 85vh; overflow-y: auto;
-                }
-                .modal-card h2 { font-size: 1.2rem; margin-bottom: 1.25rem; font-weight: 600; }
-                .modal-error {
-                    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
-                    color: #fca5a5; padding: 0.55rem 0.85rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; margin-bottom: 1rem;
-                    display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem;
-                }
+                .new-patient-error { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
                 .use-existing {
                     background: rgba(76,175,147,0.12); border: none; color: var(--primary, #4CAF93);
                     padding: 0.3rem 0.65rem; border-radius: var(--radius-sm, 2px);
                     font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit;
                 }
                 .use-existing:hover { background: rgba(76,175,147,0.22); }
-                .modal-stack { display: flex; flex-direction: column; gap: 0.9rem; }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
 
                 .checkbox-field { margin-top: 0.5rem; }
                 .checkbox-label {
@@ -407,7 +391,6 @@ function NewReservationForm() {
                 @media (max-width: 640px) {
                     .form-layout { flex-direction: column; }
                     .field-row { grid-template-columns: 1fr; }
-                    .modal-card { padding: 1.25rem; }
                     .form-actions { flex-direction: column-reverse; }
                     .form-actions .staff-btn { width: 100%; }
                 }

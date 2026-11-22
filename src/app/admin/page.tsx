@@ -8,6 +8,7 @@ import DatePickerPopover from "@/app/components/DatePickerPopover";
 import { isMissingPhone } from "@/lib/phone";
 import { Plus } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface Doctor {
     id: string;
@@ -264,67 +265,71 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Duplicate Modal */}
+            {/* Duplicate Modal (design 2B, TJ-069d1) */}
             {dupId !== null && (
-                <div className="modal-overlay" onClick={() => setDupId(null)}>
-                    <div className="modal-card modal-sm" onClick={(e) => e.stopPropagation()}>
-                        <h2>Duplicate Reservation</h2>
-                        <div className="form-group">
-                            <label>New Date</label>
-                            <input type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} />
+                <StaffModal
+                    title="Duplicate Reservation"
+                    onClose={() => setDupId(null)}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" onClick={submitDuplicate} disabled={!dupDate}>Duplicate</button>
+                    </>}
+                >
+                    <div className="staff-field-row">
+                        <div className="staff-field">
+                            <label htmlFor="dup-date">New date</label>
+                            <input id="dup-date" type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} autoFocus />
                         </div>
-                        <div className="form-group">
-                            <label>New Time (optional)</label>
-                            <input type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
-                        </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)}>Cancel</button>
-                            <button className="staff-btn staff-btn-primary" onClick={submitDuplicate} disabled={!dupDate}>Duplicate</button>
+                        <div className="staff-field">
+                            <label htmlFor="dup-time">New time</label>
+                            <input id="dup-time" type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
+                            <span className="staff-field-hint">Leave empty to keep the same time</span>
                         </div>
                     </div>
-                </div>
+                </StaffModal>
             )}
 
-            {/* Reservation Detail Modal */}
+            {/* Reservation Detail Modal (design 2B, TJ-069d1) */}
             {detailId !== null && detail && (
-                <div className="modal-overlay" onClick={() => { setDetailId(null); setDetail(null); }}>
-                    <div className="modal-card modal-lg" onClick={(e) => e.stopPropagation()}>
-                        <h2>{detail.patient.name}</h2>
-                        <div className="detail-grid">
-                            <div className="detail-item"><span className="detail-label">Phone</span><span>{isMissingPhone(detail.patient.phone1) ? <span className="no-phone">No phone</span> : detail.patient.phone1}</span></div>
-                            <div className="detail-item"><span className="detail-label">Doctor</span><span>{detail.doctor?.name ?? detail.doctorNameSnapshot ?? "—"}</span></div>
-                            <div className="detail-item"><span className="detail-label">Status</span><span>{detail.status.replace("_", " ")}</span></div>
-                            <div className="detail-item"><span className="detail-label">Payment</span><span>{detail.paymentType || "—"}</span></div>
-                            {detail.note && <div className="detail-item full"><span className="detail-label">Note</span><span>{detail.note}</span></div>}
-                            {detail.nextSessionNote && <div className="detail-item full"><span className="detail-label">Next Session Note</span><span>{detail.nextSessionNote}</span></div>}
-                            {detail.previousSessionNote && (
-                                <div className="detail-item full prev-note">
-                                    <span className="detail-label">From Previous Session {detail.previousSessionDate ? `(${new Date(detail.previousSessionDate).toLocaleDateString()})` : ""}</span>
-                                    <span>{detail.previousSessionNote}</span>
-                                </div>
-                            )}
-                        </div>
-                        {/* Drawn whether or not the note has text, with a way into
-                            its editor on the patient file. (TJ-065) */}
-                        <div className="soap-section">
-                            <h3>SOAP Note</h3>
-                            {detail.soapNote && (detail.soapNote.subjective || detail.soapNote.objective || detail.soapNote.assessment || detail.soapNote.plan) ? (
-                                <>
-                                    {detail.soapNote.subjective && <div className="soap-field"><strong>S:</strong> {detail.soapNote.subjective}</div>}
-                                    {detail.soapNote.objective && <div className="soap-field"><strong>O:</strong> {detail.soapNote.objective}</div>}
-                                    {detail.soapNote.assessment && <div className="soap-field"><strong>A:</strong> {detail.soapNote.assessment}</div>}
-                                    {detail.soapNote.plan && <div className="soap-field"><strong>P:</strong> {detail.soapNote.plan}</div>}
-                                </>
-                            ) : (
-                                <div className="soap-field">No SOAP note yet.</div>
-                            )}
-                        </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
-                            <button className="staff-btn staff-btn-primary" onClick={() => router.push(`/admin/patients/${detail.patient.id}?soap=${detail.id}`)}>Edit SOAP Note</button>
-                        </div>
+                <StaffModal
+                    title={detail.patient.name}
+                    wide
+                    onClose={() => { setDetailId(null); setDetail(null); }}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
+                        <button className="staff-btn staff-btn-primary" onClick={() => router.push(`/admin/patients/${detail.patient.id}?soap=${detail.id}`)}>Edit SOAP Note</button>
+                    </>}
+                >
+                    <div className="detail-grid">
+                        <div className="detail-item"><span className="detail-label">Phone</span><span>{isMissingPhone(detail.patient.phone1) ? <span className="no-phone">No phone</span> : detail.patient.phone1}</span></div>
+                        <div className="detail-item"><span className="detail-label">Doctor</span><span>{detail.doctor?.name ?? detail.doctorNameSnapshot ?? "—"}</span></div>
+                        <div className="detail-item"><span className="detail-label">Status</span><span>{detail.status.replace("_", " ")}</span></div>
+                        <div className="detail-item"><span className="detail-label">Payment</span><span>{detail.paymentType || "—"}</span></div>
+                        {detail.note && <div className="detail-item full"><span className="detail-label">Note</span><span>{detail.note}</span></div>}
+                        {detail.nextSessionNote && <div className="detail-item full"><span className="detail-label">Next Session Note</span><span>{detail.nextSessionNote}</span></div>}
+                        {detail.previousSessionNote && (
+                            <div className="detail-item full prev-note">
+                                <span className="detail-label">From Previous Session {detail.previousSessionDate ? `(${new Date(detail.previousSessionDate).toLocaleDateString()})` : ""}</span>
+                                <span>{detail.previousSessionNote}</span>
+                            </div>
+                        )}
                     </div>
-                </div>
+                    {/* Drawn whether or not the note has text, with a way into
+                        its editor on the patient file. (TJ-065) */}
+                    <div className="soap-section">
+                        <h3>SOAP Note</h3>
+                        {detail.soapNote && (detail.soapNote.subjective || detail.soapNote.objective || detail.soapNote.assessment || detail.soapNote.plan) ? (
+                            <>
+                                {detail.soapNote.subjective && <div className="soap-field"><strong>S:</strong> {detail.soapNote.subjective}</div>}
+                                {detail.soapNote.objective && <div className="soap-field"><strong>O:</strong> {detail.soapNote.objective}</div>}
+                                {detail.soapNote.assessment && <div className="soap-field"><strong>A:</strong> {detail.soapNote.assessment}</div>}
+                                {detail.soapNote.plan && <div className="soap-field"><strong>P:</strong> {detail.soapNote.plan}</div>}
+                            </>
+                        ) : (
+                            <div className="soap-field">No SOAP note yet.</div>
+                        )}
+                    </div>
+                </StaffModal>
             )}
 
             <style jsx>{`
@@ -375,19 +380,6 @@ export default function AdminDashboard() {
                 }
                 .summary-chips :global(.chip-warn) .chip-val { color: #fbbf24; }
                 .summary-chips :global(.chip-warn:hover) { background: rgba(251,191,36,0.14); }
-                .modal-overlay {
-                    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000; backdrop-filter: blur(4px);
-                }
-                .modal-card {
-                    background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-md, 4px); padding: 2rem; width: 100%; max-width: 520px;
-                    max-height: 90vh; overflow-y: auto;
-                }
-                .modal-sm { max-width: 360px; }
-                .modal-lg { max-width: 600px; }
-                .modal-card h2 { font-size: 1.15rem; margin-bottom: 0.5rem; font-weight: 600; }
                 .error-msg {
                     background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
                     color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
@@ -402,18 +394,6 @@ export default function AdminDashboard() {
                     font-size: 0.78rem; cursor: pointer; font-family: inherit; flex-shrink: 0;
                 }
                 .dismiss-error:hover { color: #fff; }
-                .form-group { margin-bottom: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
-                .form-group input, .form-group textarea, .form-group select {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.7rem; color: #fff;
-                    font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical;
-                }
-                .form-group select option { background: #1a2e35; }
-                .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-                    border-color: var(--primary, #4CAF93);
-                }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.25rem; }
                 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1rem; margin-top: 0.75rem; }
                 .detail-item { display: flex; flex-direction: column; gap: 0.15rem; }
                 .detail-item.full { grid-column: 1 / -1; }
@@ -436,8 +416,6 @@ export default function AdminDashboard() {
                     .btn-nav { flex: 1; text-align: center; }
                     .controls-right { width: 100%; }
                     .doctor-select { flex: 1; }
-                    .modal-overlay { padding: 1rem; align-items: flex-end; }
-                    .modal-card { padding: 1.25rem; max-height: 85vh; }
                     .detail-grid { grid-template-columns: 1fr; }
                 }
             `}</style>

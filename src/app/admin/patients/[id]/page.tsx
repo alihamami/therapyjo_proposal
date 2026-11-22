@@ -9,6 +9,7 @@ import { isMissingPhone } from "@/lib/phone";
 import { Archive, Pencil } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface PatientData {
     id: number;
@@ -359,66 +360,66 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 </div>
             </div>
 
-            {/* Edit Info Modal */}
+            {/* Edit Info Modal (design 2B, TJ-069d1) */}
             {editingInfo && (
-                <div className="modal-overlay" onClick={() => setEditingInfo(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>Update Patient Info</h2>
-                        <div className="form-stack">
-                            <div className="form-group">
-                                <label>Name</label>
-                                <input value={infoForm.name} onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label>Phone 1</label>
-                                <input value={infoForm.phone1} onChange={(e) => setInfoForm({ ...infoForm, phone1: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label>Phone 2</label>
-                                <input value={infoForm.phone2} onChange={(e) => setInfoForm({ ...infoForm, phone2: e.target.value })} />
-                            </div>
+                <StaffModal
+                    title="Update Patient Info"
+                    onClose={() => setEditingInfo(false)}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>
+                            {savingInfo ? "Saving…" : "Save"}
+                        </button>
+                    </>}
+                >
+                    <div className="staff-field">
+                        <label htmlFor="info-name">Name</label>
+                        <input id="info-name" value={infoForm.name} onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })} autoFocus />
+                    </div>
+                    <div className="staff-field-row">
+                        <div className="staff-field">
+                            <label htmlFor="info-phone1">Phone 1</label>
+                            <input id="info-phone1" value={infoForm.phone1} onChange={(e) => setInfoForm({ ...infoForm, phone1: e.target.value })} />
                         </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
-                            <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>
-                                {savingInfo ? "Saving…" : "Save"}
-                            </button>
+                        <div className="staff-field">
+                            <label htmlFor="info-phone2">Phone 2</label>
+                            <input id="info-phone2" value={infoForm.phone2} onChange={(e) => setInfoForm({ ...infoForm, phone2: e.target.value })} />
+                            <span className="staff-field-hint">Optional</span>
                         </div>
                     </div>
-                </div>
+                </StaffModal>
             )}
 
-            {/* SOAP Note Modal (TJ-065) */}
+            {/* SOAP Note Modal (TJ-065; design 2B, TJ-069d1) */}
             {soapSession && (
-                <div className="modal-overlay" onClick={closeSoap}>
-                    <div className="modal-card modal-wide" onClick={(e) => e.stopPropagation()}>
-                        <h2>SOAP Note</h2>
-                        <p className="modal-sub">
-                            {formatDate(soapSession.sessionDate)} · {soapSession.doctor?.name ?? soapSession.doctorNameSnapshot ?? "—"}
-                        </p>
-                        {soapError && <div className="error-msg" role="alert">{soapError}</div>}
-                        <div className="form-stack">
-                            {SOAP_FIELDS.map((f) => (
-                                <div className="form-group" key={f.key}>
-                                    <label htmlFor={`soap-${f.key}`}>{f.label}</label>
-                                    <textarea
-                                        id={`soap-${f.key}`}
-                                        rows={3}
-                                        value={soapForm[f.key]}
-                                        onChange={(e) => setSoapForm({ ...soapForm, [f.key]: e.target.value })}
-                                        placeholder={`Enter ${f.key}…`}
-                                    />
-                                </div>
-                            ))}
+                <StaffModal
+                    title="SOAP Note"
+                    wide
+                    onClose={closeSoap}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={closeSoap}>Close</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={savingSoap} onClick={saveSoap} disabled={savingSoap}>
+                            {savingSoap ? "Saving…" : soapSaved ? "✓ Saved" : "Save SOAP Note"}
+                        </button>
+                    </>}
+                >
+                    <p className="staff-modal-text">
+                        {formatDate(soapSession.sessionDate)} · {soapSession.doctor?.name ?? soapSession.doctorNameSnapshot ?? "—"}
+                    </p>
+                    {soapError && <div className="staff-form-error" role="alert">{soapError}</div>}
+                    {SOAP_FIELDS.map((f) => (
+                        <div className="staff-field" key={f.key}>
+                            <label htmlFor={`soap-${f.key}`}>{f.label}</label>
+                            <textarea
+                                id={`soap-${f.key}`}
+                                rows={3}
+                                value={soapForm[f.key]}
+                                onChange={(e) => setSoapForm({ ...soapForm, [f.key]: e.target.value })}
+                                placeholder={`Enter ${f.key}…`}
+                            />
                         </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={closeSoap}>Close</button>
-                            <button className="staff-btn staff-btn-primary" aria-busy={savingSoap} onClick={saveSoap} disabled={savingSoap}>
-                                {savingSoap ? "Saving…" : soapSaved ? "✓ Saved" : "Save SOAP Note"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    ))}
+                </StaffModal>
             )}
 
             {/* Tabs */}
@@ -611,14 +612,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     border-radius: var(--radius-md, 4px); padding: 1.5rem;
                     overflow-x: auto; -webkit-overflow-scrolling: touch;
                 }
-                .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
-                .form-group input, .form-group textarea {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px); padding: 0.55rem 0.75rem; color: #fff;
-                    font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical;
-                }
-                .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
                 .data-table { width: 100%; min-width: 600px; border-collapse: collapse; }
                 .data-table th {
                     text-align: left; padding: 0.7rem 0.85rem; font-size: 0.74rem;
@@ -672,25 +665,9 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 .file-icon { font-size: 1.5rem; }
                 .file-name { font-size: 0.78rem; text-align: center; word-break: break-all; }
                 .file-date { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
-                .modal-overlay {
-                    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000; backdrop-filter: blur(4px); padding: 1rem;
-                }
-                .modal-card {
-                    background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-md, 4px); padding: 2rem; width: 100%; max-width: 440px;
-                    max-height: 85vh; overflow-y: auto;
-                }
-                .modal-card h2 { font-size: 1.2rem; margin-bottom: 1.25rem; font-weight: 600; }
-                .modal-wide { max-width: 640px; }
-                .modal-sub { margin: -0.9rem 0 1.25rem; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
-                .form-stack { display: flex; flex-direction: column; gap: 0.9rem; }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
 
                 @media (max-width: 640px) {
                     .section-card { padding: 1rem; }
-                    .modal-card { padding: 1.25rem; }
                     .btn-sm { padding: 0.42rem 0.75rem; }
                 }
 

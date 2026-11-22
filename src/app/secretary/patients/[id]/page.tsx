@@ -7,6 +7,7 @@ import { isMissingPhone } from "@/lib/phone";
 import { Archive, Pencil } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface PatientData {
     id: number;
@@ -199,22 +200,34 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                 </div>
             </div>
 
-            {/* Edit Info Modal — name + phones only */}
+            {/* Edit Info Modal — name + phones only (design 2B, TJ-069d1) */}
             {editingInfo && (
-                <div className="modal-overlay" onClick={() => setEditingInfo(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>Update Patient Info</h2>
-                        <div className="form-stack">
-                            <div className="form-group"><label>Name</label><input value={infoForm.name} onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })} /></div>
-                            <div className="form-group"><label>Phone 1</label><input value={infoForm.phone1} onChange={(e) => setInfoForm({ ...infoForm, phone1: e.target.value })} /></div>
-                            <div className="form-group"><label>Phone 2</label><input value={infoForm.phone2} onChange={(e) => setInfoForm({ ...infoForm, phone2: e.target.value })} /></div>
+                <StaffModal
+                    title="Update Patient Info"
+                    onClose={() => setEditingInfo(false)}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>
+                            {savingInfo ? "Saving…" : "Save"}
+                        </button>
+                    </>}
+                >
+                    <div className="staff-field">
+                        <label htmlFor="info-name">Name</label>
+                        <input id="info-name" value={infoForm.name} onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })} autoFocus />
+                    </div>
+                    <div className="staff-field-row">
+                        <div className="staff-field">
+                            <label htmlFor="info-phone1">Phone 1</label>
+                            <input id="info-phone1" value={infoForm.phone1} onChange={(e) => setInfoForm({ ...infoForm, phone1: e.target.value })} />
                         </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
-                            <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>{savingInfo ? "Saving…" : "Save"}</button>
+                        <div className="staff-field">
+                            <label htmlFor="info-phone2">Phone 2</label>
+                            <input id="info-phone2" value={infoForm.phone2} onChange={(e) => setInfoForm({ ...infoForm, phone2: e.target.value })} />
+                            <span className="staff-field-hint">Optional</span>
                         </div>
                     </div>
-                </div>
+                </StaffModal>
             )}
 
             {/* Tabs — NO clinical intake tab for secretary */}
@@ -334,15 +347,6 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                 .file-icon { font-size: 1.5rem; }
                 .file-name { font-size: 0.78rem; text-align: center; word-break: break-all; }
                 .file-date { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
-                .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
-                .modal-card { background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md, 4px); padding: 2rem; width: 100%; max-width: 440px; }
-                .modal-card h2 { font-size: 1.2rem; margin-bottom: 1.25rem; font-weight: 600; }
-                .form-stack { display: flex; flex-direction: column; gap: 0.9rem; }
-                .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
-                .form-group input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.55rem 0.75rem; color: #fff; font-size: 0.85rem; outline: none; font-family: inherit; }
-                .form-group input:focus { border-color: var(--primary, #4CAF93); }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
             `}</style>
         </div>
     );
