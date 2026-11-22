@@ -4,10 +4,11 @@ import { useState, useEffect, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
 import { clinicalFileUrl } from "@/lib/storageUrl";
 import { isMissingPhone } from "@/lib/phone";
-import { Archive, Pencil } from "lucide-react";
+import { Archive, CalendarDays, FileText, Pencil } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface PatientData {
     id: number;
@@ -160,7 +161,7 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
         WITH_DOCTOR: "#a78bfa", CHECKED_OUT: "rgba(255,255,255,0.35)",
     };
 
-    if (loading) return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;
+    if (loading) return <p className="staff-loading" role="status">Loading…</p>;
     if (!patient) return null;
 
     return (
@@ -240,9 +241,9 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
             {activeTab === "sessions" && (
                 <div className="section-card">
                     {patient.reservations.length === 0 ? (
-                        <p className="empty-text">No sessions yet</p>
+                        <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />
                     ) : (
-                        <table className="data-table">
+                        <table className="staff-table staff-table-compact">
                             <thead><tr><th>Date</th><th>Doctor</th><th>Status</th><th>Payment</th><th>Injury</th></tr></thead>
                             <tbody>
                                 {patient.reservations.map((r) => (
@@ -279,7 +280,7 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                     </div>
 
                     {patient.files.length === 0 && !uploadingName ? (
-                        <p className="empty-text">No files uploaded yet</p>
+                        <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />
                     ) : (
                         <div className="files-grid">
                             {patient.files.map((f) => (
@@ -326,13 +327,8 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                 .tab:hover { color: rgba(255,255,255,0.7); }
                 .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); }
                 .section-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
-                .data-table { width: 100%; border-collapse: collapse; }
-                .data-table th { text-align: left; padding: 0.7rem 0.85rem; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06); font-weight: 600; }
-                .data-table td { padding: 0.65rem 0.85rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
                 .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
                 .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 0.4rem; vertical-align: middle; }
-                .empty-text { color: rgba(255,255,255,0.35); text-align: center; padding: 2rem 0; }
                 .file-upload-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
                 .file-input { font-size: 0.82rem; color: rgba(255,255,255,0.6); max-width: 100%; }
                 .field-hint { font-size: 0.72rem; color: rgba(255,255,255,0.35); }

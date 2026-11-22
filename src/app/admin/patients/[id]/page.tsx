@@ -6,10 +6,11 @@ import { clinicalFileUrl } from "@/lib/storageUrl";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
-import { Archive, Pencil } from "lucide-react";
+import { Archive, CalendarDays, FileText, History, Pencil } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface PatientData {
     id: number;
@@ -312,7 +313,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     };
 
     if (loading) {
-        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;
+        return <p className="staff-loading" role="status">Loading…</p>;
     }
     if (!patient) return null;
 
@@ -444,9 +445,9 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
             {activeTab === "sessions" && (
                 <div className="section-card">
                     {patient.reservations.length === 0 ? (
-                        <p className="empty-text">No sessions yet</p>
+                        <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />
                     ) : (
-                        <table className="data-table">
+                        <table className="staff-table staff-table-compact">
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -504,7 +505,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     </div>
 
                     {patient.files.length === 0 && !uploadingName ? (
-                        <p className="empty-text">No files uploaded yet</p>
+                        <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />
                     ) : (
                         <div className="files-grid">
                             {patient.files.map((f) => (
@@ -538,11 +539,11 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
             {activeTab === "history" && (
                 <div className="section-card">
                     {auditLoading ? (
-                        <p className="empty-text">Loading…</p>
+                        <p className="staff-loading" role="status">Loading…</p>
                     ) : auditLog.length === 0 ? (
-                        <p className="empty-text">No recorded activity yet</p>
+                        <StaffEmpty icon={History} title="No recorded activity yet" hint="Changes to this patient's file are recorded here." />
                     ) : (
-                        <table className="data-table">
+                        <table className="staff-table staff-table-compact">
                             <thead>
                                 <tr>
                                     <th>When</th>
@@ -612,19 +613,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     border-radius: var(--radius-md, 4px); padding: 1.5rem;
                     overflow-x: auto; -webkit-overflow-scrolling: touch;
                 }
-                .data-table { width: 100%; min-width: 600px; border-collapse: collapse; }
-                .data-table th {
-                    text-align: left; padding: 0.7rem 0.85rem; font-size: 0.74rem;
-                    text-transform: uppercase; letter-spacing: 0.05em;
-                    color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06);
-                    font-weight: 600;
-                }
-                .data-table td {
-                    padding: 0.65rem 0.85rem; font-size: 0.85rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.04);
-                    color: rgba(255,255,255,0.8);
-                }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
+                .staff-table { min-width: 600px; }
                 .doctor-tag {
                     border-left: 3px solid; padding-left: 0.5rem;
                 }
@@ -632,7 +621,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     display: inline-block; width: 7px; height: 7px; border-radius: 50%;
                     margin-right: 0.4rem; vertical-align: middle;
                 }
-                .empty-text { color: rgba(255,255,255,0.35); text-align: center; padding: 2rem 0; }
                 .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; }
                 .file-card {
                     display: flex; flex-direction: column; align-items: center; gap: 0.35rem;

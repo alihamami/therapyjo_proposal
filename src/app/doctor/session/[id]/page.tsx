@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { use } from "react";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
+import { History } from "lucide-react";
+import StaffEmpty from "@/app/components/StaffEmpty";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
 
@@ -170,7 +172,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
         SCHEDULED: "#64748b", CHECKED_IN: "#3b82f6", WITH_DOCTOR: "#4CAF93", CHECKED_OUT: "#16a34a", WAITING: "#f59e0b",
     };
 
-    if (loading) return <div style={{ color: "rgba(255,255,255,0.4)", padding: "3rem", textAlign: "center" }}>Loading session…</div>;
+    if (loading) return <p className="staff-loading" role="status">Loading session…</p>;
     if (!reservation) return <div style={{ color: "rgba(255,255,255,0.4)", padding: "3rem", textAlign: "center" }}>Session not found</div>;
 
     return (
@@ -310,10 +312,10 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
             {activeTab === "history" && (
                 <div className="card">
                     {pastSessions.length === 0 ? (
-                        <p style={{ color: "rgba(255,255,255,0.4)", padding: "1rem", textAlign: "center" }}>No previous sessions</p>
+                        <StaffEmpty icon={History} title="No previous sessions" hint="Earlier sessions with this patient appear here." />
                     ) : (
                         <div className="table-container">
-                            <table className="data-table">
+                            <table className="staff-table staff-table-compact">
                                 <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th><th>Injury</th><th>Payment</th><th></th></tr></thead>
                                 <tbody>
                                     {pastSessions.map((s) => (
@@ -366,10 +368,6 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 .field-hint { font-size: 0.76rem; color: rgba(255,255,255,0.35); margin: 0.75rem 0 0; }
                 .card-actions { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
                 .table-container { overflow-x: auto; }
-                .data-table { width: 100%; border-collapse: collapse; }
-                .data-table th { text-align: left; padding: 0.75rem 0.85rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.35); border-bottom: 1px solid rgba(255,255,255,0.06); font-weight: 600; }
-                .data-table td { padding: 0.65rem 0.85rem; font-size: 0.83rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.75); }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
                 .mini-status { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
                 .view-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.75rem; cursor: pointer; font-family: inherit; }
                 .view-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
