@@ -149,7 +149,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, planned 2026-11-23 (READY)**; batch 4 = d4, f, g | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, planned 2026-11-23 (READY)**; batch 4 = d4, f, g, h, i, j | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
@@ -165,6 +165,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069e4 | Lists: tables, loading and empty states inside a record | READY — passed 2026-11-23; batch 3, step 5 of 5 | `feat/staff-lists-records` |
 | TJ-069f | Emoji become line icons | BACKLOG — design decided; batch 4 | — |
 | TJ-069g | Every text size snaps to the six steps | BACKLOG — design decided; batch 4 | — |
+| TJ-069h | Searches wait for typing to pause | BACKLOG — found 2026-11-23 during the TJ-069e pass; batch 4, after TJ-069e1/e2 | — |
+| TJ-069i | Keep the small-button rule on its own page | BACKLOG — found 2026-11-23 during the TJ-069e pass; batch 4 | — |
+| TJ-069j | Approve and Reject on the shared buttons | BACKLOG — found 2026-11-23 during the TJ-069e pass; batch 4 | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
@@ -15671,7 +15674,7 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, passed 2026-11-23, READY** (see "Batch 3 — planned" below). Batch 4 = TJ-069d4, f, g.
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, passed 2026-11-23, READY** (see "Batch 3 — planned" below). Batch 4 = TJ-069d4, f, g, h, i, j.
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -15687,7 +15690,7 @@ button.staff-row-name {
 - **Mocked preview (no database, every write refused), over 30 screen states:** all 17 list and record screens filled and empty (each record tab clicked), the search-with-no-result state, both editors, desktop and 375px. No old list classes left on any screen; no sideways page scroll.
 - **Two defects caught in the preview and fixed in the specs:** the ID column lost its faint colour to the shared cell colour (selector raised to `.staff-table .staff-cell-id`); on phones the empty state was centred in a 720px table and cut off (now sticky at the box's width).
 - **Expected results for the planner's byte-identity check** (blob prefixes): d3 → doctors page `9769720c`, secretaries page `0d5cfb9a`, globals `297f26c2`; e1 → globals `eac41bbf`, `StaffEmpty.tsx` `a26191b4`, admin patients `d608d944`, admin archived `96e22438`, secretary archived `00fb80b6`, secretary patients `0b2f54a6`, doctor patients `a61129d8`; e2 → admin notes `d2532208`, secretary notes `acb2abaa`, doctor notes `c04816a1`, duplicates `7f6d2686`, approvals `726c2d52`; e3 → blog `4ee5c6cb`, website doctors `f63bcb49`, archived website doctors `cd8c1db7`, employee doctors `0261b188`, employee secretaries `1c315480`; e4 → admin file `9a3790c0`, secretary file `7884e962`, doctor file `3dd32fd6`, session `b5b6b452`.
-- **Found, for batch 4:** the full-page forms never moved to `.staff-field` (TJ-069d4).
+- **Found, for batch 4:** the full-page forms never moved to `.staff-field` (TJ-069d4); per-keystroke searches (TJ-069h), a page-wide small-button rule (TJ-069i), the old Approve button (TJ-069j). Added to the queue 2026-11-23 at the user's request.
 
 **Batch 1 — verified (2026-11-22), merge held for the user's look:**
 - **Re-application:** the planner re-applied all four specs by script to each parent commit; all 26 changed file versions (1 + 10 + 13 + 2) are byte-identical to `ca5313a`, `87379b7`, `35bd5f3`, `67b6563`. Line endings follow the repo (index LF, working tree CRLF), including the new `ConfirmDialog.tsx`.
@@ -18280,6 +18283,23 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ---
 
+### TJ-069h — Searches wait for typing to pause
+
+- **Status:** BACKLOG — found during the TJ-069e pass, 2026-11-23; batch 4. Pass after TJ-069e1 and e2 have merged (same files).
+- **Why:** four list searches set the query on every keystroke, so each letter typed sends its own request: `src/app/secretary/patients/page.tsx`, `src/app/doctor/patients/page.tsx`, `src/app/admin/notes/page.tsx`, `src/app/secretary/notes/page.tsx` (`onChange={(e) => { setSearch(e.target.value); setPage(1); }}`, and the fetch depends on `search`). Admin's patient list already waits 300ms (`searchInput` plus a timeout). Nothing cancels an older request, so a slow early answer can land after a later one and show the wrong list; the pass should confirm this. Proposed: the same 300ms wait as admin's patient list on all four.
+
+### TJ-069i — Keep the small-button rule on its own page
+
+- **Status:** BACKLOG — found during the TJ-069e pass, 2026-11-23; batch 4.
+- **Why:** `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/archived/page.tsx` and `src/app/admin/patients/duplicates/page.tsx` declare `:global(.btn-sm)` (the duplicates page also `:global(.btn-view)`). TJ-068c made them global on purpose, so the styles reach `<Link>` elements, which styled-jsx does not scope. The side effect: while one of these pages is open, every element with class `btn-sm` anywhere on screen takes that padding and size. The pass should measure what is actually affected, then either scope the rule under the page's own wrapper (`.page :global(.btn-sm)`, the pattern used elsewhere) or move Restore and View onto `staff-btn staff-btn-secondary staff-btn-sm`.
+
+### TJ-069j — Approve and Reject on the shared buttons
+
+- **Status:** BACKLOG — found during the TJ-069e pass, 2026-11-23; batch 4.
+- **Why:** on `src/app/admin/approvals/page.tsx` the Approve button still uses the CMS handoff's `linear-gradient(135deg, #059669, #10b981)` with white text, which design 4A replaced everywhere else, and Reject is a local red pill. Proposed: Approve becomes `staff-btn staff-btn-primary`; Reject's look (quiet secondary, or red text on the soft red) is a small choice for the pass. One file.
+
+---
+
 ### TJ-069e — Lists: one page header, search, table, pagination, loading line and empty state
 
 - **Status:** SPLIT — passed 2026-11-23; see TJ-069e1 … e4. Batch 3, steps 2–5.
@@ -18317,7 +18337,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 **Execution:** as batches 1–2: stacked branches (e1 from the d3 tip, e2 from e1, e3 from e2, e4 from e3), one Sonnet executor at a time, the planner re-applies each spec and checks byte-identity, then a mocked preview; **nothing merges or pushes until the user has seen it.**
 
-**Found during the pass, not in this batch:** the secretary and doctor patient searches and both notes searches fetch on every keystroke (admin's patient search waits 300ms); the archived-patient and duplicate pages declare `:global(.btn-sm)`, which restyles every `.btn-sm` on screen while they are open; the Approvals page's Approve button still uses the old CMS gradient rather than 4A.
+**Found during the pass, not in this batch:** the secretary and doctor patient searches and both notes searches fetch on every keystroke (admin's patient search waits 300ms); the archived-patient and duplicate pages declare `:global(.btn-sm)`, which restyles every `.btn-sm` on screen while they are open; the Approvals page's Approve button still uses the old CMS gradient rather than 4A. Captured as TJ-069h, TJ-069i and TJ-069j (batch 4).
 
 ---
 
