@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Archive, Eye, EyeOff, Pencil, Plus } from "lucide-react";
+import { Archive, Eye, EyeOff, Pencil, Plus, Stethoscope } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface DoctorProfile {
     id: string;
@@ -174,15 +175,15 @@ export default function DoctorsCmsPage() {
     };
 
     if (loading) {
-        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;
+        return <p className="staff-loading" role="status">Loading…</p>;
     }
 
     return (
         <div>
-            <div className="page-header">
+            <div className="staff-page-header">
                 <div>
                     <h1>Doctors</h1>
-                    <p className="subtitle">Drag cards to set the order they appear on the public site.</p>
+                    <p className="staff-page-sub">Drag cards to set the order they appear on the public site.</p>
                 </div>
                 <button className="staff-btn staff-btn-primary" onClick={openAdd}><Plus size={15} aria-hidden="true" />Add Doctor</button>
             </div>
@@ -225,7 +226,14 @@ export default function DoctorsCmsPage() {
                     </div>
                 ))}
                 {doctors.length === 0 && (
-                    <div className="empty-state">Nothing here yet.</div>
+                    <div className="staff-panel grid-empty">
+                        <StaffEmpty
+                            icon={Stethoscope}
+                            title="No doctor profiles yet"
+                            hint="Profiles you add appear in the Doctors section of the public site."
+                            action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={openAdd}><Plus size={15} aria-hidden="true" />Add Doctor</button>}
+                        />
+                    </div>
                 )}
             </div>
 
@@ -294,12 +302,9 @@ export default function DoctorsCmsPage() {
             {toast && <div className="toast">✓ {toast}</div>}
 
             <style jsx>{`
-                .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.25rem; }
-                .subtitle { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin: 0; }
 
                 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
-                .empty-state { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.35); padding: 3rem; }
+                .grid-empty { grid-column: 1 / -1; }
 
                 .cms-doctor-card {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);

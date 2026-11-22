@@ -3,10 +3,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Archive, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
+import { Archive, ChevronRight, Newspaper, Pencil, Plus, Trash2 } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import StaffModal from "@/app/components/StaffModal";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface BlogPost {
     id: string;
@@ -20,6 +21,15 @@ interface BlogPost {
 }
 
 const FILTERS = ["All", "Published", "Scheduled", "Drafts", "Archived"] as const;
+
+// What each tab says when it has no posts (design 3B, TJ-069e3).
+const EMPTY: Record<(typeof FILTERS)[number], { title: string; hint: string }> = {
+    All: { title: "No posts yet", hint: "Posts you write appear here, and on the public blog once published." },
+    Published: { title: "No published posts", hint: "Published posts appear here and on the public blog." },
+    Scheduled: { title: "No scheduled posts", hint: "Posts set to publish later appear here." },
+    Drafts: { title: "No drafts", hint: "Posts you save without publishing appear here." },
+    Archived: { title: "No archived posts", hint: "Posts you archive move here. You can restore them any time." },
+};
 
 function statusFor(filter: (typeof FILTERS)[number]) {
     switch (filter) {
@@ -104,15 +114,15 @@ export default function BlogListPage() {
     };
 
     if (loading) {
-        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;
+        return <p className="staff-loading" role="status">Loading…</p>;
     }
 
     return (
         <div>
-            <div className="page-header">
+            <div className="staff-page-header">
                 <div>
                     <h1>Blog Posts</h1>
-                    <p className="subtitle">The clinic&apos;s voice — posts have no author byline on the public site.</p>
+                    <p className="staff-page-sub">The clinic&apos;s voice — posts have no author byline on the public site.</p>
                 </div>
                 <button className="staff-btn staff-btn-primary" onClick={() => router.push("/admin/blog/new")}><Plus size={15} aria-hidden="true" />New Post</button>
             </div>
@@ -129,8 +139,8 @@ export default function BlogListPage() {
                 ))}
             </div>
 
-            <div className="table-container">
-                <table className="data-table">
+            <div className="staff-table-wrap">
+                <table className="staff-table">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -177,7 +187,14 @@ export default function BlogListPage() {
                             </tr>
                         ))}
                         {visible.length === 0 && (
-                            <tr><td colSpan={6} className="empty-state">Nothing here yet.</td></tr>
+                            <tr className="staff-table-state"><td colSpan={6}>
+                                <StaffEmpty
+                                    icon={Newspaper}
+                                    title={EMPTY[filter].title}
+                                    hint={EMPTY[filter].hint}
+                                    action={filter === "All" ? <button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/blog/new")}><Plus size={15} aria-hidden="true" />New Post</button> : undefined}
+                                />
+                            </td></tr>
                         )}
                     </tbody>
                 </table>
@@ -226,9 +243,6 @@ export default function BlogListPage() {
             )}
 
             <style jsx>{`
-                .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.25rem; }
-                .subtitle { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin: 0; }
 
                 .filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
                 .chip {
@@ -242,22 +256,8 @@ export default function BlogListPage() {
                 .chip-count { color: rgba(255,255,255,0.4); font-weight: 500; }
                 .chip.active .chip-count { color: rgba(255,255,255,0.7); }
 
-                .table-container {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: 10px; overflow: hidden; overflow-x: auto;
-                    -webkit-overflow-scrolling: touch;
-                }
-                .data-table { width: 100%; border-collapse: collapse; min-width: 680px; }
-                .data-table th {
-                    text-align: left; padding: 0.9rem 1rem; font-size: 0.72rem; text-transform: uppercase;
-                    letter-spacing: 0.05em; color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06);
-                    font-weight: 600; white-space: nowrap;
-                }
-                .data-table td {
-                    padding: 0.8rem 1rem; font-size: 0.88rem; border-bottom: 1px solid rgba(255,255,255,0.04);
-                    color: rgba(255,255,255,0.85); vertical-align: top;
-                }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
+                .staff-table { min-width: 680px; }
+                .staff-table td { vertical-align: top; }
                 .title-cell { font-weight: 500; }
                 .sub-line { font-size: 0.74rem; color: rgba(255,255,255,0.35); margin-top: 0.15rem; }
                 .lang-chip {
@@ -272,12 +272,6 @@ export default function BlogListPage() {
                 .btn-sm { padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
                 .btn-restore { background: rgba(16,185,129,0.15); color: #6ee7b7; }
                 .btn-restore:hover { background: rgba(16,185,129,0.25); }
-                .empty-state { text-align: center; color: rgba(255,255,255,0.35); padding: 2rem !important; }
-
-                @media (max-width: 560px) {
-                    .page-header { flex-direction: column; align-items: stretch; }
-                    .page-header .staff-btn { width: 100%; }
-                }
             `}</style>
         </div>
     );
