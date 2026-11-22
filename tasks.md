@@ -150,10 +150,10 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
 | TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c `READY` | — |
-| TJ-069a | Tokens: named colours, six sizes, three radii | READY — cut from `master` | `feat/staff-tokens` |
-| TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | READY — stacked on TJ-069a | `feat/confirm-dialog` |
-| TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | READY — stacked on TJ-069b1 | `feat/confirm-dialog-everywhere` |
-| TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | READY — stacked on TJ-069b2 | `feat/secretary-duplicate-popup` |
+| TJ-069a | Tokens: named colours, six sizes, three radii | VERIFIED — task commit `ca5313a`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-tokens` |
+| TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | VERIFIED — task commit `87379b7`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/confirm-dialog` |
+| TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | VERIFIED — task commit `35bd5f3`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/confirm-dialog-everywhere` |
+| TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | VERIFIED — task commit `67b6563`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/secretary-duplicate-popup` |
 | TJ-069d | One popup and form-field style | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069f | Emoji become line icons | BACKLOG — design decided; pass runs on top of batch 1 | — |
@@ -15668,6 +15668,17 @@ button.staff-row-name {
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
+**Batch 1 — verified (2026-11-22), merge held for the user's look:**
+- **Re-application:** the planner re-applied all four specs by script to each parent commit; all 26 changed file versions (1 + 10 + 13 + 2) are byte-identical to `ca5313a`, `87379b7`, `35bd5f3`, `67b6563`. Line endings follow the repo (index LF, working tree CRLF), including the new `ConfirmDialog.tsx`.
+- **Gates, re-run by the planner on `67b6563`:** `tsc` 0, `next build --webpack` 0, only the workspace-root notice.
+- **Spec error (planner's):** TJ-069b1 said `grep -rn "window.confirm"` would print exactly one line; it prints two, because the verbatim header comment of `ConfirmDialog.tsx` also contains the words. The only call is the fallback.
+- **Preview (mocked, no database; browser `confirm`/`prompt` replaced by counters, which stayed at 0 throughout):**
+  - Archive from the admin patient row menu: dialog "Archive سارة خليل?" with the consequence sentence; Cancel then teal Archive; focus starts on Archive; Escape, Cancel and a backdrop click each close it with no request sent; Escape returns focus to the ⋯ button; Tab cycles Cancel ↔ Archive; only the confirm sends `PATCH /api/patients/600`. Raised background `#243b44`, 12px corners, portalled to `<body>`, `aria-modal`, labelled by its title.
+  - Delete note: "Delete this note?" naming the note; red Delete (`#dc2626`, white text); focus starts on Cancel.
+  - Unsaved changes: editing the Clinical Assessment then Back on the admin patient file asks "Leave without saving?" with a red "Discard changes", focus on Cancel; Cancel keeps the page.
+  - Secretary patient file: "Remove this file?" names the file and the patient, red Remove; the header Archive asks "Archive عمر زيدان?".
+  - Secretary Duplicate: the popup (design 2B: header bar with ✕, footer bar) names the patient and doctor, focuses the date field, keeps Duplicate disabled until a date is set, sends `{ sessionDate, sessionTime }`, shows the refusal message as an alert and stays open, and closes on Escape. No `prompt()` anywhere.
+
 **Audit, 2026-11-22, on `master` at `733e884`** (45 files: `src/app/{admin,secretary,doctor}` plus `components/{Calendar,ReservationSlot,DatePickerPopover,ClinicalAssessment,DatePicker,RowMenu}.tsx`; script in the planner's scratchpad):
 - **Style code:** 43 of 45 files have their own `<style jsx>`, about 3,000 lines in total; 75 inline `style={{…}}` attributes.
 - **Font sizes:** 28 distinct. Most used: 0.85rem ×96, 0.82 ×55, 0.78 ×39, 0.9 ×39, 0.8 ×35, 0.76 ×27, 1.5 ×26, 0.72 ×23, 1 ×14, 1.1 ×12, 0.88 ×11, 1.6 ×11; then 16 more between 0.55rem and 2rem.
@@ -15701,7 +15712,7 @@ button.staff-row-name {
 
 ### TJ-069a — Tokens: named colours, six sizes, three radii
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `ca5313a` on `feat/staff-tokens`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
 - **Branch:** `feat/staff-tokens`, cut from `master` at the commit that adds this spec.
 - **Why:** decision P1-5. Gives every later step one set of names to use. **Nothing on screen changes:** the existing staff rules switch to tokens only where the token has exactly the same value.
 
@@ -15920,7 +15931,7 @@ button.staff-row-name {
 
 ### TJ-069b1 — The confirmation dialog, and unsaved-changes prompts on it
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `87379b7` on `feat/confirm-dialog`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
 - **Branch:** `feat/confirm-dialog`, cut from the tip of `feat/staff-tokens`.
 - **Why:** decision P1-1 = **1A** (centred dialog). This step builds the dialog, mounts it in all three portals, and moves the unsaved-changes prompts onto it. TJ-069b2 moves the 14 Archive/Restore/Resign/Delete/Remove confirmations.
 
@@ -16245,7 +16256,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 
 ### TJ-069b2 — Archive, Restore, Resign, Delete and Remove ask in the dialog
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `35bd5f3` on `feat/confirm-dialog-everywhere`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
 - **Branch:** `feat/confirm-dialog-everywhere`, cut from the tip of `feat/confirm-dialog`.
 - **Why:** the 14 remaining `confirm()` calls (13 files) move onto the TJ-069b1 dialog, each with wording that names the person or item and says what happens.
 
@@ -16536,7 +16547,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 
 ### TJ-069c — Secretary Duplicate gets a date-and-time popup; the shared popup and field styles
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `67b6563` on `feat/secretary-duplicate-popup`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
 - **Branch:** `feat/secretary-duplicate-popup`, cut from the tip of `feat/confirm-dialog-everywhere`.
 - **Why:** decision P1-6, and the first user of decision P1-2 = **2B**. The secretary dashboard's Duplicate asks for a typed `YYYY-MM-DD` date in a browser `prompt()` and ignores a failed request. It gets admin's flow (date, optional time) in the shared popup, with an error message. The shared `.staff-modal-*` and `.staff-field` classes are defined here; TJ-069d moves the other popups onto them.
 
