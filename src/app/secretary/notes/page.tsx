@@ -27,9 +27,6 @@ export default function SecretaryNotesPage() {
     const [total, setTotal] = useState(0);
     const [search, setSearch] = useState("");
     const [doctorFilter, setDoctorFilter] = useState("all");
-    const [showAdd, setShowAdd] = useState(false);
-    const [form, setForm] = useState({ name: "", noteDate: new Date().toISOString().split("T")[0], doctorId: "", details: "" });
-    const [saving, setSaving] = useState(false);
 
     const fetchDoctors = useCallback(async () => {
         const res = await fetch("/api/employees/doctors");
@@ -52,18 +49,6 @@ export default function SecretaryNotesPage() {
 
     useEffect(() => { fetchDoctors(); }, [fetchDoctors]);
     useEffect(() => { fetchNotes(); }, [fetchNotes]);
-
-    const handleAdd = async () => {
-        setSaving(true);
-        await fetch("/api/notes", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
-        });
-        setSaving(false);
-        setShowAdd(false);
-        fetchNotes();
-    };
 
     const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 
@@ -109,26 +94,6 @@ export default function SecretaryNotesPage() {
                 </div>
             )}
 
-            {showAdd && (
-                <div className="modal-overlay" onClick={() => setShowAdd(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>Add Note</h2>
-                        <div className="form-stack">
-                            <div className="form-group"><label>Name</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-                            <div className="form-row">
-                                <div className="form-group"><label>Date</label><input type="date" value={form.noteDate} onChange={(e) => setForm({ ...form, noteDate: e.target.value })} /></div>
-                                <div className="form-group"><label>Doctor</label><select value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>{doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}</select></div>
-                            </div>
-                            <div className="form-group"><label>Details</label><textarea rows={3} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} /></div>
-                        </div>
-                        <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setShowAdd(false)}>Cancel</button>
-                            <button className="btn-save" onClick={handleAdd} disabled={saving || !form.name}>{saving ? "Saving…" : "Create"}</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             <style jsx>{`
                 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; }
@@ -148,21 +113,6 @@ export default function SecretaryNotesPage() {
                 .pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem; }
                 .pagination button { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); cursor: pointer; font-size: 0.82rem; font-family: inherit; }
                 .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-                .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
-                .modal-card { background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md, 4px); padding: 2rem; width: 100%; max-width: 480px; }
-                .modal-card h2 { font-size: 1.1rem; margin-bottom: 1rem; font-weight: 600; }
-                .form-stack { display: flex; flex-direction: column; gap: 0.75rem; }
-                .form-row { display: flex; gap: 0.75rem; }
-                .form-row .form-group { flex: 1; }
-                .form-group { display: flex; flex-direction: column; gap: 0.25rem; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
-                .form-group input, .form-group textarea, .form-group select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.7rem; color: #fff; font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical; }
-                .form-group select option { background: #1a2e35; }
-                .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.25rem; }
-                .btn-cancel { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; font-family: inherit; }
-                .btn-save { background: var(--primary, #4CAF93); color: #fff; border: none; border-radius: var(--radius-sm, 2px); padding: 0.5rem 1.2rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
             `}</style>
         </div>
     );
