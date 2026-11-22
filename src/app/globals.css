@@ -2202,3 +2202,18 @@ button.staff-row-name {
     grid-template-columns: 1fr;
   }
 }
+/* Popup component (TJ-069d1, components/StaffModal.tsx). The dialog takes
+   focus when it opens, so it draws no ring of its own; on phones it sits at
+   the bottom of the screen, within thumb reach. */
+.staff-modal:focus {
+  outline: none;
+}
+.staff-field input::placeholder,
+.staff-field textarea::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+@media (max-width: 640px) {
+  .staff-modal-overlay {
+    align-items: flex-end;
+  }
+}
