@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { parseWorkingHours, formatWorkingHours, isLegacyWorkingHours } from "@/lib/workingHours";
 import { clinicalFileUrl } from "@/lib/storageUrl";
-import { Plus } from "lucide-react";
+import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
+import RowMenu from "@/app/components/RowMenu";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface Secretary {
     id: string;
@@ -321,35 +323,38 @@ export default function SecretariesPage() {
                             <th>Phone</th>
                             <th>Email</th>
                             <th>Working Hours</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {visible.map((sec) => (
-                            <tr key={sec.id}>
+                            <tr key={sec.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) openEdit(sec); }}>
                                 <td>
                                     <span className={`status-badge ${sec.status === "ACTIVE" ? "active" : "resigned"}`}>
                                         {sec.status}
                                     </span>
                                 </td>
                                 <td>
-                                    <div>{sec.name}</div>
+                                    <button type="button" className="staff-row-name" onClick={() => openEdit(sec)}>{sec.name}</button>
                                     {sec.username && <div className="employee-username">{sec.username}</div>}
                                 </td>
                                 <td>{sec.phone || "—"}</td>
                                 <td>{sec.email || "—"}</td>
                                 <td>{sec.workingHours || "—"}</td>
                                 <td>
-                                    <div className="action-buttons">
-                                        <button className="btn-sm btn-edit" onClick={() => openEdit(sec)}>Edit</button>
-                                        {sec.status === "ACTIVE" ? (
-                                            <button className="btn-sm btn-delete" onClick={() => handleResign(sec.id)}>Resign</button>
-                                        ) : (
-                                            <>
-                                                <button className="btn-sm btn-edit" onClick={() => handleReEnrol(sec.id)}>Re-enrol</button>
-                                                <button className="btn-sm btn-delete" onClick={() => openDelete(sec)}>Delete permanently</button>
-                                            </>
-                                        )}
+                                    <div className="staff-row-end">
+                                        <RowMenu
+                                            label={`More actions for ${sec.name}`}
+                                            items={sec.status === "ACTIVE" ? [
+                                                { label: "Edit", icon: Pencil, onSelect: () => openEdit(sec) },
+                                                { label: "Resign", icon: UserX, onSelect: () => handleResign(sec.id), destructive: true },
+                                            ] : [
+                                                { label: "Edit", icon: Pencil, onSelect: () => openEdit(sec) },
+                                                { label: "Re-enrol", icon: RotateCcw, onSelect: () => handleReEnrol(sec.id) },
+                                                { label: "Delete permanently", icon: Trash2, onSelect: () => openDelete(sec), destructive: true },
+                                            ]}
+                                        />
+                                        <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
                                     </div>
                                 </td>
                             </tr>
@@ -613,9 +618,6 @@ export default function SecretariesPage() {
           padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.8rem;
           border: none; cursor: pointer; font-weight: 500; font-family: inherit;
         }
-        .btn-edit { background: rgba(96,165,250,0.15); color: #93c5fd; }
-        .btn-edit:hover { background: rgba(96,165,250,0.25); }
-        .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .btn-delete { background: rgba(239,68,68,0.15); color: #fca5a5; }
         .btn-delete:hover { background: rgba(239,68,68,0.25); }
         .modal-overlay {

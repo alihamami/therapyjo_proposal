@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { parseWorkingHours, formatWorkingHours, isLegacyWorkingHours } from "@/lib/workingHours";
 import { clinicalFileUrl } from "@/lib/storageUrl";
-import { Plus } from "lucide-react";
+import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
+import RowMenu from "@/app/components/RowMenu";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface Doctor {
     id: string;
@@ -353,19 +355,19 @@ export default function DoctorsPage() {
                             <th>Email</th>
                             <th>Working Hours</th>
                             <th>Color</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {visible.map((doc) => (
-                            <tr key={doc.id}>
+                            <tr key={doc.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) openEdit(doc); }}>
                                 <td>
                                     <span className={`status-badge ${doc.status === "ACTIVE" ? "active" : "resigned"}`}>
                                         {doc.status}
                                     </span>
                                 </td>
                                 <td>
-                                    <div>{doc.name}</div>
+                                    <button type="button" className="staff-row-name" onClick={() => openEdit(doc)}>{doc.name}</button>
                                     {doc.username && <div className="employee-username">{doc.username}</div>}
                                 </td>
                                 <td>{doc.phone || "—"}</td>
@@ -380,16 +382,19 @@ export default function DoctorsPage() {
                                     />
                                 </td>
                                 <td>
-                                    <div className="action-buttons">
-                                        <button className="btn-sm btn-edit" onClick={() => openEdit(doc)}>Edit</button>
-                                        {doc.status === "ACTIVE" ? (
-                                            <button className="btn-sm btn-delete" onClick={() => handleResign(doc.id)}>Resign</button>
-                                        ) : (
-                                            <>
-                                                <button className="btn-sm btn-edit" onClick={() => handleReEnrol(doc.id)}>Re-enrol</button>
-                                                <button className="btn-sm btn-delete" onClick={() => openDelete(doc)}>Delete permanently</button>
-                                            </>
-                                        )}
+                                    <div className="staff-row-end">
+                                        <RowMenu
+                                            label={`More actions for ${doc.name}`}
+                                            items={doc.status === "ACTIVE" ? [
+                                                { label: "Edit", icon: Pencil, onSelect: () => openEdit(doc) },
+                                                { label: "Resign", icon: UserX, onSelect: () => handleResign(doc.id), destructive: true },
+                                            ] : [
+                                                { label: "Edit", icon: Pencil, onSelect: () => openEdit(doc) },
+                                                { label: "Re-enrol", icon: RotateCcw, onSelect: () => handleReEnrol(doc.id) },
+                                                { label: "Delete permanently", icon: Trash2, onSelect: () => openDelete(doc), destructive: true },
+                                            ]}
+                                        />
+                                        <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
                                     </div>
                                 </td>
                             </tr>
@@ -680,13 +685,10 @@ export default function DoctorsPage() {
         }
         .status-badge.active { background: rgba(16,185,129,0.15); color: #6ee7b7; }
         .status-badge.resigned { background: rgba(239,68,68,0.15); color: #fca5a5; }
-        .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .btn-sm {
           padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.8rem;
           border: none; cursor: pointer; font-weight: 500; font-family: inherit;
         }
-        .btn-edit { background: rgba(96,165,250,0.15); color: #93c5fd; }
-        .btn-edit:hover { background: rgba(96,165,250,0.25); }
         .btn-delete { background: rgba(239,68,68,0.15); color: #fca5a5; }
         .btn-delete:hover { background: rgba(239,68,68,0.25); }
         .modal-overlay {
