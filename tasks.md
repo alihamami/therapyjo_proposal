@@ -149,14 +149,15 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — planning pass 2026-11-22; **waiting on the user's decisions P1-1 to P1-6** (mockup `KtSTgprg91u8SWsAANN1vj`) | — |
-| TJ-069a | Tokens: named colours, six sizes, three radii | BACKLOG — shape recorded; spec after the decisions | — |
-| TJ-069b | In-app confirmation dialog replaces browser confirm() | BACKLOG — shape recorded; spec after the decisions | — |
-| TJ-069c | Secretary Duplicate gets a date-and-time popup | BACKLOG — shape recorded; spec after the decisions | — |
-| TJ-069d | One popup and form-field style | BACKLOG — shape recorded; spec after the decisions | — |
-| TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — shape recorded; spec after the decisions | — |
-| TJ-069f | Emoji become line icons | BACKLOG — shape recorded; spec after the decisions | — |
-| TJ-069g | Every text size snaps to the six steps | BACKLOG — shape recorded; spec after the decisions | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c `READY` | — |
+| TJ-069a | Tokens: named colours, six sizes, three radii | READY — cut from `master` | `feat/staff-tokens` |
+| TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | READY — stacked on TJ-069a | `feat/confirm-dialog` |
+| TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | READY — stacked on TJ-069b1 | `feat/confirm-dialog-everywhere` |
+| TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | READY — stacked on TJ-069b2 | `feat/secretary-duplicate-popup` |
+| TJ-069d | One popup and form-field style | BACKLOG — design decided; pass runs on top of batch 1 | — |
+| TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — design decided; pass runs on top of batch 1 | — |
+| TJ-069f | Emoji become line icons | BACKLOG — design decided; pass runs on top of batch 1 | — |
+| TJ-069g | Every text size snaps to the six steps | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
@@ -15663,7 +15664,7 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT — planning pass started 2026-11-22; **waiting on the user's design decisions P1-1 to P1-6** against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`). The sub-task specs (anchors, verification) are written after the decisions, on top of `master` at that time.
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: `READY` (specs below). Batch 2 (d, e) and batch 3 (f, g) get their passes on top of batch 1.
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -15688,13 +15689,1144 @@ button.staff-row-name {
 
 **Shape of the split (specs follow the decisions):**
 - **TJ-069a — Tokens.** The named colours, six sizes and three radii as CSS custom properties in the `globals.css` staff section; restate `.staff-btn*`, `.staff-row-*` and `.no-phone` on them. No visible change. 1 file.
-- **TJ-069b — Confirm dialog (P1-1).** A `ConfirmProvider` and async `useConfirm()` in `src/app/components/`, mounted in the admin, secretary and doctor layouts; the 16 `confirm()` calls become `await confirm({ title, message, confirmLabel, tone })` with specific wording; `useUnsavedChanges`'s `confirmDiscard` becomes async and its 6 callers await it; `beforeunload` unchanged. About 14 files.
-- **TJ-069c — Secretary Duplicate (P1-6).** `secretary/page.tsx` gets admin's duplicate popup flow (date, optional time, error shown). 1–2 files.
+- **TJ-069b — Confirm dialog (P1-1); split into b1 (dialog, provider, unsaved-changes prompts) and b2 (the 14 confirm calls).** A `ConfirmProvider` and async `useConfirm()` in `src/app/components/`, mounted in the admin, secretary and doctor layouts; the 16 `confirm()` calls become `await confirm({ title, message, confirmLabel, tone })` with specific wording; `useUnsavedChanges`'s `confirmDiscard` becomes async and its 6 callers await it; `beforeunload` unchanged. About 14 files.
+- **TJ-069c — Secretary Duplicate (P1-6).** `secretary/page.tsx` gets admin's duplicate popup flow (date, optional time, error shown), in the shared 2B popup, whose `.staff-modal-*`/`.staff-field` classes are defined here. 2 files.
 - **TJ-069d — Popup and form fields (P1-2).** `.staff-modal-*` and `.staff-field`/`.staff-form-error` classes; the 11 popup files and 10 form families move onto them and drop their local copies. Mechanical, like TJ-068e.
 - **TJ-069e — Lists (P1-3).** `.staff-page-header`, `.staff-table-wrap`/`.staff-table`, `.staff-search`, `.staff-pagination`, `.staff-loading`, `.staff-empty`; the 17 list pages move onto them; empty wordings unified.
 - **TJ-069f — Icons (P1-4).** Emoji → lucide in the 17 files (menu item `icon` fields become components).
 - **TJ-069g — Type scale (P1-5).** Every remaining `font-size` in the staff files mapped by script to the six tokens (buckets: ≤0.74 → xs, 0.75–0.8 → sm, 0.82–0.9 → base, 0.95–1.1 → md, 1.15–1.3 → lg, ≥1.5 → xl); the planner re-applies the script to verify. Colour literals outside the shared pieces move to tokens in phases 3–4, when those pages are reworked.
 - **Not in phase 1:** one shared layout and the secretary/doctor menu bars (TJ-070); dashboard layout (TJ-071); patient file and list layout (TJ-072).
+
+---
+
+### TJ-069a — Tokens: named colours, six sizes, three radii
+
+- **Status:** READY
+- **Branch:** `feat/staff-tokens`, cut from `master` at the commit that adds this spec.
+- **Why:** decision P1-5. Gives every later step one set of names to use. **Nothing on screen changes:** the existing staff rules switch to tokens only where the token has exactly the same value.
+
+**Planning pass:** 2026-11-22, on `master` at `eeb2780`. The replacement text was generated by script from the current staff section; resolving each `var(--staff-…)` back to its value reproduces today's text byte for byte (checked). 38 tokens; 14 uses in rules. `--staff-text-2` is `rgba(255,255,255,0.88)` (the mockup showed 0.85) so the 4A secondary button keeps its exact colour. `.staff-btn-sm`'s 0.78rem and the chevron greys are left alone (TJ-069g snaps sizes).
+
+**Scope — touch only:** `src/app/globals.css`.
+
+**Instruction** (CRLF in the working tree; keep it): in `src/app/globals.css`, keep the three header lines
+```
+/* ===== STAFF PORTAL ===== */
+/* Shared by the admin, secretary and doctor screens (all dark). Phase 0 of
+   the staff refresh starts this section; TJ-068e adds the buttons. */
+```
+and replace **everything after them, from `.no-phone {` to the end of the file**, with the content of `TJ069A_STAFF_CSS` below, exactly.
+
+**Verification:**
+- `git diff --stat` lists only `src/app/globals.css`; nothing above the staff header changes.
+- `grep -c "^  --staff-" src/app/globals.css` prints `38`; `grep -c "var(--staff-" src/app/globals.css` prints `14`.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:** the tokens exist once in `:root`; the staff rules use them; the planner's re-resolution check matches today's CSS.
+
+`TJ069A_STAFF_CSS` (replacement text; LF shown, write CRLF):
+```css
+/* Staff tokens (TJ-069a, decision P1-5). Every staff colour, text size and
+   corner comes from here: a page names a token instead of inventing a value.
+   The values are the ones the staff screens already use most. */
+:root {
+  /* surfaces */
+  --staff-bg: #1a2e35;
+  --staff-surface: rgba(255, 255, 255, 0.03);
+  --staff-surface-2: rgba(255, 255, 255, 0.06);
+  --staff-surface-hover: rgba(255, 255, 255, 0.1);
+  --staff-raised: #243b44;
+  --staff-overlay: rgba(0, 0, 0, 0.6);
+  /* lines */
+  --staff-border: rgba(255, 255, 255, 0.08);
+  --staff-border-strong: rgba(255, 255, 255, 0.14);
+  /* text */
+  --staff-text: #ffffff;
+  --staff-text-2: rgba(255, 255, 255, 0.88);
+  --staff-muted: rgba(255, 255, 255, 0.55);
+  --staff-faint: rgba(255, 255, 255, 0.4);
+  /* accent */
+  --staff-accent: #4CAF93;
+  --staff-accent-hover: #5dbda0;
+  --staff-on-accent: #0d2a22;
+  --staff-accent-soft: rgba(76, 175, 147, 0.12);
+  --staff-accent-text: #6ee7b7;
+  --staff-focus: #a7f3d0;
+  /* status: text colour, then its soft background */
+  --staff-ok: #6ee7b7;
+  --staff-ok-soft: rgba(16, 185, 129, 0.14);
+  --staff-warn: #fbbf24;
+  --staff-warn-soft: rgba(251, 191, 36, 0.12);
+  --staff-bad: #fca5a5;
+  --staff-bad-soft: rgba(220, 38, 38, 0.14);
+  --staff-bad-solid: #dc2626;
+  --staff-bad-solid-hover: #ef4444;
+  --staff-info: #93c5fd;
+  --staff-info-soft: rgba(96, 165, 250, 0.12);
+  /* text sizes: the six steps */
+  --staff-size-xs: 0.72rem;
+  --staff-size-sm: 0.8rem;
+  --staff-size-base: 0.85rem;
+  --staff-size-md: 1rem;
+  --staff-size-lg: 1.2rem;
+  --staff-size-xl: 1.5rem;
+  /* corners */
+  --staff-radius-sm: 6px;
+  --staff-radius-md: 8px;
+  --staff-radius-lg: 12px;
+  /* raised surfaces (popups, dialogs) */
+  --staff-shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.5);
+}
+
+.no-phone {
+  color: var(--staff-faint);
+  font-style: italic;
+}
+
+/* Buttons, design 4A (TJ-068e). Primary: bright teal with dark text, 5.7:1
+   (white on #4CAF93 is 2.7:1 and fails AA). Secondary: the quiet companion
+   for Cancel and Close. A button that is saving sets aria-busy="true" and
+   shows a ring spinner before its label. Every Add, Save and Create button in
+   the staff portal uses these; pages keep only layout rules of their own. */
+.staff-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--staff-radius-md);
+  font-family: inherit;
+  font-size: var(--staff-size-sm);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.staff-btn:focus-visible {
+  outline: 2px solid var(--staff-focus);
+  outline-offset: 2px;
+}
+.staff-btn:disabled {
+  cursor: not-allowed;
+}
+.staff-btn-primary {
+  background: var(--staff-accent);
+  color: var(--staff-on-accent);
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.staff-btn-primary:hover:not(:disabled) {
+  background: var(--staff-accent-hover);
+}
+.staff-btn-primary:disabled {
+  background: rgba(76, 175, 147, 0.32);
+  color: rgba(13, 42, 34, 0.6);
+  box-shadow: none;
+}
+.staff-btn-secondary {
+  background: var(--staff-surface-2);
+  color: var(--staff-text-2);
+  border: 1px solid var(--staff-border-strong);
+  font-weight: 500;
+}
+.staff-btn-secondary:hover:not(:disabled) {
+  background: var(--staff-surface-hover);
+}
+.staff-btn-secondary:disabled {
+  opacity: 0.5;
+}
+/* Working: full colour although disabled, with a spinner before the label. */
+.staff-btn-primary[aria-busy="true"]:disabled {
+  background: var(--staff-accent);
+  color: var(--staff-on-accent);
+  cursor: progress;
+}
+.staff-btn[aria-busy="true"]::before {
+  content: "";
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: staff-spin 0.7s linear infinite;
+}
+@keyframes staff-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .staff-btn[aria-busy="true"]::before { animation-duration: 1.6s; }
+}
+
+/* Lists and row actions, design 5B (TJ-068f1). A row's whole surface opens
+   the record: the name is the real link (keyboard, middle-click, screen
+   readers), the row click is a mouse shortcut, and a muted chevron at the
+   end says so. Other actions sit in the ⋯ menu (components/RowMenu.tsx). */
+.staff-btn-sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 0.78rem;
+}
+.staff-row-link {
+  cursor: pointer;
+}
+.staff-row-name {
+  color: inherit;
+  font-weight: 500;
+  text-decoration: none;
+}
+.staff-row-name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.staff-row-name:focus-visible {
+  outline: 2px solid var(--staff-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.staff-row-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.staff-row-chevron {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.3);
+}
+.staff-row-link:hover .staff-row-chevron {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* A row name that opens an editor in place rather than a page (TJ-068f2). */
+button.staff-row-name {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
+```
+
+---
+
+### TJ-069b1 — The confirmation dialog, and unsaved-changes prompts on it
+
+- **Status:** READY
+- **Branch:** `feat/confirm-dialog`, cut from the tip of `feat/staff-tokens`.
+- **Why:** decision P1-1 = **1A** (centred dialog). This step builds the dialog, mounts it in all three portals, and moves the unsaved-changes prompts onto it. TJ-069b2 moves the 14 Archive/Restore/Resign/Delete/Remove confirmations.
+
+**Planning pass:** 2026-11-22, on `master` at `eeb2780`. Design notes:
+- **One provider per portal, around the page content.** Each layout's `<main>` wraps `{children}` in `<ConfirmProvider>`; only pages and their components ask for confirmation, never the layouts, so wrapping the children is enough (a one-line change per layout).
+- **Global CSS, not styled-jsx.** The dialog is portalled to `<body>`; with styled-jsx it would hit the scoping gap of TJ-068c/TJ-068f4. Its classes live in `globals.css`.
+- **Async.** `useConfirm()` returns `(options) => Promise<boolean>`. Every caller is, or becomes, an `async` function and writes `if (!(await confirm({...}))) return;`. Outside a provider it falls back to `window.confirm` so nothing ever proceeds unasked.
+- **Behaviour (1A):** title names the thing, one sentence says what happens, Cancel first, the confirm button last. `tone: "danger"` (permanent deletion or lost work): red button and focus starts on Cancel; otherwise focus starts on the confirm button. Escape, Cancel and a click on the backdrop all answer no. Tab cycles between the two buttons; focus returns to where it was.
+- **Unsaved changes:** `useUnsavedChanges().confirmDiscard` becomes async, takes `ConfirmOptions` and defaults to `{ confirmLabel: "Discard changes", tone: "danger" }`. The browser's own `beforeunload` prompt stays (pages cannot replace it). Its 6 callers and the 2 `window.confirm` calls in `ClinicalAssessment.tsx` move over. `openPage` and `startNew` are only used as `onClick` handlers (checked), so making them async is safe; `closeSoap` is only used as `onClick` on the SOAP popup's overlay and Close button.
+
+**Scope — touch only these (10, one new):** `src/app/globals.css`, `src/app/components/ConfirmDialog.tsx` (new), `src/lib/useUnsavedChanges.ts`, `src/app/admin/layout.tsx`, `src/app/secretary/layout.tsx`, `src/app/doctor/layout.tsx`, `src/app/components/ClinicalAssessment.tsx`, `src/app/admin/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`.
+
+**Do not touch:** the 14 `confirm()` calls of TJ-069b2 (including the Archive toggle in `admin/patients/[id]/page.tsx`); the `beforeunload` listener.
+
+**Instructions** (CRLF; every anchor occurs once at `eeb2780`):
+
+**1. `src/app/globals.css`** — append at the end (after the TJ-069a content):
+```css
+
+/* Confirmations, design 1A (TJ-069b1). Rendered by components/ConfirmDialog.tsx
+   into <body>, so the styles are global. Red (.staff-btn-danger) only when
+   something is deleted for good or unsaved work would be lost. */
+.staff-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--staff-overlay);
+}
+.staff-confirm {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 400px;
+  padding: 1.25rem;
+  background: var(--staff-raised);
+  border: 1px solid var(--staff-border-strong);
+  border-radius: var(--staff-radius-lg);
+  box-shadow: var(--staff-shadow-pop);
+  color: var(--staff-text);
+}
+.staff-confirm-title {
+  margin: 0;
+  font-size: var(--staff-size-md);
+  font-weight: 600;
+}
+.staff-confirm-message {
+  margin: 0.5rem 0 0;
+  color: var(--staff-text-2);
+  font-size: var(--staff-size-base);
+  line-height: 1.5;
+}
+.staff-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+.staff-btn-danger {
+  background: var(--staff-bad-solid);
+  color: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.staff-btn-danger:hover:not(:disabled) {
+  background: var(--staff-bad-solid-hover);
+}
+```
+
+**2. `src/app/components/ConfirmDialog.tsx`** (new), exactly:
+```tsx
+"use client";
+
+// In-app confirmation, design 1A (TJ-069b1). Replaces window.confirm() in the
+// staff portal. <ConfirmProvider> wraps each staff layout's page content; a
+// page calls `const confirm = useConfirm();` and then
+// `if (!(await confirm({ title, message, confirmLabel, tone }))) return;`.
+// Escape, Cancel and a click on the backdrop all answer "no". Focus starts on
+// the confirm button, or on Cancel when tone is "danger", cycles between the
+// two buttons on Tab, and returns where it was afterwards. The styles are
+// global (globals.css, staff section) because the dialog renders into <body>.
+
+import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
+import { createPortal } from "react-dom";
+
+export interface ConfirmOptions {
+    title: string;
+    message?: string;
+    /** The button that says yes. Default "Confirm". */
+    confirmLabel?: string;
+    /** The button that says no. Default "Cancel". */
+    cancelLabel?: string;
+    /** "danger" when something is deleted for good or unsaved work is lost: red button, focus on Cancel. */
+    tone?: "default" | "danger";
+}
+
+type Ask = (options: ConfirmOptions) => Promise<boolean>;
+
+const ConfirmContext = createContext<Ask | null>(null);
+
+/** Ask before acting. Outside a ConfirmProvider it falls back to the browser's box, so nothing proceeds unasked. */
+export function useConfirm(): Ask {
+    const ask = useContext(ConfirmContext);
+    return useCallback<Ask>(
+        (options) => (ask
+            ? ask(options)
+            : Promise.resolve(window.confirm(options.message ? `${options.title}\n\n${options.message}` : options.title))),
+        [ask]
+    );
+}
+
+export function ConfirmProvider({ children }: { children: ReactNode }) {
+    const [pending, setPending] = useState<ConfirmOptions | null>(null);
+    const resolver = useRef<((answer: boolean) => void) | null>(null);
+    const returnFocus = useRef<HTMLElement | null>(null);
+    const dialogRef = useRef<HTMLDivElement>(null);
+    const titleId = useId();
+    const messageId = useId();
+
+    const ask = useCallback<Ask>((options) => new Promise<boolean>((resolve) => {
+        resolver.current?.(false); // a newer question replaces an unanswered one
+        resolver.current = resolve;
+        returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        setPending(options);
+    }), []);
+
+    const answer = useCallback((value: boolean) => {
+        resolver.current?.(value);
+        resolver.current = null;
+        setPending(null);
+        const el = returnFocus.current;
+        returnFocus.current = null;
+        if (el && document.contains(el)) el.focus();
+    }, []);
+
+    // Starting focus: Cancel for anything dangerous, the confirm button otherwise.
+    useEffect(() => {
+        if (!pending) return;
+        const selector = pending.tone === "danger" ? "[data-confirm-cancel]" : "[data-confirm-ok]";
+        dialogRef.current?.querySelector<HTMLButtonElement>(selector)?.focus();
+    }, [pending]);
+
+    // Escape answers no, wherever focus is.
+    useEffect(() => {
+        if (!pending) return;
+        const onKey = (e: globalThis.KeyboardEvent) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                answer(false);
+            }
+        };
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
+    }, [pending, answer]);
+
+    // Tab stays on the dialog's two buttons.
+    const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.key !== "Tab") return;
+        const buttons = Array.from(dialogRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
+        if (buttons.length === 0) return;
+        const i = buttons.indexOf(document.activeElement as HTMLButtonElement);
+        const next = e.shiftKey ? (i <= 0 ? buttons.length - 1 : i - 1) : (i === buttons.length - 1 ? 0 : i + 1);
+        e.preventDefault();
+        buttons[next].focus();
+    };
+
+    return (
+        <ConfirmContext.Provider value={ask}>
+            {children}
+            {pending && createPortal(
+                <div
+                    className="staff-confirm-overlay"
+                    onMouseDown={(e) => { if (e.target === e.currentTarget) answer(false); }}
+                >
+                    <div
+                        ref={dialogRef}
+                        className="staff-confirm"
+                        role="alertdialog"
+                        aria-modal="true"
+                        aria-labelledby={titleId}
+                        aria-describedby={pending.message ? messageId : undefined}
+                        onKeyDown={onKeyDown}
+                    >
+                        <h2 id={titleId} className="staff-confirm-title">{pending.title}</h2>
+                        {pending.message && <p id={messageId} className="staff-confirm-message">{pending.message}</p>}
+                        <div className="staff-confirm-actions">
+                            <button type="button" data-confirm-cancel className="staff-btn staff-btn-secondary" onClick={() => answer(false)}>
+                                {pending.cancelLabel ?? "Cancel"}
+                            </button>
+                            <button
+                                type="button"
+                                data-confirm-ok
+                                className={pending.tone === "danger" ? "staff-btn staff-btn-danger" : "staff-btn staff-btn-primary"}
+                                onClick={() => answer(true)}
+                            >
+                                {pending.confirmLabel ?? "Confirm"}
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+        </ConfirmContext.Provider>
+    );
+}
+```
+
+**3. `src/lib/useUnsavedChanges.ts`**
+1. Replace `import { useEffect, useRef, useCallback } from "react";` with two lines:
+   ```ts
+   import { useEffect, useRef, useCallback } from "react";
+   import { useConfirm, type ConfirmOptions } from "@/app/components/ConfirmDialog";
+   ```
+2. In the doc comment, replace ` * back a \`confirmDiscard()\` the caller must call before any action that would` with ` * back an async \`confirmDiscard()\` the caller must await before any action that would`.
+3. Replace
+   ```ts
+       const confirmDiscard = useCallback(
+           (message: string) => !dirtyRef.current || window.confirm(message),
+           []
+       );
+   ```
+   with
+   ```ts
+       // Asks in the staff portal's own dialog (TJ-069b1); resolves true when
+       // there is nothing to lose or the user chose to discard.
+       const confirm = useConfirm();
+       const confirmDiscard = useCallback(
+           async (options: ConfirmOptions) =>
+               !dirtyRef.current || confirm({ confirmLabel: "Discard changes", tone: "danger", ...options }),
+           [confirm]
+       );
+   ```
+
+**4. The three layouts** — add the import after each file's last import line, and wrap the page content:
+- `src/app/admin/layout.tsx`: after `import { useState, useRef, useEffect } from "react";` insert `import { ConfirmProvider } from "@/app/components/ConfirmDialog";`; replace `            <main className="admin-content">{children}</main>` with `            <main className="admin-content"><ConfirmProvider>{children}</ConfirmProvider></main>`.
+- `src/app/secretary/layout.tsx`: after `import Link from "next/link";` insert the same import; replace `            <main className="main">{children}</main>` with `            <main className="main"><ConfirmProvider>{children}</ConfirmProvider></main>`.
+- `src/app/doctor/layout.tsx`: the same two edits as the secretary layout.
+
+**5. `src/app/components/ClinicalAssessment.tsx`**
+1. After `import { useState, useEffect, useCallback } from "react";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }: ClinicalAssessmentProps) {` insert `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+       const openPage = (intake: Intake) => {
+           if (intake.id === selected) return;
+           if (dirty && !window.confirm("You have unsaved Clinical Assessment edits. Switch pages without saving them?")) return;
+   ```
+   with
+   ```tsx
+       const openPage = async (intake: Intake) => {
+           if (intake.id === selected) return;
+           if (dirty && !(await confirm({ title: "Switch pages without saving?", message: "Your unsaved Clinical Assessment edits will be lost.", confirmLabel: "Discard changes", tone: "danger" }))) return;
+   ```
+4. Replace
+   ```tsx
+       const startNew = () => {
+           if (dirty && !window.confirm("You have unsaved Clinical Assessment edits. Start a new assessment without saving them?")) return;
+   ```
+   with
+   ```tsx
+       const startNew = async () => {
+           if (dirty && !(await confirm({ title: "Start a new assessment without saving?", message: "Your unsaved Clinical Assessment edits will be lost.", confirmLabel: "Discard changes", tone: "danger" }))) return;
+   ```
+
+**6. `src/app/admin/patients/[id]/page.tsx`**
+1. Replace
+   ```tsx
+       const closeSoap = () => {
+           if (!confirmDiscardSoap("You have unsaved SOAP note text. Close without saving?")) return;
+   ```
+   with
+   ```tsx
+       const closeSoap = async () => {
+           if (!(await confirmDiscardSoap({ title: "Close without saving?", message: "Your unsaved SOAP note text will be lost." }))) return;
+   ```
+2. Replace
+   ```tsx
+                       onClick={() => {
+                           if (confirmDiscard("You have unsaved Clinical Assessment edits. Leave without saving?")) {
+   ```
+   with
+   ```tsx
+                       onClick={async () => {
+                           if (await confirmDiscard({ title: "Leave without saving?", message: "Your unsaved Clinical Assessment edits will be lost." })) {
+   ```
+
+**7. `src/app/doctor/patients/[id]/page.tsx`** — the same Back-button replacement as 6.2 (identical text in this file).
+
+**8. `src/app/doctor/session/[id]/page.tsx`**
+1. Replace `        if (!confirmDiscard("Saving the session details will reload this page and discard your unsaved SOAP or Clinical Intake text. Continue?")) return;` with
+   `        if (!(await confirmDiscard({ title: "Save the session details?", message: "Saving reloads this page, so your unsaved SOAP or Clinical Intake text will be lost.", confirmLabel: "Save anyway" }))) return;`
+2. Replace `        if (!confirmDiscard("Changing the session status will reload this page and discard your unsaved SOAP or Clinical Intake text. Continue?")) return;` with
+   `        if (!(await confirmDiscard({ title: "Change the session status?", message: "This reloads the page, so your unsaved SOAP or Clinical Intake text will be lost.", confirmLabel: "Change anyway" }))) return;`
+3. Replace
+   ```tsx
+                   onClick={() => {
+                       if (confirmDiscard("You have unsaved SOAP or Clinical Intake text. Leave without saving?")) {
+   ```
+   with
+   ```tsx
+                   onClick={async () => {
+                       if (await confirmDiscard({ title: "Leave without saving?", message: "Your unsaved SOAP or Clinical Intake text will be lost." })) {
+   ```
+
+**Verification:**
+- `grep -rn "window.confirm" src/app src/lib` prints exactly one line: the fallback in `ConfirmDialog.tsx`.
+- `grep -rn "confirmDiscard(\"" src/app` prints nothing; `grep -c "ConfirmProvider" src/app/admin/layout.tsx src/app/secretary/layout.tsx src/app/doctor/layout.tsx` prints `2` for each.
+- `git diff --stat` against the TJ-069a commit lists exactly the 10 files (1 added).
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+- The planner tests the dialog in the mocked preview: focus, Tab, Escape, backdrop, danger vs default.
+
+**Done when:**
+- [ ] The dialog exists once and is available on every staff page.
+- [ ] Every unsaved-changes prompt in the staff portal uses it; the browser's leave-page prompt is unchanged.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-069b2 — Archive, Restore, Resign, Delete and Remove ask in the dialog
+
+- **Status:** READY
+- **Branch:** `feat/confirm-dialog-everywhere`, cut from the tip of `feat/confirm-dialog`.
+- **Why:** the 14 remaining `confirm()` calls (13 files) move onto the TJ-069b1 dialog, each with wording that names the person or item and says what happens.
+
+**Planning pass:** 2026-11-22, on `master` at `eeb2780`. All 14 calls sit at the top of an `async` handler (checked), so each becomes `if (!(await confirm({...}))) return;`. Where a handler only has an id, the name comes from the page's own list state (`patients`, `doctors`, `secretaries`, `notes`, `reservations`) or from `patient.files`; every lookup falls back to neutral wording if not found. The word "confirm" also appears in three files as label/error text ("Type … to confirm", "…to confirm this change"); that is not an identifier and does not clash. Red (`tone: "danger"`) only for Delete reservation/session/note and Remove file; Archive, Restore and Resign are reversible and use the teal button. Every edit list below was generated and anchor-checked by script (each anchor once).
+
+**Scope — touch only the 13 files listed below.** **Do not touch** anything TJ-069b1 changed, and no other line of these files.
+
+**Instructions:** for each file, (1) add the import after the stated last import line, (2) add `    const confirm = useConfirm();` as the first line of the page component, (3) replace the stated lines. CRLF.
+
+**`src/app/admin/doctors/archived/page.tsx`**
+
+1. After the import line `import Link from "next/link";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function ArchivedDoctorsPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Restore this doctor to the public site?")) return;
+   ```
+   with
+   ```tsx
+           const name = doctors.find((d) => d.id === id)?.name;
+           if (!(await confirm({
+               title: `Restore ${name ?? "this doctor"} to the website?`,
+               message: "Their profile shows on the public Doctors page again.",
+               confirmLabel: "Restore",
+           }))) return;
+   ```
+
+
+**`src/app/admin/doctors/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function DoctorsCmsPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm(`Archive ${doc.name}? This removes them from the public site.`)) return;
+   ```
+   with
+   ```tsx
+           if (!(await confirm({
+               title: `Archive ${doc.name}?`,
+               message: "They are removed from the public website. You can restore them from Archived.",
+               confirmLabel: "Archive",
+           }))) return;
+   ```
+
+
+**`src/app/admin/employees/doctors/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function DoctorsPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Resign this doctor? They move to Archived and can be re-enrolled later.")) return;
+   ```
+   with
+   ```tsx
+           const name = doctors.find((d) => d.id === id)?.name;
+           if (!(await confirm({
+               title: `Resign ${name ?? "this doctor"}?`,
+               message: "They move to Archived and can be re-enrolled later.",
+               confirmLabel: "Resign",
+           }))) return;
+   ```
+
+
+**`src/app/admin/employees/secretaries/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function SecretariesPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Resign this secretary? They move to Archived and can be re-enrolled later.")) return;
+   ```
+   with
+   ```tsx
+           const name = secretaries.find((s) => s.id === id)?.name;
+           if (!(await confirm({
+               title: `Resign ${name ?? "this secretary"}?`,
+               message: "They move to Archived and can be re-enrolled later.",
+               confirmLabel: "Resign",
+           }))) return;
+   ```
+
+
+**`src/app/admin/notes/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function NotesPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Delete this note?")) return;
+   ```
+   with
+   ```tsx
+           const name = notes.find((n) => n.id === id)?.name;
+           if (!(await confirm({
+               title: "Delete this note?",
+               message: `${name ? `"${name}"` : "The note"} is deleted for good. This can't be undone.`,
+               confirmLabel: "Delete",
+               tone: "danger",
+           }))) return;
+   ```
+
+
+**`src/app/admin/page.tsx`**
+
+1. After the import line `import { Plus } from "lucide-react";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function AdminDashboard() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Delete this reservation?")) return;
+   ```
+   with
+   ```tsx
+           const patientName = reservations.find((r) => r.id === id)?.patient.name;
+           if (!(await confirm({
+               title: "Delete this reservation?",
+               message: `${patientName ? `${patientName}'s session` : "The session"} is removed from the calendar for good. This can't be undone.`,
+               confirmLabel: "Delete",
+               tone: "danger",
+           }))) return;
+   ```
+
+
+**`src/app/admin/patients/[id]/page.tsx`**
+
+1. After the import line `import RowMenu from "@/app/components/RowMenu";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function PatientProfilePage({ params }: { params: Promise<{ id: string }> }) {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           const action = patient?.archived ? "restore" : "archive";
+           if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} this patient?`)) return;
+   ```
+   with
+   ```tsx
+           const name = patient?.name ?? "this patient";
+           if (!(await confirm(patient?.archived
+               ? { title: `Restore ${name}?`, message: "They move back to the active patient list.", confirmLabel: "Restore" }
+               : { title: `Archive ${name}?`, message: "They move to Archived Patients. Their file stays, and you can restore them any time.", confirmLabel: "Archive" }
+           ))) return;
+   ```
+
+
+**`src/app/admin/patients/archived/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function ArchivedPatientsPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Restore this patient?")) return;
+   ```
+   with
+   ```tsx
+           const name = patients.find((p) => p.id === id)?.name;
+           if (!(await confirm({
+               title: `Restore ${name ?? "this patient"}?`,
+               message: "They move back to the active patient list.",
+               confirmLabel: "Restore",
+           }))) return;
+   ```
+
+
+**`src/app/admin/patients/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function PatientsPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Archive this patient?")) return;
+   ```
+   with
+   ```tsx
+           const name = patients.find((p) => p.id === id)?.name;
+           if (!(await confirm({
+               title: `Archive ${name ?? "this patient"}?`,
+               message: "They move to Archived Patients. Their file stays, and you can restore them any time.",
+               confirmLabel: "Archive",
+           }))) return;
+   ```
+
+
+**`src/app/doctor/page.tsx`**
+
+1. After the import line `import { SCHEDULE_OPEN_LABEL } from "@/lib/clinicHours";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function DoctorDashboard() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Delete this session?")) return;
+   ```
+   with
+   ```tsx
+           const patientName = reservations.find((r) => r.id === id)?.patient.name;
+           if (!(await confirm({
+               title: "Delete this session?",
+               message: `${patientName ? `${patientName}'s session` : "The session"} is removed from the calendar for good. This can't be undone.`,
+               confirmLabel: "Delete",
+               tone: "danger",
+           }))) return;
+   ```
+
+
+**`src/app/secretary/page.tsx`**
+
+1. After the import line `import { Plus } from "lucide-react";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function SecretaryDashboard() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Delete this reservation?")) return;
+   ```
+   with
+   ```tsx
+           const patientName = reservations.find((r) => r.id === id)?.patient.name;
+           if (!(await confirm({
+               title: "Delete this reservation?",
+               message: `${patientName ? `${patientName}'s session` : "The session"} is removed from the calendar for good. This can't be undone.`,
+               confirmLabel: "Delete",
+               tone: "danger",
+           }))) return;
+   ```
+
+
+**`src/app/secretary/patients/[id]/page.tsx`**
+
+1. After the import line `import RowMenu from "@/app/components/RowMenu";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function SecretaryPatientProfile({ params }: { params: Promise<{ id: string }> }) {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           const action = patient?.archived ? "restore" : "archive";
+           if (!confirm(`Are you sure you want to ${action} this patient?`)) return;
+   ```
+   with
+   ```tsx
+           const name = patient?.name ?? "this patient";
+           if (!(await confirm(patient?.archived
+               ? { title: `Restore ${name}?`, message: "They move back to the active patient list.", confirmLabel: "Restore" }
+               : { title: `Archive ${name}?`, message: "They move to Archived Patients. Their file stays, and you can restore them any time.", confirmLabel: "Archive" }
+           ))) return;
+   ```
+
+
+**`src/app/secretary/patients/archived/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import { useConfirm } from "@/app/components/ConfirmDialog";`.
+2. After `export default function SecretaryArchivedPatientsPage() {` insert the line `    const confirm = useConfirm();`.
+3. Replace
+   ```tsx
+           if (!confirm("Restore this patient?")) return;
+   ```
+   with
+   ```tsx
+           const name = patients.find((p) => p.id === id)?.name;
+           if (!(await confirm({
+               title: `Restore ${name ?? "this patient"}?`,
+               message: "They move back to the active patient list.",
+               confirmLabel: "Restore",
+           }))) return;
+   ```
+
+
+**`src/app/secretary/patients/[id]/page.tsx`, second site** (same file; no second import or hook line)
+
+4. Replace
+   ```tsx
+           if (!confirm("Remove this file?")) return;
+   ```
+   with
+   ```tsx
+           const fileName = patient?.files.find((f) => f.id === fileId)?.fileName;
+           if (!(await confirm({
+               title: "Remove this file?",
+               message: `${fileName ? `"${fileName}"` : "The file"} is removed from ${patient?.name ?? "this patient"}'s documents for good. This can't be undone.`,
+               confirmLabel: "Remove",
+               tone: "danger",
+           }))) return;
+   ```
+
+**Verification:**
+- `grep -rnE "(^|[^.a-zA-Z])confirm\(\"|(^|[^.a-zA-Z])confirm\(\`" src/app/admin src/app/secretary src/app/doctor src/app/components` prints nothing (no old-style call is left).
+- `grep -rn "await confirm(" src/app/admin src/app/secretary src/app/doctor | wc -l` prints `14`; `grep -rln "useConfirm()" src/app/admin src/app/secretary src/app/doctor | wc -l` prints `13` (the 13 files here; `ClinicalAssessment.tsx` is under `components`).
+- `git diff --stat` against the TJ-069b1 commit lists exactly the 13 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] No staff page calls the browser's `confirm()`; each of the 14 asks in the dialog with the stated wording and tone.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-069c — Secretary Duplicate gets a date-and-time popup; the shared popup and field styles
+
+- **Status:** READY
+- **Branch:** `feat/secretary-duplicate-popup`, cut from the tip of `feat/confirm-dialog-everywhere`.
+- **Why:** decision P1-6, and the first user of decision P1-2 = **2B**. The secretary dashboard's Duplicate asks for a typed `YYYY-MM-DD` date in a browser `prompt()` and ignores a failed request. It gets admin's flow (date, optional time) in the shared popup, with an error message. The shared `.staff-modal-*` and `.staff-field` classes are defined here; TJ-069d moves the other popups onto them.
+
+**Planning pass:** 2026-11-22, on `master` at `eeb2780`. `POST /api/reservations/[id]/duplicate` takes `{ sessionDate, sessionTime? }`, answers 400/403/404 with `{ error }`, and keeps the original time when `sessionTime` is empty (read). The secretary page has no popup CSS left (TJ-068a removed it), so the global classes are all it needs. Admin's own duplicate popup keeps its current look until TJ-069d. Escape closes the popup (keydown on the dialog, which holds focus via `autoFocus` on the date field).
+
+**Scope — touch only:** `src/app/globals.css`, `src/app/secretary/page.tsx`.
+
+**Instructions** (CRLF; anchors once at `eeb2780`):
+
+**1. `src/app/globals.css`** — append at the end:
+```css
+
+/* Popups, design 2B (TJ-069c; TJ-069d moves every staff popup onto these).
+   A header bar with the title and a close button, a body that scrolls on its
+   own, and a footer bar for the actions. */
+.staff-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--staff-overlay);
+  backdrop-filter: blur(4px);
+}
+.staff-modal {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 440px;
+  max-height: min(85vh, 760px);
+  background: var(--staff-raised);
+  border: 1px solid var(--staff-border-strong);
+  border-radius: var(--staff-radius-lg);
+  box-shadow: var(--staff-shadow-pop);
+  color: var(--staff-text);
+}
+.staff-modal-wide {
+  max-width: 560px;
+}
+.staff-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--staff-border);
+}
+.staff-modal-title {
+  margin: 0;
+  font-size: var(--staff-size-lg);
+  font-weight: 600;
+}
+.staff-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--staff-radius-md);
+  background: transparent;
+  color: var(--staff-muted);
+  cursor: pointer;
+}
+.staff-modal-close:hover:not(:disabled) {
+  background: var(--staff-surface-2);
+  color: var(--staff-text);
+}
+.staff-modal-close:focus-visible {
+  outline: 2px solid var(--staff-focus);
+  outline-offset: 2px;
+}
+.staff-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem 1.1rem;
+}
+.staff-modal-text {
+  margin: 0;
+  color: var(--staff-text-2);
+  font-size: var(--staff-size-base);
+}
+.staff-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.8rem 1.1rem;
+  border-top: 1px solid var(--staff-border);
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 0 0 var(--staff-radius-lg) var(--staff-radius-lg);
+}
+
+/* Form fields (TJ-069c). */
+.staff-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.staff-field > label {
+  font-size: var(--staff-size-sm);
+  font-weight: 500;
+  color: var(--staff-muted);
+}
+.staff-field input,
+.staff-field select,
+.staff-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 36px;
+  padding: 0.45rem 0.7rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--staff-border-strong);
+  border-radius: var(--staff-radius-md);
+  color: var(--staff-text);
+  color-scheme: dark;
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+  outline: none;
+}
+.staff-field textarea {
+  resize: vertical;
+}
+.staff-field input:focus,
+.staff-field select:focus,
+.staff-field textarea:focus {
+  border-color: var(--staff-accent);
+  box-shadow: 0 0 0 3px rgba(76, 175, 147, 0.18);
+}
+.staff-field select option {
+  background: var(--staff-bg);
+}
+.staff-field-hint {
+  font-size: var(--staff-size-xs);
+  color: var(--staff-faint);
+}
+.staff-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+.staff-form-error {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: var(--staff-radius-md);
+  background: var(--staff-bad-soft);
+  color: var(--staff-bad);
+  font-size: var(--staff-size-sm);
+}
+@media (max-width: 480px) {
+  .staff-field-row {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**2. `src/app/secretary/page.tsx`**
+1. Replace `import { Plus } from "lucide-react";` with `import { CalendarPlus, Plus, X } from "lucide-react";`.
+2. After `    const [statusError, setStatusError] = useState("");` insert:
+   ```tsx
+       // Duplicate popup (TJ-069c). It replaces a browser prompt that asked for
+       // a typed YYYY-MM-DD date and ignored a failed request.
+       const [dupId, setDupId] = useState<number | null>(null);
+       const [dupDate, setDupDate] = useState("");
+       const [dupTime, setDupTime] = useState("");
+       const [dupSaving, setDupSaving] = useState(false);
+       const [dupError, setDupError] = useState("");
+   ```
+3. Replace the whole `handleDuplicate` (from `    const handleDuplicate = async (id: number) => {` through its closing `    };`, 10 lines; it contains `prompt("Duplicate to which date? (YYYY-MM-DD)")`) with:
+   ```tsx
+       const handleDuplicate = (id: number) => {
+           setDupId(id);
+           setDupDate("");
+           setDupTime("");
+           setDupError("");
+       };
+
+       const submitDuplicate = async () => {
+           if (dupId === null || !dupDate) return;
+           setDupSaving(true);
+           setDupError("");
+           let res: Response;
+           try {
+               res = await fetch(`/api/reservations/${dupId}/duplicate`, {
+                   method: "POST",
+                   headers: { "Content-Type": "application/json" },
+                   body: JSON.stringify({ sessionDate: dupDate, sessionTime: dupTime || undefined }),
+               });
+           } catch {
+               setDupSaving(false);
+               setDupError("Could not reach the server. Check the connection and try again.");
+               return;
+           }
+           setDupSaving(false);
+           if (!res.ok) {
+               const data = await res.json().catch(() => ({}));
+               setDupError(data.error || "Could not duplicate the session. Try again.");
+               return;
+           }
+           setDupId(null);
+           fetchReservations();
+       };
+   ```
+4. Replace
+   ```tsx
+       return (
+           <div>
+               {statusError && (
+   ```
+   with
+   ```tsx
+       const dupReservation = dupId !== null ? reservations.find((r) => r.id === dupId) : undefined;
+
+       return (
+           <div>
+               {statusError && (
+   ```
+5. Directly before the line `            <style jsx>{\`` insert:
+   ```tsx
+               {/* Duplicate popup (TJ-069c, design 2B) */}
+               {dupId !== null && (
+                   <div
+                       className="staff-modal-overlay"
+                       onMouseDown={(e) => { if (e.target === e.currentTarget && !dupSaving) setDupId(null); }}
+                   >
+                       <div
+                           className="staff-modal"
+                           role="dialog"
+                           aria-modal="true"
+                           aria-labelledby="dup-title"
+                           onKeyDown={(e) => { if (e.key === "Escape" && !dupSaving) setDupId(null); }}
+                       >
+                           <div className="staff-modal-head">
+                               <h2 id="dup-title" className="staff-modal-title">Duplicate session</h2>
+                               <button type="button" className="staff-modal-close" aria-label="Close" onClick={() => setDupId(null)} disabled={dupSaving}>
+                                   <X size={16} aria-hidden="true" />
+                               </button>
+                           </div>
+                           <div className="staff-modal-body">
+                               {dupReservation && (
+                                   <p className="staff-modal-text">
+                                       {dupReservation.patient.name} with {dupReservation.doctor?.name ?? dupReservation.doctorNameSnapshot ?? "no doctor"}
+                                   </p>
+                               )}
+                               {dupError && <div className="staff-form-error" role="alert">{dupError}</div>}
+                               <div className="staff-field-row">
+                                   <div className="staff-field">
+                                       <label htmlFor="dup-date">New date</label>
+                                       <input id="dup-date" type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} autoFocus />
+                                   </div>
+                                   <div className="staff-field">
+                                       <label htmlFor="dup-time">New time</label>
+                                       <input id="dup-time" type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
+                                       <span className="staff-field-hint">Leave empty to keep the same time</span>
+                                   </div>
+                               </div>
+                           </div>
+                           <div className="staff-modal-foot">
+                               <button type="button" className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)} disabled={dupSaving}>Cancel</button>
+                               <button type="button" className="staff-btn staff-btn-primary" aria-busy={dupSaving} onClick={submitDuplicate} disabled={!dupDate || dupSaving}>
+                                   {!dupSaving && <CalendarPlus size={15} aria-hidden="true" />}
+                                   {dupSaving ? "Duplicating…" : "Duplicate"}
+                               </button>
+                           </div>
+                       </div>
+                   </div>
+               )}
+
+   ```
+
+**Verification:**
+- `grep -rn "prompt(" src/app` prints nothing.
+- `grep -c "staff-modal" src/app/secretary/page.tsx` prints `7` or more; `grep -c "^\.staff-modal\|^\.staff-field\|^\.staff-form-error" src/app/globals.css` is at least 12.
+- `git diff --stat` against the TJ-069b2 commit lists exactly the 2 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+- The planner tests the popup in the mocked preview, including a refused request (the preview's mock answers every write with 403 and an error message).
+
+**Done when:**
+- [ ] The secretary's Duplicate opens the popup with date and optional time, duplicates on submit, and shows the server's message if it fails.
+- [ ] The shared popup and field classes exist once in `globals.css`.
+- [ ] `tsc` and the build exit 0.
 
 ### TJ-070 — Staff portal refresh, phase 2: one layout for every role
 
