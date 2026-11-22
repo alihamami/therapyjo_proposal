@@ -152,8 +152,8 @@ export default function ArchivedDoctorsPage() {
             )}
 
             <style jsx>{`
-                :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
-                :global(.btn-back:hover) { color: #fff; }
+                .staff-page-header :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
+                .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .staff-table { min-width: 640px; }
                 .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
                 .btn-restore {

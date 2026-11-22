@@ -111,13 +111,13 @@ export default function ArchivedPatientsPage() {
             )}
 
             <style jsx>{`
-                :global(.btn-back) {
+                .staff-page-header :global(.btn-back) {
                     color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
                     transition: color 0.15s;
                 }
-                :global(.btn-back:hover) { color: #fff; }
+                .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .staff-table { min-width: 600px; }
-                :global(.btn-sm) {
+                .btn-sm {
                     padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
@@ -126,7 +126,7 @@ export default function ArchivedPatientsPage() {
                 .btn-restore:hover { background: rgba(96,165,250,0.22); }
 
                 @media (max-width: 560px) {
-                    :global(.btn-sm) { padding: 0.42rem 0.75rem; }
+                    .btn-sm { padding: 0.42rem 0.75rem; }
                 }
             `}</style>
         </div>

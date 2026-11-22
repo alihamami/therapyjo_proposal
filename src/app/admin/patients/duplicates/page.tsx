@@ -109,11 +109,11 @@ export default function DuplicatePatientsPage() {
             )}
 
             <style jsx>{`
-                :global(.btn-back) {
+                .staff-page-header :global(.btn-back) {
                     color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
                     transition: color 0.15s;
                 }
-                :global(.btn-back:hover) { color: #fff; }
+                .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .groups { display: flex; flex-direction: column; gap: 1rem; }
                 .dupe-group {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
@@ -147,16 +147,16 @@ export default function DuplicatePatientsPage() {
                 }
                 .table-scroll { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
                 .staff-table { min-width: 640px; }
-                :global(.btn-sm) {
+                .groups :global(.btn-sm) {
                     padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
                 }
-                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
+                .groups :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
+                .groups :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
 
                 @media (max-width: 560px) {
-                    :global(.btn-sm) { padding: 0.42rem 0.75rem; }
+                    .groups :global(.btn-sm) { padding: 0.42rem 0.75rem; }
                 }
             `}</style>
         </div>
