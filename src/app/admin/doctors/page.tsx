@@ -5,6 +5,7 @@ import { Archive, Eye, EyeOff, Pencil, Plus } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface DoctorProfile {
     id: string;
@@ -229,69 +230,65 @@ export default function DoctorsCmsPage() {
             </div>
 
             {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-                        <h2>{editing ? "Edit Doctor" : "Add Doctor"}</h2>
-
-                        <div className="modal-top-row">
-                            <div className="photo-drop" onClick={() => fileInputRef.current?.click()}>
-                                {photoPreview ? (
-                                    <img src={photoPreview} alt="Preview" className="photo-preview-img" />
-                                ) : (
-                                    <span className="drop-hint">Photo</span>
-                                )}
+                <StaffModal
+                    title={editing ? "Edit Doctor" : "Add Doctor"}
+                    onClose={() => setShowModal(false)}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                        <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving || !form.name || !form.title}>
+                            {saving ? "Saving…" : "Save"}
+                        </button>
+                    </>}
+                >
+                    <div className="modal-top-row">
+                        <div className="photo-drop" onClick={() => fileInputRef.current?.click()}>
+                            {photoPreview ? (
+                                <img src={photoPreview} alt="Preview" className="photo-preview-img" />
+                            ) : (
+                                <span className="drop-hint">Photo</span>
+                            )}
+                        </div>
+                        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePhotoChange} />
+                        <div className="modal-top-fields">
+                            <div className="staff-field">
+                                <label htmlFor="doc-name">Name *</label>
+                                <input id="doc-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoFocus />
                             </div>
-                            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePhotoChange} />
-                            <div className="modal-top-fields">
-                                <div className="field">
-                                    <label>Name *</label>
-                                    <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                                </div>
-                                <div className="field">
-                                    <label>Title *</label>
-                                    <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Physiotherapist" />
-                                </div>
+                            <div className="staff-field">
+                                <label htmlFor="doc-title">Title *</label>
+                                <input id="doc-title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Physiotherapist" />
                             </div>
-                        </div>
-
-                        <div className="field">
-                            <label>Specialty</label>
-                            <input value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder="Manual Therapy & Sports Rehab" />
-                        </div>
-                        <div className="field">
-                            <label>Bio</label>
-                            <textarea rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
-                        </div>
-                        <div className="field-row">
-                            <div className="field">
-                                <label>Contact</label>
-                                <input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} />
-                            </div>
-                            <div className="field">
-                                <label>Order</label>
-                                <input type="number" min={1} value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} />
-                            </div>
-                        </div>
-
-                        <div className="field">
-                            <label>Linked login account</label>
-                            <select value={form.userId} onChange={(e) => setForm({ ...form, userId: e.target.value })}>
-                                <option value="">— None (staff-managed only) —</option>
-                                {accounts.map((a) => (
-                                    <option key={a.id} value={a.id}>{a.name}</option>
-                                ))}
-                            </select>
-                            <span className="field-hint">Lets this doctor submit self-edits from their own dashboard, subject to approval.</span>
-                        </div>
-
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-                            <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving || !form.name || !form.title}>
-                                {saving ? "Saving…" : "Save"}
-                            </button>
                         </div>
                     </div>
-                </div>
+                    <div className="staff-field">
+                        <label htmlFor="doc-specialty">Specialty</label>
+                        <input id="doc-specialty" value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder="Manual Therapy & Sports Rehab" />
+                    </div>
+                    <div className="staff-field">
+                        <label htmlFor="doc-bio">Bio</label>
+                        <textarea id="doc-bio" rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
+                    </div>
+                    <div className="staff-field-row">
+                        <div className="staff-field">
+                            <label htmlFor="doc-contact">Contact</label>
+                            <input id="doc-contact" value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} />
+                        </div>
+                        <div className="staff-field">
+                            <label htmlFor="doc-order">Order</label>
+                            <input id="doc-order" type="number" min={1} value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} />
+                        </div>
+                    </div>
+                    <div className="staff-field">
+                        <label htmlFor="doc-account">Linked login account</label>
+                        <select id="doc-account" value={form.userId} onChange={(e) => setForm({ ...form, userId: e.target.value })}>
+                            <option value="">— None (staff-managed only) —</option>
+                            {accounts.map((a) => (
+                                <option key={a.id} value={a.id}>{a.name}</option>
+                            ))}
+                        </select>
+                        <span className="staff-field-hint">Lets this doctor submit self-edits from their own dashboard, subject to approval.</span>
+                    </div>
+                </StaffModal>
             )}
 
             {toast && <div className="toast">✓ {toast}</div>}
@@ -337,17 +334,6 @@ export default function DoctorsCmsPage() {
                 .card-body h3 { font-size: 0.98rem; font-weight: 700; margin: 0 0 0.15rem; }
                 .doc-title { font-size: 0.8rem; color: #6ec4ab; margin: 0; }
 
-                .modal-overlay {
-                    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000; backdrop-filter: blur(4px);
-                }
-                .modal-card {
-                    background: #243b44; border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: 14px; padding: 1.75rem; width: 100%; max-width: 520px;
-                    max-height: 90vh; overflow-y: auto;
-                }
-                .modal-card h2 { font-size: 1.2rem; margin: 0 0 1.25rem; font-weight: 600; }
                 .modal-top-row { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
                 .photo-drop {
                     width: 100px; height: 100px; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.12);
@@ -359,19 +345,7 @@ export default function DoctorsCmsPage() {
                 .photo-preview-img { width: 100%; height: 100%; object-fit: cover; }
                 .modal-top-fields { flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
 
-                .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.9rem; }
-                .field label { font-size: 0.78rem; color: rgba(255,255,255,0.55); font-weight: 500; }
-                .field input, .field textarea, .field select {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px; padding: 0.65rem 0.85rem; color: #fff; font-size: 0.9rem;
-                    outline: none; font-family: inherit; resize: vertical;
-                }
-                .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--primary, #4CAF93); }
-                .field select option { background: #243b44; }
-                .field-hint { font-size: 0.74rem; color: rgba(255,255,255,0.35); }
-                .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
 
                 .toast {
                     position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1300;
@@ -380,11 +354,8 @@ export default function DoctorsCmsPage() {
                 }
 
                 @media (max-width: 560px) {
-                    .modal-overlay { padding: 1rem; }
-                    .modal-card { padding: 1.25rem; }
                     .modal-top-row { flex-direction: column; align-items: center; text-align: center; }
                     .modal-top-fields { width: 100%; }
-                    .field-row { grid-template-columns: 1fr; }
                     .toast { left: 1rem; right: 1rem; bottom: 1rem; }
                 }
             `}</style>

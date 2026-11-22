@@ -2217,3 +2217,13 @@ button.staff-row-name {
     align-items: flex-end;
   }
 }
+/* Danger button states (TJ-069d2): dimmed until the typed confirmation
+   matches; full colour with the spinner while deleting. */
+.staff-btn-danger:disabled {
+  opacity: 0.5;
+  box-shadow: none;
+}
+.staff-btn-danger[aria-busy="true"]:disabled {
+  opacity: 1;
+  cursor: progress;
+}

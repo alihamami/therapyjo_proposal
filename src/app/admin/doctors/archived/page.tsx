@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface DoctorProfile {
     id: string;
@@ -112,34 +113,38 @@ export default function ArchivedDoctorsPage() {
             </div>
 
             {deleteTarget && (
-                <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-                    <div className="modal-card modal-narrow" onClick={(e) => e.stopPropagation()}>
-                        <h2>Delete {deleteTarget.name}?</h2>
-                        <p className="delete-warning">
-                            This permanently removes the public profile and its photo, and cannot be undone.
-                            It does not touch the doctor&apos;s employee account, reservations, or notes.
-                        </p>
-                        {deleteError && <div className="error-msg" role="alert">{deleteError}</div>}
-                        <div className="form-group">
-                            <label>Type <strong>{deleteTarget.name}</strong> to confirm</label>
-                            <input
-                                value={deleteConfirm}
-                                onChange={(e) => setDeleteConfirm(e.target.value)}
-                                autoFocus
-                            />
-                        </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)}>Cancel</button>
-                            <button
-                                className="btn-danger"
-                                onClick={handleHardDelete}
-                                disabled={deleting || deleteConfirm !== deleteTarget.name}
-                            >
-                                {deleting ? "Deleting…" : "Delete permanently"}
-                            </button>
-                        </div>
+                <StaffModal
+                    title={`Delete ${deleteTarget.name}?`}
+                    onClose={() => setDeleteTarget(null)}
+                    closeDisabled={deleting}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+                        <button
+                            className="staff-btn staff-btn-danger"
+                            aria-busy={deleting}
+                            onClick={handleHardDelete}
+                            disabled={deleting || deleteConfirm !== deleteTarget.name}
+                        >
+                            {deleting ? "Deleting…" : "Delete permanently"}
+                        </button>
+                    </>}
+                >
+                    <p className="staff-modal-text">
+                        This permanently removes the public profile and its photo, and cannot be undone.
+                        It does not touch the doctor&apos;s employee account, reservations, or notes.
+                    </p>
+                    {deleteError && <div className="staff-form-error" role="alert">{deleteError}</div>}
+                    <div className="staff-field">
+                        <label htmlFor="delete-confirm">Type <strong>{deleteTarget.name}</strong> to confirm</label>
+                        <input
+                            id="delete-confirm"
+                            value={deleteConfirm}
+                            onChange={(e) => setDeleteConfirm(e.target.value)}
+                            autoComplete="off"
+                            autoFocus
+                        />
                     </div>
-                </div>
+                </StaffModal>
             )}
 
             <style jsx>{`
@@ -180,44 +185,10 @@ export default function ArchivedDoctorsPage() {
                     cursor: pointer; font-weight: 500; font-family: inherit;
                 }
                 .btn-delete:hover { background: rgba(239,68,68,0.25); }
-                .modal-overlay {
-                    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000; backdrop-filter: blur(4px);
-                }
-                .modal-card {
-                    background: #1e293b; border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 16px; padding: 2rem; width: 100%; max-width: 420px;
-                }
-                .modal-card h2 { font-size: 1.3rem; margin-bottom: 1rem; font-weight: 600; }
-                .delete-warning { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; line-height: 1.5; }
-                .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-                .form-group label { font-size: 0.8rem; color: rgba(255,255,255,0.6); font-weight: 500; }
-                .form-group input {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px; padding: 0.65rem 0.8rem; color: #fff;
-                    font-size: 0.9rem; outline: none; font-family: inherit; width: 100%;
-                }
-                .form-group input:focus { border-color: #6ee7b7; }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
-                .btn-danger {
-                    background: #dc2626; color: #fff; border: none; border-radius: 10px;
-                    padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600;
-                    cursor: pointer; font-family: inherit;
-                }
-                .btn-danger:hover:not(:disabled) { background: #b91c1c; }
-                .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
-                .error-msg {
-                    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
-                    color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: 6px;
-                    font-size: 0.82rem; margin-bottom: 0.75rem;
-                }
 
                 @media (max-width: 560px) {
                     .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
                     .btn-restore, .btn-delete { padding: 0.45rem 0.75rem; }
-                    .modal-overlay { padding: 1rem; }
-                    .modal-card { padding: 1.25rem; max-height: 85vh; overflow-y: auto; }
                 }
             `}</style>
         </div>

@@ -8,6 +8,7 @@ import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-rea
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffModal from "@/app/components/StaffModal";
 
 interface Secretary {
     id: string;
@@ -557,34 +558,38 @@ export default function SecretariesPage() {
             )}
 
             {deleteTarget && (
-                <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-                    <div className="modal-card modal-narrow" onClick={(e) => e.stopPropagation()}>
-                        <h2>Delete {deleteTarget.name}?</h2>
-                        <p className="delete-warning">
-                            This permanently removes the account and cannot be undone. It is refused if
-                            this secretary has any reservations, notes, or a linked public profile.
-                        </p>
-                        {deleteError && <div className="error-msg" role="alert">{deleteError}</div>}
-                        <div className="form-group">
-                            <label>Type <strong>{deleteTarget.name}</strong> to confirm</label>
-                            <input
-                                value={deleteConfirm}
-                                onChange={(e) => setDeleteConfirm(e.target.value)}
-                                autoFocus
-                            />
-                        </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)}>Cancel</button>
-                            <button
-                                className="btn-danger"
-                                onClick={handleHardDelete}
-                                disabled={deleting || deleteConfirm !== deleteTarget.name}
-                            >
-                                {deleting ? "Deleting…" : "Delete permanently"}
-                            </button>
-                        </div>
+                <StaffModal
+                    title={`Delete ${deleteTarget.name}?`}
+                    onClose={() => setDeleteTarget(null)}
+                    closeDisabled={deleting}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+                        <button
+                            className="staff-btn staff-btn-danger"
+                            aria-busy={deleting}
+                            onClick={handleHardDelete}
+                            disabled={deleting || deleteConfirm !== deleteTarget.name}
+                        >
+                            {deleting ? "Deleting…" : "Delete permanently"}
+                        </button>
+                    </>}
+                >
+                    <p className="staff-modal-text">
+                        This permanently removes the account and cannot be undone. It is refused if
+                        this secretary has any reservations, notes, or a linked public profile.
+                    </p>
+                    {deleteError && <div className="staff-form-error" role="alert">{deleteError}</div>}
+                    <div className="staff-field">
+                        <label htmlFor="delete-confirm">Type <strong>{deleteTarget.name}</strong> to confirm</label>
+                        <input
+                            id="delete-confirm"
+                            value={deleteConfirm}
+                            onChange={(e) => setDeleteConfirm(e.target.value)}
+                            autoComplete="off"
+                            autoFocus
+                        />
                     </div>
-                </div>
+                </StaffModal>
             )}
 
             <style jsx>{`
@@ -671,15 +676,6 @@ export default function SecretariesPage() {
         .hours-row input { flex: 1 1 9.5rem; min-width: 0; }
         .hours-sep { font-size: 0.8rem; color: rgba(255,255,255,0.4); flex-shrink: 0; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
-        .modal-narrow { max-width: 420px; }
-        .delete-warning { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; line-height: 1.5; }
-        .btn-danger {
-          background: #dc2626; color: #fff; border: none; border-radius: 10px;
-          padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600;
-          cursor: pointer; font-family: inherit;
-        }
-        .btn-danger:hover:not(:disabled) { background: #b91c1c; }
-        .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
         .error-msg {
           background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
           color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);

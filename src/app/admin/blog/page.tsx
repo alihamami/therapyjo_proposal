@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Archive, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
+import StaffModal from "@/app/components/StaffModal";
 
 interface BlogPost {
     id: string;
@@ -183,41 +184,45 @@ export default function BlogListPage() {
             </div>
 
             {deleteTarget && (
-                <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-                    <div className="modal-card modal-narrow" onClick={(e) => e.stopPropagation()}>
-                        <h2>Delete this post?</h2>
-                        <p className="delete-warning">
-                            <strong>{deleteTarget.title || "(untitled)"}</strong> will be removed permanently.
-                            This cannot be undone.
+                <StaffModal
+                    title={`Delete this post?`}
+                    onClose={() => setDeleteTarget(null)}
+                    closeDisabled={deleting}
+                    footer={<>
+                        <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+                        <button
+                            className="staff-btn staff-btn-danger"
+                            aria-busy={deleting}
+                            onClick={handleHardDelete}
+                            disabled={deleting || deleteConfirm !== "DELETE"}
+                        >
+                            {deleting ? "Deleting…" : "Delete permanently"}
+                        </button>
+                    </>}
+                >
+                    <p className="staff-modal-text">
+                        <strong>{deleteTarget.title || "(untitled)"}</strong> will be removed permanently.
+                        This cannot be undone.
+                    </p>
+                    {deleteTarget.linked && (
+                        <p className="staff-modal-text">
+                            Its {deleteTarget.linked.lang === "AR" ? "Arabic" : "English"} translation is
+                            <strong> kept</strong>, and keeps its own status — but the two stop being linked,
+                            and that cannot be undone either.
                         </p>
-                        {deleteTarget.linked && (
-                            <p className="delete-warning">
-                                Its {deleteTarget.linked.lang === "AR" ? "Arabic" : "English"} translation is
-                                <strong> kept</strong>, and keeps its own status — but the two stop being linked,
-                                and that cannot be undone either.
-                            </p>
-                        )}
-                        {deleteError && <div className="error-msg" role="alert">{deleteError}</div>}
-                        <div className="form-group">
-                            <label>Type <strong>DELETE</strong> to confirm</label>
-                            <input
-                                value={deleteConfirm}
-                                onChange={(e) => setDeleteConfirm(e.target.value)}
-                                autoFocus
-                            />
-                        </div>
-                        <div className="modal-actions">
-                            <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)}>Cancel</button>
-                            <button
-                                className="btn-danger"
-                                onClick={handleHardDelete}
-                                disabled={deleting || deleteConfirm !== "DELETE"}
-                            >
-                                {deleting ? "Deleting…" : "Delete permanently"}
-                            </button>
-                        </div>
+                    )}
+                    {deleteError && <div className="staff-form-error" role="alert">{deleteError}</div>}
+                    <div className="staff-field">
+                        <label htmlFor="delete-confirm">Type <strong>DELETE</strong> to confirm</label>
+                        <input
+                            id="delete-confirm"
+                            value={deleteConfirm}
+                            onChange={(e) => setDeleteConfirm(e.target.value)}
+                            autoComplete="off"
+                            autoFocus
+                        />
                     </div>
-                </div>
+                </StaffModal>
             )}
 
             <style jsx>{`
@@ -267,46 +272,11 @@ export default function BlogListPage() {
                 .btn-sm { padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
                 .btn-restore { background: rgba(16,185,129,0.15); color: #6ee7b7; }
                 .btn-restore:hover { background: rgba(16,185,129,0.25); }
-                .btn-danger {
-                    background: #dc2626; color: #fff; border: none; border-radius: 8px;
-                    padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600;
-                    cursor: pointer; font-family: inherit;
-                }
-                .btn-danger:hover:not(:disabled) { background: #b91c1c; }
-                .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
-                .modal-overlay {
-                    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000; backdrop-filter: blur(4px); padding: 1rem;
-                }
-                .modal-card {
-                    background: #1e293b; border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 16px; padding: 2rem; width: 100%; max-width: 560px;
-                    max-height: 90vh; overflow-y: auto;
-                }
-                .modal-card h2 { font-size: 1.3rem; margin-bottom: 1rem; font-weight: 600; }
-                .modal-narrow { max-width: 420px; }
-                .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
-                .delete-warning { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0 0 0.75rem; line-height: 1.5; }
-                .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-                .form-group label { font-size: 0.8rem; color: rgba(255,255,255,0.6); font-weight: 500; }
-                .form-group input {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px; padding: 0.65rem 0.8rem; color: #fff; font-size: 0.9rem;
-                    outline: none; font-family: inherit;
-                }
-                .form-group input:focus { border-color: #6ee7b7; }
-                .error-msg {
-                    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
-                    color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: 4px;
-                    font-size: 0.82rem; margin-bottom: 0.75rem;
-                }
                 .empty-state { text-align: center; color: rgba(255,255,255,0.35); padding: 2rem !important; }
 
                 @media (max-width: 560px) {
                     .page-header { flex-direction: column; align-items: stretch; }
                     .page-header .staff-btn { width: 100%; }
-                    .modal-card { padding: 1.25rem; }
                 }
             `}</style>
         </div>
