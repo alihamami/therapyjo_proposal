@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { isMissingPhone } from "@/lib/phone";
+import { Plus } from "lucide-react";
 
 interface Patient {
     id: number;
@@ -46,7 +47,7 @@ export default function SecretaryPatientsPage() {
         <div>
             <div className="page-header">
                 <h1>Patients <span className="count">({total})</span></h1>
-                <button className="btn-add" onClick={() => router.push("/secretary/patients/new")}>+ Add Patient</button>
+                <button className="staff-btn staff-btn-primary" onClick={() => router.push("/secretary/patients/new")}><Plus size={15} aria-hidden="true" />Add Patient</button>
             </div>
 
             <input
@@ -91,7 +92,6 @@ export default function SecretaryPatientsPage() {
                 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; }
                 .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
-                .btn-add { background: var(--primary, #4CAF93); color: #fff; border: none; padding: 0.45rem 1rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; }
                 .search-input { width: 100%; max-width: 360px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.75rem; color: #fff; font-size: 0.85rem; outline: none; font-family: inherit; margin-bottom: 1rem; }
                 .search-input:focus { border-color: var(--primary, #4CAF93); }
                 .table-container { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); overflow: hidden; }

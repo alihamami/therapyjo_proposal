@@ -365,8 +365,8 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                             </div>
                         </div>
                         <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setEditingInfo(false)}>Cancel</button>
-                            <button className="btn-save" onClick={saveInfo} disabled={savingInfo}>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
+                            <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>
                                 {savingInfo ? "Saving…" : "Save"}
                             </button>
                         </div>
@@ -398,8 +398,8 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                             ))}
                         </div>
                         <div className="modal-actions">
-                            <button className="btn-cancel" onClick={closeSoap}>Close</button>
-                            <button className="btn-save" onClick={saveSoap} disabled={savingSoap}>
+                            <button className="staff-btn staff-btn-secondary" onClick={closeSoap}>Close</button>
+                            <button className="staff-btn staff-btn-primary" aria-busy={savingSoap} onClick={saveSoap} disabled={savingSoap}>
                                 {savingSoap ? "Saving…" : soapSaved ? "✓ Saved" : "Save SOAP Note"}
                             </button>
                         </div>
@@ -605,13 +605,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical;
                 }
                 .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
-                .btn-save {
-                    background: var(--primary, #4CAF93); color: #fff;
-                    border: none; border-radius: var(--radius-sm, 2px);
-                    padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 600;
-                    cursor: pointer; font-family: inherit;
-                }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
                 .data-table { width: 100%; min-width: 600px; border-collapse: collapse; }
                 .data-table th {
                     text-align: left; padding: 0.7rem 0.85rem; font-size: 0.74rem;
@@ -680,11 +673,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 .modal-sub { margin: -0.9rem 0 1.25rem; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
                 .form-stack { display: flex; flex-direction: column; gap: 0.9rem; }
                 .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
-                .btn-cancel {
-                    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
-                    border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px);
-                    padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; font-family: inherit;
-                }
 
                 @media (max-width: 640px) {
                     .section-card { padding: 1rem; }

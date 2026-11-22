@@ -190,8 +190,8 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                             <div className="form-group"><label>Phone 2</label><input value={infoForm.phone2} onChange={(e) => setInfoForm({ ...infoForm, phone2: e.target.value })} /></div>
                         </div>
                         <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setEditingInfo(false)}>Cancel</button>
-                            <button className="btn-save" onClick={saveInfo} disabled={savingInfo}>{savingInfo ? "Saving…" : "Save"}</button>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
+                            <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>{savingInfo ? "Saving…" : "Save"}</button>
                         </div>
                     </div>
                 </div>
@@ -323,9 +323,6 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                 .form-group input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.55rem 0.75rem; color: #fff; font-size: 0.85rem; outline: none; font-family: inherit; }
                 .form-group input:focus { border-color: var(--primary, #4CAF93); }
                 .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
-                .btn-cancel { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; font-family: inherit; }
-                .btn-save { background: var(--primary, #4CAF93); color: #fff; border: none; border-radius: var(--radius-sm, 2px); padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
             `}</style>
         </div>
     );

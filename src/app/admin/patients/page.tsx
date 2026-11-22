@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { joinPhones } from "@/lib/phone";
+import { Plus } from "lucide-react";
 
 interface Patient {
     id: number;
@@ -68,7 +69,7 @@ export default function PatientsPage() {
         <div>
             <div className="page-header">
                 <h1>Patients <span className="count">({total})</span></h1>
-                <button className="btn-add" onClick={() => router.push("/admin/patients/new")}>+ Add Patient</button>
+                <button className="staff-btn staff-btn-primary" onClick={() => router.push("/admin/patients/new")}><Plus size={15} aria-hidden="true" />Add Patient</button>
             </div>
 
             <div className="search-bar">
@@ -129,13 +130,6 @@ export default function PatientsPage() {
                 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
                 .page-header h1 { font-size: 1.5rem; font-weight: 600; }
                 .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
-                .btn-add {
-                    background: var(--primary, #4CAF93); color: #fff;
-                    border: none; border-radius: var(--radius-sm, 2px); padding: 0.55rem 1.2rem;
-                    font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: inherit;
-                    transition: all 0.2s;
-                }
-                .btn-add:hover { background: var(--primary-dark, #3a8f77); }
                 .search-bar { margin-bottom: 1rem; }
                 .search-bar input {
                     width: 100%; max-width: 400px;
@@ -188,7 +182,7 @@ export default function PatientsPage() {
 
                 @media (max-width: 560px) {
                     .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-                    .btn-add { width: 100%; padding: 0.65rem 1.2rem; }
+                    .page-header .staff-btn { width: 100%; }
                     .search-bar input { max-width: 100%; }
                     :global(.btn-sm) { padding: 0.42rem 0.75rem; }
                 }

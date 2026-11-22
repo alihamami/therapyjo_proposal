@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
 import { isMissingPhone } from "@/lib/phone";
+import { Plus } from "lucide-react";
 
 interface Doctor {
     id: string;
@@ -197,7 +198,7 @@ export default function AdminDashboard() {
                             <option key={d.id} value={d.id}>{d.name}</option>
                         ))}
                     </select>
-                    <button className="btn-add" onClick={() => { window.location.href = `/admin/reservations/new?date=${selectedDate}`; }}>+ Add Reservation</button>
+                    <button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = `/admin/reservations/new?date=${selectedDate}`; }}><Plus size={15} aria-hidden="true" />Add Reservation</button>
                 </div>
             </div>
 
@@ -269,8 +270,8 @@ export default function AdminDashboard() {
                             <input type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
                         </div>
                         <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setDupId(null)}>Cancel</button>
-                            <button className="btn-save" onClick={submitDuplicate} disabled={!dupDate}>Duplicate</button>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)}>Cancel</button>
+                            <button className="staff-btn staff-btn-primary" onClick={submitDuplicate} disabled={!dupDate}>Duplicate</button>
                         </div>
                     </div>
                 </div>
@@ -311,8 +312,8 @@ export default function AdminDashboard() {
                             )}
                         </div>
                         <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
-                            <button className="btn-save" onClick={() => router.push(`/admin/patients/${detail.patient.id}?soap=${detail.id}`)}>Edit SOAP Note</button>
+                            <button className="staff-btn staff-btn-secondary" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
+                            <button className="staff-btn staff-btn-primary" onClick={() => router.push(`/admin/patients/${detail.patient.id}?soap=${detail.id}`)}>Edit SOAP Note</button>
                         </div>
                     </div>
                 </div>
@@ -338,12 +339,6 @@ export default function AdminDashboard() {
                     font-size: 0.82rem; font-family: inherit;
                 }
                 .doctor-select option { background: #1a2e35; }
-                .btn-add {
-                    background: var(--primary, #4CAF93); color: #fff; border: none;
-                    padding: 0.45rem 1rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit;
-                }
-                .btn-add:hover { opacity: 0.9; }
                 .sub-header {
                     display: flex; align-items: center; justify-content: space-between;
                     flex-wrap: wrap; gap: 0.5rem;
@@ -411,17 +406,6 @@ export default function AdminDashboard() {
                     border-color: var(--primary, #4CAF93);
                 }
                 .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.25rem; }
-                .btn-cancel {
-                    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
-                    border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px);
-                    padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; font-family: inherit;
-                }
-                .btn-save {
-                    background: var(--primary, #4CAF93); color: #fff; border: none;
-                    border-radius: var(--radius-sm, 2px); padding: 0.5rem 1.2rem;
-                    font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit;
-                }
-                .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
                 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1rem; margin-top: 0.75rem; }
                 .detail-item { display: flex; flex-direction: column; gap: 0.15rem; }
                 .detail-item.full { grid-column: 1 / -1; }
@@ -444,7 +428,6 @@ export default function AdminDashboard() {
                     .btn-nav { flex: 1; text-align: center; }
                     .controls-right { width: 100%; }
                     .doctor-select { flex: 1; }
-                    .btn-add { flex-shrink: 0; }
                     .modal-overlay { padding: 1rem; align-items: flex-end; }
                     .modal-card { padding: 1.25rem; max-height: 85vh; }
                     .detail-grid { grid-template-columns: 1fr; }
