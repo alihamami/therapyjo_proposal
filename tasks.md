@@ -15655,6 +15655,7 @@ button.staff-row-name {
 
 - **Status:** BACKLOG, no planning pass.
 - **Why:** Admin, secretary and doctor each have their own nav, built differently. The secretary dropdown opens on hover only, and the secretary and doctor bars have no phone menu (doctor's layout has no media query at all). One shared staff shell where the role decides the links. Group Blog, website Doctors and Approvals under a "Website" menu, since "Doctors" currently appears twice (Employees → Doctors are staff accounts; top-level Doctors are public profiles).
+- **Measured 2026-11-22 (after phase 0), deferred here by the user:** phase 0 reworked only the admin bar. The secretary and doctor bars, measured in the mocked preview: at 375px they are too wide (secretary needs 468px, doctor 537px, in a 360px space), so the whole page scrolls sideways on phones; they are not sticky (admin's is); their logo sits 12px left of the page content at 1440px. On desktop both are already one row. The shared shell should carry over the admin bar's TJ-068b/TJ-068g behaviour: solid, sticky, lined up with the 1400px content column, a phone menu below 861px, and the 861–1040px tightening. Everything else from phase 0 already reaches both portals (buttons, row menus, link styles, "No phone").
 
 ### TJ-071 — Staff portal refresh, phase 3: the dashboard
 
