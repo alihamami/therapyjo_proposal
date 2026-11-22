@@ -149,20 +149,20 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, planned 2026-11-23 (READY)**; batch 4 = d4, f, g, h, i, j | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, executed and planner-verified 2026-11-23; merge held for the user's look**; batch 4 = d4, f, g, h, i, j | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
 | TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | DONE — task commit `67b6563`, merged to `master` as `b9a6a3a` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/secretary-duplicate-popup` |
 | TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | DONE — task commit `9e30040`, merged to `master` as `1c95795` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal` |
 | TJ-069d2 | Delete popups and the website-doctor editor on the shared component | DONE — task commit `53a873c`, merged to `master` as `73ea998` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-content` |
-| TJ-069d3 | The two employee editors on the shared component | READY — passed 2026-11-23; batch 3, step 1 of 5 | `feat/staff-modal-employees` |
+| TJ-069d3 | The two employee editors on the shared component | VISUAL REVIEW — task commit `431a923`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-modal-employees` |
 | TJ-069d4 | Full-page forms on the shared field styles | BACKLOG — found 2026-11-23 during the TJ-069d3 pass; batch 4 | — |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | SPLIT — passed 2026-11-23; see TJ-069e1 … e4 | — |
-| TJ-069e1 | Lists: the shared pieces, and the five patient lists | READY — passed 2026-11-23; batch 3, step 2 of 5 | `feat/staff-lists-patients` |
-| TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | READY — passed 2026-11-23; batch 3, step 3 of 5 | `feat/staff-lists-notes` |
-| TJ-069e3 | Lists: blog, website doctors, employees | READY — passed 2026-11-23; batch 3, step 4 of 5 | `feat/staff-lists-content-team` |
-| TJ-069e4 | Lists: tables, loading and empty states inside a record | READY — passed 2026-11-23; batch 3, step 5 of 5 | `feat/staff-lists-records` |
+| TJ-069e1 | Lists: the shared pieces, and the five patient lists | VISUAL REVIEW — task commit `15ec254`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-lists-patients` |
+| TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | VISUAL REVIEW — task commit `32335ce`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-lists-notes` |
+| TJ-069e3 | Lists: blog, website doctors, employees | VISUAL REVIEW — task commit `a251af9`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-lists-content-team` |
+| TJ-069e4 | Lists: tables, loading and empty states inside a record | VISUAL REVIEW — task commit `737f737`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-lists-records` |
 | TJ-069f | Emoji become line icons | BACKLOG — design decided; batch 4 | — |
 | TJ-069g | Every text size snaps to the six steps | BACKLOG — design decided; batch 4 | — |
 | TJ-069h | Searches wait for typing to pause | BACKLOG — found 2026-11-23 during the TJ-069e pass; batch 4, after TJ-069e1/e2 | — |
@@ -15685,6 +15685,13 @@ button.staff-row-name {
 - Not seen live: Archive/Resign/Delete confirmations were not clicked on real records; Blog, website Doctors and Notes have no live data. The secretary and doctor portals cannot be opened as admin.
 - **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at the phase 0 deployment.
 
+**Batch 3 — verified (2026-11-23), merge held for the user's look:**
+- **Executed** by the Sonnet executor on stacked branches from `fd79b61`: `431a923` (d3), `15ec254` (e1), `32335ce` (e2), `a251af9` (e3), `737f737` (e4). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
+- **Scope:** each commit changes exactly its task's files (3, 7, 5, 5, 4).
+- **Re-application:** all 24 changed file versions are byte-identical to the planner's expected blobs (listed under "Batch 3 — planned"); the tip's `src/` tree equals the planner's verified tree (`b8ce840`).
+- **Gates, re-run by the planner on `737f737` in a clean worktree:** `tsc` 0, `next build --webpack` 0 (only the known "middleware" deprecation notice). A mocked preview of the same commit was opened for the user (patient list, empty Notes and Blog, Edit Doctor, patient file Sessions).
+- **Executor's notes, checked:** it applied the steps with Python reading the code blocks from `tasks.md` (CRLF kept); its first e1 run and its e3 run stopped part-way on script errors, and it reverted or re-ran only its own uncommitted edits before committing. The byte-identity check above covers both. It reported no build warnings.
+
 **Batch 3 — planned (2026-11-23):** TJ-069d3 (the two employee editors onto `StaffModal`) and TJ-069e split four ways (e1 shared list pieces + patient lists, e2 notes/duplicates/approvals, e3 blog/website doctors/employees, e4 tables inside a record). 24 file changes across 21 files, one new component (`StaffEmpty.tsx`), two `globals.css` appends.
 - **How the specs were made:** each task's edits were generated by script on a throwaway worktree of `master` at `2a7099b`, every anchor asserted to occur once, and the instructions below were rendered from the recorded edits (so the spec and the checked result cannot drift). Regenerating from `master` reproduces the same tree (`8abb77f`), on which `tsc` and `next build --webpack` both exit 0. Then, acting as the executor, a parser read **only the Instructions written below** and applied them to a fresh checkout of `master`: all 24 file versions came out byte-identical, same tree.
 - **Mocked preview (no database, every write refused), over 30 screen states:** all 17 list and record screens filled and empty (each record tab clicked), the search-with-no-result state, both editors, desktop and 375px. No old list classes left on any screen; no sideways page scroll.
@@ -17801,7 +17808,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d3 — The two employee editors on the shared component
 
-- **Status:** READY — passed 2026-11-23. Batch 3, step 1 of 5.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `431a923` on `feat/staff-modal-employees`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-modal-employees`, cut from `master` at the commit that adds this spec.
 - **Why:** decision P1-2 = **2B**. The doctor and secretary Edit popups are the last two staff popups on their own copy of the old shape (`#1e293b` card, 16px corners, title without a bar, their own scroll layout), so they look and behave unlike the 13 popups TJ-069d1/d2 moved. This step puts both on `StaffModal` (`wide`, 560px, the same width as today): header bar with ✕, body that scrolls, footer bar with Cancel and Save. Escape now closes them too, and while Save is working the ✕, Escape, backdrop and Cancel are off.
 
@@ -18343,7 +18350,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e1 — Lists: the shared pieces, and the five patient lists
 
-- **Status:** READY — passed 2026-11-23. Batch 3, step 2 of 5.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `15ec254` on `feat/staff-lists-patients`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-lists-patients`, cut from the tip of `feat/staff-modal-employees`.
 - **Why:** defines the list pieces and the `StaffEmpty` component once, and moves the patient lists of all three roles (admin and secretary active and archived, doctor) onto them.
 
@@ -18906,7 +18913,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e2 — Lists: notes (all three roles), duplicates, approvals
 
-- **Status:** READY — passed 2026-11-23. Batch 3, step 3 of 5.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `32335ce` on `feat/staff-lists-notes`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-lists-notes`, cut from the tip of `feat/staff-lists-patients`.
 - **Why:** the three notes lists, the Duplicate Check and Approvals move onto the TJ-069e1 pieces. The doctor's "My Notes" title, today an inline-styled `h1`, gets the shared header; the duplicates' green "✓ No duplicate patients found" card and Approvals' grey box become the 3B empty state in a `.staff-panel`.
 
@@ -19241,7 +19248,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e3 — Lists: blog, website doctors, employees
 
-- **Status:** READY — passed 2026-11-23. Batch 3, step 4 of 5.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `a251af9` on `feat/staff-lists-content-team`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-lists-content-team`, cut from the tip of `feat/staff-lists-notes`.
 - **Why:** the content lists (Blog, website Doctors and their archive) and the two employee lists move onto the TJ-069e1 pieces. These are the lists that are empty on the live site today (Blog, website Doctors, Notes), so their empty state is what staff actually see.
 
@@ -19436,7 +19443,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e4 — Lists: tables, loading and empty states inside a record
 
-- **Status:** READY — passed 2026-11-23. Batch 3, step 5 of 5.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `737f737` on `feat/staff-lists-records`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-lists-records`, cut from the tip of `feat/staff-lists-content-team`.
 - **Why:** the patient file's Sessions, Files and History tabs (all three roles) and the doctor's session History tab use the compact shared table and the 3B empty state, and their page-level "Loading…" becomes the shared loading line. After this step no staff file draws `.data-table` any more.
 
