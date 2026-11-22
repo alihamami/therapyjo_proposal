@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Archive, Eye, EyeOff, Pencil, Plus } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface DoctorProfile {
     id: string;
@@ -26,6 +27,7 @@ interface LoginAccount {
 const emptyForm = { name: "", title: "", specialty: "", bio: "", contact: "", order: 0, userId: "" };
 
 export default function DoctorsCmsPage() {
+    const confirm = useConfirm();
     const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
     const [accounts, setAccounts] = useState<LoginAccount[]>([]);
     const [loading, setLoading] = useState(true);
@@ -131,7 +133,11 @@ export default function DoctorsCmsPage() {
     };
 
     const archiveDoctor = async (doc: DoctorProfile) => {
-        if (!confirm(`Archive ${doc.name}? This removes them from the public site.`)) return;
+        if (!(await confirm({
+            title: `Archive ${doc.name}?`,
+            message: "They are removed from the public website. You can restore them from Archived.",
+            confirmLabel: "Archive",
+        }))) return;
         await fetch(`/api/doctor-profiles/${doc.id}`, { method: "DELETE" });
         fetchDoctors();
         showToast("Doctor archived");

@@ -7,6 +7,7 @@ import { clinicalFileUrl } from "@/lib/storageUrl";
 import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Doctor {
     id: string;
@@ -61,6 +62,7 @@ function statusFor(filter: (typeof FILTERS)[number]) {
 }
 
 export default function DoctorsPage() {
+    const confirm = useConfirm();
     const router = useRouter();
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
@@ -285,7 +287,12 @@ export default function DoctorsPage() {
     };
 
     const handleResign = async (id: string) => {
-        if (!confirm("Resign this doctor? They move to Archived and can be re-enrolled later.")) return;
+        const name = doctors.find((d) => d.id === id)?.name;
+        if (!(await confirm({
+            title: `Resign ${name ?? "this doctor"}?`,
+            message: "They move to Archived and can be re-enrolled later.",
+            confirmLabel: "Resign",
+        }))) return;
         await fetch(`/api/employees/doctors/${id}`, { method: "DELETE" });
         fetchDoctors();
     };

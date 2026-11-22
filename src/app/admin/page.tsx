@@ -7,6 +7,7 @@ import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
 import { isMissingPhone } from "@/lib/phone";
 import { Plus } from "lucide-react";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Doctor {
     id: string;
@@ -44,6 +45,7 @@ type ReservationDetail = Reservation & {
 const today = () => new Date().toISOString().split("T")[0];
 
 export default function AdminDashboard() {
+    const confirm = useConfirm();
     const router = useRouter();
     const [selectedDate, setSelectedDate] = useState(today());
     const [doctorFilter, setDoctorFilter] = useState("all");
@@ -105,7 +107,13 @@ export default function AdminDashboard() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Delete this reservation?")) return;
+        const patientName = reservations.find((r) => r.id === id)?.patient.name;
+        if (!(await confirm({
+            title: "Delete this reservation?",
+            message: `${patientName ? `${patientName}'s session` : "The session"} is removed from the calendar for good. This can't be undone.`,
+            confirmLabel: "Delete",
+            tone: "danger",
+        }))) return;
         await fetch(`/api/reservations/${id}`, { method: "DELETE" });
         fetchReservations();
     };

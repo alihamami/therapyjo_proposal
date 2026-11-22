@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Doctor {
     id: string;
@@ -24,6 +25,7 @@ interface Note {
 }
 
 export default function NotesPage() {
+    const confirm = useConfirm();
     const [notes, setNotes] = useState<Note[]>([]);
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
@@ -104,7 +106,13 @@ export default function NotesPage() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Delete this note?")) return;
+        const name = notes.find((n) => n.id === id)?.name;
+        if (!(await confirm({
+            title: "Delete this note?",
+            message: `${name ? `"${name}"` : "The note"} is deleted for good. This can't be undone.`,
+            confirmLabel: "Delete",
+            tone: "danger",
+        }))) return;
         await fetch(`/api/notes/${id}`, { method: "DELETE" });
         fetchNotes();
     };

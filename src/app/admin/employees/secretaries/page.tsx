@@ -7,6 +7,7 @@ import { clinicalFileUrl } from "@/lib/storageUrl";
 import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Secretary {
     id: string;
@@ -48,6 +49,7 @@ function statusFor(filter: (typeof FILTERS)[number]) {
 }
 
 export default function SecretariesPage() {
+    const confirm = useConfirm();
     const router = useRouter();
     const [secretaries, setSecretaries] = useState<Secretary[]>([]);
     const [loading, setLoading] = useState(true);
@@ -254,7 +256,12 @@ export default function SecretariesPage() {
     };
 
     const handleResign = async (id: string) => {
-        if (!confirm("Resign this secretary? They move to Archived and can be re-enrolled later.")) return;
+        const name = secretaries.find((s) => s.id === id)?.name;
+        if (!(await confirm({
+            title: `Resign ${name ?? "this secretary"}?`,
+            message: "They move to Archived and can be re-enrolled later.",
+            confirmLabel: "Resign",
+        }))) return;
         await fetch(`/api/employees/secretaries/${id}`, { method: "DELETE" });
         fetchSecretaries();
     };

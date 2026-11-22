@@ -6,6 +6,7 @@ import { clinicalFileUrl } from "@/lib/storageUrl";
 import { isMissingPhone } from "@/lib/phone";
 import { Archive, Pencil } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface PatientData {
     id: number;
@@ -43,6 +44,7 @@ interface Reservation {
 }
 
 export default function SecretaryPatientProfile({ params }: { params: Promise<{ id: string }> }) {
+    const confirm = useConfirm();
     const { id } = use(params);
     const router = useRouter();
     const [patient, setPatient] = useState<PatientData | null>(null);
@@ -79,8 +81,11 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
     };
 
     const handleArchiveToggle = async () => {
-        const action = patient?.archived ? "restore" : "archive";
-        if (!confirm(`Are you sure you want to ${action} this patient?`)) return;
+        const name = patient?.name ?? "this patient";
+        if (!(await confirm(patient?.archived
+            ? { title: `Restore ${name}?`, message: "They move back to the active patient list.", confirmLabel: "Restore" }
+            : { title: `Archive ${name}?`, message: "They move to Archived Patients. Their file stays, and you can restore them any time.", confirmLabel: "Archive" }
+        ))) return;
         await fetch(`/api/patients/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -126,7 +131,13 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
     };
 
     const handleRemoveFile = async (fileId: number) => {
-        if (!confirm("Remove this file?")) return;
+        const fileName = patient?.files.find((f) => f.id === fileId)?.fileName;
+        if (!(await confirm({
+            title: "Remove this file?",
+            message: `${fileName ? `"${fileName}"` : "The file"} is removed from ${patient?.name ?? "this patient"}'s documents for good. This can't be undone.`,
+            confirmLabel: "Remove",
+            tone: "danger",
+        }))) return;
         setFileError("");
         setRemovingId(fileId);
         const res = await fetch(`/api/patients/${id}/files/${fileId}`, { method: "DELETE" });

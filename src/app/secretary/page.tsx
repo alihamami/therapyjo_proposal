@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
 import { Plus } from "lucide-react";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Doctor {
     id: string;
@@ -28,6 +29,7 @@ interface Reservation {
 const today = () => new Date().toISOString().split("T")[0];
 
 export default function SecretaryDashboard() {
+    const confirm = useConfirm();
     const router = useRouter();
     const [selectedDate, setSelectedDate] = useState(today());
     const [doctorFilter, setDoctorFilter] = useState("all");
@@ -92,7 +94,13 @@ export default function SecretaryDashboard() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Delete this reservation?")) return;
+        const patientName = reservations.find((r) => r.id === id)?.patient.name;
+        if (!(await confirm({
+            title: "Delete this reservation?",
+            message: `${patientName ? `${patientName}'s session` : "The session"} is removed from the calendar for good. This can't be undone.`,
+            confirmLabel: "Delete",
+            tone: "danger",
+        }))) return;
         setStatusError("");
         const res = await fetch(`/api/reservations/${id}`, { method: "DELETE" });
         if (!res.ok) {

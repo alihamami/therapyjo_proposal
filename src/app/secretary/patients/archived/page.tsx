@@ -6,6 +6,7 @@ import { isMissingPhone } from "@/lib/phone";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { shouldOpenRow } from "@/lib/rowLink";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Patient {
     id: number;
@@ -17,6 +18,7 @@ interface Patient {
 }
 
 export default function SecretaryArchivedPatientsPage() {
+    const confirm = useConfirm();
     const router = useRouter();
     const [patients, setPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(true);
@@ -37,7 +39,12 @@ export default function SecretaryArchivedPatientsPage() {
     useEffect(() => { fetchArchived(); }, [fetchArchived]);
 
     const handleRestore = async (id: number) => {
-        if (!confirm("Restore this patient?")) return;
+        const name = patients.find((p) => p.id === id)?.name;
+        if (!(await confirm({
+            title: `Restore ${name ?? "this patient"}?`,
+            message: "They move back to the active patient list.",
+            confirmLabel: "Restore",
+        }))) return;
         await fetch(`/api/patients/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface DoctorProfile {
     id: string;
@@ -12,6 +13,7 @@ interface DoctorProfile {
 }
 
 export default function ArchivedDoctorsPage() {
+    const confirm = useConfirm();
     const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleteTarget, setDeleteTarget] = useState<DoctorProfile | null>(null);
@@ -30,7 +32,12 @@ export default function ArchivedDoctorsPage() {
     useEffect(() => { fetchArchived(); }, [fetchArchived]);
 
     const handleRestore = async (id: string) => {
-        if (!confirm("Restore this doctor to the public site?")) return;
+        const name = doctors.find((d) => d.id === id)?.name;
+        if (!(await confirm({
+            title: `Restore ${name ?? "this doctor"} to the website?`,
+            message: "Their profile shows on the public Doctors page again.",
+            confirmLabel: "Restore",
+        }))) return;
         await fetch(`/api/doctor-profiles/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
