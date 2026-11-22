@@ -154,8 +154,8 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
 | TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | DONE — task commit `67b6563`, merged to `master` as `b9a6a3a` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/secretary-duplicate-popup` |
-| TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | READY — cut from `master` | `feat/staff-modal` |
-| TJ-069d2 | Delete popups and the website-doctor editor on the shared component | READY — stacked on TJ-069d1 | `feat/staff-modal-content` |
+| TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | VERIFIED — task commit `9e30040`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-modal` |
+| TJ-069d2 | Delete popups and the website-doctor editor on the shared component | VERIFIED — task commit `53a873c`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-modal-content` |
 | TJ-069d3 | The two employee editors on the shared component | BACKLOG — pass after TJ-069d2 | — |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069f | Emoji become line icons | BACKLOG — design decided; pass runs on top of batch 1 | — |
@@ -16843,7 +16843,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 
 ### TJ-069d1 — Popups on one shared component: dashboards, patient files, notes, booking
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `9e30040` on `feat/staff-modal`. Merge held for the user's look. Verification: below, under TJ-069d2.
 - **Branch:** `feat/staff-modal`, cut from `master` at the commit that adds this spec.
 - **Why:** decision P1-2 = **2B**. There are 15 popups in 11 staff files, in 6 different shapes. Instead of repeating the 2B markup 15 times, one `StaffModal` component draws it: header bar with title and ✕, a body that scrolls, a footer bar for the buttons. This step moves 9 popups in 7 files onto it (TJ-069d2 moves 5 more; the two large employee editors are TJ-069d3).
 
@@ -17409,7 +17409,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d2 — Delete popups and the website-doctor editor on the shared component
 
-- **Status:** READY
+- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `53a873c` on `feat/staff-modal-content`. Merge held for the user's look.
 - **Branch:** `feat/staff-modal-content`, cut from the tip of `feat/staff-modal`.
 - **Why:** the 4 "Delete permanently" popups (blog post, archived website doctor, doctor account, secretary account) and the website-doctor editor move onto `StaffModal`. Their red button becomes the shared danger button.
 
@@ -17763,6 +17763,17 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 **Done when:**
 - [ ] The 5 popups use `StaffModal`; the employee Edit popups are unchanged.
 - [ ] `tsc` and the build exit 0.
+
+**Batch 2 (d1 + d2) — verified (2026-11-22), merge held for the user's look:**
+- **Re-application:** all 15 changed file versions (9 + 6) are byte-identical to the planner's script-generated results. One planner-side slip, not the executor's: the comparison file for `globals.css` kept a leading blank line that the spec block (as assembled into `tasks.md`) does not have; the executor followed the spec exactly.
+- **Gates, re-run by the planner on `53a873c`:** `tsc` 0, `next build --webpack` 0, only the workspace-root notice.
+- **Preview (mocked, no database; browser `confirm` counted, stayed 0):**
+  - SOAP Note popup (one made-up session added to the mock): `staff-modal-wide` (560px), subtitle line, four fields. With unsaved text, Escape asks "Close without saving?" first and the popup stays; a second Escape closes only the confirmation (no second question); ✕ asks too; "Discard changes" closes it.
+  - Edit Info (admin and secretary): 440px, focus in Name, phones side by side with the "Optional" hint; Escape closes.
+  - Delete post (archived): Delete permanently is red and dimmed (opacity 0.5) and stays off until exactly `DELETE` is typed (lowercase does not count); focus in the field; a refused request shows the message and keeps the popup open; Escape closes.
+  - Website-doctor editor: photo drop and two-column top row keep their styles; seven labelled fields; the body scrolls (`overflow-y: auto`) while the title bar and the Cancel/Save bar stay fixed.
+  - Phone (375px): the popup docks at the bottom (16px gap) and side-by-side fields stack to one column.
+- **Seen, not caused by this batch:** at 375px the secretary patient file is 468px wide (the secretary menu bar, already deferred to TJ-070, and the sessions table, phase 4); with the popup closed the page is equally wide.
 
 ---
 
