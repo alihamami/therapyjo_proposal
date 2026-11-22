@@ -1810,8 +1810,60 @@ ol {
 /* ===== STAFF PORTAL ===== */
 /* Shared by the admin, secretary and doctor screens (all dark). Phase 0 of
    the staff refresh starts this section; TJ-068e adds the buttons. */
+/* Staff tokens (TJ-069a, decision P1-5). Every staff colour, text size and
+   corner comes from here: a page names a token instead of inventing a value.
+   The values are the ones the staff screens already use most. */
+:root {
+  /* surfaces */
+  --staff-bg: #1a2e35;
+  --staff-surface: rgba(255, 255, 255, 0.03);
+  --staff-surface-2: rgba(255, 255, 255, 0.06);
+  --staff-surface-hover: rgba(255, 255, 255, 0.1);
+  --staff-raised: #243b44;
+  --staff-overlay: rgba(0, 0, 0, 0.6);
+  /* lines */
+  --staff-border: rgba(255, 255, 255, 0.08);
+  --staff-border-strong: rgba(255, 255, 255, 0.14);
+  /* text */
+  --staff-text: #ffffff;
+  --staff-text-2: rgba(255, 255, 255, 0.88);
+  --staff-muted: rgba(255, 255, 255, 0.55);
+  --staff-faint: rgba(255, 255, 255, 0.4);
+  /* accent */
+  --staff-accent: #4CAF93;
+  --staff-accent-hover: #5dbda0;
+  --staff-on-accent: #0d2a22;
+  --staff-accent-soft: rgba(76, 175, 147, 0.12);
+  --staff-accent-text: #6ee7b7;
+  --staff-focus: #a7f3d0;
+  /* status: text colour, then its soft background */
+  --staff-ok: #6ee7b7;
+  --staff-ok-soft: rgba(16, 185, 129, 0.14);
+  --staff-warn: #fbbf24;
+  --staff-warn-soft: rgba(251, 191, 36, 0.12);
+  --staff-bad: #fca5a5;
+  --staff-bad-soft: rgba(220, 38, 38, 0.14);
+  --staff-bad-solid: #dc2626;
+  --staff-bad-solid-hover: #ef4444;
+  --staff-info: #93c5fd;
+  --staff-info-soft: rgba(96, 165, 250, 0.12);
+  /* text sizes: the six steps */
+  --staff-size-xs: 0.72rem;
+  --staff-size-sm: 0.8rem;
+  --staff-size-base: 0.85rem;
+  --staff-size-md: 1rem;
+  --staff-size-lg: 1.2rem;
+  --staff-size-xl: 1.5rem;
+  /* corners */
+  --staff-radius-sm: 6px;
+  --staff-radius-md: 8px;
+  --staff-radius-lg: 12px;
+  /* raised surfaces (popups, dialogs) */
+  --staff-shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.5);
+}
+
 .no-phone {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--staff-faint);
   font-style: italic;
 }
 
@@ -1829,9 +1881,9 @@ ol {
   box-sizing: border-box;
   height: 34px;
   padding: 0 14px;
-  border-radius: 8px;
+  border-radius: var(--staff-radius-md);
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: var(--staff-size-sm);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -1840,20 +1892,20 @@ ol {
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 .staff-btn:focus-visible {
-  outline: 2px solid #a7f3d0;
+  outline: 2px solid var(--staff-focus);
   outline-offset: 2px;
 }
 .staff-btn:disabled {
   cursor: not-allowed;
 }
 .staff-btn-primary {
-  background: #4CAF93;
-  color: #0d2a22;
+  background: var(--staff-accent);
+  color: var(--staff-on-accent);
   border: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 .staff-btn-primary:hover:not(:disabled) {
-  background: #5dbda0;
+  background: var(--staff-accent-hover);
 }
 .staff-btn-primary:disabled {
   background: rgba(76, 175, 147, 0.32);
@@ -1861,21 +1913,21 @@ ol {
   box-shadow: none;
 }
 .staff-btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--staff-surface-2);
+  color: var(--staff-text-2);
+  border: 1px solid var(--staff-border-strong);
   font-weight: 500;
 }
 .staff-btn-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--staff-surface-hover);
 }
 .staff-btn-secondary:disabled {
   opacity: 0.5;
 }
 /* Working: full colour although disabled, with a spinner before the label. */
 .staff-btn-primary[aria-busy="true"]:disabled {
-  background: #4CAF93;
-  color: #0d2a22;
+  background: var(--staff-accent);
+  color: var(--staff-on-accent);
   cursor: progress;
 }
 .staff-btn[aria-busy="true"]::before {
@@ -1918,7 +1970,7 @@ ol {
   text-underline-offset: 3px;
 }
 .staff-row-name:focus-visible {
-  outline: 2px solid #a7f3d0;
+  outline: 2px solid var(--staff-focus);
   outline-offset: 2px;
   border-radius: 2px;
 }
