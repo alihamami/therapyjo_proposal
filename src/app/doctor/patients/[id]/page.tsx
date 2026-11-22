@@ -128,8 +128,8 @@ export default function DoctorPatientProfilePage({ params }: { params: Promise<{
             <div className="profile-header">
                 <button
                     className="btn-back"
-                    onClick={() => {
-                        if (confirmDiscard("You have unsaved Clinical Assessment edits. Leave without saving?")) {
+                    onClick={async () => {
+                        if (await confirmDiscard({ title: "Leave without saving?", message: "Your unsaved Clinical Assessment edits will be lost." })) {
                             router.push("/doctor/patients");
                         }
                     }}

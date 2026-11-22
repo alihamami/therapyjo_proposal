@@ -189,8 +189,8 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
         setSoapSaved(false);
     };
 
-    const closeSoap = () => {
-        if (!confirmDiscardSoap("You have unsaved SOAP note text. Close without saving?")) return;
+    const closeSoap = async () => {
+        if (!(await confirmDiscardSoap({ title: "Close without saving?", message: "Your unsaved SOAP note text will be lost." }))) return;
         setSoapSession(null);
         setSoapError("");
     };
@@ -316,8 +316,8 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
             <div className="profile-header">
                 <button
                     className="btn-back"
-                    onClick={() => {
-                        if (confirmDiscard("You have unsaved Clinical Assessment edits. Leave without saving?")) {
+                    onClick={async () => {
+                        if (await confirmDiscard({ title: "Leave without saving?", message: "Your unsaved Clinical Assessment edits will be lost." })) {
                             router.push("/admin/patients");
                         }
                     }}

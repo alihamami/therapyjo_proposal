@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
+import { ConfirmProvider } from "@/app/components/ConfirmDialog";
 
 type DropdownItem = { href: string; label: string; icon: string };
 
@@ -214,7 +215,7 @@ export default function AdminLayout({
                 </div>
             </nav>
 
-            <main className="admin-content">{children}</main>
+            <main className="admin-content"><ConfirmProvider>{children}</ConfirmProvider></main>
 
             <style jsx>{`
                 .admin-layout {

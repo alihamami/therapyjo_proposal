@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { ConfirmProvider } from "@/app/components/ConfirmDialog";
 
 type DropdownItem = { href: string; label: string; icon: string };
 
@@ -130,7 +131,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                     )}
                 </div>
             </nav>
-            <main className="main">{children}</main>
+            <main className="main"><ConfirmProvider>{children}</ConfirmProvider></main>
 
             <style jsx>{`
                 .secretary-layout { min-height: 100vh; background: var(--bg-dark, #1a2e35); color: #fff; }
