@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { isMissingPhone } from "@/lib/phone";
 import { useRouter } from "next/navigation";
-import { ChevronRight } from "lucide-react";
+import { Archive, ChevronRight } from "lucide-react";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface Patient {
     id: number;
@@ -60,13 +61,13 @@ export default function SecretaryArchivedPatientsPage() {
 
     return (
         <div>
-            <div className="page-header">
-                <h1>Archived Patients <span className="count">({total})</span></h1>
+            <div className="staff-page-header">
+                <h1>Archived Patients <span className="staff-page-count">({total})</span></h1>
                 <Link href="/secretary/patients" className="btn-back">← Active Patients</Link>
             </div>
 
-            <div className="table-container">
-                <table className="data-table">
+            <div className="staff-table-wrap">
+                <table className="staff-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -78,12 +79,14 @@ export default function SecretaryArchivedPatientsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                            <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
                         ) : patients.length === 0 ? (
-                            <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No archived patients</td></tr>
+                            <tr className="staff-table-state"><td colSpan={5}>
+                                <StaffEmpty icon={Archive} title="No archived patients" hint="Patients you archive move here. You can restore them any time." />
+                            </td></tr>
                         ) : patients.map((p) => (
                             <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/secretary/patients/${p.id}`); }}>
-                                <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                <td className="staff-cell-id">{p.id}</td>
                                 <td><Link href={`/secretary/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
                                 <td>{isMissingPhone(p.phone1) ? <span className="no-phone">No phone</span> : p.phone1}</td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
@@ -100,36 +103,16 @@ export default function SecretaryArchivedPatientsPage() {
             </div>
 
             {totalPages > 1 && (
-                <div className="pagination">
-                    <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                <div className="staff-pagination">
+                    <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
                     <span>Page {page} of {totalPages}</span>
-                    <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                    <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
                 </div>
             )}
 
             <style jsx>{`
-                .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; }
-                .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
                 :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
                 :global(.btn-back:hover) { color: #fff; }
-                .table-container {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); overflow: hidden;
-                }
-                .data-table { width: 100%; border-collapse: collapse; }
-                .data-table th {
-                    text-align: left; padding: 0.85rem 1rem; font-size: 0.76rem;
-                    text-transform: uppercase; letter-spacing: 0.05em;
-                    color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06);
-                    font-weight: 600;
-                }
-                .data-table td {
-                    padding: 0.75rem 1rem; font-size: 0.88rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.04);
-                    color: rgba(255,255,255,0.8);
-                }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
                 :global(.btn-sm) {
                     padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
@@ -137,16 +120,6 @@ export default function SecretaryArchivedPatientsPage() {
                 }
                 .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; }
                 .btn-restore:hover { background: rgba(96,165,250,0.22); }
-                .pagination {
-                    display: flex; align-items: center; justify-content: center; gap: 1rem;
-                    margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem;
-                }
-                .pagination button {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    color: #fff; padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px);
-                    cursor: pointer; font-size: 0.82rem; font-family: inherit;
-                }
-                .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
             `}</style>
         </div>
     );
