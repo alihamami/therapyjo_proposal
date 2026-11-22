@@ -2243,3 +2243,193 @@ button.staff-row-name {
   font-weight: 500;
   color: var(--staff-muted);
 }
+/* Lists, decision P1-3 (TJ-069e1). One page header, search box, table,
+   pagination, loading line and empty state for every staff list. A page
+   keeps only its own column rules, plus a min-width where its table needs
+   one to stay readable (the wrapper then scrolls sideways on phones). */
+.staff-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+.staff-page-header h1 {
+  margin: 0;
+  font-size: var(--staff-size-xl);
+  font-weight: 600;
+}
+.staff-page-count {
+  color: var(--staff-faint);
+  font-size: var(--staff-size-md);
+  font-weight: 400;
+}
+.staff-page-sub {
+  margin: 0.25rem 0 0;
+  color: var(--staff-muted);
+  font-size: var(--staff-size-sm);
+}
+.staff-search {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 1rem;
+}
+.staff-search svg {
+  position: absolute;
+  inset-inline-start: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--staff-faint);
+  pointer-events: none;
+}
+.staff-search input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 36px;
+  padding: 0.45rem 0.7rem;
+  padding-inline-start: 2.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--staff-border-strong);
+  border-radius: var(--staff-radius-md);
+  color: var(--staff-text);
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+  outline: none;
+}
+.staff-search input::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+.staff-search input:focus {
+  border-color: var(--staff-accent);
+  box-shadow: 0 0 0 3px rgba(76, 175, 147, 0.18);
+}
+.staff-table-wrap {
+  container-type: inline-size;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--staff-surface);
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-lg);
+}
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.staff-table th {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--staff-border);
+  color: var(--staff-faint);
+  font-size: var(--staff-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: start;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.staff-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--staff-size-base);
+}
+.staff-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.staff-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+/* The one row that holds the loading line or the empty state. */
+.staff-table .staff-table-state td {
+  padding: 0;
+}
+.staff-table tbody .staff-table-state:hover {
+  background: none;
+}
+/* On a phone the table is wider than its wrapper and scrolls sideways; the
+   loading line and the empty state stay in view at the wrapper's width. */
+.staff-table-state .staff-loading,
+.staff-table-state .staff-empty {
+  position: sticky;
+  inset-inline-start: 0;
+  box-sizing: border-box;
+  width: 100cqi;
+}
+/* Tables inside a record (the patient file's tabs, a session's history). */
+.staff-table-compact th {
+  padding: 0.7rem 0.85rem;
+}
+.staff-table-compact td {
+  padding: 0.65rem 0.85rem;
+}
+.staff-table .staff-cell-id {
+  color: var(--staff-faint);
+  font-variant-numeric: tabular-nums;
+}
+.staff-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  color: var(--staff-muted);
+  font-size: var(--staff-size-base);
+}
+.staff-loading {
+  margin: 0;
+  padding: 2rem 1rem;
+  color: var(--staff-faint);
+  font-size: var(--staff-size-base);
+  text-align: center;
+}
+/* Empty state, design 3B (components/StaffEmpty.tsx). */
+.staff-empty {
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+  padding: 1.8rem 1rem;
+  text-align: center;
+}
+.staff-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--staff-surface-2);
+  color: var(--staff-muted);
+}
+.staff-empty-title {
+  margin: 0;
+  color: var(--staff-text);
+  font-size: var(--staff-size-md);
+  font-weight: 600;
+}
+.staff-empty-hint {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--staff-muted);
+  font-size: var(--staff-size-sm);
+}
+.staff-empty .staff-btn {
+  margin-top: 0.35rem;
+}
+/* An empty state or loading line that stands alone, not inside a table. */
+.staff-panel {
+  background: var(--staff-surface);
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-lg);
+}
+@media (max-width: 560px) {
+  .staff-page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .staff-page-header .staff-btn {
+    width: 100%;
+  }
+  .staff-search {
+    max-width: none;
+  }
+}

@@ -4,10 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { joinPhones } from "@/lib/phone";
-import { Archive, ChevronRight, Plus } from "lucide-react";
+import { Archive, ChevronRight, Plus, Search, Users } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface Patient {
     id: number;
@@ -76,22 +77,24 @@ export default function PatientsPage() {
 
     return (
         <div>
-            <div className="page-header">
-                <h1>Patients <span className="count">({total})</span></h1>
+            <div className="staff-page-header">
+                <h1>Patients <span className="staff-page-count">({total})</span></h1>
                 <button className="staff-btn staff-btn-primary" onClick={() => router.push("/admin/patients/new")}><Plus size={15} aria-hidden="true" />Add Patient</button>
             </div>
 
-            <div className="search-bar">
+            <div className="staff-search">
+                <Search size={15} aria-hidden="true" />
                 <input
                     type="text"
+                    aria-label="Search patients"
                     placeholder="Search by name or phone…"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
 
-            <div className="table-container">
-                <table className="data-table">
+            <div className="staff-table-wrap">
+                <table className="staff-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -104,12 +107,23 @@ export default function PatientsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                            <tr className="staff-table-state"><td colSpan={6}><p className="staff-loading" role="status">Loading…</p></td></tr>
                         ) : patients.length === 0 ? (
-                            <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No patients found</td></tr>
+                            <tr className="staff-table-state"><td colSpan={6}>
+                                {search ? (
+                                    <StaffEmpty icon={Search} title="No patients match your search" hint="Try part of the name, or a phone number." />
+                                ) : (
+                                    <StaffEmpty
+                                        icon={Users}
+                                        title="No patients yet"
+                                        hint="Patients you add appear here."
+                                        action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/patients/new")}><Plus size={15} aria-hidden="true" />Add Patient</button>}
+                                    />
+                                )}
+                            </td></tr>
                         ) : patients.map((p) => (
                             <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/admin/patients/${p.id}`); }}>
-                                <td className="id-cell">{p.id}</td>
+                                <td className="staff-cell-id">{p.id}</td>
                                 <td className="name-cell"><Link href={`/admin/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
                                 <td>{joinPhones(p.phone1, p.phone2) ?? <span className="no-phone">No phone</span>}</td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
@@ -131,62 +145,16 @@ export default function PatientsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="pagination">
-                    <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                <div className="staff-pagination">
+                    <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
                     <span>Page {page} of {totalPages}</span>
-                    <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                    <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
                 </div>
             )}
 
             <style jsx>{`
-                .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; }
-                .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
-                .search-bar { margin-bottom: 1rem; }
-                .search-bar input {
-                    width: 100%; max-width: 400px;
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px); padding: 0.6rem 0.9rem;
-                    color: #fff; font-size: 0.88rem; outline: none; font-family: inherit;
-                }
-                .search-bar input:focus { border-color: var(--primary, #4CAF93); }
-                .search-bar input::placeholder { color: rgba(255,255,255,0.25); }
-                .table-container {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); overflow-x: auto; overflow-y: hidden;
-                    -webkit-overflow-scrolling: touch;
-                }
-                .data-table { width: 100%; min-width: 680px; border-collapse: collapse; }
-                .data-table th {
-                    text-align: left; padding: 0.85rem 1rem; font-size: 0.76rem;
-                    text-transform: uppercase; letter-spacing: 0.05em;
-                    color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06);
-                    font-weight: 600;
-                }
-                .data-table td {
-                    padding: 0.75rem 1rem; font-size: 0.88rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.04);
-                    color: rgba(255,255,255,0.8);
-                }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
-                .id-cell { color: rgba(255,255,255,0.35); font-variant-numeric: tabular-nums; }
+                .staff-table { min-width: 680px; }
                 .name-cell { font-weight: 500; color: #fff; }
-                .pagination {
-                    display: flex; align-items: center; justify-content: center; gap: 1rem;
-                    margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem;
-                }
-                .pagination button {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    color: #fff; padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px);
-                    cursor: pointer; font-size: 0.82rem; font-family: inherit;
-                }
-                .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-
-                @media (max-width: 560px) {
-                    .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-                    .page-header .staff-btn { width: 100%; }
-                    .search-bar input { max-width: 100%; }
-                }
             `}</style>
         </div>
     );
