@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Plus } from "lucide-react";
+import { Archive, Eye, EyeOff, Pencil, Plus } from "lucide-react";
+import RowMenu from "@/app/components/RowMenu";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface DoctorProfile {
     id: string;
@@ -188,6 +190,7 @@ export default function DoctorsCmsPage() {
                         onDragOver={(e) => onDragOver(e, doc.id)}
                         onDragLeave={() => setDragOverId(null)}
                         onDrop={() => onDrop(doc.id)}
+                        onClick={(e) => { if (shouldOpenRow(e)) openEdit(doc); }}
                     >
                         <div className="photo-area">
                             {doc.photo ? (
@@ -199,15 +202,18 @@ export default function DoctorsCmsPage() {
                             {doc.hidden && <span className="hidden-badge">Hidden</span>}
                         </div>
                         <div className="card-body">
-                            <h3>{doc.name}</h3>
-                            <p className="doc-title">{doc.title}</p>
-                            <div className="card-actions">
-                                <button className="btn-sm btn-edit" onClick={() => openEdit(doc)}>Edit</button>
-                                <button className="btn-sm btn-toggle" onClick={() => toggleHidden(doc)}>
-                                    {doc.hidden ? "Show" : "Hide"}
-                                </button>
-                                <button className="btn-sm btn-archive" onClick={() => archiveDoctor(doc)}>Archive</button>
+                            <div className="card-text">
+                                <h3><button type="button" className="staff-row-name" onClick={() => openEdit(doc)}>{doc.name}</button></h3>
+                                <p className="doc-title">{doc.title}</p>
                             </div>
+                            <RowMenu
+                                label={`More actions for ${doc.name}`}
+                                items={[
+                                    { label: "Edit", icon: Pencil, onSelect: () => openEdit(doc) },
+                                    { label: doc.hidden ? "Show on the site" : "Hide from the site", icon: doc.hidden ? Eye : EyeOff, onSelect: () => toggleHidden(doc) },
+                                    { label: "Archive", icon: Archive, onSelect: () => archiveDoctor(doc) },
+                                ]}
+                            />
                         </div>
                     </div>
                 ))}
@@ -319,17 +325,11 @@ export default function DoctorsCmsPage() {
                     color: #3a2606; border-radius: 5px; padding: 0.15rem 0.4rem; font-size: 0.7rem; font-weight: 700;
                 }
 
-                .card-body { padding: 0.9rem 1rem; }
+                .card-body { padding: 0.9rem 1rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+                .card-text { min-width: 0; }
+                .card-body h3 .staff-row-name { font-weight: 700; }
                 .card-body h3 { font-size: 0.98rem; font-weight: 700; margin: 0 0 0.15rem; }
-                .doc-title { font-size: 0.8rem; color: #6ec4ab; margin: 0 0 0.75rem; }
-                .card-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-                .btn-sm { padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.76rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
-                .btn-edit { background: rgba(96,165,250,0.15); color: #93c5fd; }
-                .btn-edit:hover { background: rgba(96,165,250,0.25); }
-                .btn-toggle { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
-                .btn-toggle:hover { background: rgba(255,255,255,0.14); }
-                .btn-archive { background: rgba(245,158,11,0.15); color: #fcd34d; }
-                .btn-archive:hover { background: rgba(245,158,11,0.25); }
+                .doc-title { font-size: 0.8rem; color: #6ec4ab; margin: 0; }
 
                 .modal-overlay {
                     position: fixed; inset: 0; background: rgba(0,0,0,0.6);
@@ -379,7 +379,6 @@ export default function DoctorsCmsPage() {
                     .modal-top-row { flex-direction: column; align-items: center; text-align: center; }
                     .modal-top-fields { width: 100%; }
                     .field-row { grid-template-columns: 1fr; }
-                    .btn-sm { padding: 0.45rem 0.7rem; }
                     .toast { left: 1rem; right: 1rem; bottom: 1rem; }
                 }
             `}</style>
