@@ -160,17 +160,17 @@ export default function RowMenu({ items, label }: Props) {
                     background: #243b44; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px;
                     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
                 }
-                .row-menu-item {
+                .row-menu-panel :global(.row-menu-item) {
                     display: flex; align-items: center; gap: 8px; width: 100%;
                     padding: 8px 10px; border: none; border-radius: 6px; background: none;
                     color: rgba(255, 255, 255, 0.88); font-family: inherit; font-size: 0.82rem;
                     text-align: start; cursor: pointer;
                 }
-                .row-menu-item:hover,
-                .row-menu-item:focus { background: rgba(255, 255, 255, 0.07); outline: none; }
-                .row-menu-item.danger { color: #fca5a5; }
-                .row-menu-item.danger:hover,
-                .row-menu-item.danger:focus { background: rgba(220, 38, 38, 0.14); }
+                .row-menu-panel :global(.row-menu-item:hover),
+                .row-menu-panel :global(.row-menu-item:focus) { background: rgba(255, 255, 255, 0.07); outline: none; }
+                .row-menu-panel :global(.row-menu-item.danger) { color: #fca5a5; }
+                .row-menu-panel :global(.row-menu-item.danger:hover),
+                .row-menu-panel :global(.row-menu-item.danger:focus) { background: rgba(220, 38, 38, 0.14); }
                 .row-menu-divider { height: 1px; margin: 4px 2px; background: rgba(255, 255, 255, 0.08); }
             `}</style>
         </span>
