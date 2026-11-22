@@ -2227,3 +2227,19 @@ button.staff-row-name {
   opacity: 1;
   cursor: progress;
 }
+/* A titled group inside a long popup form (TJ-069d3): a line above, a small
+   title, then the group's own controls (swatches, a checkbox, an upload),
+   which .staff-field would stretch to full width. */
+.staff-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--staff-border);
+}
+.staff-form-section-title {
+  margin: 0;
+  font-size: var(--staff-size-sm);
+  font-weight: 500;
+  color: var(--staff-muted);
+}
