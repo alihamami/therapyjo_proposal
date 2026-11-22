@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 // A patient's clinical assessments, one page each. A patient who comes back
 // with a new injury gets a new page, and the earlier ones stay as written.
@@ -78,6 +79,7 @@ interface ClinicalAssessmentProps {
 }
 
 export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }: ClinicalAssessmentProps) {
+    const confirm = useConfirm();
     const [intakes, setIntakes] = useState<Intake[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
@@ -127,14 +129,14 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
 
     useEffect(() => { load(); }, [load]);
 
-    const openPage = (intake: Intake) => {
+    const openPage = async (intake: Intake) => {
         if (intake.id === selected) return;
-        if (dirty && !window.confirm("You have unsaved Clinical Assessment edits. Switch pages without saving them?")) return;
+        if (dirty && !(await confirm({ title: "Switch pages without saving?", message: "Your unsaved Clinical Assessment edits will be lost.", confirmLabel: "Discard changes", tone: "danger" }))) return;
         show(intake.id, formFrom(intake));
     };
 
-    const startNew = () => {
-        if (dirty && !window.confirm("You have unsaved Clinical Assessment edits. Start a new assessment without saving them?")) return;
+    const startNew = async () => {
+        if (dirty && !(await confirm({ title: "Start a new assessment without saving?", message: "Your unsaved Clinical Assessment edits will be lost.", confirmLabel: "Discard changes", tone: "danger" }))) return;
         const latest = intakes[intakes.length - 1] ?? null;
         const f = formFrom(null);
         for (const key of CARRIED_OVER) {

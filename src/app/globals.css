@@ -1998,3 +1998,55 @@ button.staff-row-name {
   text-align: start;
   cursor: pointer;
 }
+
+/* Confirmations, design 1A (TJ-069b1). Rendered by components/ConfirmDialog.tsx
+   into <body>, so the styles are global. Red (.staff-btn-danger) only when
+   something is deleted for good or unsaved work would be lost. */
+.staff-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--staff-overlay);
+}
+.staff-confirm {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 400px;
+  padding: 1.25rem;
+  background: var(--staff-raised);
+  border: 1px solid var(--staff-border-strong);
+  border-radius: var(--staff-radius-lg);
+  box-shadow: var(--staff-shadow-pop);
+  color: var(--staff-text);
+}
+.staff-confirm-title {
+  margin: 0;
+  font-size: var(--staff-size-md);
+  font-weight: 600;
+}
+.staff-confirm-message {
+  margin: 0.5rem 0 0;
+  color: var(--staff-text-2);
+  font-size: var(--staff-size-base);
+  line-height: 1.5;
+}
+.staff-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+.staff-btn-danger {
+  background: var(--staff-bad-solid);
+  color: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.staff-btn-danger:hover:not(:disabled) {
+  background: var(--staff-bad-solid-hover);
+}

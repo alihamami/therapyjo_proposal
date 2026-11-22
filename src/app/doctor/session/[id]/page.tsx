@@ -127,7 +127,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
     useEffect(() => { fetchData(); }, [fetchData]);
 
     const handleSaveDetails = async () => {
-        if (!confirmDiscard("Saving the session details will reload this page and discard your unsaved SOAP or Clinical Intake text. Continue?")) return;
+        if (!(await confirmDiscard({ title: "Save the session details?", message: "Saving reloads this page, so your unsaved SOAP or Clinical Intake text will be lost.", confirmLabel: "Save anyway" }))) return;
         setSaving(true);
         await fetch(`/api/reservations/${id}`, {
             method: "PUT",
@@ -154,7 +154,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
     };
 
     const handleStatusChange = async (status: string) => {
-        if (!confirmDiscard("Changing the session status will reload this page and discard your unsaved SOAP or Clinical Intake text. Continue?")) return;
+        if (!(await confirmDiscard({ title: "Change the session status?", message: "This reloads the page, so your unsaved SOAP or Clinical Intake text will be lost.", confirmLabel: "Change anyway" }))) return;
         await fetch(`/api/reservations/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -178,8 +178,8 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
             {/* Back + Header */}
             <button
                 className="back-btn"
-                onClick={() => {
-                    if (confirmDiscard("You have unsaved SOAP or Clinical Intake text. Leave without saving?")) {
+                onClick={async () => {
+                    if (await confirmDiscard({ title: "Leave without saving?", message: "Your unsaved SOAP or Clinical Intake text will be lost." })) {
                         router.push("/doctor");
                     }
                 }}

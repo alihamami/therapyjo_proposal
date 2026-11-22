@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { useConfirm, type ConfirmOptions } from "@/app/components/ConfirmDialog";
 
 /**
  * Guards unsaved form text against being thrown away.
  *
  * `dirty` is computed by the caller — this hook does not know what a form is.
  * It does two things: warns on browser close/reload while dirty, and hands
- * back a `confirmDiscard()` the caller must call before any action that would
+ * back an async `confirmDiscard()` the caller must await before any action that would
  * overwrite the form (a refetch) or leave the page.
  *
  * There is no autosave, by decision: a warning was judged enough. (TJ-022)
@@ -35,9 +36,13 @@ export function useUnsavedChanges(dirty: boolean) {
         return () => window.removeEventListener("beforeunload", onBeforeUnload);
     }, []);
 
+    // Asks in the staff portal's own dialog (TJ-069b1); resolves true when
+    // there is nothing to lose or the user chose to discard.
+    const confirm = useConfirm();
     const confirmDiscard = useCallback(
-        (message: string) => !dirtyRef.current || window.confirm(message),
-        []
+        async (options: ConfirmOptions) =>
+            !dirtyRef.current || confirm({ confirmLabel: "Discard changes", tone: "danger", ...options }),
+        [confirm]
     );
 
     return { confirmDiscard };

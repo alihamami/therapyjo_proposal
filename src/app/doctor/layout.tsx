@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { ConfirmProvider } from "@/app/components/ConfirmDialog";
 
 const navItems = [
     { href: "/doctor", label: "My Schedule", icon: "📅" },
@@ -46,7 +47,7 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
                     )}
                 </div>
             </nav>
-            <main className="main">{children}</main>
+            <main className="main"><ConfirmProvider>{children}</ConfirmProvider></main>
 
             <style jsx>{`
                 .doctor-layout { min-height: 100vh; background: var(--bg-dark, #1a2e35); color: #fff; }
