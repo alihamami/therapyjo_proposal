@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { joinPhones } from "@/lib/phone";
-import { Plus } from "lucide-react";
+import { Archive, ChevronRight, Plus } from "lucide-react";
+import RowMenu from "@/app/components/RowMenu";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface Patient {
     id: number;
@@ -90,7 +92,7 @@ export default function PatientsPage() {
                             <th>Phone</th>
                             <th>Last Visit</th>
                             <th>Created</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,16 +101,19 @@ export default function PatientsPage() {
                         ) : patients.length === 0 ? (
                             <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No patients found</td></tr>
                         ) : patients.map((p) => (
-                            <tr key={p.id}>
+                            <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/admin/patients/${p.id}`); }}>
                                 <td className="id-cell">{p.id}</td>
-                                <td className="name-cell">{p.name}</td>
+                                <td className="name-cell"><Link href={`/admin/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
                                 <td>{joinPhones(p.phone1, p.phone2) ?? <span className="no-phone">No phone</span>}</td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
                                 <td>{formatDate(p.createdAt)}</td>
                                 <td>
-                                    <div className="action-buttons">
-                                        <Link href={`/admin/patients/${p.id}`} className="btn-sm btn-view">View</Link>
-                                        <button className="btn-sm btn-archive" onClick={() => handleArchive(p.id)}>Archive</button>
+                                    <div className="staff-row-end">
+                                        <RowMenu
+                                            label={`More actions for ${p.name}`}
+                                            items={[{ label: "Archive", icon: Archive, onSelect: () => handleArchive(p.id) }]}
+                                        />
+                                        <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
                                     </div>
                                 </td>
                             </tr>
@@ -159,16 +164,6 @@ export default function PatientsPage() {
                 .data-table tr:hover { background: rgba(255,255,255,0.02); }
                 .id-cell { color: rgba(255,255,255,0.35); font-variant-numeric: tabular-nums; }
                 .name-cell { font-weight: 500; color: #fff; }
-                .action-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-                :global(.btn-sm) {
-                    padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem;
-                    border: none; cursor: pointer; font-weight: 500; font-family: inherit;
-                    text-decoration: none; display: inline-block;
-                }
-                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
-                .btn-archive { background: rgba(251,191,36,0.12); color: #fbbf24; }
-                .btn-archive:hover { background: rgba(251,191,36,0.22); }
                 .pagination {
                     display: flex; align-items: center; justify-content: center; gap: 1rem;
                     margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem;
@@ -184,7 +179,6 @@ export default function PatientsPage() {
                     .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
                     .page-header .staff-btn { width: 100%; }
                     .search-bar input { max-width: 100%; }
-                    :global(.btn-sm) { padding: 0.42rem 0.75rem; }
                 }
             `}</style>
         </div>

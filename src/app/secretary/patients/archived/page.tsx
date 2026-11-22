@@ -3,6 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { isMissingPhone } from "@/lib/phone";
+import { useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
+import { shouldOpenRow } from "@/lib/rowLink";
 
 interface Patient {
     id: number;
@@ -14,6 +17,7 @@ interface Patient {
 }
 
 export default function SecretaryArchivedPatientsPage() {
+    const router = useRouter();
     const [patients, setPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -62,7 +66,7 @@ export default function SecretaryArchivedPatientsPage() {
                             <th>Name</th>
                             <th>Phone</th>
                             <th>Last Visit</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,15 +75,15 @@ export default function SecretaryArchivedPatientsPage() {
                         ) : patients.length === 0 ? (
                             <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No archived patients</td></tr>
                         ) : patients.map((p) => (
-                            <tr key={p.id}>
+                            <tr key={p.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) router.push(`/secretary/patients/${p.id}`); }}>
                                 <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
-                                <td>{p.name}</td>
+                                <td><Link href={`/secretary/patients/${p.id}`} className="staff-row-name">{p.name}</Link></td>
                                 <td>{isMissingPhone(p.phone1) ? <span className="no-phone">No phone</span> : p.phone1}</td>
                                 <td>{formatDate(p.lastVisitDate)}</td>
                                 <td>
-                                    <div className="action-buttons">
-                                        <Link href={`/secretary/patients/${p.id}`} className="btn-sm btn-view">View</Link>
+                                    <div className="staff-row-end">
                                         <button className="btn-sm btn-restore" onClick={() => handleRestore(p.id)}>Restore</button>
+                                        <ChevronRight size={16} className="staff-row-chevron" aria-hidden="true" />
                                     </div>
                                 </td>
                             </tr>
@@ -119,14 +123,11 @@ export default function SecretaryArchivedPatientsPage() {
                     color: rgba(255,255,255,0.8);
                 }
                 .data-table tr:hover { background: rgba(255,255,255,0.02); }
-                .action-buttons { display: flex; gap: 0.4rem; }
                 :global(.btn-sm) {
                     padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
                 }
-                :global(.btn-view) { background: rgba(76,175,147,0.12); color: #6ee7b7; }
-                :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
                 .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; }
                 .btn-restore:hover { background: rgba(96,165,250,0.22); }
                 .pagination {

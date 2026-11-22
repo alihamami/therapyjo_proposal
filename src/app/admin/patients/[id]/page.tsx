@@ -6,6 +6,8 @@ import { clinicalFileUrl } from "@/lib/storageUrl";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
+import { Archive, Pencil } from "lucide-react";
+import RowMenu from "@/app/components/RowMenu";
 
 interface PatientData {
     id: number;
@@ -337,10 +339,17 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     </div>
                     <div className="header-actions">
                         {patient.archived && <span className="badge-archived">ARCHIVED</span>}
-                        <button className="btn-sm btn-edit" onClick={() => setEditingInfo(true)}>Edit Info</button>
-                        <button className="btn-sm btn-archive" onClick={handleArchiveToggle}>
-                            {patient.archived ? "Restore" : "Archive"}
+                        <button className="staff-btn staff-btn-secondary staff-btn-sm" onClick={() => setEditingInfo(true)}>
+                            <Pencil size={14} aria-hidden="true" />Edit Info
                         </button>
+                        {patient.archived ? (
+                            <button className="staff-btn staff-btn-sm btn-restore" onClick={handleArchiveToggle}>Restore</button>
+                        ) : (
+                            <RowMenu
+                                label="More actions for this patient"
+                                items={[{ label: "Archive", icon: Archive, onSelect: handleArchiveToggle }]}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
@@ -577,8 +586,8 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 }
                 .btn-edit { background: rgba(96,165,250,0.12); color: #93c5fd; }
                 .btn-edit:hover { background: rgba(96,165,250,0.22); }
-                .btn-archive { background: rgba(251,191,36,0.12); color: #fbbf24; }
-                .btn-archive:hover { background: rgba(251,191,36,0.22); }
+                .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; border: 1px solid transparent; }
+                .btn-restore:hover { background: rgba(96,165,250,0.22); }
                 .tabs {
                     display: flex; gap: 0; margin-bottom: 1rem;
                     border-bottom: 1px solid rgba(255,255,255,0.06);
