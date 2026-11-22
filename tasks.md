@@ -149,12 +149,14 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d, e next | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 `READY`; then d3, e, f, g | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
 | TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | DONE — task commit `67b6563`, merged to `master` as `b9a6a3a` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/secretary-duplicate-popup` |
-| TJ-069d | One popup and form-field style | BACKLOG — design decided; pass runs on top of batch 1 | — |
+| TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | READY — cut from `master` | `feat/staff-modal` |
+| TJ-069d2 | Delete popups and the website-doctor editor on the shared component | READY — stacked on TJ-069d1 | `feat/staff-modal-content` |
+| TJ-069d3 | The two employee editors on the shared component | BACKLOG — pass after TJ-069d2 | — |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069f | Emoji become line icons | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069g | Every text size snaps to the six steps | BACKLOG — design decided; pass runs on top of batch 1 | — |
@@ -15702,7 +15704,7 @@ button.staff-row-name {
 - **TJ-069a — Tokens.** The named colours, six sizes and three radii as CSS custom properties in the `globals.css` staff section; restate `.staff-btn*`, `.staff-row-*` and `.no-phone` on them. No visible change. 1 file.
 - **TJ-069b — Confirm dialog (P1-1); split into b1 (dialog, provider, unsaved-changes prompts) and b2 (the 14 confirm calls).** A `ConfirmProvider` and async `useConfirm()` in `src/app/components/`, mounted in the admin, secretary and doctor layouts; the 16 `confirm()` calls become `await confirm({ title, message, confirmLabel, tone })` with specific wording; `useUnsavedChanges`'s `confirmDiscard` becomes async and its 6 callers await it; `beforeunload` unchanged. About 14 files.
 - **TJ-069c — Secretary Duplicate (P1-6).** `secretary/page.tsx` gets admin's duplicate popup flow (date, optional time, error shown), in the shared 2B popup, whose `.staff-modal-*`/`.staff-field` classes are defined here. 2 files.
-- **TJ-069d — Popup and form fields (P1-2).** `.staff-modal-*` and `.staff-field`/`.staff-form-error` classes; the 11 popup files and 10 form families move onto them and drop their local copies. Mechanical, like TJ-068e.
+- **TJ-069d — Popup and form fields (P1-2); split into d1 (shared `StaffModal` + 9 popups), d2 (4 delete popups + website-doctor editor) and d3 (the two employee editors).** `.staff-modal-*` and `.staff-field`/`.staff-form-error` classes; the 11 popup files and 10 form families move onto them and drop their local copies. Mechanical, like TJ-068e.
 - **TJ-069e — Lists (P1-3).** `.staff-page-header`, `.staff-table-wrap`/`.staff-table`, `.staff-search`, `.staff-pagination`, `.staff-loading`, `.staff-empty`; the 17 list pages move onto them; empty wordings unified.
 - **TJ-069f — Icons (P1-4).** Emoji → lucide in the 17 files (menu item `icon` fields become components).
 - **TJ-069g — Type scale (P1-5).** Every remaining `font-size` in the staff files mapped by script to the six tokens (buckets: ≤0.74 → xs, 0.75–0.8 → sm, 0.82–0.9 → base, 0.95–1.1 → md, 1.15–1.3 → lg, ≥1.5 → xl); the planner re-applies the script to verify. Colour literals outside the shared pieces move to tokens in phases 3–4, when those pages are reworked.
@@ -16838,6 +16840,938 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 - [ ] The secretary's Duplicate opens the popup with date and optional time, duplicates on submit, and shows the server's message if it fails.
 - [ ] The shared popup and field classes exist once in `globals.css`.
 - [ ] `tsc` and the build exit 0.
+
+### TJ-069d1 — Popups on one shared component: dashboards, patient files, notes, booking
+
+- **Status:** READY
+- **Branch:** `feat/staff-modal`, cut from `master` at the commit that adds this spec.
+- **Why:** decision P1-2 = **2B**. There are 15 popups in 11 staff files, in 6 different shapes. Instead of repeating the 2B markup 15 times, one `StaffModal` component draws it: header bar with title and ✕, a body that scrolls, a footer bar for the buttons. This step moves 9 popups in 7 files onto it (TJ-069d2 moves 5 more; the two large employee editors are TJ-069d3).
+
+**Planning pass:** 2026-11-22, on `master` at `5ab6688`. Every new block and every CSS deletion below was generated by script from the current files, each anchor checked to occur once, and the generated result type-checked (`tsc` exit 0) and looked at in the mocked preview before this spec was written. Design notes:
+- **The component** renders into `<body>` with global classes (`.staff-modal-*`, defined in TJ-069c), so it cannot hit the styled-jsx scoping gap. The popups' contents stay in each page's own JSX, so page-scoped classes inside them (`.detail-grid`, `.soap-section`, `.photo-drop`, `.use-existing`, `.checkbox-label`, `.req`) keep working.
+- **Behaviour:** the ✕, Escape and a click on the backdrop call the page's existing close handler; Escape is ignored while a confirmation (TJ-069b) is open on top, so the SOAP popup's "Close without saving?" answers first; `closeDisabled` (used by the secretary Duplicate popup while saving) turns all three off. Focus moves into the popup (to the `autoFocus` field where there is one) and returns afterwards. On phones the popup sits at the bottom of the screen, as admin's popups already did. Titles and button labels are unchanged.
+- **Fields** move to `.staff-field` / `.staff-field-row` / `.staff-field-hint` / `.staff-form-error`, and each label gets `htmlFor` with an `id` on its control. The admin dashboard's Duplicate popup gets the same "Leave empty to keep the same time" hint as the secretary's. The booking pages' error box keeps its stacked layout (message above "Use … instead") through a one-line local rule. The notes popup's checkbox stays outside `.staff-field`, so it is not stretched to full width.
+- **CSS:** each file loses exactly the local popup and form rules nothing uses any more. The `.error-msg` rules in the patient files and the admin dashboard stay (their status and file error banners still use them).
+
+**Scope — touch only these (9, one new):** `src/app/globals.css`, `src/app/components/StaffModal.tsx` (new), `src/app/admin/page.tsx`, `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/admin/notes/page.tsx`, `src/app/admin/reservations/new/page.tsx`, `src/app/secretary/reservations/new/page.tsx`, `src/app/secretary/page.tsx`.
+
+**Do not touch:** any other file; the employee pages' Edit popups; any handler, state or label text other than as shown.
+
+**Instructions** (CRLF in the working tree). Where a file has both a phone-width `@media` line and a base rule with the same selector, do the `@media` deletion step first (it is listed first), so every base-rule selector is unique when you delete it.
+
+**1. `src/app/globals.css`** — append at the end:
+```css
+/* Popup component (TJ-069d1, components/StaffModal.tsx). The dialog takes
+   focus when it opens, so it draws no ring of its own; on phones it sits at
+   the bottom of the screen, within thumb reach. */
+.staff-modal:focus {
+  outline: none;
+}
+.staff-field input::placeholder,
+.staff-field textarea::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+@media (max-width: 640px) {
+  .staff-modal-overlay {
+    align-items: flex-end;
+  }
+}
+```
+
+**2. `src/app/components/StaffModal.tsx`** (new), exactly:
+```tsx
+"use client";
+
+// Popup, design 2B (TJ-069d1). A header bar with the title and a close button,
+// a body that scrolls on its own, and an optional footer bar for the actions.
+// Escape and a click on the backdrop close it, except while a confirmation is
+// open on top (the confirmation answers first) or while closing is disabled
+// (saving). Focus moves into the popup when it opens (to an autoFocus field if
+// there is one) and goes back where it was when it closes. It renders into
+// <body>, so the styles are global: .staff-modal-* in globals.css.
+
+import { useEffect, useId, useRef } from "react";
+import type { ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
+
+interface StaffModalProps {
+    title: ReactNode;
+    onClose: () => void;
+    /** The popup's body. */
+    children: ReactNode;
+    /** The action buttons, shown in the footer bar. */
+    footer?: ReactNode;
+    /** 560px wide instead of 440px, for long forms and detail views. */
+    wide?: boolean;
+    /** While saving: the close button, Escape and the backdrop do nothing. */
+    closeDisabled?: boolean;
+}
+
+export default function StaffModal({ title, onClose, children, footer, wide, closeDisabled }: StaffModalProps) {
+    const titleId = useId();
+    const dialogRef = useRef<HTMLDivElement>(null);
+    // Latest values for the listener registered once below.
+    const onCloseRef = useRef(onClose);
+    const disabledRef = useRef(closeDisabled);
+    useEffect(() => {
+        onCloseRef.current = onClose;
+        disabledRef.current = closeDisabled;
+    });
+
+    useEffect(() => {
+        const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        const dialog = dialogRef.current;
+        if (dialog && !dialog.contains(document.activeElement)) dialog.focus({ preventScroll: true });
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key !== "Escape" || disabledRef.current) return;
+            if (document.querySelector(".staff-confirm-overlay")) return;
+            onCloseRef.current();
+        };
+        document.addEventListener("keydown", onKey);
+        return () => {
+            document.removeEventListener("keydown", onKey);
+            if (previous && document.contains(previous)) previous.focus({ preventScroll: true });
+        };
+    }, []);
+
+    return createPortal(
+        <div
+            className="staff-modal-overlay"
+            onMouseDown={(e) => { if (e.target === e.currentTarget && !closeDisabled) onClose(); }}
+        >
+            <div
+                ref={dialogRef}
+                className={wide ? "staff-modal staff-modal-wide" : "staff-modal"}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
+                tabIndex={-1}
+            >
+                <div className="staff-modal-head">
+                    <h2 id={titleId} className="staff-modal-title">{title}</h2>
+                    <button type="button" className="staff-modal-close" aria-label="Close" onClick={onClose} disabled={closeDisabled}>
+                        <X size={16} aria-hidden="true" />
+                    </button>
+                </div>
+                <div className="staff-modal-body">{children}</div>
+                {footer && <div className="staff-modal-foot">{footer}</div>}
+            </div>
+        </div>,
+        document.body
+    );
+}
+```
+
+**3. Per file** (each block shown at its real indentation, prefixed by 3 spaces for this list):
+
+**`src/app/admin/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {/* Duplicate Modal */}
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {/* Duplicate Modal (design 2B, TJ-069d1) */}
+               {dupId !== null && (
+                   <StaffModal
+                       title="Duplicate Reservation"
+                       onClose={() => setDupId(null)}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)}>Cancel</button>
+                           <button className="staff-btn staff-btn-primary" onClick={submitDuplicate} disabled={!dupDate}>Duplicate</button>
+                       </>}
+                   >
+                       <div className="staff-field-row">
+                           <div className="staff-field">
+                               <label htmlFor="dup-date">New date</label>
+                               <input id="dup-date" type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} autoFocus />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="dup-time">New time</label>
+                               <input id="dup-time" type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
+                               <span className="staff-field-hint">Leave empty to keep the same time</span>
+                           </div>
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. Replace the block that starts with the line
+   ```tsx
+   {/* Reservation Detail Modal */}
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {/* Reservation Detail Modal (design 2B, TJ-069d1) */}
+               {detailId !== null && detail && (
+                   <StaffModal
+                       title={detail.patient.name}
+                       wide
+                       onClose={() => { setDetailId(null); setDetail(null); }}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => { setDetailId(null); setDetail(null); }}>Close</button>
+                           <button className="staff-btn staff-btn-primary" onClick={() => router.push(`/admin/patients/${detail.patient.id}?soap=${detail.id}`)}>Edit SOAP Note</button>
+                       </>}
+                   >
+                       <div className="detail-grid">
+                           <div className="detail-item"><span className="detail-label">Phone</span><span>{isMissingPhone(detail.patient.phone1) ? <span className="no-phone">No phone</span> : detail.patient.phone1}</span></div>
+                           <div className="detail-item"><span className="detail-label">Doctor</span><span>{detail.doctor?.name ?? detail.doctorNameSnapshot ?? "—"}</span></div>
+                           <div className="detail-item"><span className="detail-label">Status</span><span>{detail.status.replace("_", " ")}</span></div>
+                           <div className="detail-item"><span className="detail-label">Payment</span><span>{detail.paymentType || "—"}</span></div>
+                           {detail.note && <div className="detail-item full"><span className="detail-label">Note</span><span>{detail.note}</span></div>}
+                           {detail.nextSessionNote && <div className="detail-item full"><span className="detail-label">Next Session Note</span><span>{detail.nextSessionNote}</span></div>}
+                           {detail.previousSessionNote && (
+                               <div className="detail-item full prev-note">
+                                   <span className="detail-label">From Previous Session {detail.previousSessionDate ? `(${new Date(detail.previousSessionDate).toLocaleDateString()})` : ""}</span>
+                                   <span>{detail.previousSessionNote}</span>
+                               </div>
+                           )}
+                       </div>
+                       {/* Drawn whether or not the note has text, with a way into
+                           its editor on the patient file. (TJ-065) */}
+                       <div className="soap-section">
+                           <h3>SOAP Note</h3>
+                           {detail.soapNote && (detail.soapNote.subjective || detail.soapNote.objective || detail.soapNote.assessment || detail.soapNote.plan) ? (
+                               <>
+                                   {detail.soapNote.subjective && <div className="soap-field"><strong>S:</strong> {detail.soapNote.subjective}</div>}
+                                   {detail.soapNote.objective && <div className="soap-field"><strong>O:</strong> {detail.soapNote.objective}</div>}
+                                   {detail.soapNote.assessment && <div className="soap-field"><strong>A:</strong> {detail.soapNote.assessment}</div>}
+                                   {detail.soapNote.plan && <div className="soap-field"><strong>P:</strong> {detail.soapNote.plan}</div>}
+                               </>
+                           ) : (
+                               <div className="soap-field">No SOAP note yet.</div>
+                           )}
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+4. Inside `@media (max-width: 640px)` delete the two lines `.modal-overlay { padding: 1rem; align-items: flex-end; }` and `.modal-card { padding: 1.25rem; max-height: 85vh; }`.
+5. In the `<style jsx>` block, delete these whole rules (one-line or multi-line, through the closing `}`), and nothing else: `.modal-overlay {…}`, `.modal-card {…}`, `.modal-sm {…}`, `.modal-lg {…}`, `.modal-card h2 {…}`, `.form-group {…}`, `.form-group label {…}`, `.form-group input, .form-group textarea, .form-group select {…}`, `.form-group select option {…}`, `.form-group input:focus, .form-group textarea:focus, .form-group select:focus {…}`, `.modal-actions {…}`.
+
+**`src/app/admin/patients/[id]/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {/* Edit Info Modal */}
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {/* Edit Info Modal (design 2B, TJ-069d1) */}
+               {editingInfo && (
+                   <StaffModal
+                       title="Update Patient Info"
+                       onClose={() => setEditingInfo(false)}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
+                           <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>
+                               {savingInfo ? "Saving…" : "Save"}
+                           </button>
+                       </>}
+                   >
+                       <div className="staff-field">
+                           <label htmlFor="info-name">Name</label>
+                           <input id="info-name" value={infoForm.name} onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })} autoFocus />
+                       </div>
+                       <div className="staff-field-row">
+                           <div className="staff-field">
+                               <label htmlFor="info-phone1">Phone 1</label>
+                               <input id="info-phone1" value={infoForm.phone1} onChange={(e) => setInfoForm({ ...infoForm, phone1: e.target.value })} />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="info-phone2">Phone 2</label>
+                               <input id="info-phone2" value={infoForm.phone2} onChange={(e) => setInfoForm({ ...infoForm, phone2: e.target.value })} />
+                               <span className="staff-field-hint">Optional</span>
+                           </div>
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. Replace the block that starts with the line
+   ```tsx
+   {/* SOAP Note Modal (TJ-065) */}
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {/* SOAP Note Modal (TJ-065; design 2B, TJ-069d1) */}
+               {soapSession && (
+                   <StaffModal
+                       title="SOAP Note"
+                       wide
+                       onClose={closeSoap}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={closeSoap}>Close</button>
+                           <button className="staff-btn staff-btn-primary" aria-busy={savingSoap} onClick={saveSoap} disabled={savingSoap}>
+                               {savingSoap ? "Saving…" : soapSaved ? "✓ Saved" : "Save SOAP Note"}
+                           </button>
+                       </>}
+                   >
+                       <p className="staff-modal-text">
+                           {formatDate(soapSession.sessionDate)} · {soapSession.doctor?.name ?? soapSession.doctorNameSnapshot ?? "—"}
+                       </p>
+                       {soapError && <div className="staff-form-error" role="alert">{soapError}</div>}
+                       {SOAP_FIELDS.map((f) => (
+                           <div className="staff-field" key={f.key}>
+                               <label htmlFor={`soap-${f.key}`}>{f.label}</label>
+                               <textarea
+                                   id={`soap-${f.key}`}
+                                   rows={3}
+                                   value={soapForm[f.key]}
+                                   onChange={(e) => setSoapForm({ ...soapForm, [f.key]: e.target.value })}
+                                   placeholder={`Enter ${f.key}…`}
+                               />
+                           </div>
+                       ))}
+                   </StaffModal>
+               )}
+   ```
+4. Inside the phone-width `@media` block delete the line `.modal-card { padding: 1.25rem; }`.
+5. In the `<style jsx>` block, delete these whole rules (one-line or multi-line, through the closing `}`), and nothing else: `.form-group {…}`, `.form-group label {…}`, `.form-group input, .form-group textarea {…}`, `.form-group input:focus, .form-group textarea:focus {…}`, `.modal-overlay {…}`, `.modal-card {…}`, `.modal-card h2 {…}`, `.modal-wide {…}`, `.modal-sub {…}`, `.form-stack {…}`, `.modal-actions {…}`.
+
+**`src/app/secretary/patients/[id]/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {/* Edit Info Modal — name + phones only */}
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {/* Edit Info Modal — name + phones only (design 2B, TJ-069d1) */}
+               {editingInfo && (
+                   <StaffModal
+                       title="Update Patient Info"
+                       onClose={() => setEditingInfo(false)}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setEditingInfo(false)}>Cancel</button>
+                           <button className="staff-btn staff-btn-primary" aria-busy={savingInfo} onClick={saveInfo} disabled={savingInfo}>
+                               {savingInfo ? "Saving…" : "Save"}
+                           </button>
+                       </>}
+                   >
+                       <div className="staff-field">
+                           <label htmlFor="info-name">Name</label>
+                           <input id="info-name" value={infoForm.name} onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })} autoFocus />
+                       </div>
+                       <div className="staff-field-row">
+                           <div className="staff-field">
+                               <label htmlFor="info-phone1">Phone 1</label>
+                               <input id="info-phone1" value={infoForm.phone1} onChange={(e) => setInfoForm({ ...infoForm, phone1: e.target.value })} />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="info-phone2">Phone 2</label>
+                               <input id="info-phone2" value={infoForm.phone2} onChange={(e) => setInfoForm({ ...infoForm, phone2: e.target.value })} />
+                               <span className="staff-field-hint">Optional</span>
+                           </div>
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. In the `<style jsx>` block, delete these whole rules (one-line or multi-line, through the closing `}`), and nothing else: `.modal-overlay {…}`, `.modal-card {…}`, `.modal-card h2 {…}`, `.form-stack {…}`, `.form-group {…}`, `.form-group label {…}`, `.form-group input {…}`, `.form-group input:focus {…}`, `.modal-actions {…}`.
+
+**`src/app/admin/notes/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {/* Add/Edit Modal */}
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {/* Add/Edit Modal (design 2B, TJ-069d1) */}
+               {showModal && (
+                   <StaffModal
+                       title={editId ? "Edit Note" : "Add Note"}
+                       onClose={() => setShowModal(false)}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                           <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving || !form.name}>
+                               {saving ? "Saving…" : editId ? "Update" : "Create"}
+                           </button>
+                       </>}
+                   >
+                       <div className="staff-field">
+                           <label htmlFor="note-name">Name / Title</label>
+                           <input id="note-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoFocus />
+                       </div>
+                       <div className="staff-field-row">
+                           <div className="staff-field">
+                               <label htmlFor="note-date">Date</label>
+                               <input id="note-date" type="date" value={form.noteDate} onChange={(e) => setForm({ ...form, noteDate: e.target.value })} />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="note-doctor">Doctor</label>
+                               <select id="note-doctor" value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>
+                                   {doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
+                               </select>
+                           </div>
+                       </div>
+                       <label className="checkbox-label">
+                           <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
+                           Doctor check note
+                       </label>
+                       <div className="staff-field">
+                           <label htmlFor="note-details">Details</label>
+                           <textarea id="note-details" rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} />
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. Inside the phone-width `@media` block delete the two lines `.form-row { flex-direction: column; gap: 0.75rem; }` and `.modal-card { padding: 1.25rem; }`. Keep both `.checkbox-label` rules.
+4. In the `<style jsx>` block, delete these whole rules (one-line or multi-line, through the closing `}`), and nothing else: `.modal-overlay {…}`, `.modal-card {…}`, `.modal-card h2 {…}`, `.form-stack {…}`, `.form-row {…}`, `.form-row .form-group {…}`, `.form-group {…}`, `.form-group label {…}`, `.form-group input, .form-group textarea, .form-group select {…}`, `.form-group select option {…}`, `.form-group input:focus, .form-group textarea:focus, .form-group select:focus {…}`, `.modal-actions {…}`.
+
+**`src/app/admin/reservations/new/page.tsx`**
+
+1. After the import line `import { isMissingPhone } from "@/lib/phone";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {showNewPatient && (
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {showNewPatient && (
+                   <StaffModal
+                       title="New Patient"
+                       onClose={() => setShowNewPatient(false)}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setShowNewPatient(false)}>Cancel</button>
+                           <button className="staff-btn staff-btn-primary" aria-busy={creatingPatient} onClick={handleCreatePatient} disabled={creatingPatient}>
+                               {creatingPatient ? "Creating…" : "Create & Select"}
+                           </button>
+                       </>}
+                   >
+                       {newPatientError && (
+                           <div className="staff-form-error new-patient-error">
+                               {newPatientError}
+                               {duplicateMatch && (
+                                   <button className="use-existing" onClick={() => selectPatient(duplicateMatch)}>
+                                       Use {duplicateMatch.name} instead
+                                   </button>
+                               )}
+                           </div>
+                       )}
+                       <div className="staff-field">
+                           <label htmlFor="np-name">Patient Name <span className="req">*</span></label>
+                           <input
+                               id="np-name"
+                               value={newPatient.name}
+                               onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+                               autoFocus
+                           />
+                       </div>
+                       <div className="staff-field">
+                           <label htmlFor="np-phone1">Phone 1 <span className="req">*</span></label>
+                           <input
+                               id="np-phone1"
+                               value={newPatient.phone1}
+                               onChange={(e) => setNewPatient({ ...newPatient, phone1: e.target.value })}
+                               placeholder="e.g. 0791234567"
+                           />
+                       </div>
+                       <div className="staff-field">
+                           <label htmlFor="np-phone2">Phone 2</label>
+                           <input
+                               id="np-phone2"
+                               value={newPatient.phone2}
+                               onChange={(e) => setNewPatient({ ...newPatient, phone2: e.target.value })}
+                               placeholder="Optional"
+                           />
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. Replace the whole `.modal-error {…}` rule (one-line or multi-line) with the single line `.new-patient-error { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }` at the same indentation.
+4. Inside the phone-width `@media` block delete the line `.modal-card { padding: 1.25rem; }`.
+5. In the `<style jsx>` block, delete these whole rules (one-line or multi-line, through the closing `}`), and nothing else: `.modal-overlay {…}`, `.modal-card {…}`, `.modal-card h2 {…}`, `.modal-stack {…}`, `.modal-actions {…}`.
+
+**`src/app/secretary/reservations/new/page.tsx`**
+
+1. After the import line `import { isMissingPhone } from "@/lib/phone";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {showNewPatient && (
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {showNewPatient && (
+                   <StaffModal
+                       title="New Patient"
+                       onClose={() => setShowNewPatient(false)}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setShowNewPatient(false)}>Cancel</button>
+                           <button className="staff-btn staff-btn-primary" aria-busy={creatingPatient} onClick={handleCreatePatient} disabled={creatingPatient}>
+                               {creatingPatient ? "Creating…" : "Create & Select"}
+                           </button>
+                       </>}
+                   >
+                       {newPatientError && (
+                           <div className="staff-form-error new-patient-error">
+                               {newPatientError}
+                               {duplicateMatch && (
+                                   <button className="use-existing" onClick={() => selectPatient(duplicateMatch)}>
+                                       Use {duplicateMatch.name} instead
+                                   </button>
+                               )}
+                           </div>
+                       )}
+                       <div className="staff-field">
+                           <label htmlFor="np-name">Patient Name <span className="req">*</span></label>
+                           <input
+                               id="np-name"
+                               value={newPatient.name}
+                               onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+                               autoFocus
+                           />
+                       </div>
+                       <div className="staff-field">
+                           <label htmlFor="np-phone1">Phone 1 <span className="req">*</span></label>
+                           <input
+                               id="np-phone1"
+                               value={newPatient.phone1}
+                               onChange={(e) => setNewPatient({ ...newPatient, phone1: e.target.value })}
+                               placeholder="e.g. 0791234567"
+                           />
+                       </div>
+                       <div className="staff-field">
+                           <label htmlFor="np-phone2">Phone 2</label>
+                           <input
+                               id="np-phone2"
+                               value={newPatient.phone2}
+                               onChange={(e) => setNewPatient({ ...newPatient, phone2: e.target.value })}
+                               placeholder="Optional"
+                           />
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. Replace the whole `.modal-error {…}` rule (one-line or multi-line) with the single line `.new-patient-error { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }` at the same indentation.
+4. In the `<style jsx>` block, delete these whole rules (one-line or multi-line, through the closing `}`), and nothing else: `.modal-overlay {…}`, `.modal-card {…}`, `.modal-card h2 {…}`, `.modal-stack {…}`, `.modal-actions {…}`.
+
+**`src/app/secretary/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {/* Duplicate popup (TJ-069c, design 2B) */}
+   ```
+   (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {/* Duplicate popup (TJ-069c; on the shared component since TJ-069d1) */}
+               {dupId !== null && (
+                   <StaffModal
+                       title="Duplicate session"
+                       onClose={() => setDupId(null)}
+                       closeDisabled={dupSaving}
+                       footer={<>
+                           <button type="button" className="staff-btn staff-btn-secondary" onClick={() => setDupId(null)} disabled={dupSaving}>Cancel</button>
+                           <button type="button" className="staff-btn staff-btn-primary" aria-busy={dupSaving} onClick={submitDuplicate} disabled={!dupDate || dupSaving}>
+                               {!dupSaving && <CalendarPlus size={15} aria-hidden="true" />}
+                               {dupSaving ? "Duplicating…" : "Duplicate"}
+                           </button>
+                       </>}
+                   >
+                       {dupReservation && (
+                           <p className="staff-modal-text">
+                               {dupReservation.patient.name} with {dupReservation.doctor?.name ?? dupReservation.doctorNameSnapshot ?? "no doctor"}
+                           </p>
+                       )}
+                       {dupError && <div className="staff-form-error" role="alert">{dupError}</div>}
+                       <div className="staff-field-row">
+                           <div className="staff-field">
+                               <label htmlFor="dup-date">New date</label>
+                               <input id="dup-date" type="date" value={dupDate} onChange={(e) => setDupDate(e.target.value)} autoFocus />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="dup-time">New time</label>
+                               <input id="dup-time" type="time" value={dupTime} onChange={(e) => setDupTime(e.target.value)} />
+                               <span className="staff-field-hint">Leave empty to keep the same time</span>
+                           </div>
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. Replace `import { CalendarPlus, Plus, X } from "lucide-react";` with `import { CalendarPlus, Plus } from "lucide-react";`.
+
+**Verification:**
+- `grep -nE 'className="[^"]*\b(modal-overlay|modal-card|modal-actions|form-group|form-stack|modal-error|modal-stack|modal-sub)\b' src/app/admin/page.tsx "src/app/admin/patients/[id]/page.tsx" "src/app/secretary/patients/[id]/page.tsx" src/app/admin/notes/page.tsx src/app/admin/reservations/new/page.tsx src/app/secretary/reservations/new/page.tsx src/app/secretary/page.tsx` prints nothing.
+- `grep -c "<StaffModal"` prints `2` for `admin/page.tsx` and `admin/patients/[id]/page.tsx`, and `1` for each of the other five page files.
+- `git diff --stat` against the base lists exactly the 9 files (1 added).
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+- The planner compares every file with the script-generated result, then tests the popups in the mocked preview (Escape, ✕, backdrop, focus, the SOAP "Close without saving?" order, phone width).
+
+**Done when:**
+- [ ] The 9 popups use `StaffModal`; no old popup or form class is left in those files' markup or CSS.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-069d2 — Delete popups and the website-doctor editor on the shared component
+
+- **Status:** READY
+- **Branch:** `feat/staff-modal-content`, cut from the tip of `feat/staff-modal`.
+- **Why:** the 4 "Delete permanently" popups (blog post, archived website doctor, doctor account, secretary account) and the website-doctor editor move onto `StaffModal`. Their red button becomes the shared danger button.
+
+**Planning pass:** 2026-11-22, on `master` at `5ab6688` (TJ-069d1 does not touch these files, so the anchors hold at its tip). Generated, anchor-checked, type-checked and previewed with TJ-069d1. The delete popups keep their wording, their "type the name to confirm" field (now `autoComplete="off"`) and their checks; while deleting, Cancel, ✕, Escape and the backdrop are off (`closeDisabled={deleting}`), and the button shows the spinner. CSS rules are deleted only when every class they name is unused afterwards: on the two employee pages that means only `.modal-narrow`, `.delete-warning` and `.btn-danger*`, because their Edit popups (TJ-069d3) still use the rest.
+
+**Scope — touch only these (6):** `src/app/globals.css`, `src/app/admin/blog/page.tsx`, `src/app/admin/doctors/archived/page.tsx`, `src/app/admin/doctors/page.tsx`, `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/secretaries/page.tsx`.
+
+**Do not touch:** the employee pages' Edit popups and the rules they use; anything else.
+
+**Instructions** (CRLF):
+
+**1. `src/app/globals.css`** — append at the end:
+```css
+/* Danger button states (TJ-069d2): dimmed until the typed confirmation
+   matches; full colour with the spinner while deleting. */
+.staff-btn-danger:disabled {
+  opacity: 0.5;
+  box-shadow: none;
+}
+.staff-btn-danger[aria-busy="true"]:disabled {
+  opacity: 1;
+  cursor: progress;
+}
+```
+
+**2. Per file:**
+
+**`src/app/admin/blog/page.tsx`**
+
+1. After the import line `import { shouldOpenRow } from "@/lib/rowLink";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {deleteTarget && (
+   ```
+   (the first such line after the page's table or grid) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {deleteTarget && (
+                   <StaffModal
+                       title={`Delete this post?`}
+                       onClose={() => setDeleteTarget(null)}
+                       closeDisabled={deleting}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+                           <button
+                               className="staff-btn staff-btn-danger"
+                               aria-busy={deleting}
+                               onClick={handleHardDelete}
+                               disabled={deleting || deleteConfirm !== "DELETE"}
+                           >
+                               {deleting ? "Deleting…" : "Delete permanently"}
+                           </button>
+                       </>}
+                   >
+                       <p className="staff-modal-text">
+                           <strong>{deleteTarget.title || "(untitled)"}</strong> will be removed permanently.
+                           This cannot be undone.
+                       </p>
+                       {deleteTarget.linked && (
+                           <p className="staff-modal-text">
+                               Its {deleteTarget.linked.lang === "AR" ? "Arabic" : "English"} translation is
+                               <strong> kept</strong>, and keeps its own status — but the two stop being linked,
+                               and that cannot be undone either.
+                           </p>
+                       )}
+                       {deleteError && <div className="staff-form-error" role="alert">{deleteError}</div>}
+                       <div className="staff-field">
+                           <label htmlFor="delete-confirm">Type <strong>DELETE</strong> to confirm</label>
+                           <input
+                               id="delete-confirm"
+                               value={deleteConfirm}
+                               onChange={(e) => setDeleteConfirm(e.target.value)}
+                               autoComplete="off"
+                               autoFocus
+                           />
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. In the `<style jsx>` block delete these whole rules (base and phone-width `@media` copies alike; one-line or multi-line through the closing `}`), and nothing else:
+   - `.btn-danger {…}`
+   - `.btn-danger:hover:not(:disabled) {…}`
+   - `.btn-danger:disabled {…}`
+   - `.modal-overlay {…}`
+   - `.modal-card {…}`
+   - `.modal-card h2 {…}`
+   - `.modal-narrow {…}`
+   - `.modal-actions {…}`
+   - `.delete-warning {…}`
+   - `.form-group {…}`
+   - `.form-group label {…}`
+   - `.form-group input {…}`
+   - `.form-group input:focus {…}`
+   - `.error-msg {…}`
+   - `.modal-card {…}`
+
+**`src/app/admin/doctors/archived/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {deleteTarget && (
+   ```
+   (the first such line after the page's table or grid) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {deleteTarget && (
+                   <StaffModal
+                       title={`Delete ${deleteTarget.name}?`}
+                       onClose={() => setDeleteTarget(null)}
+                       closeDisabled={deleting}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+                           <button
+                               className="staff-btn staff-btn-danger"
+                               aria-busy={deleting}
+                               onClick={handleHardDelete}
+                               disabled={deleting || deleteConfirm !== deleteTarget.name}
+                           >
+                               {deleting ? "Deleting…" : "Delete permanently"}
+                           </button>
+                       </>}
+                   >
+                       <p className="staff-modal-text">
+                           This permanently removes the public profile and its photo, and cannot be undone.
+                           It does not touch the doctor&apos;s employee account, reservations, or notes.
+                       </p>
+                       {deleteError && <div className="staff-form-error" role="alert">{deleteError}</div>}
+                       <div className="staff-field">
+                           <label htmlFor="delete-confirm">Type <strong>{deleteTarget.name}</strong> to confirm</label>
+                           <input
+                               id="delete-confirm"
+                               value={deleteConfirm}
+                               onChange={(e) => setDeleteConfirm(e.target.value)}
+                               autoComplete="off"
+                               autoFocus
+                           />
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. In the `<style jsx>` block delete these whole rules (base and phone-width `@media` copies alike; one-line or multi-line through the closing `}`), and nothing else:
+   - `.modal-overlay {…}`
+   - `.modal-card {…}`
+   - `.modal-card h2 {…}`
+   - `.delete-warning {…}`
+   - `.form-group {…}`
+   - `.form-group label {…}`
+   - `.form-group input {…}`
+   - `.form-group input:focus {…}`
+   - `.modal-actions {…}`
+   - `.btn-danger {…}`
+   - `.btn-danger:hover:not(:disabled) {…}`
+   - `.btn-danger:disabled {…}`
+   - `.error-msg {…}`
+   - `.modal-overlay {…}`
+   - `.modal-card {…}`
+
+**`src/app/admin/employees/doctors/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {deleteTarget && (
+   ```
+   (the first such line after the page's table or grid) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {deleteTarget && (
+                   <StaffModal
+                       title={`Delete ${deleteTarget.name}?`}
+                       onClose={() => setDeleteTarget(null)}
+                       closeDisabled={deleting}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+                           <button
+                               className="staff-btn staff-btn-danger"
+                               aria-busy={deleting}
+                               onClick={handleHardDelete}
+                               disabled={deleting || deleteConfirm !== deleteTarget.name}
+                           >
+                               {deleting ? "Deleting…" : "Delete permanently"}
+                           </button>
+                       </>}
+                   >
+                       <p className="staff-modal-text">
+                           This permanently removes the account and cannot be undone. It is refused if
+                           this doctor has any reservations, notes, or a linked public profile.
+                       </p>
+                       {deleteError && <div className="staff-form-error" role="alert">{deleteError}</div>}
+                       <div className="staff-field">
+                           <label htmlFor="delete-confirm">Type <strong>{deleteTarget.name}</strong> to confirm</label>
+                           <input
+                               id="delete-confirm"
+                               value={deleteConfirm}
+                               onChange={(e) => setDeleteConfirm(e.target.value)}
+                               autoComplete="off"
+                               autoFocus
+                           />
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. In the `<style jsx>` block delete these whole rules (base and phone-width `@media` copies alike; one-line or multi-line through the closing `}`), and nothing else:
+   - `.modal-narrow {…}`
+   - `.delete-warning {…}`
+   - `.btn-danger {…}`
+   - `.btn-danger:hover:not(:disabled) {…}`
+   - `.btn-danger:disabled {…}`
+
+**`src/app/admin/employees/secretaries/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {deleteTarget && (
+   ```
+   (the first such line after the page's table or grid) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {deleteTarget && (
+                   <StaffModal
+                       title={`Delete ${deleteTarget.name}?`}
+                       onClose={() => setDeleteTarget(null)}
+                       closeDisabled={deleting}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+                           <button
+                               className="staff-btn staff-btn-danger"
+                               aria-busy={deleting}
+                               onClick={handleHardDelete}
+                               disabled={deleting || deleteConfirm !== deleteTarget.name}
+                           >
+                               {deleting ? "Deleting…" : "Delete permanently"}
+                           </button>
+                       </>}
+                   >
+                       <p className="staff-modal-text">
+                           This permanently removes the account and cannot be undone. It is refused if
+                           this secretary has any reservations, notes, or a linked public profile.
+                       </p>
+                       {deleteError && <div className="staff-form-error" role="alert">{deleteError}</div>}
+                       <div className="staff-field">
+                           <label htmlFor="delete-confirm">Type <strong>{deleteTarget.name}</strong> to confirm</label>
+                           <input
+                               id="delete-confirm"
+                               value={deleteConfirm}
+                               onChange={(e) => setDeleteConfirm(e.target.value)}
+                               autoComplete="off"
+                               autoFocus
+                           />
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. In the `<style jsx>` block delete these whole rules (base and phone-width `@media` copies alike; one-line or multi-line through the closing `}`), and nothing else:
+   - `.modal-narrow {…}`
+   - `.delete-warning {…}`
+   - `.btn-danger {…}`
+   - `.btn-danger:hover:not(:disabled) {…}`
+   - `.btn-danger:disabled {…}`
+
+**`src/app/admin/doctors/page.tsx`**
+
+1. After the import line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert `import StaffModal from "@/app/components/StaffModal";`.
+2. Replace the block that starts with the line
+   ```tsx
+   {showModal && (
+   ```
+   (the first such line after the page's table or grid) and ends at the first following line that is exactly `            )}` (12 spaces), with:
+   ```tsx
+               {showModal && (
+                   <StaffModal
+                       title={editing ? "Edit Doctor" : "Add Doctor"}
+                       onClose={() => setShowModal(false)}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                           <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving || !form.name || !form.title}>
+                               {saving ? "Saving…" : "Save"}
+                           </button>
+                       </>}
+                   >
+                       <div className="modal-top-row">
+                           <div className="photo-drop" onClick={() => fileInputRef.current?.click()}>
+                               {photoPreview ? (
+                                   <img src={photoPreview} alt="Preview" className="photo-preview-img" />
+                               ) : (
+                                   <span className="drop-hint">Photo</span>
+                               )}
+                           </div>
+                           <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePhotoChange} />
+                           <div className="modal-top-fields">
+                               <div className="staff-field">
+                                   <label htmlFor="doc-name">Name *</label>
+                                   <input id="doc-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoFocus />
+                               </div>
+                               <div className="staff-field">
+                                   <label htmlFor="doc-title">Title *</label>
+                                   <input id="doc-title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Physiotherapist" />
+                               </div>
+                           </div>
+                       </div>
+                       <div className="staff-field">
+                           <label htmlFor="doc-specialty">Specialty</label>
+                           <input id="doc-specialty" value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder="Manual Therapy & Sports Rehab" />
+                       </div>
+                       <div className="staff-field">
+                           <label htmlFor="doc-bio">Bio</label>
+                           <textarea id="doc-bio" rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
+                       </div>
+                       <div className="staff-field-row">
+                           <div className="staff-field">
+                               <label htmlFor="doc-contact">Contact</label>
+                               <input id="doc-contact" value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="doc-order">Order</label>
+                               <input id="doc-order" type="number" min={1} value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} />
+                           </div>
+                       </div>
+                       <div className="staff-field">
+                           <label htmlFor="doc-account">Linked login account</label>
+                           <select id="doc-account" value={form.userId} onChange={(e) => setForm({ ...form, userId: e.target.value })}>
+                               <option value="">— None (staff-managed only) —</option>
+                               {accounts.map((a) => (
+                                   <option key={a.id} value={a.id}>{a.name}</option>
+                               ))}
+                           </select>
+                           <span className="staff-field-hint">Lets this doctor submit self-edits from their own dashboard, subject to approval.</span>
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+3. In the `<style jsx>` block delete these whole rules (base and phone-width `@media` copies alike; one-line or multi-line through the closing `}`), and nothing else:
+   - `.modal-overlay {…}`
+   - `.modal-card {…}`
+   - `.modal-card h2 {…}`
+   - `.field {…}`
+   - `.field label {…}`
+   - `.field input, .field textarea, .field select {…}`
+   - `.field input:focus, .field textarea:focus, .field select:focus {…}`
+   - `.field select option {…}`
+   - `.field-hint {…}`
+   - `.field-row {…}`
+   - `.modal-actions {…}`
+   - `.modal-overlay {…}`
+   - `.modal-card {…}`
+   - `.field-row {…}`
+
+**Verification:**
+- `grep -n 'className="btn-danger"\|className="modal-card modal-narrow"' src/app/admin/blog/page.tsx src/app/admin/doctors/archived/page.tsx src/app/admin/employees/doctors/page.tsx src/app/admin/employees/secretaries/page.tsx` prints nothing; `grep -c "<StaffModal"` prints `1` in each of the 5 page files.
+- `git diff --stat` against the TJ-069d1 commit lists exactly the 6 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The 5 popups use `StaffModal`; the employee Edit popups are unchanged.
+- [ ] `tsc` and the build exit 0.
+
+---
+
+### TJ-069d3 — The two employee editors on the shared component
+
+- **Status:** BACKLOG — pass after TJ-069d2.
+- **Shape:** the doctor and secretary Edit popups are long forms (photo, working hours, username and password with a show/hide toggle, admin-password check, colour swatches, an access checkbox, and a documents section with its own uploads and errors). They have their own `.modal-form`/`.modal-body` scroll layout and `.form-grid`. Moving them onto `StaffModal` (`wide`) needs a field-by-field pass so `.staff-field input` does not stretch the checkbox, file and colour controls.
+
+---
 
 ### TJ-070 — Staff portal refresh, phase 2: one layout for every role
 
