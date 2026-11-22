@@ -149,11 +149,11 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c `READY` | — |
-| TJ-069a | Tokens: named colours, six sizes, three radii | VERIFIED — task commit `ca5313a`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-tokens` |
-| TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | VERIFIED — task commit `87379b7`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/confirm-dialog` |
-| TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | VERIFIED — task commit `35bd5f3`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/confirm-dialog-everywhere` |
-| TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | VERIFIED — task commit `67b6563`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/secretary-duplicate-popup` |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d, e next | — |
+| TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
+| TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
+| TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
+| TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | DONE — task commit `67b6563`, merged to `master` as `b9a6a3a` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/secretary-duplicate-popup` |
 | TJ-069d | One popup and form-field style | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — design decided; pass runs on top of batch 1 | — |
 | TJ-069f | Emoji become line icons | BACKLOG — design decided; pass runs on top of batch 1 | — |
@@ -15664,7 +15664,7 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: `READY` (specs below). Batch 2 (d, e) and batch 3 (f, g) get their passes on top of batch 1.
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d, e) and batch 3 (f, g) get their passes on top of batch 1.
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -15712,7 +15712,7 @@ button.staff-row-name {
 
 ### TJ-069a — Tokens: named colours, six sizes, three radii
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `ca5313a` on `feat/staff-tokens`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `ca5313a` on `feat/staff-tokens`. Merged to `master` with `--no-ff` as `6d31b35` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/staff-tokens`, cut from `master` at the commit that adds this spec.
 - **Why:** decision P1-5. Gives every later step one set of names to use. **Nothing on screen changes:** the existing staff rules switch to tokens only where the token has exactly the same value.
 
@@ -15931,7 +15931,7 @@ button.staff-row-name {
 
 ### TJ-069b1 — The confirmation dialog, and unsaved-changes prompts on it
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `87379b7` on `feat/confirm-dialog`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `87379b7` on `feat/confirm-dialog`. Merged to `master` with `--no-ff` as `a1c28ca` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/confirm-dialog`, cut from the tip of `feat/staff-tokens`.
 - **Why:** decision P1-1 = **1A** (centred dialog). This step builds the dialog, mounts it in all three portals, and moves the unsaved-changes prompts onto it. TJ-069b2 moves the 14 Archive/Restore/Resign/Delete/Remove confirmations.
 
@@ -16256,7 +16256,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 
 ### TJ-069b2 — Archive, Restore, Resign, Delete and Remove ask in the dialog
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `35bd5f3` on `feat/confirm-dialog-everywhere`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `35bd5f3` on `feat/confirm-dialog-everywhere`. Merged to `master` with `--no-ff` as `a9208bd` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/confirm-dialog-everywhere`, cut from the tip of `feat/confirm-dialog`.
 - **Why:** the 14 remaining `confirm()` calls (13 files) move onto the TJ-069b1 dialog, each with wording that names the person or item and says what happens.
 
@@ -16547,7 +16547,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 
 ### TJ-069c — Secretary Duplicate gets a date-and-time popup; the shared popup and field styles
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `67b6563` on `feat/secretary-duplicate-popup`. Merge held for the user's look. Verification: see "Batch 1 — verified" under TJ-069.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `67b6563` on `feat/secretary-duplicate-popup`. Merged to `master` with `--no-ff` as `b9a6a3a` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/secretary-duplicate-popup`, cut from the tip of `feat/confirm-dialog-everywhere`.
 - **Why:** decision P1-6, and the first user of decision P1-2 = **2B**. The secretary dashboard's Duplicate asks for a typed `YYYY-MM-DD` date in a browser `prompt()` and ignores a failed request. It gets admin's flow (date, optional time) in the shared popup, with an error message. The shared `.staff-modal-*` and `.staff-field` classes are defined here; TJ-069d moves the other popups onto them.
 
