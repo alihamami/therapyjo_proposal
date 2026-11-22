@@ -7,6 +7,7 @@ import Calendar from "@/app/components/Calendar";
 import DatePickerPopover from "@/app/components/DatePickerPopover";
 import { sessionsHiddenFrom } from "@/lib/permissions";
 import { SCHEDULE_OPEN_LABEL } from "@/lib/clinicHours";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Doctor {
     id: string;
@@ -30,6 +31,7 @@ interface Reservation {
 const today = () => new Date().toISOString().split("T")[0];
 
 export default function DoctorDashboard() {
+    const confirm = useConfirm();
     const { data: session } = useSession();
     const router = useRouter();
     const [selectedDate, setSelectedDate] = useState(today());
@@ -88,7 +90,13 @@ export default function DoctorDashboard() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Delete this session?")) return;
+        const patientName = reservations.find((r) => r.id === id)?.patient.name;
+        if (!(await confirm({
+            title: "Delete this session?",
+            message: `${patientName ? `${patientName}'s session` : "The session"} is removed from the calendar for good. This can't be undone.`,
+            confirmLabel: "Delete",
+            tone: "danger",
+        }))) return;
         await fetch(`/api/reservations/${id}`, { method: "DELETE" });
         fetchReservations();
     };

@@ -8,6 +8,7 @@ import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
 import { Archive, Pencil } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface PatientData {
     id: number;
@@ -95,6 +96,7 @@ const soapFormFrom = (n: SoapNote | null): SoapForm => ({
 const hasSoap = (n: SoapNote | null) => !!n && SOAP_FIELDS.some((f) => !!n[f.key]?.trim());
 
 export default function PatientProfilePage({ params }: { params: Promise<{ id: string }> }) {
+    const confirm = useConfirm();
     const { id } = use(params);
     const router = useRouter();
     const [patient, setPatient] = useState<PatientData | null>(null);
@@ -226,8 +228,11 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     };
 
     const handleArchiveToggle = async () => {
-        const action = patient?.archived ? "restore" : "archive";
-        if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} this patient?`)) return;
+        const name = patient?.name ?? "this patient";
+        if (!(await confirm(patient?.archived
+            ? { title: `Restore ${name}?`, message: "They move back to the active patient list.", confirmLabel: "Restore" }
+            : { title: `Archive ${name}?`, message: "They move to Archived Patients. Their file stays, and you can restore them any time.", confirmLabel: "Archive" }
+        ))) return;
         await fetch(`/api/patients/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },

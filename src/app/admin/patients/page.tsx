@@ -7,6 +7,7 @@ import { joinPhones } from "@/lib/phone";
 import { Archive, ChevronRight, Plus } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
+import { useConfirm } from "@/app/components/ConfirmDialog";
 
 interface Patient {
     id: number;
@@ -20,6 +21,7 @@ interface Patient {
 }
 
 export default function PatientsPage() {
+    const confirm = useConfirm();
     const router = useRouter();
     const [patients, setPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(true);
@@ -53,7 +55,12 @@ export default function PatientsPage() {
     }, [searchInput]);
 
     const handleArchive = async (id: number) => {
-        if (!confirm("Archive this patient?")) return;
+        const name = patients.find((p) => p.id === id)?.name;
+        if (!(await confirm({
+            title: `Archive ${name ?? "this patient"}?`,
+            message: "They move to Archived Patients. Their file stays, and you can restore them any time.",
+            confirmLabel: "Archive",
+        }))) return;
         await fetch(`/api/patients/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
