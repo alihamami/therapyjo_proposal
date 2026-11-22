@@ -135,20 +135,20 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-067 | Clinical Assessment: "Patient Since" as text, and several assessments per patient | SPLIT — **complete**: both halves merged after the user's review, SQL steps 0–3 run, pushed and **deployed 2026-11-18 01:17 (Amman)** as `3883b82`; live reads verified on all three screens; **one live write check owed** (see TJ-067) | — |
 | TJ-067a | "Patient Since" replaces "Enrollment Date", as free text | DONE — task commit `db28223`, merged to `master` as `0745fac` with `--no-ff` on 2026-11-18 after the user's review; back-filled 57/57; live-verified | `feat/patient-since-text` |
 | TJ-067b | Several assessment pages per patient, on every screen that shows the assessment | DONE — task commit `48c9cb2`, merged to `master` as `3883b82` with `--no-ff` on 2026-11-18 after the user's review; unique index dropped; live reads verified; **live write check owed** | `feat/assessment-pages` |
-| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2a = TJ-068e1–e3 + TJ-068g, batch 2b = TJ-068f1–f4: all VERIFIED, **merge held for the user's look** | — |
+| TJ-068 | Staff portal refresh, phase 0: quick wins | SPLIT — passed 2026-11-21; design approved by the user against the planner's mockup (**4A**, **5B**); batch 1 = TJ-068a–d, **merged 2026-11-22 after the user's review, not pushed**; batch 2 = TJ-068e1–e3, TJ-068g, TJ-068f1–f4, **merged 2026-11-22 after the user's review, not pushed**. **Phase 0 complete in code; push and live check owed** | — |
 | TJ-068a | Remove the unreachable "Add Reservation" popups | DONE — task commit `45a7d32`, merged to `master` as `ad2539b` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `refactor/remove-dead-booking-modals` |
 | TJ-068b | Admin menu bar: one row, solid, lined up with the page | DONE — task commit `d6f9087`, merged to `master` as `2f7e6f2` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/admin-menu-one-row` |
 | TJ-068c | Restore styles that never reached links | DONE — task commit `1659a30`, merged to `master` as `ee9f6f8` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/link-styles-restored` |
 | TJ-068d | "No phone" instead of a bare 0 | DONE — task commit `281a7f1`, merged to `master` as `6b3b4f6` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/no-phone-label` |
-| TJ-068e | One primary button for the staff portal (design 4A) | SPLIT — passed 2026-11-22 on `292b890`; TJ-068e1–e3 | — |
-| TJ-068e1 | Remove the three remaining unreachable add popups | VERIFIED — task commit `331ad3c`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `refactor/remove-dead-add-popups` |
-| TJ-068e2 | Design 4A buttons: dashboards, booking, patients | VERIFIED — task commit `99be01f`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-buttons-booking-patients` |
-| TJ-068e3 | Design 4A buttons: blog, website doctors, employees, notes, doctor portal | VERIFIED — task commit `d44ba1b`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/staff-buttons-content-team` |
-| TJ-068g | Admin menu bar stays on one row down to 861px | VERIFIED — task commit `489b520`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/admin-menu-narrow-fit` |
-| TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | VERIFIED — task commit `a91c835`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/patient-row-actions` |
-| TJ-068f2 | Row actions (design 5B): Employees | VERIFIED — task commit `fb950ba`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/employee-row-actions` |
-| TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | VERIFIED — task commit `1653d84`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `feat/content-row-actions` |
-| TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | VERIFIED — task commit `fd2aa5d`; planner-verified and previewed 2026-11-22; **merge held for the user's look** | `bugfix/row-menu-item-styles` |
+| TJ-068e | One primary button for the staff portal (design 4A) | SPLIT — **complete**: TJ-068e1–e3 merged 2026-11-22, not pushed | — |
+| TJ-068e1 | Remove the three remaining unreachable add popups | DONE — task commit `331ad3c`, merged to `master` as `42b7728` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `refactor/remove-dead-add-popups` |
+| TJ-068e2 | Design 4A buttons: dashboards, booking, patients | DONE — task commit `99be01f`, merged to `master` as `f270094` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-buttons-booking-patients` |
+| TJ-068e3 | Design 4A buttons: blog, website doctors, employees, notes, doctor portal | DONE — task commit `d44ba1b`, merged to `master` as `0ecfe06` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-buttons-content-team` |
+| TJ-068g | Admin menu bar stays on one row down to 861px | DONE — task commit `489b520`, merged to `master` as `44165b1` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/admin-menu-narrow-fit` |
+| TJ-068f1 | Row actions (design 5B): shared menu, patient lists and patient file | DONE — task commit `a91c835`, merged to `master` as `41f4ef9` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-row-actions` |
+| TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
+| TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
+| TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
 | TJ-069 | Staff portal refresh, phase 1: shared foundations | BACKLOG — no planning pass | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
@@ -14317,7 +14317,7 @@ The work is cut into five phases. Phase 0 is TJ-068. Phases 1–4 are TJ-069 to 
 
 ### TJ-068 — Staff portal refresh, phase 0: quick wins
 
-- **Status:** SPLIT. Batch 1 (TJ-068a–d) is `DONE`: merged 2026-11-22, not pushed. Batch 2a (TJ-068e1–e3, TJ-068g) is `READY`, passed on top of batch 1 so its anchors are read from the code it will change. Batch 2b (TJ-068f1–f3) gets its pass on top of TJ-068g.
+- **Status:** SPLIT — **complete in code, not pushed.** Batch 1 (TJ-068a–d) merged 2026-11-22. Batch 2 (TJ-068e1–e3, TJ-068g, TJ-068f1–f4) merged 2026-11-22 after the user's review of the mocked preview, in stack order with `--no-ff`; the merged code is identical to the verified tip `fd2aa5d` (`tasks.md` aside). `master` is not pushed: the user chose "merge, push later". **Owed:** the push (it deploys), then a live check on therapyjo.com — the 4A buttons, the menu bar between 861 and 1040px, and the ⋯ menus with real data, including Archive/Resign/Delete confirmations. Phases 1–4 (TJ-069–072) stay `BACKLOG`.
 - **Why:** Visible defects with small, safe fixes, and two design decisions the user made on 2026-11-21 against the planner's before/after mockup (private artifact `https://claude.ai/artifact/UoRvJmBksMqNArx5nEpgDp`).
 - **Execution:** one executor at a time. Each sub-task gets its own branch, **stacked**: TJ-068a is cut from `master`, and each later one from the previous one's branch tip. The planner merges them in order with `--no-ff`. **Per the user's standing rule (2026-11-18), nothing merges, and nothing is pushed, until the user has seen the real screens.**
 
@@ -14686,7 +14686,7 @@ More than four files, but one concern and one-line edits throughout. Accepted as
 
 ### TJ-068e1 — Remove the three remaining unreachable add popups
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `331ad3c` on `refactor/remove-dead-add-popups`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `331ad3c` on `refactor/remove-dead-add-popups`. Merged to `master` with `--no-ff` as `42b7728` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `refactor/remove-dead-add-popups`, cut from `master` at the commit that adds this spec.
 - **Why:** The admin patient list, the secretary patient list and the secretary notes list each carry an add modal with its state, handler and CSS. Nothing opens them: `setShowAdd(true)` occurs nowhere, and each page's "+ Add …" button navigates to its `/new` page. Found during the batch 1 review. Nothing on screen changes.
 
@@ -14736,7 +14736,7 @@ More than four files, but one concern and one-line edits throughout. Accepted as
 
 ### TJ-068e2 — Design 4A buttons: dashboards, booking, patients
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `99be01f` on `feat/staff-buttons-booking-patients`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `99be01f` on `feat/staff-buttons-booking-patients`. Merged to `master` with `--no-ff` as `f270094` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/staff-buttons-booking-patients`, cut from the tip of `refactor/remove-dead-add-popups`.
 - **Why:** Defines the 4A button once in `globals.css` and moves the dashboards, the booking forms, the patient lists, the patient files and the clinical assessment onto it.
 
@@ -14889,7 +14889,7 @@ and `admin/patients/new/page.tsx`: `<button className="btn-save" onClick={handle
 
 ### TJ-068e3 — Design 4A buttons: blog, website doctors, employees, notes, doctor portal
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `d44ba1b` on `feat/staff-buttons-content-team`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `d44ba1b` on `feat/staff-buttons-content-team`. Merged to `master` with `--no-ff` as `0ecfe06` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/staff-buttons-content-team`, cut from the tip of `feat/staff-buttons-booking-patients`.
 - **Why:** The rest of the staff portal moves onto the 4A button, and the homepage's global `.btn-primary` stops leaking into four admin pages.
 
@@ -14938,7 +14938,7 @@ and `admin/patients/new/page.tsx`: `<button className="btn-save" onClick={handle
 
 ### TJ-068g — Admin menu bar stays on one row down to 861px
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `489b520` on `feat/admin-menu-narrow-fit`. Merge held for the user's look (rule of 2026-11-18). Verification: see "Batch 2a — verified" under TJ-068e.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `489b520` on `feat/admin-menu-narrow-fit`. Merged to `master` with `--no-ff` as `44165b1` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/admin-menu-narrow-fit`, cut from the tip of `feat/staff-buttons-content-team`.
 - **Why:** Seen in the batch 1 preview: between about 861px and 990px wide, "Approvals" wraps to a second line inside the bar (86px instead of 61px). The planner measured a fix in the preview on 2026-11-22: from 861px to 1040px, tighter spacing plus an icon-only Sign Out keeps one row **with a two-digit Approvals badge**, 8px to spare at 861px; from 1041px up the current spacing already fits (30px to spare with a badge).
 
@@ -14993,7 +14993,7 @@ and `admin/patients/new/page.tsx`: `<button className="btn-save" onClick={handle
 
 ### TJ-068f1 — Row actions (design 5B): shared menu, patient lists and patient file
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `a91c835` on `feat/patient-row-actions`. Merge held for the user's look. Verification: see TJ-068f4.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `a91c835` on `feat/patient-row-actions`. Merged to `master` with `--no-ff` as `41f4ef9` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/patient-row-actions`, cut from the tip of `feat/admin-menu-narrow-fit` (TJ-068g).
 - **Why:** see the 5B decision under TJ-068. On the patient lists, "View" is a small pill and Archive sits next to it as a same-size amber button, one click from a confirm. On the patient file, Edit Info and Archive are two equal pills. With 5B the row itself opens the file, the less common action moves into a `⋯` menu, and Restore stays visible where it applies.
 
@@ -15435,7 +15435,7 @@ export default function RowMenu({ items, label }: Props) {
 
 ### TJ-068f2 — Row actions (design 5B): Employees
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `fb950ba` on `feat/employee-row-actions`. Merge held for the user's look. Verification: see TJ-068f4.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `fb950ba` on `feat/employee-row-actions`. Merged to `master` with `--no-ff` as `9621f3e` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/employee-row-actions`, cut from the tip of `feat/patient-row-actions` (TJ-068f1).
 - **Why:** The Doctors and Secretaries tables end in two or three pills per row (Edit, Resign, or Re-enrol and Delete permanently), red next to blue at the same size. With 5B the row opens the editor and the rest moves into `⋯`, with Resign and Delete permanently last, in red, after a divider.
 
@@ -15503,7 +15503,7 @@ button.staff-row-name {
 
 ### TJ-068f3 — Row actions (design 5B): Blog, website Doctors, Notes
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `1653d84` on `feat/content-row-actions`. Merge held for the user's look. Verification: see TJ-068f4.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `1653d84` on `feat/content-row-actions`. Merged to `master` with `--no-ff` as `d44262c` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `feat/content-row-actions`, cut from the tip of `feat/employee-row-actions` (TJ-068f2).
 - **Why:** The same pattern on the three remaining admin lists with row buttons.
 
@@ -15627,7 +15627,7 @@ button.staff-row-name {
 
 ### TJ-068f4 — Fix: row-menu items unstyled (planner's spec bug)
 
-- **Status:** VERIFIED. Executed by the Sonnet executor: task commit `fd2aa5d` on `bugfix/row-menu-item-styles`. Merge held for the user's look.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `fd2aa5d` on `bugfix/row-menu-item-styles`. Merged to `master` with `--no-ff` as `38a43f5` on 2026-11-22, after the user saw the preview. Not pushed (the user chose "merge, push later").
 - **Branch:** `bugfix/row-menu-item-styles`, cut from `1653d84` (TJ-068f3 tip).
 - **Why:** found in the batch 2b preview. In `RowMenu.tsx` the menu items are drawn by the `renderItem` helper, outside the JSX tree that holds `<style jsx>`, so styled-jsx never adds its `jsx-…` class to them. Every `.row-menu-item` rule misses: the item text renders `rgb(0,0,0)` on the dark panel. The executor copied the planner's verbatim component exactly; the bug is in the spec. The panel, trigger and divider are in the tree and styled correctly.
 - **Batch 2b verification so far:** f1–f3 re-applied by script, 16/16 files byte-identical; `tsc` 0 and `next build --webpack` 0 on `1653d84`. Preview passed: row click opens the record (admin patients, employees, blog, notes, website-doctor cards); name link/button; ⋯ and Restore never trigger the row; menu portalled, fixed, end-aligned, opens below or flips above (20px room), stays in view; outside click, scroll, Escape (focus returns) and Tab close it; arrows move and wrap; Archive/Delete keep their `confirm()`; destructive items after a divider; patient file shows Edit Info (30px, Pencil) + ⋯ → Archive, or blue Restore when archived; drag attribute kept on website-doctor cards. Not yet checked: secretary, doctor and archived patient lists in the preview.
