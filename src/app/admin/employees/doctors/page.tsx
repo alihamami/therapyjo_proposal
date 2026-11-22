@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { parseWorkingHours, formatWorkingHours, isLegacyWorkingHours } from "@/lib/workingHours";
 import { clinicalFileUrl } from "@/lib/storageUrl";
-import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
+import { Archive, ChevronRight, Pencil, Plus, RotateCcw, Stethoscope, Trash2, UserX } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface Doctor {
     id: string;
@@ -331,12 +332,12 @@ export default function DoctorsPage() {
     };
 
     if (loading) {
-        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading...</div>;
+        return <p className="staff-loading" role="status">Loading…</p>;
     }
 
     return (
         <div>
-            <div className="page-header">
+            <div className="staff-page-header">
                 <h1>Doctors</h1>
                 <button className="staff-btn staff-btn-primary" onClick={() => router.push("/admin/employees/doctors/new")}><Plus size={15} aria-hidden="true" />Add Doctor</button>
             </div>
@@ -353,8 +354,8 @@ export default function DoctorsPage() {
                 ))}
             </div>
 
-            <div className="table-container">
-                <table className="data-table">
+            <div className="staff-table-wrap">
+                <table className="staff-table">
                     <thead>
                         <tr>
                             <th>Status</th>
@@ -408,8 +409,17 @@ export default function DoctorsPage() {
                             </tr>
                         ))}
                         {visible.length === 0 && (
-                            <tr><td colSpan={7} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
-                                {filter === "Archived" ? "No archived doctors" : "No active doctors"}
+                            <tr className="staff-table-state"><td colSpan={7}>
+                                {filter === "Archived" ? (
+                                    <StaffEmpty icon={Archive} title="No archived doctors" hint="Doctors who resign move here. You can re-enrol them any time." />
+                                ) : (
+                                    <StaffEmpty
+                                        icon={Stethoscope}
+                                        title="No active doctors"
+                                        hint="Doctors you add can sign in and take bookings."
+                                        action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/employees/doctors/new")}><Plus size={15} aria-hidden="true" />Add Doctor</button>}
+                                    />
+                                )}
                             </td></tr>
                         )}
                     </tbody>
@@ -659,11 +669,6 @@ export default function DoctorsPage() {
             )}
 
             <style jsx>{`
-        .page-header {
-          display: flex; align-items: center; justify-content: space-between;
-          margin-bottom: 1.5rem;
-        }
-        .page-header h1 { font-size: 1.5rem; font-weight: 600; }
         .filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
         .chip {
           background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
@@ -675,24 +680,7 @@ export default function DoctorsPage() {
         .chip.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
         .chip-count { color: rgba(255,255,255,0.4); font-weight: 500; }
         .chip.active .chip-count { color: rgba(255,255,255,0.7); }
-        .table-container {
-          background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 12px; overflow-x: auto; overflow-y: hidden;
-          -webkit-overflow-scrolling: touch;
-        }
-        .data-table { width: 100%; min-width: 720px; border-collapse: collapse; }
-        .data-table th {
-          text-align: left; padding: 0.9rem 1rem; font-size: 0.78rem;
-          text-transform: uppercase; letter-spacing: 0.05em;
-          color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06);
-          font-weight: 600;
-        }
-        .data-table td {
-          padding: 0.8rem 1rem; font-size: 0.9rem;
-          border-bottom: 1px solid rgba(255,255,255,0.04);
-          color: rgba(255,255,255,0.85);
-        }
-        .data-table tr:hover { background: rgba(255,255,255,0.02); }
+        .staff-table { min-width: 720px; }
         .employee-username { margin-top: 0.15rem; font-size: 0.78rem; color: rgba(255,255,255,0.45); }
         .status-badge {
           padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
@@ -775,7 +763,6 @@ export default function DoctorsPage() {
         .grant-row span { font-size: 0.85rem; color: rgba(255,255,255,0.85); font-weight: 400; }
 
         @media (max-width: 560px) {
-          .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
           .form-grid { grid-template-columns: minmax(0, 1fr); }
           .btn-sm { padding: 0.45rem 0.75rem; }
         }

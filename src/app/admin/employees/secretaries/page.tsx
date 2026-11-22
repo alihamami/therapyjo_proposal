@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { parseWorkingHours, formatWorkingHours, isLegacyWorkingHours } from "@/lib/workingHours";
 import { clinicalFileUrl } from "@/lib/storageUrl";
-import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
+import { Archive, ChevronRight, Contact, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface Secretary {
     id: string;
@@ -300,12 +301,12 @@ export default function SecretariesPage() {
     };
 
     if (loading) {
-        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading...</div>;
+        return <p className="staff-loading" role="status">Loading…</p>;
     }
 
     return (
         <div>
-            <div className="page-header">
+            <div className="staff-page-header">
                 <h1>Secretaries</h1>
                 <button className="staff-btn staff-btn-primary" onClick={() => router.push("/admin/employees/secretaries/new")}><Plus size={15} aria-hidden="true" />Add Secretary</button>
             </div>
@@ -322,8 +323,8 @@ export default function SecretariesPage() {
                 ))}
             </div>
 
-            <div className="table-container">
-                <table className="data-table">
+            <div className="staff-table-wrap">
+                <table className="staff-table">
                     <thead>
                         <tr>
                             <th>Status</th>
@@ -368,8 +369,17 @@ export default function SecretariesPage() {
                             </tr>
                         ))}
                         {visible.length === 0 && (
-                            <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
-                                {filter === "Archived" ? "No archived secretaries" : "No active secretaries"}
+                            <tr className="staff-table-state"><td colSpan={6}>
+                                {filter === "Archived" ? (
+                                    <StaffEmpty icon={Archive} title="No archived secretaries" hint="Secretaries who resign move here. You can re-enrol them any time." />
+                                ) : (
+                                    <StaffEmpty
+                                        icon={Contact}
+                                        title="No active secretaries"
+                                        hint="Secretaries you add can sign in and manage bookings."
+                                        action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/employees/secretaries/new")}><Plus size={15} aria-hidden="true" />Add Secretary</button>}
+                                    />
+                                )}
                             </td></tr>
                         )}
                     </tbody>
@@ -596,8 +606,6 @@ export default function SecretariesPage() {
             )}
 
             <style jsx>{`
-        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-        .page-header h1 { font-size: 1.5rem; font-weight: 600; }
         .filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
         .chip {
           background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
@@ -609,22 +617,7 @@ export default function SecretariesPage() {
         .chip.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
         .chip-count { color: rgba(255,255,255,0.4); font-weight: 500; }
         .chip.active .chip-count { color: rgba(255,255,255,0.7); }
-        .table-container {
-          background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 12px; overflow-x: auto; overflow-y: hidden;
-          -webkit-overflow-scrolling: touch;
-        }
-        .data-table { width: 100%; min-width: 640px; border-collapse: collapse; }
-        .data-table th {
-          text-align: left; padding: 0.9rem 1rem; font-size: 0.78rem;
-          text-transform: uppercase; letter-spacing: 0.05em;
-          color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06); font-weight: 600;
-        }
-        .data-table td {
-          padding: 0.8rem 1rem; font-size: 0.9rem;
-          border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.85);
-        }
-        .data-table tr:hover { background: rgba(255,255,255,0.02); }
+        .staff-table { min-width: 640px; }
         .employee-username { margin-top: 0.15rem; font-size: 0.78rem; color: rgba(255,255,255,0.45); }
         .status-badge { padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .status-badge.active { background: rgba(16,185,129,0.15); color: #6ee7b7; }
@@ -688,7 +681,6 @@ export default function SecretariesPage() {
         .grant-row span { font-size: 0.85rem; color: rgba(255,255,255,0.85); font-weight: 400; }
 
         @media (max-width: 560px) {
-          .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
           .form-grid { grid-template-columns: minmax(0, 1fr); }
           .btn-sm { padding: 0.45rem 0.75rem; }
         }

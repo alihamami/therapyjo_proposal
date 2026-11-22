@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { Archive } from "lucide-react";
+import StaffEmpty from "@/app/components/StaffEmpty";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 
@@ -73,13 +75,13 @@ export default function ArchivedDoctorsPage() {
 
     return (
         <div>
-            <div className="page-header">
-                <h1>Archived Doctors <span className="count">({doctors.length})</span></h1>
+            <div className="staff-page-header">
+                <h1>Archived Doctors <span className="staff-page-count">({doctors.length})</span></h1>
                 <Link href="/admin/doctors" className="btn-back">← Active Doctors</Link>
             </div>
 
-            <div className="table-container">
-                <table className="data-table">
+            <div className="staff-table-wrap">
+                <table className="staff-table">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -91,9 +93,11 @@ export default function ArchivedDoctorsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={5} className="empty-cell">Loading…</td></tr>
+                            <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
                         ) : doctors.length === 0 ? (
-                            <tr><td colSpan={5} className="empty-cell">No archived doctors</td></tr>
+                            <tr className="staff-table-state"><td colSpan={5}>
+                                <StaffEmpty icon={Archive} title="No archived doctor profiles" hint="Profiles you archive move here. You can restore them any time." />
+                            </td></tr>
                         ) : doctors.map((d) => (
                             <tr key={d.id}>
                                 <td>{d.name}</td>
@@ -148,30 +152,9 @@ export default function ArchivedDoctorsPage() {
             )}
 
             <style jsx>{`
-                .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; }
-                .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
                 :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
                 :global(.btn-back:hover) { color: #fff; }
-                .table-container {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: 10px; overflow-x: auto; overflow-y: hidden;
-                    -webkit-overflow-scrolling: touch;
-                }
-                .data-table { width: 100%; min-width: 640px; border-collapse: collapse; }
-                .data-table th {
-                    text-align: left; padding: 0.85rem 1rem; font-size: 0.76rem;
-                    text-transform: uppercase; letter-spacing: 0.05em;
-                    color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06);
-                    font-weight: 600;
-                }
-                .data-table td {
-                    padding: 0.75rem 1rem; font-size: 0.88rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.04);
-                    color: rgba(255,255,255,0.8);
-                }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
-                .empty-cell { text-align: center; color: rgba(255,255,255,0.35); padding: 2rem !important; }
+                .staff-table { min-width: 640px; }
                 .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
                 .btn-restore {
                     background: rgba(16,185,129,0.15); color: #6ee7b7; border: none;
@@ -187,7 +170,6 @@ export default function ArchivedDoctorsPage() {
                 .btn-delete:hover { background: rgba(239,68,68,0.25); }
 
                 @media (max-width: 560px) {
-                    .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
                     .btn-restore, .btn-delete { padding: 0.45rem 0.75rem; }
                 }
             `}</style>
