@@ -4,10 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import { isMissingPhone } from "@/lib/phone";
+import { Ban, CalendarPlus, DoorOpen, FileText, Hourglass, LogIn, LogOut, Pencil, StickyNote, Trash2, Undo2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface SlotAction {
     label: string;
-    icon: string;
+    icon: LucideIcon;
     onClick: () => void;
     danger?: boolean;
 }
@@ -172,39 +174,39 @@ export default function ReservationSlot({
 
     const actions: SlotAction[] = [];
     if (onViewDetails) {
-        actions.push({ label: "Session Details", icon: "📄", onClick: () => onViewDetails(id) });
+        actions.push({ label: "Session Details", icon: FileText, onClick: () => onViewDetails(id) });
     }
     if (status === "SCHEDULED" || status === "WAITING") {
-        actions.push({ label: "Check In", icon: "✅", onClick: () => onStatusChange(id, "CHECKED_IN") });
+        actions.push({ label: "Check In", icon: LogIn, onClick: () => onStatusChange(id, "CHECKED_IN") });
     }
     if (status === "SCHEDULED") {
-        actions.push({ label: "Waiting", icon: "⏳", onClick: () => onStatusChange(id, "WAITING") });
+        actions.push({ label: "Waiting", icon: Hourglass, onClick: () => onStatusChange(id, "WAITING") });
     }
     if (status === "CHECKED_IN") {
-        actions.push({ label: "Entry to Doctor", icon: "🩺", onClick: () => onStatusChange(id, "WITH_DOCTOR") });
-        actions.push({ label: "Waiting", icon: "⏳", onClick: () => onStatusChange(id, "WAITING") });
+        actions.push({ label: "Entry to Doctor", icon: DoorOpen, onClick: () => onStatusChange(id, "WITH_DOCTOR") });
+        actions.push({ label: "Waiting", icon: Hourglass, onClick: () => onStatusChange(id, "WAITING") });
     }
     if (status === "WITH_DOCTOR") {
-        actions.push({ label: "Checkout", icon: "🚪", onClick: () => onStatusChange(id, "CHECKED_OUT") });
+        actions.push({ label: "Checkout", icon: LogOut, onClick: () => onStatusChange(id, "CHECKED_OUT") });
     }
     if (status === "CANCELLED" || status === "NO_SHOW") {
-        actions.push({ label: "Reschedule", icon: "↩️", onClick: () => onStatusChange(id, "SCHEDULED") });
+        actions.push({ label: "Reschedule", icon: Undo2, onClick: () => onStatusChange(id, "SCHEDULED") });
     }
     if (status === "CHECKED_OUT") {
-        actions.push({ label: "Undo Checkout", icon: "↩️", onClick: () => onStatusChange(id, "WITH_DOCTOR") });
+        actions.push({ label: "Undo Checkout", icon: Undo2, onClick: () => onStatusChange(id, "WITH_DOCTOR") });
     }
     if (onEdit) {
-        actions.push({ label: "Edit", icon: "✏️", onClick: () => onEdit(id) });
+        actions.push({ label: "Edit", icon: Pencil, onClick: () => onEdit(id) });
     }
     if (onDuplicate) {
-        actions.push({ label: "Duplicate", icon: "📋", onClick: () => onDuplicate(id) });
+        actions.push({ label: "Duplicate", icon: CalendarPlus, onClick: () => onDuplicate(id) });
     }
     const cancellable = ["SCHEDULED", "WAITING", "CHECKED_IN"].includes(status);
     if (cancellable) {
-        actions.push({ label: "Cancel", icon: "🚫", onClick: () => onStatusChange(id, "CANCELLED"), danger: true });
+        actions.push({ label: "Cancel", icon: Ban, onClick: () => onStatusChange(id, "CANCELLED"), danger: true });
     }
     if (canDelete) {
-        actions.push({ label: "Delete", icon: "🗑️", onClick: () => onDelete(id), danger: true });
+        actions.push({ label: "Delete", icon: Trash2, onClick: () => onDelete(id), danger: true });
     }
 
     const openMenu = () => {
@@ -273,7 +275,7 @@ export default function ReservationSlot({
                     <span className="slot-time">{time}</span>
                 </span>
                 {showNoteOnCalendar && note && (
-                    <span className="slot-note">📝 {note}</span>
+                    <span className="slot-note"><StickyNote size={11} aria-hidden="true" /> {note}</span>
                 )}
             </div>
             <div className="slot-right">
@@ -303,7 +305,7 @@ export default function ReservationSlot({
                                     className={`menu-item ${a.danger ? "danger" : ""}`}
                                     onClick={(e) => { e.stopPropagation(); a.onClick(); setMenuOpen(false); }}
                                 >
-                                    <span>{a.icon}</span> {a.label}
+                                    <a.icon size={15} aria-hidden="true" /> {a.label}
                                 </button>
                             ))}
                         </div>,
@@ -366,6 +368,7 @@ export default function ReservationSlot({
                     color: color-mix(in srgb, currentColor 75%, var(--slot-bg));
                     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
                 }
+                .slot-note :global(svg) { vertical-align: -1px; }
                 .slot-right { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; margin-left: 0.3rem; }
                 .menu-wrap { position: relative; }
                 .menu-trigger {

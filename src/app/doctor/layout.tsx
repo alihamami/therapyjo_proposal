@@ -5,12 +5,13 @@ import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ConfirmProvider } from "@/app/components/ConfirmDialog";
+import { CalendarDays, CircleUser, StickyNote, Users } from "lucide-react";
 
 const navItems = [
-    { href: "/doctor", label: "My Schedule", icon: "📅" },
-    { href: "/doctor/patients", label: "Patients", icon: "🧑‍⚕️" },
-    { href: "/doctor/notes", label: "Notes", icon: "📝" },
-    { href: "/doctor/profile", label: "My Profile", icon: "👤" },
+    { href: "/doctor", label: "My Schedule", icon: CalendarDays },
+    { href: "/doctor/patients", label: "Patients", icon: Users },
+    { href: "/doctor/notes", label: "Notes", icon: StickyNote },
+    { href: "/doctor/profile", label: "My Profile", icon: CircleUser },
 ];
 
 export default function DoctorLayout({ children }: { children: React.ReactNode }) {
@@ -32,7 +33,7 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
                             href={item.href}
                             className={`nav-link ${pathname === item.href ? "active" : ""}`}
                         >
-                            <span>{item.icon}</span> {item.label}
+                            <item.icon size={15} aria-hidden="true" /> {item.label}
                         </Link>
                     ))}
                 </div>

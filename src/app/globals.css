@@ -2433,3 +2433,10 @@ button.staff-row-name {
     max-width: none;
   }
 }
+/* A line icon at the start of a line of text (TJ-069f): the icon and the
+   text sit side by side, centred on each other. */
+.staff-inline-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

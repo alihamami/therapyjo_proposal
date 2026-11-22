@@ -5,12 +5,14 @@ import { useSession, signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ConfirmProvider } from "@/app/components/ConfirmDialog";
+import { Archive, CalendarDays, StickyNote, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-type DropdownItem = { href: string; label: string; icon: string };
+type DropdownItem = { href: string; label: string; icon: LucideIcon };
 
 const patientItems: DropdownItem[] = [
-    { href: "/secretary/patients", label: "View Patients", icon: "👥" },
-    { href: "/secretary/patients/archived", label: "Archived", icon: "🗄️" },
+    { href: "/secretary/patients", label: "View Patients", icon: Users },
+    { href: "/secretary/patients/archived", label: "Archived", icon: Archive },
 ];
 
 function NavDropdown({
@@ -45,7 +47,7 @@ function NavDropdown({
             onMouseLeave={handleLeave}
         >
             <button className={`nav-link ${isActive ? "active" : ""}`}>
-                <span>👥</span> {label}
+                <Users size={15} aria-hidden="true" /> {label}
                 <svg
                     className={`chevron ${open ? "open" : ""}`}
                     width="10"
@@ -70,7 +72,7 @@ function NavDropdown({
                             className={`dropdown-item ${pathname === item.href ? "current" : ""}`}
                             onClick={() => setOpen(false)}
                         >
-                            <span className="dropdown-icon">{item.icon}</span>
+                            <span className="dropdown-icon"><item.icon size={15} aria-hidden="true" /></span>
                             <span>{item.label}</span>
                         </Link>
                     ))}
@@ -98,7 +100,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                         href="/secretary"
                         className={`nav-link ${pathname === "/secretary" ? "active" : ""}`}
                     >
-                        <span>📅</span> Dashboard
+                        <CalendarDays size={15} aria-hidden="true" /> Dashboard
                     </Link>
                     <NavDropdown
                         label="Patients"
@@ -109,7 +111,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                         href="/secretary/notes"
                         className={`nav-link ${pathname === "/secretary/notes" ? "active" : ""}`}
                     >
-                        <span>📝</span> Notes
+                        <StickyNote size={15} aria-hidden="true" /> Notes
                     </Link>
                 </div>
                 <div className="user-area" ref={userRef}>
@@ -180,7 +182,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                 }
                 :global(.dropdown-item:hover) { color: #fff; background: rgba(76, 175, 147, 0.1); }
                 :global(.dropdown-item.current) { color: var(--primary, #4CAF93); background: rgba(76, 175, 147, 0.08); }
-                :global(.dropdown-icon) { font-size: 0.9rem; width: 20px; text-align: center; flex-shrink: 0; }
+                :global(.dropdown-icon) { display: inline-flex; justify-content: center; width: 20px; flex-shrink: 0; }
 
                 .user-area { position: relative; }
                 .user-btn {
