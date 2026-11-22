@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Inbox } from "lucide-react";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface PendingChange {
     id: string;
@@ -62,18 +64,22 @@ export default function ApprovalsPage() {
     };
 
     if (loading) {
-        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;
+        return <p className="staff-loading" role="status">Loading…</p>;
     }
 
     return (
         <div>
-            <div className="page-header">
-                <h1>Approvals</h1>
-                <p className="subtitle">Profile edits and photo uploads submitted by doctors. Nothing reaches the public site until approved here.</p>
+            <div className="staff-page-header">
+                <div>
+                    <h1>Approvals</h1>
+                    <p className="staff-page-sub">Profile edits and photo uploads submitted by doctors. Nothing reaches the public site until approved here.</p>
+                </div>
             </div>
 
             {changes.length === 0 ? (
-                <div className="empty-panel">Nothing waiting for review.</div>
+                <div className="staff-panel">
+                    <StaffEmpty icon={Inbox} title="Nothing waiting for review" hint="Profile edits and photos that doctors send appear here." />
+                </div>
             ) : (
                 <div className="change-list">
                     {changes.map((c) => (
@@ -117,14 +123,7 @@ export default function ApprovalsPage() {
             {toast && <div className="toast">✓ {toast}</div>}
 
             <style jsx>{`
-                .page-header { margin-bottom: 1.5rem; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.35rem; }
-                .subtitle { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin: 0; max-width: 620px; }
-
-                .empty-panel {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: 10px; padding: 3rem; text-align: center; color: rgba(255,255,255,0.35);
-                }
+                .staff-page-sub { max-width: 620px; }
 
                 .change-list { display: flex; flex-direction: column; gap: 1rem; }
                 .change-card {
