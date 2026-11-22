@@ -112,8 +112,8 @@ export default function ApprovalsPage() {
                             </div>
 
                             <div className="change-actions">
-                                <button className="btn-approve" onClick={() => decide(c.id, "approve")}>Approve</button>
-                                <button className="btn-reject" onClick={() => decide(c.id, "reject")}>Reject</button>
+                                <button className="staff-btn staff-btn-primary" onClick={() => decide(c.id, "approve")}>Approve</button>
+                                <button className="staff-btn staff-btn-secondary" onClick={() => decide(c.id, "reject")}>Reject</button>
                             </div>
                         </div>
                     ))}
@@ -152,18 +152,6 @@ export default function ApprovalsPage() {
                 .diff-photo { width: 100%; max-width: 140px; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
 
                 .change-actions { display: flex; gap: 0.6rem; }
-                .btn-approve {
-                    background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none;
-                    padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
-                    cursor: pointer; font-family: inherit;
-                }
-                .btn-approve:hover { opacity: 0.88; }
-                .btn-reject {
-                    background: rgba(239,68,68,0.12); color: #fca5a5; border: none;
-                    padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
-                    cursor: pointer; font-family: inherit;
-                }
-                .btn-reject:hover { background: rgba(239,68,68,0.2); }
 
                 .toast {
                     position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1300;
