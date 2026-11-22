@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ChevronRight, Pencil, Plus, Search, StickyNote, Trash2 } from "lucide-react";
+import { ChevronRight, CircleCheck, Pencil, Plus, Search, StickyNote, Trash2 } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
@@ -205,7 +205,7 @@ export default function NotesPage() {
                                         {n.doctor?.name ?? n.doctorNameSnapshot ?? "—"}
                                     </span>
                                 </td>
-                                <td>{n.doctorCheckNote ? "✅" : "—"}</td>
+                                <td>{n.doctorCheckNote ? <span className="check-yes"><CircleCheck size={16} role="img" aria-label="Checked" /></span> : "—"}</td>
                                 <td className="note-details">{n.details || "—"}</td>
                                 <td>
                                     <div className="staff-row-end">
@@ -284,6 +284,7 @@ export default function NotesPage() {
                 .filter-select option { background: #1a2e35; }
                 .staff-table { min-width: 720px; }
                 .note-name { font-weight: 600; }
+                .check-yes { display: inline-flex; color: var(--staff-ok); }
                 .note-details { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(255,255,255,0.5); }
                 .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
                 .checkbox-label {

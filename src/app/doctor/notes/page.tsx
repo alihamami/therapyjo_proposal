@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { StickyNote } from "lucide-react";
+import { Circle, CircleCheck, StickyNote } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface Note {
@@ -71,8 +71,8 @@ export default function DoctorNotesPage() {
                                 <td>{formatDate(n.noteDate)}</td>
                                 <td style={{ fontWeight: 600 }}>{n.name}</td>
                                 <td>
-                                    <button className="check-btn" onClick={() => toggleCheck(n)}>
-                                        {n.doctorCheckNote ? "✅" : "☐"}
+                                    <button className="check-btn" aria-label="Checked" aria-pressed={n.doctorCheckNote} onClick={() => toggleCheck(n)}>
+                                        {n.doctorCheckNote ? <CircleCheck size={18} aria-hidden="true" /> : <Circle size={18} aria-hidden="true" />}
                                     </button>
                                 </td>
                                 <td className="note-details">{n.details || "—"}</td>
@@ -92,7 +92,8 @@ export default function DoctorNotesPage() {
 
             <style jsx>{`
                 .note-details { max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(255,255,255,0.5); }
-                .check-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0.2rem; }
+                .check-btn { display: inline-flex; background: none; border: none; cursor: pointer; padding: 0.2rem; color: var(--staff-faint); }
+                .check-btn[aria-pressed="true"] { color: var(--staff-ok); }
             `}</style>
         </div>
     );

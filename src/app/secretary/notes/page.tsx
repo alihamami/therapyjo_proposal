@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Plus, Search, StickyNote } from "lucide-react";
+import { CircleCheck, Plus, Search, StickyNote } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface Doctor {
@@ -107,7 +107,7 @@ export default function SecretaryNotesPage() {
                                 <td>{formatDate(n.noteDate)}</td>
                                 <td style={{ fontWeight: 600 }}>{n.name}</td>
                                 <td><span style={{ borderLeft: `3px solid ${n.doctor?.color || "#666"}`, paddingLeft: "0.5rem" }}>{n.doctor?.name ?? n.doctorNameSnapshot ?? "—"}</span></td>
-                                <td>{n.doctorCheckNote ? "✅" : "—"}</td>
+                                <td>{n.doctorCheckNote ? <span className="check-yes"><CircleCheck size={16} role="img" aria-label="Checked" /></span> : "—"}</td>
                                 <td className="note-details">{n.details || "—"}</td>
                             </tr>
                         ))}
@@ -133,6 +133,7 @@ export default function SecretaryNotesPage() {
                     font-size: var(--staff-size-base); font-family: inherit;
                 }
                 .filter-select option { background: #1a2e35; }
+                .check-yes { display: inline-flex; color: var(--staff-ok); }
                 .note-details { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(255,255,255,0.5); }
             `}</style>
         </div>
