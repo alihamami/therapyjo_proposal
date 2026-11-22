@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { CircleCheck } from "lucide-react";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface DuplicateGroup {
     phone: string;
@@ -46,17 +48,16 @@ export default function DuplicatePatientsPage() {
 
     return (
         <div>
-            <div className="page-header">
-                <h1>Duplicate Check <span className="count">({total} groups)</span></h1>
+            <div className="staff-page-header">
+                <h1>Duplicate Check <span className="staff-page-count">({total} groups)</span></h1>
                 <Link href="/admin/patients" className="btn-back">← Back to Patients</Link>
             </div>
 
             {loading ? (
-                <div className="loading-text">Scanning for duplicates…</div>
+                <p className="staff-loading staff-panel" role="status">Scanning for duplicates…</p>
             ) : duplicates.length === 0 ? (
-                <div className="empty-card">
-                    <span className="empty-icon">✓</span>
-                    <p>No duplicate patients found</p>
+                <div className="staff-panel">
+                    <StaffEmpty icon={CircleCheck} title="No duplicate patients" hint="No two patients share a phone number." />
                 </div>
             ) : (
                 <div className="groups">
@@ -72,7 +73,7 @@ export default function DuplicatePatientsPage() {
                                 <span className="dupe-count">{group.patients.length} matches</span>
                             </div>
                             <div className="table-scroll">
-                                <table className="data-table">
+                                <table className="staff-table staff-table-compact">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -86,7 +87,7 @@ export default function DuplicatePatientsPage() {
                                     <tbody>
                                         {group.patients.map((p) => (
                                             <tr key={p.id} className={p.archived ? "row-archived" : undefined}>
-                                                <td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>
+                                                <td className="staff-cell-id">{p.id}</td>
                                                 <td>
                                                     {p.name}
                                                     {p.archived && <span className="archived-tag">Archived</span>}
@@ -108,22 +109,11 @@ export default function DuplicatePatientsPage() {
             )}
 
             <style jsx>{`
-                .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; }
-                .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
                 :global(.btn-back) {
                     color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
                     transition: color 0.15s;
                 }
                 :global(.btn-back:hover) { color: #fff; }
-                .loading-text { color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; }
-                .empty-card {
-                    background: rgba(76,175,147,0.06); border: 1px solid rgba(76,175,147,0.12);
-                    border-radius: var(--radius-md, 4px); padding: 3rem;
-                    text-align: center; color: #6ee7b7;
-                }
-                .empty-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
-                .empty-card p { font-size: 0.95rem; }
                 .groups { display: flex; flex-direction: column; gap: 1rem; }
                 .dupe-group {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
@@ -156,19 +146,7 @@ export default function DuplicatePatientsPage() {
                     text-transform: uppercase; letter-spacing: 0.03em;
                 }
                 .table-scroll { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
-                .data-table { width: 100%; min-width: 640px; border-collapse: collapse; }
-                .data-table th {
-                    text-align: left; padding: 0.6rem 1rem; font-size: 0.74rem;
-                    text-transform: uppercase; letter-spacing: 0.05em;
-                    color: rgba(255,255,255,0.35); border-bottom: 1px solid rgba(255,255,255,0.04);
-                    font-weight: 600;
-                }
-                .data-table td {
-                    padding: 0.6rem 1rem; font-size: 0.85rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.03);
-                    color: rgba(255,255,255,0.8);
-                }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
+                .staff-table { min-width: 640px; }
                 :global(.btn-sm) {
                     padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem;
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
@@ -178,7 +156,6 @@ export default function DuplicatePatientsPage() {
                 :global(.btn-view:hover) { background: rgba(76,175,147,0.22); }
 
                 @media (max-width: 560px) {
-                    .page-header { flex-direction: column; align-items: stretch; gap: 0.75rem; }
                     :global(.btn-sm) { padding: 0.42rem 0.75rem; }
                 }
             `}</style>

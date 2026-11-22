@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronRight, Pencil, Plus, Search, StickyNote, Trash2 } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
+import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface Doctor {
     id: string;
@@ -123,21 +124,26 @@ export default function NotesPage() {
 
     return (
         <div>
-            <div className="page-header">
-                <h1>Notes <span className="count">({total})</span></h1>
+            <div className="staff-page-header">
+                <h1>Notes <span className="staff-page-count">({total})</span></h1>
                 <button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = "/admin/notes/new"; }}><Plus size={15} aria-hidden="true" />Add Note</button>
             </div>
 
             {/* Filters */}
             <div className="filters">
-                <input
-                    className="search-input"
-                    placeholder="Search notes..."
-                    value={search}
-                    onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                />
+                <div className="staff-search">
+                    <Search size={15} aria-hidden="true" />
+                    <input
+                        type="text"
+                        aria-label="Search notes"
+                        placeholder="Search notes…"
+                        value={search}
+                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                    />
+                </div>
                 <select
                     className="filter-select"
+                    aria-label="Doctor"
                     value={doctorFilter}
                     onChange={(e) => { setDoctorFilter(e.target.value); setPage(1); }}
                 >
@@ -149,8 +155,8 @@ export default function NotesPage() {
             </div>
 
             {/* Table */}
-            <div className="table-container">
-                <table className="data-table">
+            <div className="staff-table-wrap">
+                <table className="staff-table">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -163,9 +169,20 @@ export default function NotesPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                            <tr className="staff-table-state"><td colSpan={6}><p className="staff-loading" role="status">Loading…</p></td></tr>
                         ) : notes.length === 0 ? (
-                            <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No notes found</td></tr>
+                            <tr className="staff-table-state"><td colSpan={6}>
+                                {search || doctorFilter !== "all" ? (
+                                    <StaffEmpty icon={Search} title="No notes match your search" hint="Try other words, or choose All Doctors." />
+                                ) : (
+                                    <StaffEmpty
+                                        icon={StickyNote}
+                                        title="No notes yet"
+                                        hint="Notes you add for the doctors appear here."
+                                        action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => { window.location.href = "/admin/notes/new"; }}><Plus size={15} aria-hidden="true" />Add Note</button>}
+                                    />
+                                )}
+                            </td></tr>
                         ) : notes.map((n) => (
                             <tr key={n.id} className="staff-row-link" onClick={(e) => { if (shouldOpenRow(e)) openEdit(n); }}>
                                 <td>{formatDate(n.noteDate)}</td>
@@ -196,10 +213,10 @@ export default function NotesPage() {
             </div>
 
             {totalPages > 1 && (
-                <div className="pagination">
-                    <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                <div className="staff-pagination">
+                    <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
                     <span>Page {page} of {totalPages}</span>
-                    <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                    <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
                 </div>
             )}
 
@@ -243,65 +260,24 @@ export default function NotesPage() {
             )}
 
             <style jsx>{`
-                .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-                .page-header h1 { font-size: 1.5rem; font-weight: 600; }
-                .count { color: rgba(255,255,255,0.35); font-weight: 400; font-size: 1.1rem; }
                 .filters { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
-                .search-input {
-                    flex: 1; min-width: 200px;
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.75rem;
-                    color: #fff; font-size: 0.85rem; outline: none; font-family: inherit;
-                }
-                .search-input:focus { border-color: var(--primary, #4CAF93); }
+                .filters .staff-search { flex: 1 1 200px; margin-bottom: 0; }
                 .filter-select {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    color: #fff; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; font-family: inherit;
+                    min-height: 36px; padding: 0.45rem 0.7rem;
+                    background: rgba(255,255,255,0.05); border: 1px solid var(--staff-border-strong);
+                    border-radius: var(--staff-radius-md); color: var(--staff-text); color-scheme: dark;
+                    font-size: var(--staff-size-base); font-family: inherit;
                 }
                 .filter-select option { background: #1a2e35; }
-                .table-container {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); overflow-x: auto; overflow-y: hidden;
-                    -webkit-overflow-scrolling: touch;
-                }
-                .data-table { width: 100%; border-collapse: collapse; min-width: 720px; }
-                .data-table th {
-                    text-align: left; padding: 0.85rem 1rem; font-size: 0.76rem;
-                    text-transform: uppercase; letter-spacing: 0.05em;
-                    color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.06);
-                    font-weight: 600;
-                }
-                .data-table td {
-                    padding: 0.75rem 1rem; font-size: 0.85rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.04);
-                    color: rgba(255,255,255,0.8);
-                }
-                .data-table tr:hover { background: rgba(255,255,255,0.02); }
+                .staff-table { min-width: 720px; }
                 .note-name { font-weight: 600; }
                 .note-details { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(255,255,255,0.5); }
                 .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
-                .pagination {
-                    display: flex; align-items: center; justify-content: center; gap: 1rem;
-                    margin-top: 1.25rem; color: rgba(255,255,255,0.5); font-size: 0.85rem;
-                }
-                .pagination button {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    color: #fff; padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px);
-                    cursor: pointer; font-size: 0.82rem; font-family: inherit;
-                }
-                .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
                 .checkbox-label {
                     flex-direction: row !important; display: flex; align-items: center; gap: 0.4rem;
                     font-size: 0.8rem !important; cursor: pointer;
                 }
                 .checkbox-label input[type="checkbox"] { width: auto; }
-
-                @media (max-width: 560px) {
-                    .page-header { flex-direction: column; align-items: stretch; gap: 0.5rem; }
-                    .page-header .staff-btn { width: 100%; }
-                    .search-input { min-width: 0; }
-                }
             `}</style>
         </div>
     );
