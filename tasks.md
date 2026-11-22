@@ -149,7 +149,14 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | BACKLOG — no planning pass | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — planning pass 2026-11-22; **waiting on the user's decisions P1-1 to P1-6** (mockup `KtSTgprg91u8SWsAANN1vj`) | — |
+| TJ-069a | Tokens: named colours, six sizes, three radii | BACKLOG — shape recorded; spec after the decisions | — |
+| TJ-069b | In-app confirmation dialog replaces browser confirm() | BACKLOG — shape recorded; spec after the decisions | — |
+| TJ-069c | Secretary Duplicate gets a date-and-time popup | BACKLOG — shape recorded; spec after the decisions | — |
+| TJ-069d | One popup and form-field style | BACKLOG — shape recorded; spec after the decisions | — |
+| TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — shape recorded; spec after the decisions | — |
+| TJ-069f | Emoji become line icons | BACKLOG — shape recorded; spec after the decisions | — |
+| TJ-069g | Every text size snaps to the six steps | BACKLOG — shape recorded; spec after the decisions | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
@@ -15656,8 +15663,38 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** BACKLOG, no planning pass.
-- **Why:** The root cause of the drift. Build out the `globals.css` staff section TJ-068 starts: a type scale of about six sizes instead of 25; surface, border, text and status colour tokens; and shared modal, confirm dialog (replacing the 16 `alert`/`confirm` calls), data table, page header, form field and empty-state styles. Replace emoji icons with `lucide-react` in the 13 files that use them.
+- **Status:** SPLIT — planning pass started 2026-11-22; **waiting on the user's design decisions P1-1 to P1-6** against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`). The sub-task specs (anchors, verification) are written after the decisions, on top of `master` at that time.
+- **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
+- **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
+
+**Audit, 2026-11-22, on `master` at `733e884`** (45 files: `src/app/{admin,secretary,doctor}` plus `components/{Calendar,ReservationSlot,DatePickerPopover,ClinicalAssessment,DatePicker,RowMenu}.tsx`; script in the planner's scratchpad):
+- **Style code:** 43 of 45 files have their own `<style jsx>`, about 3,000 lines in total; 75 inline `style={{…}}` attributes.
+- **Font sizes:** 28 distinct. Most used: 0.85rem ×96, 0.82 ×55, 0.78 ×39, 0.9 ×39, 0.8 ×35, 0.76 ×27, 1.5 ×26, 0.72 ×23, 1 ×14, 1.1 ×12, 0.88 ×11, 1.6 ×11; then 16 more between 0.55rem and 2rem.
+- **Colours:** 1,325 literals, 134 distinct. Mostly white at 20 opacities (`rgba(255,255,255,0.02…0.88)`), `#4caf93` ×98, `#fca5a5` ×47, `#1a2e35` ×24, `#243b44` ×12, plus a stray `#1e293b` ×8 (slate, from the CMS handoff) used as a popup background.
+- **Radii:** 18 distinct (`var(--radius-sm, 2px)` ×105, `var(--radius-md, 4px)` ×39, 8px ×25, 6px ×13, 10px ×11, 16px, 12px, 14px, 20px…).
+- **Browser popups:** 16 `confirm()` calls (Archive/Restore patient ×5, Archive/Restore website doctor ×2, Resign doctor/secretary ×2, Delete note, Delete reservation ×2, Delete session, Remove file, ClinicalAssessment unsaved ×2), 1 `prompt()` (secretary Duplicate), and `lib/useUnsavedChanges.ts`'s `confirmDiscard()` (`window.confirm`, 6 callers in the patient files and the doctor session page). No `alert()`. The `beforeunload` prompt is the browser's and stays.
+- **Repeated families:** popup `.modal-overlay`/`.modal-card` in 11 files, 6 variants (padding 1.75–2rem; radius 4px, 14px or 16px; max-width 420–560px; background `#243b44` or `#1e293b`); `.data-table` 17; `.page-header` 14; `.table-container` 13; `.form-group` 10; `.error-msg`/`.form-error` 10; `.pagination` 8; status badges 8; search input 5; tabs 4; `.empty-state` 2.
+- **Empty/loading text:** "Loading…" ×26 (plus "Loading..." ×2) and 17 different empty wordings ("No notes", "No notes found", "Nothing here yet.", "No archived doctors", …).
+- **Emoji as icons:** 17 files with real emoji: the three layouts' menus (🩺 📋 👥 🗄️ 🔍 📝 📅 🧑 ⚕ 👤), `ReservationSlot.tsx`'s action menu (📄 ✅ ⏳ 🩺 🚪 ↩️ ✏️ 📋 🚫 🗑️ 📝), patient files (📞 🖼 📄), uploads ⏳, notes ✅/☐, blog 🔗. Text arrows ("← Back", "Next →") and "✓ Saved" are typography and stay.
+- **Defect found:** the secretary dashboard's Duplicate uses `prompt("Duplicate to which date? (YYYY-MM-DD)")` and ignores a failed request; admin has a date-and-time popup for the same API.
+
+**Open decisions for the user (see the mockup):**
+- **P1-1 Confirmations.** 1A centred dialog (planner's recommendation); 1B the same with a tone icon; 1C a small confirm anchored to the row menu, with the centred dialog kept for Delete and unsaved changes. In all options: the title names the person or item, the sentence says what happens, Cancel is first, red only for permanent deletion, Escape cancels, focus starts on Cancel for deletions.
+- **P1-2 Form popups.** 2A title and buttons, no bars; 2B header bar with ✕ and a footer bar, middle scrolls (recommended). Either way one size (max-width about 420–560px by content), `raised` background, 12px corners, Escape and outside click close it.
+- **P1-3 Empty lists.** 3A one quiet line; 3B icon, title, one-sentence hint and, where the role can add, the Add button (recommended). Wording: "No … yet"; with a search, "No … match your search".
+- **P1-4 Icons.** The emoji → lucide mapping shown in the mockup; approve or amend.
+- **P1-5 Type and colour.** Six sizes (`xs` 0.72, `sm` 0.8, `base` 0.85, `md` 1, `lg` 1.2, `xl` 1.5rem); about 20 named colours (bg, surface, surface-2, raised, border, border-strong, text, text-2, muted, faint, accent, accent-hover, on-accent, accent-soft, accent-text, and ok/warn/bad/info with soft backgrounds); corners 6/8/12px. Approve or amend.
+- **P1-6 Secretary Duplicate.** Replace the `prompt()` with the date-and-time popup (admin's flow, shared look), with an error message on failure. Approve or amend.
+
+**Shape of the split (specs follow the decisions):**
+- **TJ-069a — Tokens.** The named colours, six sizes and three radii as CSS custom properties in the `globals.css` staff section; restate `.staff-btn*`, `.staff-row-*` and `.no-phone` on them. No visible change. 1 file.
+- **TJ-069b — Confirm dialog (P1-1).** A `ConfirmProvider` and async `useConfirm()` in `src/app/components/`, mounted in the admin, secretary and doctor layouts; the 16 `confirm()` calls become `await confirm({ title, message, confirmLabel, tone })` with specific wording; `useUnsavedChanges`'s `confirmDiscard` becomes async and its 6 callers await it; `beforeunload` unchanged. About 14 files.
+- **TJ-069c — Secretary Duplicate (P1-6).** `secretary/page.tsx` gets admin's duplicate popup flow (date, optional time, error shown). 1–2 files.
+- **TJ-069d — Popup and form fields (P1-2).** `.staff-modal-*` and `.staff-field`/`.staff-form-error` classes; the 11 popup files and 10 form families move onto them and drop their local copies. Mechanical, like TJ-068e.
+- **TJ-069e — Lists (P1-3).** `.staff-page-header`, `.staff-table-wrap`/`.staff-table`, `.staff-search`, `.staff-pagination`, `.staff-loading`, `.staff-empty`; the 17 list pages move onto them; empty wordings unified.
+- **TJ-069f — Icons (P1-4).** Emoji → lucide in the 17 files (menu item `icon` fields become components).
+- **TJ-069g — Type scale (P1-5).** Every remaining `font-size` in the staff files mapped by script to the six tokens (buckets: ≤0.74 → xs, 0.75–0.8 → sm, 0.82–0.9 → base, 0.95–1.1 → md, 1.15–1.3 → lg, ≥1.5 → xl); the planner re-applies the script to verify. Colour literals outside the shared pieces move to tokens in phases 3–4, when those pages are reworked.
+- **Not in phase 1:** one shared layout and the secretary/doctor menu bars (TJ-070); dashboard layout (TJ-071); patient file and list layout (TJ-072).
 
 ### TJ-070 — Staff portal refresh, phase 2: one layout for every role
 
