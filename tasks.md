@@ -149,17 +149,22 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; then d3, e, f, g | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, planned 2026-11-23 (READY)**; batch 4 = d4, f, g | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
 | TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | DONE — task commit `67b6563`, merged to `master` as `b9a6a3a` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/secretary-duplicate-popup` |
 | TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | DONE — task commit `9e30040`, merged to `master` as `1c95795` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal` |
 | TJ-069d2 | Delete popups and the website-doctor editor on the shared component | DONE — task commit `53a873c`, merged to `master` as `73ea998` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-content` |
-| TJ-069d3 | The two employee editors on the shared component | BACKLOG — pass after TJ-069d2 | — |
-| TJ-069e | One table, page header, search, pagination, loading and empty state | BACKLOG — design decided; pass runs on top of batch 1 | — |
-| TJ-069f | Emoji become line icons | BACKLOG — design decided; pass runs on top of batch 1 | — |
-| TJ-069g | Every text size snaps to the six steps | BACKLOG — design decided; pass runs on top of batch 1 | — |
+| TJ-069d3 | The two employee editors on the shared component | READY — passed 2026-11-23; batch 3, step 1 of 5 | `feat/staff-modal-employees` |
+| TJ-069d4 | Full-page forms on the shared field styles | BACKLOG — found 2026-11-23 during the TJ-069d3 pass; batch 4 | — |
+| TJ-069e | One table, page header, search, pagination, loading and empty state | SPLIT — passed 2026-11-23; see TJ-069e1 … e4 | — |
+| TJ-069e1 | Lists: the shared pieces, and the five patient lists | READY — passed 2026-11-23; batch 3, step 2 of 5 | `feat/staff-lists-patients` |
+| TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | READY — passed 2026-11-23; batch 3, step 3 of 5 | `feat/staff-lists-notes` |
+| TJ-069e3 | Lists: blog, website doctors, employees | READY — passed 2026-11-23; batch 3, step 4 of 5 | `feat/staff-lists-content-team` |
+| TJ-069e4 | Lists: tables, loading and empty states inside a record | READY — passed 2026-11-23; batch 3, step 5 of 5 | `feat/staff-lists-records` |
+| TJ-069f | Emoji become line icons | BACKLOG — design decided; batch 4 | — |
+| TJ-069g | Every text size snaps to the six steps | BACKLOG — design decided; batch 4 | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
@@ -15666,7 +15671,7 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d, e) and batch 3 (f, g) get their passes on top of batch 1.
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, passed 2026-11-23, READY** (see "Batch 3 — planned" below). Batch 4 = TJ-069d4, f, g.
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -15676,6 +15681,13 @@ button.staff-row-name {
 - Patient file `/admin/patients/562`: Edit Info opens the shared popup (440px, focus on Name); Escape closes it. With test text typed (never saved) into the Clinical Assessment, Back asks "Leave without saving?" with a red "Discard changes" and focus on Cancel; Cancel keeps the page and the text; Back then "Discard changes" leaves for the list with no request sent; on reload the stored field is unchanged (35 characters, no test text).
 - Not seen live: Archive/Resign/Delete confirmations were not clicked on real records; Blog, website Doctors and Notes have no live data. The secretary and doctor portals cannot be opened as admin.
 - **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at the phase 0 deployment.
+
+**Batch 3 — planned (2026-11-23):** TJ-069d3 (the two employee editors onto `StaffModal`) and TJ-069e split four ways (e1 shared list pieces + patient lists, e2 notes/duplicates/approvals, e3 blog/website doctors/employees, e4 tables inside a record). 24 file changes across 21 files, one new component (`StaffEmpty.tsx`), two `globals.css` appends.
+- **How the specs were made:** each task's edits were generated by script on a throwaway worktree of `master` at `2a7099b`, every anchor asserted to occur once, and the instructions below were rendered from the recorded edits (so the spec and the checked result cannot drift). Regenerating from `master` reproduces the same tree (`8abb77f`), on which `tsc` and `next build --webpack` both exit 0. Then, acting as the executor, a parser read **only the Instructions written below** and applied them to a fresh checkout of `master`: all 24 file versions came out byte-identical, same tree.
+- **Mocked preview (no database, every write refused), over 30 screen states:** all 17 list and record screens filled and empty (each record tab clicked), the search-with-no-result state, both editors, desktop and 375px. No old list classes left on any screen; no sideways page scroll.
+- **Two defects caught in the preview and fixed in the specs:** the ID column lost its faint colour to the shared cell colour (selector raised to `.staff-table .staff-cell-id`); on phones the empty state was centred in a 720px table and cut off (now sticky at the box's width).
+- **Expected results for the planner's byte-identity check** (blob prefixes): d3 → doctors page `9769720c`, secretaries page `0d5cfb9a`, globals `297f26c2`; e1 → globals `eac41bbf`, `StaffEmpty.tsx` `a26191b4`, admin patients `d608d944`, admin archived `96e22438`, secretary archived `00fb80b6`, secretary patients `0b2f54a6`, doctor patients `a61129d8`; e2 → admin notes `d2532208`, secretary notes `acb2abaa`, doctor notes `c04816a1`, duplicates `7f6d2686`, approvals `726c2d52`; e3 → blog `4ee5c6cb`, website doctors `f63bcb49`, archived website doctors `cd8c1db7`, employee doctors `0261b188`, employee secretaries `1c315480`; e4 → admin file `9a3790c0`, secretary file `7884e962`, doctor file `3dd32fd6`, session `b5b6b452`.
+- **Found, for batch 4:** the full-page forms never moved to `.staff-field` (TJ-069d4).
 
 **Batch 1 — verified (2026-11-22), merge held for the user's look:**
 - **Re-application:** the planner re-applied all four specs by script to each parent commit; all 26 changed file versions (1 + 10 + 13 + 2) are byte-identical to `ca5313a`, `87379b7`, `35bd5f3`, `67b6563`. Line endings follow the repo (index LF, working tree CRLF), including the new `ConfirmDialog.tsx`.
@@ -17786,8 +17798,1686 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d3 — The two employee editors on the shared component
 
-- **Status:** BACKLOG — pass after TJ-069d2.
-- **Shape:** the doctor and secretary Edit popups are long forms (photo, working hours, username and password with a show/hide toggle, admin-password check, colour swatches, an access checkbox, and a documents section with its own uploads and errors). They have their own `.modal-form`/`.modal-body` scroll layout and `.form-grid`. Moving them onto `StaffModal` (`wide`) needs a field-by-field pass so `.staff-field input` does not stretch the checkbox, file and colour controls.
+- **Status:** READY — passed 2026-11-23. Batch 3, step 1 of 5.
+- **Branch:** `feat/staff-modal-employees`, cut from `master` at the commit that adds this spec.
+- **Why:** decision P1-2 = **2B**. The doctor and secretary Edit popups are the last two staff popups on their own copy of the old shape (`#1e293b` card, 16px corners, title without a bar, their own scroll layout), so they look and behave unlike the 13 popups TJ-069d1/d2 moved. This step puts both on `StaffModal` (`wide`, 560px, the same width as today): header bar with ✕, body that scrolls, footer bar with Cancel and Save. Escape now closes them too, and while Save is working the ✕, Escape, backdrop and Cancel are off.
+
+**Planning pass:** 2026-11-23, on `master` at `2a7099b`. Read in full: `src/app/admin/employees/doctors/page.tsx` (830 lines), `src/app/admin/employees/secretaries/page.tsx` (742), `src/app/components/StaffModal.tsx`, and the staff section of `src/app/globals.css` (`.staff-modal-*`, `.staff-field*`, `.staff-form-error`). The two editors differ only in the state name (`editingDoctor` / `editing`), the title, and the doctor's Calendar Color section (checked by `diff`). Every replacement below was generated by script from the current files, each anchor checked to occur once, the result type-checked and built (`tsc` 0, `next build --webpack` 0 on the batch tip) and looked at in the mocked preview. Design notes:
+- **Fields** move to `.staff-field` / `.staff-field-hint` / `.staff-form-error`; each label gets `htmlFor` and its control an `id` (`edit-name`, `edit-phone`, `edit-email`, `edit-username`, `edit-password`, `edit-password-repeat`, `edit-admin-password`). The working-hours inputs keep their `aria-label`s. The two-column `.form-grid` stays local (it has a full-width `.wide` cell); it loses only its `margin-bottom`, since the popup body already spaces its children.
+- **The three groups** (Calendar Color, Content management, Documents) sit in a new shared `.staff-form-section`: a line above, a small title, then the group's own controls. They are deliberately **not** `.staff-field`, because `.staff-field input` would stretch the checkbox and the file picker (measured in the preview: checkbox stays 16×16, the file picker keeps no box).
+- **The struck-through colour swatch** drew its line in the old card colour `#1e293b`; it now uses `var(--staff-raised)`, the new popup colour, so the line reads as a cut, not a dark stripe.
+- **Not changed:** the documents list (its ⏳ 🖼 📄 emoji are TJ-069f), the show/hide password icon, the Remove button, all handlers and all wording.
+
+**Scope — touch only these (3):** `src/app/globals.css`, `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/secretaries/page.tsx`.
+
+**Do not touch:** any other file; the Delete popups already on `StaffModal` in the same two files; the list markup above the editors (TJ-069e3 does that).
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* A titled group inside a long popup form (TJ-069d3): a line above, a small
+      title, then the group's own controls (swatches, a checkbox, an upload),
+      which .staff-field would stretch to full width. */
+   .staff-form-section {
+     display: flex;
+     flex-direction: column;
+     gap: 0.4rem;
+     padding-top: 0.85rem;
+     border-top: 1px solid var(--staff-border);
+   }
+   .staff-form-section-title {
+     margin: 0;
+     font-size: var(--staff-size-sm);
+     font-weight: 500;
+     color: var(--staff-muted);
+   }
+   ```
+
+**2. `src/app/admin/employees/doctors/page.tsx`**
+
+1. Replace the block that starts with the line `{/* Modal */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Edit Doctor (design 2B, TJ-069d3) */}
+               {editingDoctor && (
+                   <StaffModal
+                       title="Edit Doctor"
+                       wide
+                       onClose={() => setEditingDoctor(null)}
+                       closeDisabled={saving}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setEditingDoctor(null)} disabled={saving}>Cancel</button>
+                           <button
+                               className="staff-btn staff-btn-primary"
+                               aria-busy={saving}
+                               onClick={handleSave}
+                               disabled={saving || !form.name || !form.username.trim()}
+                           >
+                               {saving ? "Saving…" : "Save"}
+                           </button>
+                       </>}
+                   >
+                       {formError && <div className="staff-form-error" role="alert">{formError}</div>}
+
+                       <div className="form-grid">
+                           <div className="staff-field">
+                               <label htmlFor="edit-name">Name *</label>
+                               <input id="edit-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-phone">Phone</label>
+                               <input id="edit-phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                           </div>
+                           <div className="staff-field wide">
+                               <label htmlFor="edit-email">Email</label>
+                               <input id="edit-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                           </div>
+                           <div className="staff-field wide">
+                               <label>Working Hours</label>
+                               <div className="hours-row">
+                                   <input
+                                       type="time"
+                                       aria-label="Start time"
+                                       value={hoursFrom}
+                                       onChange={(e) => {
+                                           setHoursFrom(e.target.value);
+                                           setForm({ ...form, workingHours: formatWorkingHours(e.target.value, hoursTo) });
+                                       }}
+                                   />
+                                   <span className="hours-sep">to</span>
+                                   <input
+                                       type="time"
+                                       aria-label="End time"
+                                       value={hoursTo}
+                                       onChange={(e) => {
+                                           setHoursTo(e.target.value);
+                                           setForm({ ...form, workingHours: formatWorkingHours(hoursFrom, e.target.value) });
+                                       }}
+                                   />
+                               </div>
+                               {legacyHours && <span className="staff-field-hint">Currently: {legacyHours}</span>}
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-username">Username *</label>
+                               <input id="edit-username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
+                               {form.username.trim() !== editingDoctor.username && (
+                                   <span className="staff-field-hint">They sign in with this from now on.</span>
+                               )}
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-password">New Password (optional)</label>
+                               <div className="password-wrap">
+                                   <input
+                                       id="edit-password"
+                                       type={showPassword ? "text" : "password"}
+                                       value={form.password}
+                                       onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                   />
+                                   <button
+                                       type="button"
+                                       className="toggle-password"
+                                       aria-label={showPassword ? "Hide password" : "Show password"}
+                                       onClick={() => setShowPassword(!showPassword)}
+                                   >
+                                       {showPassword ? (
+                                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                               <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.2 3.15M6.6 6.6A17.7 17.7 0 0 0 2 11s3.6 7 10 7a9 9 0 0 0 4.4-1.1" />
+                                               <path d="m2 2 20 20" />
+                                               <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+                                           </svg>
+                                       ) : (
+                                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                               <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+                                               <circle cx="12" cy="12" r="3" />
+                                           </svg>
+                                       )}
+                                   </button>
+                               </div>
+                               <span className="staff-field-hint">At least 8 characters.</span>
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-password-repeat">Repeat New Password</label>
+                               <input
+                                   id="edit-password-repeat"
+                                   type={showPassword ? "text" : "password"}
+                                   value={form.confirmPassword}
+                                   onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                               />
+                           </div>
+                           {form.password && (
+                               <div className="staff-field">
+                                   <label htmlFor="edit-admin-password">Your Password *</label>
+                                   <input
+                                       id="edit-admin-password"
+                                       type="password"
+                                       value={form.adminPassword}
+                                       onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
+                                   />
+                                   <span className="staff-field-hint">Confirm it is you before changing someone else&apos;s password.</span>
+                               </div>
+                           )}
+                       </div>
+
+                       <div className="staff-form-section">
+                           <p className="staff-form-section-title">Calendar Color</p>
+                           <div className="color-picker">
+                               {COLORS.map((c) => {
+                                   const taken = takenColors.includes(c);
+                                   return (
+                                       <button
+                                           key={c}
+                                           type="button"
+                                           disabled={taken}
+                                           title={taken ? "Already used by another doctor" : undefined}
+                                           className={`color-swatch ${form.color === c ? "selected" : ""}`}
+                                           style={{ background: c }}
+                                           onClick={() => setForm({ ...form, color: c })}
+                                       />
+                                   );
+                               })}
+                           </div>
+                           {paletteExhausted && (
+                               <span className="staff-field-hint">Every colour is in use — this one will be shared with another doctor.</span>
+                           )}
+                       </div>
+
+                       <div className="staff-form-section">
+                           <p className="staff-form-section-title">Content management</p>
+                           <label className="grant-row">
+                               <input
+                                   type="checkbox"
+                                   checked={form.canManageContent}
+                                   onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
+                               />
+                               <span>May manage Blog, public Doctor profiles, and Approvals</span>
+                           </label>
+                           <span className="staff-field-hint">Takes effect at their next sign-in.</span>
+                       </div>
+
+                       <div className="staff-form-section">
+                           <p className="staff-form-section-title">Documents</p>
+                           {docError && <div className="staff-form-error" role="alert">{docError}</div>}
+                           <input
+                               type="file"
+                               className="doc-input"
+                               aria-label="Upload a document"
+                               disabled={!!uploadingName}
+                               onChange={handleUpload}
+                           />
+                           {docsLoading ? (
+                               <span className="staff-field-hint">Loading documents…</span>
+                           ) : (
+                               <ul className="doc-list">
+                                   {uploadingName && (
+                                       <li className="doc-row uploading">
+                                           <span className="doc-icon">⏳</span>
+                                           <span className="doc-name">Uploading {uploadingName}…</span>
+                                       </li>
+                                   )}
+                                   {docs.map((d) => (
+                                       <li key={d.id} className="doc-row">
+                                           <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+                                           <a
+                                               className="doc-name"
+                                               href={clinicalFileUrl(d.filePath)}
+                                               target="_blank"
+                                               rel="noreferrer"
+                                           >
+                                               {d.fileName}
+                                           </a>
+                                           <button
+                                               type="button"
+                                               className="btn-sm btn-delete"
+                                               disabled={removingId === d.id}
+                                               onClick={() => handleRemoveDoc(d.id)}
+                                           >
+                                               {removingId === d.id ? "Removing…" : "Remove"}
+                                           </button>
+                                       </li>
+                                   ))}
+                                   {docs.length === 0 && !uploadingName && (
+                                       <li className="doc-empty">No documents yet</li>
+                                   )}
+                               </ul>
+                           )}
+                           <span className="staff-field-hint">Documents are saved immediately — they do not wait for Save.</span>
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+2. Delete these lines:
+   ```tsx
+           /* The form scrolls inside the card, not the card itself: the title and
+              Save stay in view, and the scrollbar sits within the rounded corners. */
+   ```
+3. Replace `.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1rem; }` with `.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }`.
+4. Replace
+   ```tsx
+             background: linear-gradient(to top right, transparent calc(50% - 1.5px), #1e293b calc(50% - 1.5px),
+               #1e293b calc(50% + 1.5px), transparent calc(50% + 1.5px));
+   ```
+   with
+   ```tsx
+             background: linear-gradient(to top right, transparent calc(50% - 1.5px), var(--staff-raised) calc(50% - 1.5px),
+               var(--staff-raised) calc(50% + 1.5px), transparent calc(50% + 1.5px));
+   ```
+5. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.modal-overlay {…}`, `.modal-card {…}`, `.modal-card h2 {…}`, `.modal-form {…}`, `.modal-form h2 {…}`, `.modal-body {…}`, `.modal-form .modal-actions {…}`, `.form-group {…}`, `.form-group label {…}`, `.form-group input {…}`, `.form-group input:focus {…}`, `.modal-actions {…}`, `.error-msg {…}`, `.doc-section, .grant-section {…}`, `.field-hint {…}`; and inside the phone-width `@media` block: `.modal-overlay {…}`, `.modal-card {…}`, `.modal-body {…}`. Nothing else.
+
+**3. `src/app/admin/employees/secretaries/page.tsx`**
+
+1. Replace the block that starts with the line `{editing && (` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Edit Secretary (design 2B, TJ-069d3) */}
+               {editing && (
+                   <StaffModal
+                       title="Edit Secretary"
+                       wide
+                       onClose={() => setEditing(null)}
+                       closeDisabled={saving}
+                       footer={<>
+                           <button className="staff-btn staff-btn-secondary" onClick={() => setEditing(null)} disabled={saving}>Cancel</button>
+                           <button
+                               className="staff-btn staff-btn-primary"
+                               aria-busy={saving}
+                               onClick={handleSave}
+                               disabled={saving || !form.name || !form.username.trim()}
+                           >
+                               {saving ? "Saving…" : "Save"}
+                           </button>
+                       </>}
+                   >
+                       {formError && <div className="staff-form-error" role="alert">{formError}</div>}
+
+                       <div className="form-grid">
+                           <div className="staff-field">
+                               <label htmlFor="edit-name">Name *</label>
+                               <input id="edit-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-phone">Phone</label>
+                               <input id="edit-phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                           </div>
+                           <div className="staff-field wide">
+                               <label htmlFor="edit-email">Email</label>
+                               <input id="edit-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                           </div>
+                           <div className="staff-field wide">
+                               <label>Working Hours</label>
+                               <div className="hours-row">
+                                   <input
+                                       type="time"
+                                       aria-label="Start time"
+                                       value={hoursFrom}
+                                       onChange={(e) => {
+                                           setHoursFrom(e.target.value);
+                                           setForm({ ...form, workingHours: formatWorkingHours(e.target.value, hoursTo) });
+                                       }}
+                                   />
+                                   <span className="hours-sep">to</span>
+                                   <input
+                                       type="time"
+                                       aria-label="End time"
+                                       value={hoursTo}
+                                       onChange={(e) => {
+                                           setHoursTo(e.target.value);
+                                           setForm({ ...form, workingHours: formatWorkingHours(hoursFrom, e.target.value) });
+                                       }}
+                                   />
+                               </div>
+                               {legacyHours && <span className="staff-field-hint">Currently: {legacyHours}</span>}
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-username">Username *</label>
+                               <input id="edit-username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
+                               {form.username.trim() !== editing.username && (
+                                   <span className="staff-field-hint">They sign in with this from now on.</span>
+                               )}
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-password">New Password (optional)</label>
+                               <div className="password-wrap">
+                                   <input
+                                       id="edit-password"
+                                       type={showPassword ? "text" : "password"}
+                                       value={form.password}
+                                       onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                   />
+                                   <button
+                                       type="button"
+                                       className="toggle-password"
+                                       aria-label={showPassword ? "Hide password" : "Show password"}
+                                       onClick={() => setShowPassword(!showPassword)}
+                                   >
+                                       {showPassword ? (
+                                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                               <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.2 3.15M6.6 6.6A17.7 17.7 0 0 0 2 11s3.6 7 10 7a9 9 0 0 0 4.4-1.1" />
+                                               <path d="m2 2 20 20" />
+                                               <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+                                           </svg>
+                                       ) : (
+                                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                               <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+                                               <circle cx="12" cy="12" r="3" />
+                                           </svg>
+                                       )}
+                                   </button>
+                               </div>
+                               <span className="staff-field-hint">At least 8 characters.</span>
+                           </div>
+                           <div className="staff-field">
+                               <label htmlFor="edit-password-repeat">Repeat New Password</label>
+                               <input
+                                   id="edit-password-repeat"
+                                   type={showPassword ? "text" : "password"}
+                                   value={form.confirmPassword}
+                                   onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                               />
+                           </div>
+                           {form.password && (
+                               <div className="staff-field">
+                                   <label htmlFor="edit-admin-password">Your Password *</label>
+                                   <input
+                                       id="edit-admin-password"
+                                       type="password"
+                                       value={form.adminPassword}
+                                       onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
+                                   />
+                                   <span className="staff-field-hint">Confirm it is you before changing someone else&apos;s password.</span>
+                               </div>
+                           )}
+                       </div>
+
+                       <div className="staff-form-section">
+                           <p className="staff-form-section-title">Content management</p>
+                           <label className="grant-row">
+                               <input
+                                   type="checkbox"
+                                   checked={form.canManageContent}
+                                   onChange={(e) => setForm({ ...form, canManageContent: e.target.checked })}
+                               />
+                               <span>May manage Blog, public Doctor profiles, and Approvals</span>
+                           </label>
+                           <span className="staff-field-hint">Takes effect at their next sign-in.</span>
+                       </div>
+
+                       <div className="staff-form-section">
+                           <p className="staff-form-section-title">Documents</p>
+                           {docError && <div className="staff-form-error" role="alert">{docError}</div>}
+                           <input
+                               type="file"
+                               className="doc-input"
+                               aria-label="Upload a document"
+                               disabled={!!uploadingName}
+                               onChange={handleUpload}
+                           />
+                           {docsLoading ? (
+                               <span className="staff-field-hint">Loading documents…</span>
+                           ) : (
+                               <ul className="doc-list">
+                                   {uploadingName && (
+                                       <li className="doc-row uploading">
+                                           <span className="doc-icon">⏳</span>
+                                           <span className="doc-name">Uploading {uploadingName}…</span>
+                                       </li>
+                                   )}
+                                   {docs.map((d) => (
+                                       <li key={d.id} className="doc-row">
+                                           <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+                                           <a
+                                               className="doc-name"
+                                               href={clinicalFileUrl(d.filePath)}
+                                               target="_blank"
+                                               rel="noreferrer"
+                                           >
+                                               {d.fileName}
+                                           </a>
+                                           <button
+                                               type="button"
+                                               className="btn-sm btn-delete"
+                                               disabled={removingId === d.id}
+                                               onClick={() => handleRemoveDoc(d.id)}
+                                           >
+                                               {removingId === d.id ? "Removing…" : "Remove"}
+                                           </button>
+                                       </li>
+                                   ))}
+                                   {docs.length === 0 && !uploadingName && (
+                                       <li className="doc-empty">No documents yet</li>
+                                   )}
+                               </ul>
+                           )}
+                           <span className="staff-field-hint">Documents are saved immediately — they do not wait for Save.</span>
+                       </div>
+                   </StaffModal>
+               )}
+   ```
+2. Delete these lines:
+   ```tsx
+           /* The form scrolls inside the card, not the card itself: the title and
+              Save stay in view, and the scrollbar sits within the rounded corners. */
+   ```
+3. Replace `.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1rem; }` with `.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }`.
+4. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.modal-overlay {…}`, `.modal-card {…}`, `.modal-card h2 {…}`, `.modal-form {…}`, `.modal-form h2 {…}`, `.modal-body {…}`, `.modal-form .modal-actions {…}`, `.form-group {…}`, `.form-group label {…}`, `.form-group input {…}`, `.form-group input:focus {…}`, `.modal-actions {…}`, `.error-msg {…}`, `.doc-section, .grant-section {…}`, `.field-hint {…}`; and inside the phone-width `@media` block: `.modal-overlay {…}`, `.modal-card {…}`, `.modal-body {…}`. Nothing else.
+
+**Verification:**
+- `grep -c "<StaffModal" src/app/admin/employees/doctors/page.tsx src/app/admin/employees/secretaries/page.tsx` prints `2` for each file.
+- `grep -n 'modal-overlay\|modal-card\|className="form-group\|className="field-hint\|className="error-msg"' src/app/admin/employees/doctors/page.tsx src/app/admin/employees/secretaries/page.tsx` prints nothing.
+- `grep -c "^\.staff-form-section {" src/app/globals.css` prints `1`.
+- `git diff --stat` against the parent lists exactly the 3 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] Both editors open as the 2B popup at 560px; title bar with ✕; Cancel and Save in the footer bar; the body scrolls.
+- [ ] The checkbox and the file picker keep their own size; the taken swatch's line is in the popup colour.
+- [ ] `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069d4 — Full-page forms on the shared field styles
+
+- **Status:** BACKLOG — found during the TJ-069d3 pass, 2026-11-23; pass with batch 4.
+- **Why:** TJ-069d moved every popup onto `.staff-field`, but the phase 1 plan also named "10 form families", and the full-page forms were never specced. Still on their own `.form-group` / `.field` copies on `master` at `2a7099b`: new patient (admin, secretary), new note (admin, secretary), new doctor and new secretary, booking new and edit (admin, secretary; partly moved), the doctor's profile, the doctor's session page, and `BlogEditor.tsx`. `ClinicalAssessment.tsx` also carries `.form-group` (12 on the patient file), but it is reworked in phase 4 (TJ-072), so it stays out.
+
+---
+
+### TJ-069e — Lists: one page header, search, table, pagination, loading line and empty state
+
+- **Status:** SPLIT — passed 2026-11-23; see TJ-069e1 … e4. Batch 3, steps 2–5.
+- **Why:** decision P1-3 = **3B**. 17 staff files draw a table, each with its own copy of the header, table, search box and pagination rules (7 table variants, 9 header variants, 3 search variants), and "loading" and "empty" read 20 different ways. The shared pieces are defined once in the `globals.css` staff section (TJ-069e1) and every list moves onto them; empty lists get the 3B empty state (icon, title, one-sentence hint, and the Add button where that role can add).
+
+**Shared design (all four steps):**
+- **Classes:** `.staff-page-header` (with `h1`, `.staff-page-count`, `.staff-page-sub`), `.staff-search` (box with a lucide `Search` icon), `.staff-table-wrap` / `.staff-table` (with `.staff-table-compact` for tables inside a record), `.staff-cell-id`, `.staff-pagination` (buttons are `staff-btn staff-btn-secondary staff-btn-sm`), `.staff-loading`, `.staff-panel` (a standalone empty state or loading line), and the `StaffEmpty` component (`.staff-empty-*`).
+- **Values** come from the TJ-069a tokens: titles 1.5rem, counts 1rem, table headers 0.72rem, cells 0.85rem, corners 12px for the table box. Cells move from 0.88–0.9rem to 0.85rem and headers from 0.74–0.78rem to 0.72rem, the direction TJ-069g takes anyway.
+- **A table's minimum width stays per page** (one local line such as `.staff-table { min-width: 680px; }`), so wide tables still scroll sideways on phones. The secretary and doctor tables, which had `overflow: hidden`, now scroll instead of clipping.
+- **On phones** the loading line and the empty state stay in view at the box's own width while a wide table's header scrolls (`position: sticky` and `100cqi`; measured at 375px: the empty state spans the box, 343px, and does not move when the header is scrolled 200px).
+- **Loading** reads "Loading…" everywhere (two "Loading..." go), with `role="status"`. Skeletons are TJ-072.
+- **Wording** ("No … yet"; "No … match your search" when a search or filter is set), decided by the planner within 3B and shown to the user in the preview before merge:
+
+| List | Title | Hint | Button |
+|---|---|---|---|
+| Patients (admin, secretary) | No patients yet | Patients you add appear here. | Add Patient |
+| Patients (doctor) | No patients yet | Patients registered at the clinic appear here. | — |
+| Patients, any role, with a search | No patients match your search | Try part of the name, or a phone number. | — |
+| Archived patients | No archived patients | Patients you archive move here. You can restore them any time. | — |
+| Notes (admin, secretary) | No notes yet | Notes you add for the doctors appear here. | Add Note |
+| Notes, with a search or a doctor chosen | No notes match your search | Try other words, or choose All Doctors. | — |
+| My Notes (doctor) | No notes yet | Notes the clinic leaves for you appear here. | — |
+| Duplicate Check | No duplicate patients | No two patients share a phone number. | — |
+| Approvals | Nothing waiting for review | Profile edits and photos that doctors send appear here. | — |
+| Blog, All tab | No posts yet | Posts you write appear here, and on the public blog once published. | New Post |
+| Blog, other tabs | No published posts / No scheduled posts / No drafts / No archived posts | one line each (see TJ-069e3) | — |
+| Website Doctors | No doctor profiles yet | Profiles you add appear in the Doctors section of the public site. | Add Doctor |
+| Archived website Doctors | No archived doctor profiles | Profiles you archive move here. You can restore them any time. | — |
+| Employees → Doctors / Secretaries | No active doctors / No active secretaries | Doctors you add can sign in and take bookings. / Secretaries you add can sign in and manage bookings. | Add Doctor / Add Secretary |
+| … their Archived chip | No archived doctors / No archived secretaries | … who resign move here. You can re-enrol them any time. | — |
+| Patient file: Sessions, Files, History | No sessions yet / No files yet / No recorded activity yet | Sessions booked for this patient appear here. / Files you upload above appear here. / Changes to this patient's file are recorded here. | — |
+| Doctor session: History | No previous sessions | Earlier sessions with this patient appear here. | — |
+
+- **Icons** (lucide, per the approved P1-4 mapping where it names one): `Users` patients, `Archive` archived lists, `Search` no match, `StickyNote` notes, `CircleCheck` duplicates, `Inbox` approvals, `Newspaper` blog, `Stethoscope` doctors, `Contact` secretaries, `CalendarDays` sessions, `FileText` files, `History` activity and past sessions.
+
+**Execution:** as batches 1–2: stacked branches (e1 from the d3 tip, e2 from e1, e3 from e2, e4 from e3), one Sonnet executor at a time, the planner re-applies each spec and checks byte-identity, then a mocked preview; **nothing merges or pushes until the user has seen it.**
+
+**Found during the pass, not in this batch:** the secretary and doctor patient searches and both notes searches fetch on every keystroke (admin's patient search waits 300ms); the archived-patient and duplicate pages declare `:global(.btn-sm)`, which restyles every `.btn-sm` on screen while they are open; the Approvals page's Approve button still uses the old CMS gradient rather than 4A.
+
+---
+
+### TJ-069e1 — Lists: the shared pieces, and the five patient lists
+
+- **Status:** READY — passed 2026-11-23. Batch 3, step 2 of 5.
+- **Branch:** `feat/staff-lists-patients`, cut from the tip of `feat/staff-modal-employees`.
+- **Why:** defines the list pieces and the `StaffEmpty` component once, and moves the patient lists of all three roles (admin and secretary active and archived, doctor) onto them.
+
+**Planning pass:** 2026-11-23, on `master` at `2a7099b` with TJ-069d3 applied. Read in full: `src/app/admin/patients/page.tsx`, `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/page.tsx`, `src/app/secretary/patients/archived/page.tsx`, `src/app/doctor/patients/page.tsx`, `src/app/components/RowMenu.tsx` (for the `LucideIcon` type import), `src/app/api/patients/route.ts` (a doctor's list is every non-archived patient, hence the doctor's hint). The CSS variants were grouped by script across all 17 table files (see TJ-069e). Generated, anchor-checked, type-checked, built and previewed as TJ-069d3. Preview checks: header, count, search box (36px, icon inside at the start), table box 12px corners, header cells 0.72rem, ID cells faint (a first draft lost that colour to `.staff-table td`; the selector is `.staff-table .staff-cell-id`), pagination buttons 30px; empty list shows the Add button; a search with no result shows the search version without a button; no sideways page scroll at 375px or 800px. The secretary and doctor patient pages lose their whole `<style jsx>` block, as nothing in it is used any more.
+
+**Scope — touch only these (7, one new):** `src/app/globals.css`, `src/app/components/StaffEmpty.tsx` (new), `src/app/admin/patients/page.tsx`, `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/archived/page.tsx`, `src/app/secretary/patients/page.tsx`, `src/app/doctor/patients/page.tsx`.
+
+**Do not touch:** any other file; the row markup (links, row menus, chevrons, "No phone"); the Restore buttons and the `:global(.btn-back)` / `:global(.btn-sm)` rules on the archived pages; any fetch, state or handler.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* Lists, decision P1-3 (TJ-069e1). One page header, search box, table,
+      pagination, loading line and empty state for every staff list. A page
+      keeps only its own column rules, plus a min-width where its table needs
+      one to stay readable (the wrapper then scrolls sideways on phones). */
+   .staff-page-header {
+     display: flex;
+     flex-wrap: wrap;
+     align-items: center;
+     justify-content: space-between;
+     gap: 0.75rem 1rem;
+     margin-bottom: 1.25rem;
+   }
+   .staff-page-header h1 {
+     margin: 0;
+     font-size: var(--staff-size-xl);
+     font-weight: 600;
+   }
+   .staff-page-count {
+     color: var(--staff-faint);
+     font-size: var(--staff-size-md);
+     font-weight: 400;
+   }
+   .staff-page-sub {
+     margin: 0.25rem 0 0;
+     color: var(--staff-muted);
+     font-size: var(--staff-size-sm);
+   }
+   .staff-search {
+     position: relative;
+     width: 100%;
+     max-width: 360px;
+     margin-bottom: 1rem;
+   }
+   .staff-search svg {
+     position: absolute;
+     inset-inline-start: 0.7rem;
+     top: 50%;
+     transform: translateY(-50%);
+     color: var(--staff-faint);
+     pointer-events: none;
+   }
+   .staff-search input {
+     box-sizing: border-box;
+     width: 100%;
+     min-height: 36px;
+     padding: 0.45rem 0.7rem;
+     padding-inline-start: 2.1rem;
+     background: rgba(255, 255, 255, 0.05);
+     border: 1px solid var(--staff-border-strong);
+     border-radius: var(--staff-radius-md);
+     color: var(--staff-text);
+     font-family: inherit;
+     font-size: var(--staff-size-base);
+     outline: none;
+   }
+   .staff-search input::placeholder {
+     color: rgba(255, 255, 255, 0.28);
+   }
+   .staff-search input:focus {
+     border-color: var(--staff-accent);
+     box-shadow: 0 0 0 3px rgba(76, 175, 147, 0.18);
+   }
+   .staff-table-wrap {
+     container-type: inline-size;
+     overflow-x: auto;
+     -webkit-overflow-scrolling: touch;
+     background: var(--staff-surface);
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-lg);
+   }
+   .staff-table {
+     width: 100%;
+     border-collapse: collapse;
+   }
+   .staff-table th {
+     padding: 0.85rem 1rem;
+     border-bottom: 1px solid var(--staff-border);
+     color: var(--staff-faint);
+     font-size: var(--staff-size-xs);
+     font-weight: 600;
+     letter-spacing: 0.05em;
+     text-align: start;
+     text-transform: uppercase;
+     white-space: nowrap;
+   }
+   .staff-table td {
+     padding: 0.75rem 1rem;
+     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+     color: rgba(255, 255, 255, 0.8);
+     font-size: var(--staff-size-base);
+   }
+   .staff-table tbody tr:last-child td {
+     border-bottom: none;
+   }
+   .staff-table tbody tr:hover {
+     background: rgba(255, 255, 255, 0.02);
+   }
+   /* The one row that holds the loading line or the empty state. */
+   .staff-table .staff-table-state td {
+     padding: 0;
+   }
+   .staff-table tbody .staff-table-state:hover {
+     background: none;
+   }
+   /* On a phone the table is wider than its wrapper and scrolls sideways; the
+      loading line and the empty state stay in view at the wrapper's width. */
+   .staff-table-state .staff-loading,
+   .staff-table-state .staff-empty {
+     position: sticky;
+     inset-inline-start: 0;
+     box-sizing: border-box;
+     width: 100cqi;
+   }
+   /* Tables inside a record (the patient file's tabs, a session's history). */
+   .staff-table-compact th {
+     padding: 0.7rem 0.85rem;
+   }
+   .staff-table-compact td {
+     padding: 0.65rem 0.85rem;
+   }
+   .staff-table .staff-cell-id {
+     color: var(--staff-faint);
+     font-variant-numeric: tabular-nums;
+   }
+   .staff-pagination {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 1rem;
+     margin-top: 1.25rem;
+     color: var(--staff-muted);
+     font-size: var(--staff-size-base);
+   }
+   .staff-loading {
+     margin: 0;
+     padding: 2rem 1rem;
+     color: var(--staff-faint);
+     font-size: var(--staff-size-base);
+     text-align: center;
+   }
+   /* Empty state, design 3B (components/StaffEmpty.tsx). */
+   .staff-empty {
+     display: grid;
+     justify-items: center;
+     gap: 0.45rem;
+     padding: 1.8rem 1rem;
+     text-align: center;
+   }
+   .staff-empty-icon {
+     display: grid;
+     place-items: center;
+     width: 40px;
+     height: 40px;
+     border-radius: 50%;
+     background: var(--staff-surface-2);
+     color: var(--staff-muted);
+   }
+   .staff-empty-title {
+     margin: 0;
+     color: var(--staff-text);
+     font-size: var(--staff-size-md);
+     font-weight: 600;
+   }
+   .staff-empty-hint {
+     margin: 0;
+     max-width: 34ch;
+     color: var(--staff-muted);
+     font-size: var(--staff-size-sm);
+   }
+   .staff-empty .staff-btn {
+     margin-top: 0.35rem;
+   }
+   /* An empty state or loading line that stands alone, not inside a table. */
+   .staff-panel {
+     background: var(--staff-surface);
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-lg);
+   }
+   @media (max-width: 560px) {
+     .staff-page-header {
+       flex-direction: column;
+       align-items: stretch;
+     }
+     .staff-page-header .staff-btn {
+       width: 100%;
+     }
+     .staff-search {
+       max-width: none;
+     }
+   }
+   ```
+
+**2. `src/app/components/StaffEmpty.tsx`** — new file, exactly:
+   ```tsx
+   // Empty state, design 3B (TJ-069e1, decision P1-3): an icon, a title, a
+   // one-sentence hint and, where the viewer's role can add, the Add button.
+   // Titles read "No … yet" for an empty list and "No … match your search" when
+   // a search finds nothing. The styles are global (.staff-empty-* in
+   // globals.css), so it looks the same wherever a page renders it.
+
+   import type { ReactNode } from "react";
+   import type { LucideIcon } from "lucide-react";
+
+   interface StaffEmptyProps {
+       icon: LucideIcon;
+       title: string;
+       hint?: string;
+       /** The Add button, only where the viewer's role can add. */
+       action?: ReactNode;
+   }
+
+   export default function StaffEmpty({ icon: Icon, title, hint, action }: StaffEmptyProps) {
+       return (
+           <div className="staff-empty">
+               <span className="staff-empty-icon"><Icon size={20} aria-hidden="true" /></span>
+               <p className="staff-empty-title">{title}</p>
+               {hint && <p className="staff-empty-hint">{hint}</p>}
+               {action}
+           </div>
+       );
+   }
+   ```
+
+**3. `src/app/admin/patients/page.tsx`**
+
+1. Replace `import { Archive, ChevronRight, Plus } from "lucide-react";` with `import { Archive, ChevronRight, Plus, Search, Users } from "lucide-react";`.
+2. After the line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `className="page-header"` with `className="staff-page-header"`.
+4. Replace `className="count"` with `className="staff-page-count"`.
+5. Replace `className="table-container"` with `className="staff-table-wrap"`.
+6. Replace `className="data-table"` with `className="staff-table"`.
+7. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+8. Replace
+   ```tsx
+               <div className="search-bar">
+                   <input
+                       type="text"
+                       placeholder="Search by name or phone…"
+   ```
+   with
+   ```tsx
+               <div className="staff-search">
+                   <Search size={15} aria-hidden="true" />
+                   <input
+                       type="text"
+                       aria-label="Search patients"
+                       placeholder="Search by name or phone…"
+   ```
+9. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No patients found</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={6}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={6}>
+                                   {search ? (
+                                       <StaffEmpty icon={Search} title="No patients match your search" hint="Try part of the name, or a phone number." />
+                                   ) : (
+                                       <StaffEmpty
+                                           icon={Users}
+                                           title="No patients yet"
+                                           hint="Patients you add appear here."
+                                           action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/patients/new")}><Plus size={15} aria-hidden="true" />Add Patient</button>}
+                                       />
+                                   )}
+                               </td></tr>
+                           ) :
+   ```
+10. Replace `<td className="id-cell">` with `<td className="staff-cell-id">`.
+11. Replace `.data-table { width: 100%; min-width: 680px; border-collapse: collapse; }` with `.staff-table { min-width: 680px; }`.
+12. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.search-bar {…}`, `.search-bar input {…}`, `.search-bar input:focus {…}`, `.search-bar input::placeholder {…}`, `.table-container {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.id-cell {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`; and inside the phone-width `@media` block: `.page-header {…}`, `.page-header .staff-btn {…}`, `.search-bar input {…}`. Nothing else. The `@media (max-width: 560px) { … }` block is then empty: delete it too (its opening line, its closing `}`, and the blank line above it).
+
+**4. `src/app/admin/patients/archived/page.tsx`**
+
+1. Replace `import { ChevronRight } from "lucide-react";` with `import { Archive, ChevronRight } from "lucide-react";`.
+2. After the line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `className="page-header"` with `className="staff-page-header"`.
+4. Replace `className="count"` with `className="staff-page-count"`.
+5. Replace `className="table-container"` with `className="staff-table-wrap"`.
+6. Replace `className="data-table"` with `className="staff-table"`.
+7. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+8. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No archived patients</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={5}>
+                                   <StaffEmpty icon={Archive} title="No archived patients" hint="Patients you archive move here. You can restore them any time." />
+                               </td></tr>
+                           ) :
+   ```
+9. Replace `<td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>` with `<td className="staff-cell-id">{p.id}</td>`.
+10. Replace `.data-table { width: 100%; min-width: 600px; border-collapse: collapse; }` with `.staff-table { min-width: 600px; }`.
+11. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.table-container {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`; and inside the phone-width `@media` block: `.page-header {…}`. Nothing else.
+
+**5. `src/app/secretary/patients/archived/page.tsx`**
+
+1. Replace `import { ChevronRight } from "lucide-react";` with `import { Archive, ChevronRight } from "lucide-react";`.
+2. After the line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `className="page-header"` with `className="staff-page-header"`.
+4. Replace `className="count"` with `className="staff-page-count"`.
+5. Replace `className="table-container"` with `className="staff-table-wrap"`.
+6. Replace `className="data-table"` with `className="staff-table"`.
+7. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+8. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No archived patients</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={5}>
+                                   <StaffEmpty icon={Archive} title="No archived patients" hint="Patients you archive move here. You can restore them any time." />
+                               </td></tr>
+                           ) :
+   ```
+9. Replace `<td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>` with `<td className="staff-cell-id">{p.id}</td>`.
+10. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.table-container {…}`, `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`. Nothing else.
+
+**6. `src/app/secretary/patients/page.tsx`**
+
+1. Replace `import { ChevronRight, Plus } from "lucide-react";` with `import { ChevronRight, Plus, Search, Users } from "lucide-react";`.
+2. After the line `import { shouldOpenRow } from "@/lib/rowLink";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `className="page-header"` with `className="staff-page-header"`.
+4. Replace `className="count"` with `className="staff-page-count"`.
+5. Replace `className="table-container"` with `className="staff-table-wrap"`.
+6. Replace `className="data-table"` with `className="staff-table"`.
+7. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+8. Replace
+   ```tsx
+               <input
+                   className="search-input"
+                   placeholder="Search by name or phone..."
+                   value={search}
+                   onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+               />
+   ```
+   with
+   ```tsx
+               <div className="staff-search">
+                   <Search size={15} aria-hidden="true" />
+                   <input
+                       type="text"
+                       aria-label="Search patients"
+                       placeholder="Search by name or phone…"
+                       value={search}
+                       onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                   />
+               </div>
+   ```
+9. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No patients found</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={5}>
+                                   {search ? (
+                                       <StaffEmpty icon={Search} title="No patients match your search" hint="Try part of the name, or a phone number." />
+                                   ) : (
+                                       <StaffEmpty
+                                           icon={Users}
+                                           title="No patients yet"
+                                           hint="Patients you add appear here."
+                                           action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/secretary/patients/new")}><Plus size={15} aria-hidden="true" />Add Patient</button>}
+                                       />
+                                   )}
+                               </td></tr>
+                           ) :
+   ```
+10. Replace `<td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>` with `<td className="staff-cell-id">{p.id}</td>`.
+11. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.search-input {…}`, `.search-input:focus {…}`, `.table-container {…}`, `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`. Nothing else.
+12. The `<style jsx>` block is now empty. Delete its two lines (the one that opens it, `<style jsx>{` plus a backtick, and the one that closes it, a backtick plus `}</style>`) and the blank line above them.
+
+**7. `src/app/doctor/patients/page.tsx`**
+
+1. Replace `import { ChevronRight } from "lucide-react";` with `import { ChevronRight, Search, Users } from "lucide-react";`.
+2. After the line `import { shouldOpenRow } from "@/lib/rowLink";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `className="page-header"` with `className="staff-page-header"`.
+4. Replace `className="count"` with `className="staff-page-count"`.
+5. Replace `className="table-container"` with `className="staff-table-wrap"`.
+6. Replace `className="data-table"` with `className="staff-table"`.
+7. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+8. Replace
+   ```tsx
+               <input
+                   className="search-input"
+                   placeholder="Search by name or phone..."
+                   value={search}
+                   onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+               />
+   ```
+   with
+   ```tsx
+               <div className="staff-search">
+                   <Search size={15} aria-hidden="true" />
+                   <input
+                       type="text"
+                       aria-label="Search patients"
+                       placeholder="Search by name or phone…"
+                       value={search}
+                       onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                   />
+               </div>
+   ```
+9. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={4} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr><td colSpan={4} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No patients found</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={4}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : patients.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={4}>
+                                   {search ? (
+                                       <StaffEmpty icon={Search} title="No patients match your search" hint="Try part of the name, or a phone number." />
+                                   ) : (
+                                       <StaffEmpty icon={Users} title="No patients yet" hint="Patients registered at the clinic appear here." />
+                                   )}
+                               </td></tr>
+                           ) :
+   ```
+10. Replace `<td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>` with `<td className="staff-cell-id">{p.id}</td>`.
+11. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.search-input {…}`, `.search-input:focus {…}`, `.table-container {…}`, `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`. Nothing else.
+12. The `<style jsx>` block is now empty. Delete its two lines (the one that opens it, `<style jsx>{` plus a backtick, and the one that closes it, a backtick plus `}</style>`) and the blank line above them.
+
+**Verification:**
+- `grep -n 'className="page-header"\|className="data-table"\|className="table-container"\|className="pagination"\|className="search-input"\|className="search-bar"\|className="count"' src/app/admin/patients/page.tsx src/app/admin/patients/archived/page.tsx src/app/secretary/patients/archived/page.tsx src/app/secretary/patients/page.tsx src/app/doctor/patients/page.tsx` prints nothing.
+- `grep -c "<StaffEmpty"` prints `2` for `admin/patients/page.tsx`, `secretary/patients/page.tsx` and `doctor/patients/page.tsx`, and `1` for each archived page.
+- `grep -c "<style jsx>" src/app/secretary/patients/page.tsx src/app/doctor/patients/page.tsx` prints `0` for each.
+- `git diff --stat` against the TJ-069d3 commit lists exactly the 7 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The five lists use the shared header, table, pagination, loading line and empty state; the three active lists use the shared search box.
+- [ ] `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069e2 — Lists: notes (all three roles), duplicates, approvals
+
+- **Status:** READY — passed 2026-11-23. Batch 3, step 3 of 5.
+- **Branch:** `feat/staff-lists-notes`, cut from the tip of `feat/staff-lists-patients`.
+- **Why:** the three notes lists, the Duplicate Check and Approvals move onto the TJ-069e1 pieces. The doctor's "My Notes" title, today an inline-styled `h1`, gets the shared header; the duplicates' green "✓ No duplicate patients found" card and Approvals' grey box become the 3B empty state in a `.staff-panel`.
+
+**Planning pass:** 2026-11-23, on the TJ-069e1 result. Read in full: `src/app/admin/notes/page.tsx`, `src/app/secretary/notes/page.tsx`, `src/app/doctor/notes/page.tsx`, `src/app/admin/patients/duplicates/page.tsx`, `src/app/admin/approvals/page.tsx`, and `src/app/api/notes/route.ts` (the doctor's list is filtered to their own notes, hence the doctor's hint). The notes filter row keeps its doctor dropdown; the dropdown is restyled on the tokens to the search box's height (36px) and gets `aria-label="Doctor"`. The search counts as "filtered" when the search box has text or a doctor is chosen. Duplicate groups keep their own card; their tables become `staff-table staff-table-compact`. Generated, anchor-checked, type-checked, built and previewed as TJ-069d3 (filled and empty data, desktop and 375px).
+
+**Scope — touch only these (5):** `src/app/admin/notes/page.tsx`, `src/app/secretary/notes/page.tsx`, `src/app/doctor/notes/page.tsx`, `src/app/admin/patients/duplicates/page.tsx`, `src/app/admin/approvals/page.tsx`.
+
+**Do not touch:** any other file; the notes Add/Edit popup; the ✅ / ☐ check marks (TJ-069f); the approval cards, Approve/Reject buttons and toast; any fetch or handler.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/admin/notes/page.tsx`**
+
+1. Replace `import { ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";` with `import { ChevronRight, Pencil, Plus, Search, StickyNote, Trash2 } from "lucide-react";`.
+2. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace
+   ```tsx
+                   <input
+                       className="search-input"
+                       placeholder="Search notes..."
+                       value={search}
+                       onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                   />
+                   <select
+                       className="filter-select"
+   ```
+   with
+   ```tsx
+                   <div className="staff-search">
+                       <Search size={15} aria-hidden="true" />
+                       <input
+                           type="text"
+                           aria-label="Search notes"
+                           placeholder="Search notes…"
+                           value={search}
+                           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                       />
+                   </div>
+                   <select
+                       className="filter-select"
+                       aria-label="Doctor"
+   ```
+4. Replace
+   ```tsx
+                   .filter-select {
+                       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+                       color: #fff; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
+                       font-size: 0.82rem; font-family: inherit;
+                   }
+   ```
+   with
+   ```tsx
+                   .filters .staff-search { flex: 1 1 200px; margin-bottom: 0; }
+                   .filter-select {
+                       min-height: 36px; padding: 0.45rem 0.7rem;
+                       background: rgba(255,255,255,0.05); border: 1px solid var(--staff-border-strong);
+                       border-radius: var(--staff-radius-md); color: var(--staff-text); color-scheme: dark;
+                       font-size: var(--staff-size-base); font-family: inherit;
+                   }
+   ```
+5. Replace `.data-table { width: 100%; border-collapse: collapse; min-width: 720px; }` with `.staff-table { min-width: 720px; }`.
+6. Replace `className="page-header"` with `className="staff-page-header"`.
+7. Replace `className="count"` with `className="staff-page-count"`.
+8. Replace `className="table-container"` with `className="staff-table-wrap"`.
+9. Replace `className="data-table"` with `className="staff-table"`.
+10. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+11. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : notes.length === 0 ? (
+                               <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No notes found</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={6}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : notes.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={6}>
+                                   {search || doctorFilter !== "all" ? (
+                                       <StaffEmpty icon={Search} title="No notes match your search" hint="Try other words, or choose All Doctors." />
+                                   ) : (
+                                       <StaffEmpty
+                                           icon={StickyNote}
+                                           title="No notes yet"
+                                           hint="Notes you add for the doctors appear here."
+                                           action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => { window.location.href = "/admin/notes/new"; }}><Plus size={15} aria-hidden="true" />Add Note</button>}
+                                       />
+                                   )}
+                               </td></tr>
+                           ) :
+   ```
+12. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.search-input {…}`, `.search-input:focus {…}`, `.table-container {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`; and inside the phone-width `@media` block: `.page-header {…}`, `.page-header .staff-btn {…}`, `.search-input {…}`. Nothing else. The `@media (max-width: 560px) { … }` block is then empty: delete it too (its opening line, its closing `}`, and the blank line above it).
+
+**2. `src/app/secretary/notes/page.tsx`**
+
+1. Replace
+   ```tsx
+   import { Plus } from "lucide-react";
+   ```
+   with
+   ```tsx
+   import { Plus, Search, StickyNote } from "lucide-react";
+   import StaffEmpty from "@/app/components/StaffEmpty";
+   ```
+2. Replace
+   ```tsx
+                   <input className="search-input" placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+                   <select className="filter-select"
+   ```
+   with
+   ```tsx
+                   <div className="staff-search">
+                       <Search size={15} aria-hidden="true" />
+                       <input type="text" aria-label="Search notes" placeholder="Search notes…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+                   </div>
+                   <select className="filter-select" aria-label="Doctor"
+   ```
+3. Replace
+   ```tsx
+                   .filter-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; font-family: inherit; }
+   ```
+   with
+   ```tsx
+                   .filters .staff-search { flex: 1 1 200px; margin-bottom: 0; }
+                   .filter-select {
+                       min-height: 36px; padding: 0.45rem 0.7rem;
+                       background: rgba(255,255,255,0.05); border: 1px solid var(--staff-border-strong);
+                       border-radius: var(--staff-radius-md); color: var(--staff-text); color-scheme: dark;
+                       font-size: var(--staff-size-base); font-family: inherit;
+                   }
+   ```
+4. Replace `className="page-header"` with `className="staff-page-header"`.
+5. Replace `className="count"` with `className="staff-page-count"`.
+6. Replace `className="table-container"` with `className="staff-table-wrap"`.
+7. Replace `className="data-table"` with `className="staff-table"`.
+8. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+9. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : notes.length === 0 ? (
+                               <tr><td colSpan={5} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No notes</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : notes.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={5}>
+                                   {search || doctorFilter !== "all" ? (
+                                       <StaffEmpty icon={Search} title="No notes match your search" hint="Try other words, or choose All Doctors." />
+                                   ) : (
+                                       <StaffEmpty
+                                           icon={StickyNote}
+                                           title="No notes yet"
+                                           hint="Notes you add for the doctors appear here."
+                                           action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => { window.location.href = "/secretary/notes/new"; }}><Plus size={15} aria-hidden="true" />Add Note</button>}
+                                       />
+                                   )}
+                               </td></tr>
+                           ) :
+   ```
+10. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.search-input {…}`, `.search-input:focus {…}`, `.table-container {…}`, `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`. Nothing else.
+
+**3. `src/app/doctor/notes/page.tsx`**
+
+1. After the line `import { useSession } from "next-auth/react";` insert these lines, in order: `import { StickyNote } from "lucide-react";`, `import StaffEmpty from "@/app/components/StaffEmpty";`.
+2. Replace
+   ```tsx
+               <h1 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "1rem" }}>My Notes</h1>
+   ```
+   with
+   ```tsx
+               <div className="staff-page-header">
+                   <h1>My Notes</h1>
+               </div>
+   ```
+3. Replace `className="table-container"` with `className="staff-table-wrap"`.
+4. Replace `className="data-table"` with `className="staff-table"`.
+5. Replace
+   ```tsx
+                   <div className="pagination">
+                       <button disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-pagination">
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                       <span>Page {page} of {totalPages}</span>
+                       <button className="staff-btn staff-btn-secondary staff-btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next →</button>
+                   </div>
+   ```
+6. Replace
+   ```tsx
+                           {loading ? (
+                               <tr><td colSpan={4} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</td></tr>
+                           ) : notes.length === 0 ? (
+                               <tr><td colSpan={4} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem" }}>No notes</td></tr>
+                           ) :
+   ```
+   with
+   ```tsx
+                           {loading ? (
+                               <tr className="staff-table-state"><td colSpan={4}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : notes.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={4}>
+                                   <StaffEmpty icon={StickyNote} title="No notes yet" hint="Notes the clinic leaves for you appear here." />
+                               </td></tr>
+                           ) :
+   ```
+7. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.table-container {…}`, `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.pagination {…}`, `.pagination button {…}`, `.pagination button:disabled {…}`. Nothing else.
+
+**4. `src/app/admin/patients/duplicates/page.tsx`**
+
+1. After the line `import Link from "next/link";` insert these lines, in order: `import { CircleCheck } from "lucide-react";`, `import StaffEmpty from "@/app/components/StaffEmpty";`.
+2. Replace `className="page-header"` with `className="staff-page-header"`.
+3. Replace `className="count"` with `className="staff-page-count"`.
+4. Replace `                <div className="loading-text">Scanning for duplicates…</div>` with `                <p className="staff-loading staff-panel" role="status">Scanning for duplicates…</p>`.
+5. Replace
+   ```tsx
+                   <div className="empty-card">
+                       <span className="empty-icon">✓</span>
+                       <p>No duplicate patients found</p>
+                   </div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-panel">
+                       <StaffEmpty icon={CircleCheck} title="No duplicate patients" hint="No two patients share a phone number." />
+                   </div>
+   ```
+6. Replace `className="data-table"` with `className="staff-table staff-table-compact"`.
+7. Replace `<td style={{ color: "rgba(255,255,255,0.3)" }}>{p.id}</td>` with `<td className="staff-cell-id">{p.id}</td>`.
+8. Replace `.data-table { width: 100%; min-width: 640px; border-collapse: collapse; }` with `.staff-table { min-width: 640px; }`.
+9. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.loading-text {…}`, `.empty-card {…}`, `.empty-icon {…}`, `.empty-card p {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`; and inside the phone-width `@media` block: `.page-header {…}`. Nothing else.
+
+**5. `src/app/admin/approvals/page.tsx`**
+
+1. After the line `import { useState, useEffect, useCallback } from "react";` insert these lines, in order: `import { Inbox } from "lucide-react";`, `import StaffEmpty from "@/app/components/StaffEmpty";`.
+2. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+3. Replace
+   ```tsx
+               <div className="page-header">
+                   <h1>Approvals</h1>
+                   <p className="subtitle">Profile edits and photo uploads submitted by doctors. Nothing reaches the public site until approved here.</p>
+               </div>
+   ```
+   with
+   ```tsx
+               <div className="staff-page-header">
+                   <div>
+                       <h1>Approvals</h1>
+                       <p className="staff-page-sub">Profile edits and photo uploads submitted by doctors. Nothing reaches the public site until approved here.</p>
+                   </div>
+               </div>
+   ```
+4. Replace
+   ```tsx
+                   <div className="empty-panel">Nothing waiting for review.</div>
+   ```
+   with
+   ```tsx
+                   <div className="staff-panel">
+                       <StaffEmpty icon={Inbox} title="Nothing waiting for review" hint="Profile edits and photos that doctors send appear here." />
+                   </div>
+   ```
+5. Replace
+   ```tsx
+                   .page-header { margin-bottom: 1.5rem; }
+                   .page-header h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.35rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin: 0; max-width: 620px; }
+
+                   .empty-panel {
+                       background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+                       border-radius: 10px; padding: 3rem; text-align: center; color: rgba(255,255,255,0.35);
+                   }
+
+   ```
+   with
+   ```tsx
+                   .staff-page-sub { max-width: 620px; }
+
+   ```
+
+**Verification:**
+- `grep -n 'className="page-header"\|className="data-table"\|className="table-container"\|className="pagination"\|className="search-input"\|className="count"\|className="empty-card"\|className="empty-panel"' src/app/admin/notes/page.tsx src/app/secretary/notes/page.tsx src/app/doctor/notes/page.tsx src/app/admin/patients/duplicates/page.tsx src/app/admin/approvals/page.tsx` prints nothing.
+- `grep -c "<StaffEmpty"` prints `2` for the admin and secretary notes pages and `1` for each of the other three.
+- `git diff --stat` against the TJ-069e1 commit lists exactly the 5 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The five pages use the shared pieces; empty and filtered states read as in the TJ-069e table.
+- [ ] `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069e3 — Lists: blog, website doctors, employees
+
+- **Status:** READY — passed 2026-11-23. Batch 3, step 4 of 5.
+- **Branch:** `feat/staff-lists-content-team`, cut from the tip of `feat/staff-lists-notes`.
+- **Why:** the content lists (Blog, website Doctors and their archive) and the two employee lists move onto the TJ-069e1 pieces. These are the lists that are empty on the live site today (Blog, website Doctors, Notes), so their empty state is what staff actually see.
+
+**Planning pass:** 2026-11-23, on the TJ-069e2 result. Read in full: `src/app/admin/blog/page.tsx`, `src/app/admin/doctors/page.tsx`, `src/app/admin/doctors/archived/page.tsx`, and the list half of the two employee pages (the editor half was read for TJ-069d3). The blog's empty state follows its tab: a small `EMPTY` table above `statusFor` gives each tab its title and hint, and only the All tab shows New Post (the All tab lists every post that is not archived). Blog cells keep `vertical-align: top` through one local rule. The website Doctors page is a card grid, not a table: its empty state is a `.staff-panel` spanning the grid. The employee lists keep their Active/Archived chips. Generated, anchor-checked, type-checked, built and previewed as TJ-069d3.
+
+**Scope — touch only these (5):** `src/app/admin/blog/page.tsx`, `src/app/admin/doctors/page.tsx`, `src/app/admin/doctors/archived/page.tsx`, `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/secretaries/page.tsx`.
+
+**Do not touch:** any other file; the editors and Delete popups (TJ-069d3, d2); the filter chips, status pills, language chips, doctor cards and drag-to-order; any fetch or handler.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/admin/blog/page.tsx`**
+
+1. Replace `import { Archive, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";` with `import { Archive, ChevronRight, Newspaper, Pencil, Plus, Trash2 } from "lucide-react";`.
+2. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace
+   ```tsx
+   function statusFor(filter: (typeof FILTERS)[number]) {
+   ```
+   with
+   ```tsx
+   // What each tab says when it has no posts (design 3B, TJ-069e3).
+   const EMPTY: Record<(typeof FILTERS)[number], { title: string; hint: string }> = {
+       All: { title: "No posts yet", hint: "Posts you write appear here, and on the public blog once published." },
+       Published: { title: "No published posts", hint: "Published posts appear here and on the public blog." },
+       Scheduled: { title: "No scheduled posts", hint: "Posts set to publish later appear here." },
+       Drafts: { title: "No drafts", hint: "Posts you save without publishing appear here." },
+       Archived: { title: "No archived posts", hint: "Posts you archive move here. You can restore them any time." },
+   };
+
+   function statusFor(filter: (typeof FILTERS)[number]) {
+   ```
+4. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+5. Replace `className="page-header"` with `className="staff-page-header"`.
+6. Replace `className="subtitle"` with `className="staff-page-sub"`.
+7. Replace `className="table-container"` with `className="staff-table-wrap"`.
+8. Replace `className="data-table"` with `className="staff-table"`.
+9. Replace
+   ```tsx
+                               <tr><td colSpan={6} className="empty-state">Nothing here yet.</td></tr>
+   ```
+   with
+   ```tsx
+                               <tr className="staff-table-state"><td colSpan={6}>
+                                   <StaffEmpty
+                                       icon={Newspaper}
+                                       title={EMPTY[filter].title}
+                                       hint={EMPTY[filter].hint}
+                                       action={filter === "All" ? <button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/blog/new")}><Plus size={15} aria-hidden="true" />New Post</button> : undefined}
+                                   />
+                               </td></tr>
+   ```
+10. Replace `.data-table { width: 100%; border-collapse: collapse; min-width: 680px; }` with `.staff-table { min-width: 680px; }`.
+11. Replace
+   ```tsx
+                   .data-table td {
+                       padding: 0.8rem 1rem; font-size: 0.88rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+                       color: rgba(255,255,255,0.85); vertical-align: top;
+                   }
+   ```
+   with
+   ```tsx
+                   .staff-table td { vertical-align: top; }
+   ```
+12. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.subtitle {…}`, `.table-container {…}`, `.data-table th {…}`, `.data-table tr:hover {…}`, `.empty-state {…}`; and inside the phone-width `@media` block: `.page-header {…}`, `.page-header .staff-btn {…}`. Nothing else. The `@media (max-width: 560px) { … }` block is then empty: delete it too (its opening line, its closing `}`, and the blank line above it).
+
+**2. `src/app/admin/doctors/page.tsx`**
+
+1. Replace `import { Archive, Eye, EyeOff, Pencil, Plus } from "lucide-react";` with `import { Archive, Eye, EyeOff, Pencil, Plus, Stethoscope } from "lucide-react";`.
+2. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+4. Replace `className="page-header"` with `className="staff-page-header"`.
+5. Replace `className="subtitle"` with `className="staff-page-sub"`.
+6. Replace
+   ```tsx
+                       <div className="empty-state">Nothing here yet.</div>
+   ```
+   with
+   ```tsx
+                       <div className="staff-panel grid-empty">
+                           <StaffEmpty
+                               icon={Stethoscope}
+                               title="No doctor profiles yet"
+                               hint="Profiles you add appear in the Doctors section of the public site."
+                               action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={openAdd}><Plus size={15} aria-hidden="true" />Add Doctor</button>}
+                           />
+                       </div>
+   ```
+7. Replace `                .empty-state { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.35); padding: 3rem; }` with `                .grid-empty { grid-column: 1 / -1; }`.
+8. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.subtitle {…}`. Nothing else.
+
+**3. `src/app/admin/doctors/archived/page.tsx`**
+
+1. After the line `import Link from "next/link";` insert these lines, in order: `import { Archive } from "lucide-react";`, `import StaffEmpty from "@/app/components/StaffEmpty";`.
+2. Replace `className="page-header"` with `className="staff-page-header"`.
+3. Replace `className="count"` with `className="staff-page-count"`.
+4. Replace `className="table-container"` with `className="staff-table-wrap"`.
+5. Replace `className="data-table"` with `className="staff-table"`.
+6. Replace
+   ```tsx
+                               <tr><td colSpan={5} className="empty-cell">Loading…</td></tr>
+                           ) : doctors.length === 0 ? (
+                               <tr><td colSpan={5} className="empty-cell">No archived doctors</td></tr>
+   ```
+   with
+   ```tsx
+                               <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                           ) : doctors.length === 0 ? (
+                               <tr className="staff-table-state"><td colSpan={5}>
+                                   <StaffEmpty icon={Archive} title="No archived doctor profiles" hint="Profiles you archive move here. You can restore them any time." />
+                               </td></tr>
+   ```
+7. Replace `.data-table { width: 100%; min-width: 640px; border-collapse: collapse; }` with `.staff-table { min-width: 640px; }`.
+8. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.count {…}`, `.table-container {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.empty-cell {…}`; and inside the phone-width `@media` block: `.page-header {…}`. Nothing else.
+
+**4. `src/app/admin/employees/doctors/page.tsx`**
+
+1. Replace `import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";` with `import { Archive, ChevronRight, Pencil, Plus, RotateCcw, Stethoscope, Trash2, UserX } from "lucide-react";`.
+2. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading...</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+4. Replace `className="page-header"` with `className="staff-page-header"`.
+5. Replace `className="table-container"` with `className="staff-table-wrap"`.
+6. Replace `className="data-table"` with `className="staff-table"`.
+7. Replace
+   ```tsx
+                               <tr><td colSpan={7} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
+                                   {filter === "Archived" ? "No archived doctors" : "No active doctors"}
+                               </td></tr>
+   ```
+   with
+   ```tsx
+                               <tr className="staff-table-state"><td colSpan={7}>
+                                   {filter === "Archived" ? (
+                                       <StaffEmpty icon={Archive} title="No archived doctors" hint="Doctors who resign move here. You can re-enrol them any time." />
+                                   ) : (
+                                       <StaffEmpty
+                                           icon={Stethoscope}
+                                           title="No active doctors"
+                                           hint="Doctors you add can sign in and take bookings."
+                                           action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/employees/doctors/new")}><Plus size={15} aria-hidden="true" />Add Doctor</button>}
+                                       />
+                                   )}
+                               </td></tr>
+   ```
+8. Replace `.data-table { width: 100%; min-width: 720px; border-collapse: collapse; }` with `.staff-table { min-width: 720px; }`.
+9. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.table-container {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`; and inside the phone-width `@media` block: `.page-header {…}`. Nothing else.
+
+**5. `src/app/admin/employees/secretaries/page.tsx`**
+
+1. Replace `import { ChevronRight, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";` with `import { Archive, ChevronRight, Contact, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";`.
+2. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading...</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+4. Replace `className="page-header"` with `className="staff-page-header"`.
+5. Replace `className="table-container"` with `className="staff-table-wrap"`.
+6. Replace `className="data-table"` with `className="staff-table"`.
+7. Replace
+   ```tsx
+                               <tr><td colSpan={6} style={{ textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
+                                   {filter === "Archived" ? "No archived secretaries" : "No active secretaries"}
+                               </td></tr>
+   ```
+   with
+   ```tsx
+                               <tr className="staff-table-state"><td colSpan={6}>
+                                   {filter === "Archived" ? (
+                                       <StaffEmpty icon={Archive} title="No archived secretaries" hint="Secretaries who resign move here. You can re-enrol them any time." />
+                                   ) : (
+                                       <StaffEmpty
+                                           icon={Contact}
+                                           title="No active secretaries"
+                                           hint="Secretaries you add can sign in and manage bookings."
+                                           action={<button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => router.push("/admin/employees/secretaries/new")}><Plus size={15} aria-hidden="true" />Add Secretary</button>}
+                                       />
+                                   )}
+                               </td></tr>
+   ```
+8. Replace `.data-table { width: 100%; min-width: 640px; border-collapse: collapse; }` with `.staff-table { min-width: 640px; }`.
+9. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.page-header {…}`, `.page-header h1 {…}`, `.table-container {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`; and inside the phone-width `@media` block: `.page-header {…}`. Nothing else.
+
+**Verification:**
+- `grep -n 'className="page-header"\|className="data-table"\|className="table-container"\|className="subtitle"\|className="empty-state"\|className="empty-cell"' src/app/admin/blog/page.tsx src/app/admin/doctors/page.tsx src/app/admin/doctors/archived/page.tsx src/app/admin/employees/doctors/page.tsx src/app/admin/employees/secretaries/page.tsx` prints nothing.
+- `grep -c "<StaffEmpty"` prints `2` for each employee page and `1` for each of the other three.
+- `grep -rn 'Loading\.\.\.' src/app/admin src/app/secretary src/app/doctor` prints nothing.
+- `git diff --stat` against the TJ-069e2 commit lists exactly the 5 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The five pages use the shared pieces; each blog tab has its own empty wording; the Add buttons appear only where the table says.
+- [ ] `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069e4 — Lists: tables, loading and empty states inside a record
+
+- **Status:** READY — passed 2026-11-23. Batch 3, step 5 of 5.
+- **Branch:** `feat/staff-lists-records`, cut from the tip of `feat/staff-lists-content-team`.
+- **Why:** the patient file's Sessions, Files and History tabs (all three roles) and the doctor's session History tab use the compact shared table and the 3B empty state, and their page-level "Loading…" becomes the shared loading line. After this step no staff file draws `.data-table` any more.
+
+**Planning pass:** 2026-11-23, on the TJ-069e3 result. Read: the tab sections, the page-level loading return and the `<style jsx>` table rules of `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`. These tables already sit inside a padded card, so they take `staff-table staff-table-compact` without the bordered box; the session page keeps its local `.table-container` scroll wrapper. The Files empty state says "Files you upload above appear here." because each tab's upload control sits above the list. Generated, anchor-checked, type-checked, built and previewed as TJ-069d3 (each tab clicked, filled and empty).
+
+**Scope — touch only these (4):** `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`.
+
+**Do not touch:** any other file; the Clinical Assessment, the SOAP sections, the file cards, the 📞 emoji (TJ-069f); any fetch or handler.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/admin/patients/[id]/page.tsx`**
+
+1. Replace `import { Archive, Pencil } from "lucide-react";` with `import { Archive, CalendarDays, FileText, History, Pencil } from "lucide-react";`.
+2. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+4. Replace `                        <p className="empty-text">No sessions yet</p>` with `                        <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />`.
+5. Replace `                        <p className="empty-text">No files uploaded yet</p>` with `                        <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />`.
+6. Replace `                        <p className="empty-text">Loading…</p>` with `                        <p className="staff-loading" role="status">Loading…</p>`.
+7. Replace `                        <p className="empty-text">No recorded activity yet</p>` with `                        <StaffEmpty icon={History} title="No recorded activity yet" hint="Changes to this patient's file are recorded here." />`.
+8. Replace `className="data-table"` with `className="staff-table staff-table-compact"` (it occurs exactly twice; replace both).
+9. Replace `.data-table { width: 100%; min-width: 600px; border-collapse: collapse; }` with `.staff-table { min-width: 600px; }`.
+10. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.empty-text {…}`. Nothing else.
+
+**2. `src/app/secretary/patients/[id]/page.tsx`**
+
+1. Replace `import { Archive, Pencil } from "lucide-react";` with `import { Archive, CalendarDays, FileText, Pencil } from "lucide-react";`.
+2. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffEmpty from "@/app/components/StaffEmpty";`.
+3. Replace `    if (loading) return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;` with `    if (loading) return <p className="staff-loading" role="status">Loading…</p>;`.
+4. Replace `                        <p className="empty-text">No sessions yet</p>` with `                        <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />`.
+5. Replace `                        <p className="empty-text">No files uploaded yet</p>` with `                        <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />`.
+6. Replace `className="data-table"` with `className="staff-table staff-table-compact"`.
+7. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.empty-text {…}`. Nothing else.
+
+**3. `src/app/doctor/patients/[id]/page.tsx`**
+
+1. Directly above the line that starts `import ClinicalAssessment` insert these lines, in order: `import { CalendarDays, FileText } from "lucide-react";`, `import StaffEmpty from "@/app/components/StaffEmpty";`.
+2. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+3. Replace `                        <p className="empty-text">No sessions yet</p>` with `                        <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />`.
+4. Replace `                        <p className="empty-text">No files uploaded yet</p>` with `                        <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />`.
+5. Replace `className="data-table"` with `className="staff-table staff-table-compact"`.
+6. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`, `.empty-text {…}`. Nothing else.
+
+**4. `src/app/doctor/session/[id]/page.tsx`**
+
+1. Directly above the line that starts `import ClinicalAssessment` insert these lines, in order: `import { History } from "lucide-react";`, `import StaffEmpty from "@/app/components/StaffEmpty";`.
+2. Replace `    if (loading) return <div style={{ color: "rgba(255,255,255,0.4)", padding: "3rem", textAlign: "center" }}>Loading session…</div>;` with `    if (loading) return <p className="staff-loading" role="status">Loading session…</p>;`.
+3. Replace `                        <p style={{ color: "rgba(255,255,255,0.4)", padding: "1rem", textAlign: "center" }}>No previous sessions</p>` with `                        <StaffEmpty icon={History} title="No previous sessions" hint="Earlier sessions with this patient appear here." />`.
+4. Replace `className="data-table"` with `className="staff-table staff-table-compact"`.
+5. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.data-table {…}`, `.data-table th {…}`, `.data-table td {…}`, `.data-table tr:hover {…}`. Nothing else.
+
+**Verification:**
+- `grep -n 'className="data-table"\|className="empty-text"' "src/app/admin/patients/[id]/page.tsx" "src/app/secretary/patients/[id]/page.tsx" "src/app/doctor/patients/[id]/page.tsx" "src/app/doctor/session/[id]/page.tsx"` prints nothing.
+- `grep -c "<StaffEmpty"` prints `3` for the admin patient file, `2` for the secretary and doctor patient files, `1` for the session page.
+- Batch check: `grep -rn 'className="data-table"\|className="page-header"\|className="pagination"' src/app` prints nothing.
+- `git diff --stat` against the TJ-069e3 commit lists exactly the 4 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The record tabs use the compact table and the 3B empty state; the loading lines are the shared one.
+- [ ] `tsc` and the build exit 0; the planner's re-application is byte-identical.
 
 ---
 
