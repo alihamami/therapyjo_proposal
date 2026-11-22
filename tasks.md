@@ -149,7 +149,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review, not pushed**; batch 4 = d4, f, g, h, i, j | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review, not pushed**; **batch 4 = j, i, h, f1, f2, g, planned 2026-11-23 (READY)**; batch 5 = d4 | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
@@ -157,17 +157,19 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | DONE — task commit `9e30040`, merged to `master` as `1c95795` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal` |
 | TJ-069d2 | Delete popups and the website-doctor editor on the shared component | DONE — task commit `53a873c`, merged to `master` as `73ea998` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-content` |
 | TJ-069d3 | The two employee editors on the shared component | DONE — task commit `431a923`, merged to `master` as `6a22642` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-employees` |
-| TJ-069d4 | Full-page forms on the shared field styles | BACKLOG — found 2026-11-23 during the TJ-069d3 pass; batch 4 | — |
+| TJ-069d4 | Full-page forms on the shared field styles | BACKLOG — found 2026-11-23; **moved to batch 5** (13 forms, as large as batch 3 on its own) | — |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | SPLIT — **complete**: TJ-069e1–e4 merged 2026-11-23, not pushed | — |
 | TJ-069e1 | Lists: the shared pieces, and the five patient lists | DONE — task commit `15ec254`, merged to `master` as `9bd3840` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-patients` |
 | TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | DONE — task commit `32335ce`, merged to `master` as `0873558` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-notes` |
 | TJ-069e3 | Lists: blog, website doctors, employees | DONE — task commit `a251af9`, merged to `master` as `35588e9` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-content-team` |
 | TJ-069e4 | Lists: tables, loading and empty states inside a record | DONE — task commit `737f737`, merged to `master` as `fd44f2e` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-records` |
-| TJ-069f | Emoji become line icons | BACKLOG — design decided; batch 4 | — |
-| TJ-069g | Every text size snaps to the six steps | BACKLOG — design decided; batch 4 | — |
-| TJ-069h | Searches wait for typing to pause | BACKLOG — found 2026-11-23 during the TJ-069e pass; batch 4, after TJ-069e1/e2 | — |
-| TJ-069i | Keep the small-button rule on its own page | BACKLOG — found 2026-11-23 during the TJ-069e pass; batch 4 | — |
-| TJ-069j | Approve and Reject on the shared buttons | BACKLOG — found 2026-11-23 during the TJ-069e pass; batch 4 | — |
+| TJ-069f | Emoji become line icons | SPLIT — passed 2026-11-23; see TJ-069f1, f2 | — |
+| TJ-069f1 | Icons in the menus: the three layouts and the schedule card | READY — passed 2026-11-23; batch 4, step 4 of 6 | `feat/staff-icons-menus` |
+| TJ-069f2 | Icons on the pages: patient files, notes, employee editors, duplicates, session page, blog editor | READY — passed 2026-11-23; batch 4, step 5 of 6 | `feat/staff-icons-pages` |
+| TJ-069g | Every text size snaps to the six steps | READY — passed 2026-11-23; batch 4, step 6 of 6 | `feat/staff-type-scale` |
+| TJ-069h | Searches wait for typing to pause | READY — passed 2026-11-23; batch 4, step 3 of 6 | `bugfix/search-waits-for-typing` |
+| TJ-069i | Keep the small-button rule on its own page | READY — passed 2026-11-23; batch 4, step 2 of 6 | `bugfix/page-scoped-button-rules` |
+| TJ-069j | Approve and Reject on the shared buttons | READY — passed 2026-11-23; batch 4, step 1 of 6 | `feat/approvals-buttons` |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
@@ -15674,7 +15676,7 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, not pushed** (see "Batch 3 — verified" and "Batch 3 — planned" below). Batch 4 = TJ-069d4, f, g, h, i, j.
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, not pushed** (see "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, passed 2026-11-23, READY** (see "Batch 4 — planned" below). Batch 5 = TJ-069d4 (the full-page forms), moved out of batch 4 on 2026-11-23 because it is as large as batch 3 on its own.
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -15684,6 +15686,12 @@ button.staff-row-name {
 - Patient file `/admin/patients/562`: Edit Info opens the shared popup (440px, focus on Name); Escape closes it. With test text typed (never saved) into the Clinical Assessment, Back asks "Leave without saving?" with a red "Discard changes" and focus on Cancel; Cancel keeps the page and the text; Back then "Discard changes" leaves for the list with no request sent; on reload the stored field is unchanged (35 characters, no test text).
 - Not seen live: Archive/Resign/Delete confirmations were not clicked on real records; Blog, website Doctors and Notes have no live data. The secretary and doctor portals cannot be opened as admin.
 - **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at the phase 0 deployment.
+
+**Batch 4 — planned (2026-11-23):** six steps, in this order: TJ-069j (Approve/Reject on 4A), TJ-069i (page-scoped button rules), TJ-069h (searches wait and keep only the newest answer), TJ-069f1 (icons in the menus), TJ-069f2 (icons on the pages), TJ-069g (text sizes, last, because it touches almost every staff file). 61 file changes; no new component; one `globals.css` helper (`.staff-inline-icon`).
+- **TJ-069d4 moved to batch 5:** 13 full-page forms, including both booking flows and the new-employee forms, each needing field-by-field handling like TJ-069d3. On its own it is as large as batch 3, so it gets its own pass and review.
+- **How the specs were made:** as batch 3 (edits generated by script on a throwaway worktree of `master` at `72e0008`, instructions rendered from the recorded edits). TJ-069g ships as a script, because its 286 replacements follow one rule. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `aeabca4`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 61 file versions came out byte-identical, same tree.
+- **Mocked preview:** Approve/Reject colours and height; Back/Restore/View styles unchanged and no longer page-wide; the search wait and the stale-answer guard (a forced slow answer was dropped); dropdown, nav and schedule-card menu icons; phone, file and check icons; the check marks' labels and the doctor's toggle state.
+- **Expected results** for the byte-identity check are in the planner's scratchpad (`expected_blobs.txt`); the executor's tip must reproduce `src/` tree `aeabca4`.
 
 **Batch 3 — verified and merged (2026-11-23):**
 - **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `6a22642` (d3), `9bd3840` (e1), `0873558` (e2), `35588e9` (e3), `fd44f2e` (e4). The merged `src/` tree is identical to the verified tip `737f737` (`b8ce840`); only `tasks.md` differs. **Not pushed.** Pushing is the user's call; push by SHA (`git push origin <sha>:master`), as master is shared.
@@ -18286,25 +18294,808 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d4 — Full-page forms on the shared field styles
 
-- **Status:** BACKLOG — found during the TJ-069d3 pass, 2026-11-23; pass with batch 4.
+- **Status:** BACKLOG — found during the TJ-069d3 pass, 2026-11-23. **Batch 5** (moved out of batch 4 on 2026-11-23: 13 forms, as large as batch 3 on its own).
 - **Why:** TJ-069d moved every popup onto `.staff-field`, but the phase 1 plan also named "10 form families", and the full-page forms were never specced. Still on their own `.form-group` / `.field` copies on `master` at `2a7099b`: new patient (admin, secretary), new note (admin, secretary), new doctor and new secretary, booking new and edit (admin, secretary; partly moved), the doctor's profile, the doctor's session page, and `BlogEditor.tsx`. `ClinicalAssessment.tsx` also carries `.form-group` (12 on the patient file), but it is reworked in phase 4 (TJ-072), so it stays out.
+
+---
+
+### TJ-069j — Approve and Reject on the shared buttons
+
+- **Status:** READY — passed 2026-11-23. Batch 4, step 1 of 6.
+- **Branch:** `feat/approvals-buttons`, cut from `master` at the commit that adds this spec.
+- **Why:** on `src/app/admin/approvals/page.tsx` the Approve button still uses the CMS handoff's `linear-gradient(135deg, #059669, #10b981)` with white text, which design 4A replaced everywhere else, and Reject is a local red pill. Approve becomes the 4A primary button and Reject its quiet secondary companion.
+
+**Planning pass:** 2026-11-23, on `master` at `72e0008`. Read in full: `src/app/admin/approvals/page.tsx`. Reject is secondary, not red: the P1-1 rule keeps red for permanent deletion, and a rejected change only means the doctor's proposal is not applied (they can send it again). No icons: 4A puts the `Plus` icon only on Add buttons. Generated, type-checked, built and previewed as batch 3 (Approve `rgb(76,175,147)` on `rgb(13,42,34)`, Reject `rgba(255,255,255,0.06)`, both 34px).
+
+**Scope — touch only:** `src/app/admin/approvals/page.tsx`.
+
+**Do not touch:** any other file; the `decide` handler, the cards, the toast.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/admin/approvals/page.tsx`**
+
+1. Replace
+   ```tsx
+                                   <button className="btn-approve" onClick={() => decide(c.id, "approve")}>Approve</button>
+                                   <button className="btn-reject" onClick={() => decide(c.id, "reject")}>Reject</button>
+   ```
+   with
+   ```tsx
+                                   <button className="staff-btn staff-btn-primary" onClick={() => decide(c.id, "approve")}>Approve</button>
+                                   <button className="staff-btn staff-btn-secondary" onClick={() => decide(c.id, "reject")}>Reject</button>
+   ```
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.btn-approve {…}`, `.btn-approve:hover {…}`, `.btn-reject {…}`, `.btn-reject:hover {…}`. Nothing else.
+
+**Verification:**
+- `grep -n "btn-approve\|btn-reject" src/app/admin/approvals/page.tsx` prints nothing; `grep -c "staff-btn staff-btn-primary" src/app/admin/approvals/page.tsx` prints `1`.
+- `git diff --stat` against the parent lists exactly the 1 file.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] Approve is the 4A primary button and Reject the secondary one; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069i — Keep the small-button rule on its own page
+
+- **Status:** READY — passed 2026-11-23. Batch 4, step 2 of 6.
+- **Branch:** `bugfix/page-scoped-button-rules`, cut from the tip of `feat/approvals-buttons`.
+- **Why:** the archived-patient pages (admin and secretary) and the Duplicate Check declare `:global(.btn-sm)`, and the duplicates page also `:global(.btn-view)`. While one of these pages is open, these rules apply to every element with that class anywhere on screen, not only on the page. The same pattern holds for the Back link (`:global(.btn-back)`) on those three pages and on the archived website Doctors page. **Measured:** today the Restore buttons and the duplicates' View links are the only such elements on screen, so nothing else is visibly restyled yet; the rules would catch any `.btn-sm` or `.btn-back` added later, for example in the menu bar. This step keeps each rule on its own page.
+
+**Planning pass:** 2026-11-23, on the TJ-069j result. Read: the `<style jsx>` blocks and the Back/Restore/View markup of `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/archived/page.tsx`, `src/app/admin/patients/duplicates/page.tsx`, `src/app/admin/doctors/archived/page.tsx`. TJ-068c made these rules global so they would reach `<Link>` elements, which styled-jsx does not scope. Restore is a `<button>` the page renders itself, so its rule can simply be a normal scoped rule; Back and View are `<Link>`s, so their rules are named under the scoped element they sit in (`.staff-page-header :global(.btn-back)`, `.groups :global(.btn-view)`), the pattern used elsewhere in the staff portal. **Preview, measured:** Back links stay grey at 0.5 opacity, Restore stays blue with its padding, View stays a teal pill; a test element given both classes outside those wrappers picks up none of it.
+
+**Scope — touch only these (4):** `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/archived/page.tsx`, `src/app/admin/patients/duplicates/page.tsx`, `src/app/admin/doctors/archived/page.tsx`.
+
+**Do not touch:** any other file; any rule's declarations (only the selectors change); the markup.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/admin/patients/archived/page.tsx`**
+
+1. Replace `:global(.btn-sm) {` with `.btn-sm {` (it occurs exactly twice; replace both).
+2. Replace `:global(.btn-back) {` with `.staff-page-header :global(.btn-back) {`.
+3. Replace `:global(.btn-back:hover) {` with `.staff-page-header :global(.btn-back:hover) {`.
+
+**2. `src/app/secretary/patients/archived/page.tsx`**
+
+1. Replace `:global(.btn-sm) {` with `.btn-sm {`.
+2. Replace `:global(.btn-back) {` with `.staff-page-header :global(.btn-back) {`.
+3. Replace `:global(.btn-back:hover) {` with `.staff-page-header :global(.btn-back:hover) {`.
+
+**3. `src/app/admin/patients/duplicates/page.tsx`**
+
+1. Replace `:global(.btn-back) {` with `.staff-page-header :global(.btn-back) {`.
+2. Replace `:global(.btn-back:hover) {` with `.staff-page-header :global(.btn-back:hover) {`.
+3. Replace `:global(.btn-sm) {` with `.groups :global(.btn-sm) {` (it occurs exactly twice; replace both).
+4. Replace `:global(.btn-view) {` with `.groups :global(.btn-view) {`.
+5. Replace `:global(.btn-view:hover) {` with `.groups :global(.btn-view:hover) {`.
+
+**4. `src/app/admin/doctors/archived/page.tsx`**
+
+1. Replace `:global(.btn-back) {` with `.staff-page-header :global(.btn-back) {`.
+2. Replace `:global(.btn-back:hover) {` with `.staff-page-header :global(.btn-back:hover) {`.
+
+**Verification:**
+- `grep -nE "^\s*:global\(\.btn-(sm|back|view)" src/app/admin/patients/archived/page.tsx src/app/secretary/patients/archived/page.tsx src/app/admin/patients/duplicates/page.tsx src/app/admin/doctors/archived/page.tsx` prints nothing.
+- `git diff --stat` against the TJ-069j commit lists exactly the 4 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] No page-wide `.btn-sm`, `.btn-back` or `.btn-view` rule is left in the four files; `tsc` and the build exit 0; the planner's re-application is byte-identical.
 
 ---
 
 ### TJ-069h — Searches wait for typing to pause
 
-- **Status:** BACKLOG — found during the TJ-069e pass, 2026-11-23; batch 4. Pass after TJ-069e1 and e2 have merged (same files).
-- **Why:** four list searches set the query on every keystroke, so each letter typed sends its own request: `src/app/secretary/patients/page.tsx`, `src/app/doctor/patients/page.tsx`, `src/app/admin/notes/page.tsx`, `src/app/secretary/notes/page.tsx` (`onChange={(e) => { setSearch(e.target.value); setPage(1); }}`, and the fetch depends on `search`). Admin's patient list already waits 300ms (`searchInput` plus a timeout). Nothing cancels an older request, so a slow early answer can land after a later one and show the wrong list; the pass should confirm this. Proposed: the same 300ms wait as admin's patient list on all four.
+- **Status:** READY — passed 2026-11-23. Batch 4, step 3 of 6.
+- **Branch:** `bugfix/search-waits-for-typing`, cut from the tip of `bugfix/page-scoped-button-rules`.
+- **Why:** **confirmed in the pass:** the secretary and doctor patient searches and both notes searches set the query on every keystroke, so each letter typed sent its own request, and nothing dropped an older answer, so a slow early answer could land after a newer one and show the wrong list. Admin's patient list already waits 300ms but has the same race. Now the four searches wait 300ms after the last keystroke, as admin's does, and all five lists accept only the newest answer.
 
-### TJ-069i — Keep the small-button rule on its own page
+**Planning pass:** 2026-11-23, on the TJ-069i result. Read: the state, fetch and search markup of `src/app/admin/patients/page.tsx`, `src/app/secretary/patients/page.tsx`, `src/app/doctor/patients/page.tsx`, `src/app/admin/notes/page.tsx`, `src/app/secretary/notes/page.tsx`. The wait copies admin's pattern (`searchInput` in the box, `search` set 300ms later). The guard is a request counter in a `useRef`: each fetch takes the next number and drops its answer if a newer fetch has started. **Preview, measured** with a patched `fetch` on the secretary patient list: typing `a`, a pause, then `bc` sent 2 requests (`a`, `abc`) instead of 3; the `a` answer, held back 1.5s so it arrived last, was dropped, and the list showed the `abc` result.
 
-- **Status:** BACKLOG — found during the TJ-069e pass, 2026-11-23; batch 4.
-- **Why:** `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/archived/page.tsx` and `src/app/admin/patients/duplicates/page.tsx` declare `:global(.btn-sm)` (the duplicates page also `:global(.btn-view)`). TJ-068c made them global on purpose, so the styles reach `<Link>` elements, which styled-jsx does not scope. The side effect: while one of these pages is open, every element with class `btn-sm` anywhere on screen takes that padding and size. The pass should measure what is actually affected, then either scope the rule under the page's own wrapper (`.page :global(.btn-sm)`, the pattern used elsewhere) or move Restore and View onto `staff-btn staff-btn-secondary staff-btn-sm`.
+**Scope — touch only these (5):** `src/app/admin/patients/page.tsx`, `src/app/secretary/patients/page.tsx`, `src/app/doctor/patients/page.tsx`, `src/app/admin/notes/page.tsx`, `src/app/secretary/notes/page.tsx`.
 
-### TJ-069j — Approve and Reject on the shared buttons
+**Do not touch:** any other file; the doctor dropdown's own handler on the notes pages; the API routes.
 
-- **Status:** BACKLOG — found during the TJ-069e pass, 2026-11-23; batch 4.
-- **Why:** on `src/app/admin/approvals/page.tsx` the Approve button still uses the CMS handoff's `linear-gradient(135deg, #059669, #10b981)` with white text, which design 4A replaced everywhere else, and Reject is a local red pill. Proposed: Approve becomes `staff-btn staff-btn-primary`; Reject's look (quiet secondary, or red text on the soft red) is a small choice for the pass. One file.
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/admin/patients/page.tsx`**
+
+1. Replace `import { useState, useEffect, useCallback } from "react";` with `import { useState, useEffect, useCallback, useRef } from "react";`.
+2. Replace
+   ```tsx
+       const fetchPatients = useCallback(async () => {
+           setLoading(true);
+   ```
+   with
+   ```tsx
+       // Only the newest request may fill the list: an older, slower answer is
+       // dropped instead of overwriting a newer one. (TJ-069h)
+       const latest = useRef(0);
+       const fetchPatients = useCallback(async () => {
+           const req = ++latest.current;
+           setLoading(true);
+   ```
+3. Replace
+   ```tsx
+           const data = await res.json();
+           setPatients(data.patients);
+   ```
+   with
+   ```tsx
+           const data = await res.json();
+           if (req !== latest.current) return;
+           setPatients(data.patients);
+   ```
+
+**2. `src/app/secretary/patients/page.tsx`**
+
+1. Replace `import { useState, useEffect, useCallback } from "react";` with `import { useState, useEffect, useCallback, useRef } from "react";`.
+2. Replace
+   ```tsx
+       const fetchPatients = useCallback(async () => {
+           setLoading(true);
+   ```
+   with
+   ```tsx
+       // Only the newest request may fill the list: an older, slower answer is
+       // dropped instead of overwriting a newer one. (TJ-069h)
+       const latest = useRef(0);
+       const fetchPatients = useCallback(async () => {
+           const req = ++latest.current;
+           setLoading(true);
+   ```
+3. Replace
+   ```tsx
+           const data = await res.json();
+           setPatients(data.patients || []);
+   ```
+   with
+   ```tsx
+           const data = await res.json();
+           if (req !== latest.current) return;
+           setPatients(data.patients || []);
+   ```
+4. Replace
+   ```tsx
+       useEffect(() => { fetchPatients(); }, [fetchPatients]);
+
+   ```
+   with
+   ```tsx
+       useEffect(() => { fetchPatients(); }, [fetchPatients]);
+
+       // The box updates as you type; the search waits until typing pauses for
+       // 300ms, as on admin's patient list. (TJ-069h)
+       const [searchInput, setSearchInput] = useState("");
+       useEffect(() => {
+           const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
+           return () => clearTimeout(t);
+       }, [searchInput]);
+
+   ```
+5. Replace
+   ```tsx
+                       value={search}
+                       onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+   ```
+   with
+   ```tsx
+                       value={searchInput}
+                       onChange={(e) => setSearchInput(e.target.value)}
+   ```
+
+**3. `src/app/doctor/patients/page.tsx`**
+
+1. Replace `import { useState, useEffect, useCallback } from "react";` with `import { useState, useEffect, useCallback, useRef } from "react";`.
+2. Replace
+   ```tsx
+       const fetchPatients = useCallback(async () => {
+           setLoading(true);
+   ```
+   with
+   ```tsx
+       // Only the newest request may fill the list: an older, slower answer is
+       // dropped instead of overwriting a newer one. (TJ-069h)
+       const latest = useRef(0);
+       const fetchPatients = useCallback(async () => {
+           const req = ++latest.current;
+           setLoading(true);
+   ```
+3. Replace
+   ```tsx
+           const data = await res.json();
+           setPatients(data.patients || []);
+   ```
+   with
+   ```tsx
+           const data = await res.json();
+           if (req !== latest.current) return;
+           setPatients(data.patients || []);
+   ```
+4. Replace
+   ```tsx
+       useEffect(() => { fetchPatients(); }, [fetchPatients]);
+
+   ```
+   with
+   ```tsx
+       useEffect(() => { fetchPatients(); }, [fetchPatients]);
+
+       // The box updates as you type; the search waits until typing pauses for
+       // 300ms, as on admin's patient list. (TJ-069h)
+       const [searchInput, setSearchInput] = useState("");
+       useEffect(() => {
+           const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
+           return () => clearTimeout(t);
+       }, [searchInput]);
+
+   ```
+5. Replace
+   ```tsx
+                       value={search}
+                       onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+   ```
+   with
+   ```tsx
+                       value={searchInput}
+                       onChange={(e) => setSearchInput(e.target.value)}
+   ```
+
+**4. `src/app/admin/notes/page.tsx`**
+
+1. Replace `import { useState, useEffect, useCallback } from "react";` with `import { useState, useEffect, useCallback, useRef } from "react";`.
+2. Replace
+   ```tsx
+       const fetchNotes = useCallback(async () => {
+           setLoading(true);
+   ```
+   with
+   ```tsx
+       // Only the newest request may fill the list: an older, slower answer is
+       // dropped instead of overwriting a newer one. (TJ-069h)
+       const latest = useRef(0);
+       const fetchNotes = useCallback(async () => {
+           const req = ++latest.current;
+           setLoading(true);
+   ```
+3. Replace
+   ```tsx
+           const data = await res.json();
+           setNotes(data.notes || []);
+   ```
+   with
+   ```tsx
+           const data = await res.json();
+           if (req !== latest.current) return;
+           setNotes(data.notes || []);
+   ```
+4. Replace
+   ```tsx
+       useEffect(() => { fetchNotes(); }, [fetchNotes]);
+
+   ```
+   with
+   ```tsx
+       useEffect(() => { fetchNotes(); }, [fetchNotes]);
+
+       // The box updates as you type; the search waits until typing pauses for
+       // 300ms, as on admin's patient list. (TJ-069h)
+       const [searchInput, setSearchInput] = useState("");
+       useEffect(() => {
+           const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
+           return () => clearTimeout(t);
+       }, [searchInput]);
+
+   ```
+5. Replace
+   ```tsx
+                           value={search}
+                           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+   ```
+   with
+   ```tsx
+                           value={searchInput}
+                           onChange={(e) => setSearchInput(e.target.value)}
+   ```
+
+**5. `src/app/secretary/notes/page.tsx`**
+
+1. Replace `import { useState, useEffect, useCallback } from "react";` with `import { useState, useEffect, useCallback, useRef } from "react";`.
+2. Replace
+   ```tsx
+       const fetchNotes = useCallback(async () => {
+           setLoading(true);
+   ```
+   with
+   ```tsx
+       // Only the newest request may fill the list: an older, slower answer is
+       // dropped instead of overwriting a newer one. (TJ-069h)
+       const latest = useRef(0);
+       const fetchNotes = useCallback(async () => {
+           const req = ++latest.current;
+           setLoading(true);
+   ```
+3. Replace
+   ```tsx
+           const data = await res.json();
+           setNotes(data.notes || []);
+   ```
+   with
+   ```tsx
+           const data = await res.json();
+           if (req !== latest.current) return;
+           setNotes(data.notes || []);
+   ```
+4. Replace
+   ```tsx
+       useEffect(() => { fetchNotes(); }, [fetchNotes]);
+
+   ```
+   with
+   ```tsx
+       useEffect(() => { fetchNotes(); }, [fetchNotes]);
+
+       // The box updates as you type; the search waits until typing pauses for
+       // 300ms, as on admin's patient list. (TJ-069h)
+       const [searchInput, setSearchInput] = useState("");
+       useEffect(() => {
+           const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
+           return () => clearTimeout(t);
+       }, [searchInput]);
+
+   ```
+5. Replace `value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />` with `value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />`.
+
+**Verification:**
+- `grep -c "latest.current"` prints `2` for each of the 5 files.
+- `grep -c "setSearchInput"` prints `2` for each of the 5 files (admin's patient list already had both).
+- `grep -n "setSearch(e.target.value)" src/app/secretary/patients/page.tsx src/app/doctor/patients/page.tsx src/app/admin/notes/page.tsx src/app/secretary/notes/page.tsx` prints nothing.
+- `git diff --stat` against the TJ-069i commit lists exactly the 5 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The four searches wait for a pause; all five lists ignore an answer that has been overtaken; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069f — Emoji become line icons
+
+- **Status:** SPLIT — passed 2026-11-23; see TJ-069f1 (menus) and TJ-069f2 (pages). Batch 4, steps 4–5.
+- **Why:** decision P1-4. Emoji render differently on Windows, Mac and phones and clash with the line icons phase 0 brought in. 55 emoji on 49 lines in 15 staff files become `lucide-react` icons (already a dependency).
+
+**Mapping (approved in the P1-4 mockup; three additions marked \*):**
+
+| Where | Emoji | Icon |
+|---|---|---|
+| Menus: Doctors (staff and website) | 🩺 | `Stethoscope` |
+| Menus: Secretaries | 📋 | `Contact` |
+| Menus: Patients / View Patients | 👥, \*🧑‍⚕️ (doctor's menu) | `Users` |
+| Menus: Archived | 🗄️ | `Archive` |
+| Menus: Duplicates | 🔍 | `Copy` |
+| Menus: Notes; the schedule card's note line | 📝 | `StickyNote` |
+| Menus: Dashboard / My Schedule | 📅 | `CalendarDays` |
+| Menus: My Profile | 👤 | `CircleUser` |
+| Schedule card menu: Session Details, Check In, Waiting, Entry to Doctor, Checkout, Reschedule / Undo Checkout, Edit, Duplicate, Cancel, Delete | 📄 ✅ ⏳ 🩺 🚪 ↩️ ✏️ 📋 🚫 🗑️ | `FileText`, `LogIn`, `Hourglass`, `DoorOpen`, `LogOut`, `Undo2`, `Pencil`, `CalendarPlus`, `Ban`, `Trash2` |
+| Phone numbers (patient files, session page, duplicates) | 📞 | `Phone` |
+| Files and documents | 🖼 / 📄 / ⏳ uploading | `ImageIcon` / `FileText` / `Hourglass` |
+| Notes: "doctor checked" | ✅, \*☐ (doctor's unchecked toggle) | `CircleCheck`, `Circle` |
+| \*Blog editor's decorative toolbar | 🔗 | `LinkIcon` |
+
+- **Accessibility:** an emoji was read out; an icon is hidden from screen readers. So the notes check mark is labelled (`role="img"`, `aria-label="Checked"`), and the doctor's toggle gets `aria-label="Checked"` with `aria-pressed`.
+- **Colours:** icons take the text colour, so danger menu items stay red; the check marks use the `ok` green; document and file icons the muted grey.
+- **Not changed:** text arrows (← →), the ✓ in "saved" messages, and the ▾ after the doctor's name, which are typography.
+
+---
+
+### TJ-069f1 — Icons in the menus: the three layouts and the schedule card
+
+- **Status:** READY — passed 2026-11-23. Batch 4, step 4 of 6.
+- **Branch:** `feat/staff-icons-menus`, cut from the tip of `bugfix/search-waits-for-typing`.
+- **Why:** the menu bars of all three portals and the schedule card's action menu carry most of the emoji (30 of 55).
+
+**Planning pass:** 2026-11-23, on the TJ-069h result. Read: the menu definitions and their rendering in `src/app/admin/layout.tsx`, `src/app/secretary/layout.tsx`, `src/app/doctor/layout.tsx`, and the action list, menu rendering and note line of `src/app/components/ReservationSlot.tsx`. Menu icons are 15px; the card's note icon is 11px to match its 0.68rem text. The menus' `icon` fields change type from `string` to `LucideIcon`. Adds one shared helper, `.staff-inline-icon`, used by TJ-069f2. TJ-070 will rebuild the layouts later; the icon change is small and carries over. **Preview:** 8 dropdown icons on admin (15×15 in a 20px slot), the nav icons on secretary and doctor, the card menu's 7 items each with an icon (Cancel and Delete red), the note line's icon 11px.
+
+**Scope — touch only these (5):** `src/app/globals.css`, `src/app/admin/layout.tsx`, `src/app/secretary/layout.tsx`, `src/app/doctor/layout.tsx`, `src/app/components/ReservationSlot.tsx`.
+
+**Do not touch:** any other file; menu labels, links and behaviour; the card's layout and sizes.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* A line icon at the start of a line of text (TJ-069f): the icon and the
+      text sit side by side, centred on each other. */
+   .staff-inline-icon {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.35rem;
+   }
+   ```
+
+**2. `src/app/admin/layout.tsx`**
+
+1. After the line `import { ConfirmProvider } from "@/app/components/ConfirmDialog";` insert these lines, in order: `import { Archive, Contact, Copy, Stethoscope, StickyNote, Users } from "lucide-react";`, `import type { LucideIcon } from "lucide-react";`.
+2. Replace `type DropdownItem = { href: string; label: string; icon: string };` with `type DropdownItem = { href: string; label: string; icon: LucideIcon };`.
+3. Replace `label: "Doctors", icon: "🩺" }` with `label: "Doctors", icon: Stethoscope }`.
+4. Replace `label: "Secretaries", icon: "📋" }` with `label: "Secretaries", icon: Contact }`.
+5. Replace `label: "View Patients", icon: "👥" }` with `label: "View Patients", icon: Users }`.
+6. Replace `label: "Duplicates", icon: "🔍" }` with `label: "Duplicates", icon: Copy }`.
+7. Replace `label: "View Notes", icon: "📝" }` with `label: "View Notes", icon: StickyNote }`.
+8. Replace `label: "View Doctors", icon: "🩺" }` with `label: "View Doctors", icon: Stethoscope }`.
+9. Replace `label: "Archived", icon: "🗄️" }` with `label: "Archived", icon: Archive }` (it occurs exactly twice; replace both).
+10. Replace `<span className="dropdown-icon">{item.icon}</span>` with `<span className="dropdown-icon"><item.icon size={15} aria-hidden="true" /></span>`.
+11. Replace
+   ```tsx
+                   :global(.dropdown-icon) {
+                       font-size: 0.9rem;
+                       width: 20px;
+                       text-align: center;
+                       flex-shrink: 0;
+                   }
+   ```
+   with
+   ```tsx
+                   :global(.dropdown-icon) {
+                       display: inline-flex;
+                       justify-content: center;
+                       width: 20px;
+                       flex-shrink: 0;
+                   }
+   ```
+
+**3. `src/app/secretary/layout.tsx`**
+
+1. After the line `import { ConfirmProvider } from "@/app/components/ConfirmDialog";` insert these lines, in order: `import { Archive, CalendarDays, StickyNote, Users } from "lucide-react";`, `import type { LucideIcon } from "lucide-react";`.
+2. Replace `type DropdownItem = { href: string; label: string; icon: string };` with `type DropdownItem = { href: string; label: string; icon: LucideIcon };`.
+3. Replace `label: "View Patients", icon: "👥" }` with `label: "View Patients", icon: Users }`.
+4. Replace `label: "Archived", icon: "🗄️" }` with `label: "Archived", icon: Archive }`.
+5. Replace `<span className="dropdown-icon">{item.icon}</span>` with `<span className="dropdown-icon"><item.icon size={15} aria-hidden="true" /></span>`.
+6. Replace `<span>👥</span> {label}` with `<Users size={15} aria-hidden="true" /> {label}`.
+7. Replace `<span>📅</span> Dashboard` with `<CalendarDays size={15} aria-hidden="true" /> Dashboard`.
+8. Replace `<span>📝</span> Notes` with `<StickyNote size={15} aria-hidden="true" /> Notes`.
+9. Replace `:global(.dropdown-icon) { font-size: 0.9rem; width: 20px; text-align: center; flex-shrink: 0; }` with `:global(.dropdown-icon) { display: inline-flex; justify-content: center; width: 20px; flex-shrink: 0; }`.
+
+**4. `src/app/doctor/layout.tsx`**
+
+1. After the line `import { ConfirmProvider } from "@/app/components/ConfirmDialog";` insert the line `import { CalendarDays, CircleUser, StickyNote, Users } from "lucide-react";`.
+2. Replace `label: "My Schedule", icon: "📅" }` with `label: "My Schedule", icon: CalendarDays }`.
+3. Replace `label: "Patients", icon: "🧑‍⚕️" }` with `label: "Patients", icon: Users }`.
+4. Replace `label: "Notes", icon: "📝" }` with `label: "Notes", icon: StickyNote }`.
+5. Replace `label: "My Profile", icon: "👤" }` with `label: "My Profile", icon: CircleUser }`.
+6. Replace `<span>{item.icon}</span> {item.label}` with `<item.icon size={15} aria-hidden="true" /> {item.label}`.
+
+**5. `src/app/components/ReservationSlot.tsx`**
+
+1. After the line `import { isMissingPhone } from "@/lib/phone";` insert these lines, in order: `import { Ban, CalendarPlus, DoorOpen, FileText, Hourglass, LogIn, LogOut, Pencil, StickyNote, Trash2, Undo2 } from "lucide-react";`, `import type { LucideIcon } from "lucide-react";`.
+2. Replace
+   ```tsx
+   interface SlotAction {
+       label: string;
+       icon: string;
+   ```
+   with
+   ```tsx
+   interface SlotAction {
+       label: string;
+       icon: LucideIcon;
+   ```
+3. Replace `icon: "📄"` with `icon: FileText`.
+4. Replace `icon: "✅"` with `icon: LogIn`.
+5. Replace `icon: "🩺"` with `icon: DoorOpen`.
+6. Replace `icon: "🚪"` with `icon: LogOut`.
+7. Replace `icon: "✏️"` with `icon: Pencil`.
+8. Replace `icon: "📋"` with `icon: CalendarPlus`.
+9. Replace `icon: "🚫"` with `icon: Ban`.
+10. Replace `icon: "🗑️"` with `icon: Trash2`.
+11. Replace `icon: "⏳"` with `icon: Hourglass` (it occurs exactly twice; replace both).
+12. Replace `icon: "↩️"` with `icon: Undo2` (it occurs exactly twice; replace both).
+13. Replace `<span>{a.icon}</span> {a.label}` with `<a.icon size={15} aria-hidden="true" /> {a.label}`.
+14. Replace `<span className="slot-note">📝 {note}</span>` with `<span className="slot-note"><StickyNote size={11} aria-hidden="true" /> {note}</span>`.
+15. Replace
+   ```tsx
+                   .slot-note {
+                       font-size: 0.68rem; font-style: italic;
+                       color: color-mix(in srgb, currentColor 75%, var(--slot-bg));
+                       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                   }
+   ```
+   with
+   ```tsx
+                   .slot-note {
+                       font-size: 0.68rem; font-style: italic;
+                       color: color-mix(in srgb, currentColor 75%, var(--slot-bg));
+                       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                   }
+                   .slot-note :global(svg) { vertical-align: -1px; }
+   ```
+
+**Verification:**
+- This prints `0`:
+  ```
+  python -c "import re,subprocess; fs=subprocess.run(['git','ls-files','src/app/admin/layout.tsx','src/app/secretary/layout.tsx','src/app/doctor/layout.tsx','src/app/components/ReservationSlot.tsx'],capture_output=True,text=True).stdout.split(); p=re.compile('[\U0001F300-\U0001FAFF\u2600-\u2712\u2714-\u27BF\u2B00-\u2BFF\u2300-\u23FF\u21A9]'); print(len([(f,i) for f in fs for i,l in enumerate(open(f,encoding='utf-8'),1) if p.search(l) and not l.strip().startswith(('//','*','/*'))]))"
+  ```
+- `git diff --stat` against the TJ-069h commit lists exactly the 5 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] No emoji left in the three layouts or the schedule card; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069f2 — Icons on the pages: patient files, notes, employee editors, duplicates, session page, blog editor
+
+- **Status:** READY — passed 2026-11-23. Batch 4, step 5 of 6.
+- **Branch:** `feat/staff-icons-pages`, cut from the tip of `feat/staff-icons-menus`.
+- **Why:** the remaining 25 emoji, on 11 pages.
+
+**Planning pass:** 2026-11-23, on the TJ-069f1 result. Read: the phone lines and Files tabs of the three patient files, the session page's phone line, the duplicates group header, the employee editors' documents list, the "Dr. Check" cells of the admin and secretary notes and the doctor's toggle, and the blog editor's toolbar. Phones use `.staff-inline-icon` (icon and number side by side); file icons are 24px in the Files tab and 15px in the documents list. **Preview:** phone icons 13px on the patient files, session page and duplicates; check marks green and labelled "Checked"; the doctor's toggles report `aria-pressed` true/false.
+
+**Scope — touch only these (11):** `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, `src/app/admin/patients/duplicates/page.tsx`, `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/secretaries/page.tsx`, `src/app/admin/notes/page.tsx`, `src/app/secretary/notes/page.tsx`, `src/app/doctor/notes/page.tsx`, `src/app/admin/blog/BlogEditor.tsx`.
+
+**Do not touch:** any other file; handlers, labels and layout beyond the rules named.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+**1. `src/app/admin/patients/[id]/page.tsx`**
+
+1. Replace `import { Archive, CalendarDays, FileText, History, Pencil } from "lucide-react";` with `import { Archive, CalendarDays, FileText, History, ImageIcon, Pencil, Phone } from "lucide-react";`.
+2. Replace `<span>📞 {isMissingPhone(patient.phone1)` with `<span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1)`.
+3. Replace
+   ```tsx
+   {patient.phone2 && <span>📞 <a href={`tel:${patient.phone2}`}>
+   ```
+   with
+   ```tsx
+   {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>
+   ```
+4. Replace
+   ```tsx
+   <span className="file-icon">{f.fileType.includes("image") ? "🖼" : "📄"}</span>
+   ```
+   with
+   ```tsx
+   <span className="file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
+   ```
+5. Replace `.file-icon { font-size: 1.5rem; }` with `.file-icon { display: flex; color: var(--staff-muted); }`.
+
+**2. `src/app/secretary/patients/[id]/page.tsx`**
+
+1. Replace `import { Archive, CalendarDays, FileText, Pencil } from "lucide-react";` with `import { Archive, CalendarDays, FileText, ImageIcon, Pencil, Phone } from "lucide-react";`.
+2. Replace `<span>📞 {isMissingPhone(patient.phone1)` with `<span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1)`.
+3. Replace
+   ```tsx
+   {patient.phone2 && <span>📞 <a href={`tel:${patient.phone2}`}>
+   ```
+   with
+   ```tsx
+   {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>
+   ```
+4. Replace
+   ```tsx
+   <span className="file-icon">{f.fileType.includes("image") ? "🖼" : "📄"}</span>
+   ```
+   with
+   ```tsx
+   <span className="file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
+   ```
+5. Replace `.file-icon { font-size: 1.5rem; }` with `.file-icon { display: flex; color: var(--staff-muted); }`.
+
+**3. `src/app/doctor/patients/[id]/page.tsx`**
+
+1. Replace `import { CalendarDays, FileText } from "lucide-react";` with `import { CalendarDays, FileText, ImageIcon, Phone } from "lucide-react";`.
+2. Replace `<span>📞 {isMissingPhone(patient.phone1)` with `<span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1)`.
+3. Replace
+   ```tsx
+   {patient.phone2 && <span>📞 <a href={`tel:${patient.phone2}`}>
+   ```
+   with
+   ```tsx
+   {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>
+   ```
+4. Replace
+   ```tsx
+   <span className="file-icon">{f.fileType.includes("image") ? "🖼" : "📄"}</span>
+   ```
+   with
+   ```tsx
+   <span className="file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
+   ```
+5. Replace `.file-icon { font-size: 1.5rem; }` with `.file-icon { display: flex; color: var(--staff-muted); }`.
+
+**4. `src/app/doctor/session/[id]/page.tsx`**
+
+1. Replace `import { History } from "lucide-react";` with `import { History, Phone } from "lucide-react";`.
+2. Replace `<span>📞 {isMissingPhone(reservation.patient.phone1)` with `<span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(reservation.patient.phone1)`.
+
+**5. `src/app/admin/patients/duplicates/page.tsx`**
+
+1. Replace `import { CircleCheck } from "lucide-react";` with `import { CircleCheck, Phone } from "lucide-react";`.
+2. Replace `<span className="phone-label">📞 {group.phoneDisplay}</span>` with `<span className="phone-label staff-inline-icon"><Phone size={13} aria-hidden="true" />{group.phoneDisplay}</span>`.
+
+**6. `src/app/admin/employees/doctors/page.tsx`**
+
+1. Replace `import { Archive, ChevronRight, Pencil, Plus, RotateCcw, Stethoscope, Trash2, UserX } from "lucide-react";` with `import { Archive, ChevronRight, FileText, Hourglass, ImageIcon, Pencil, Plus, RotateCcw, Stethoscope, Trash2, UserX } from "lucide-react";`.
+2. Replace `<span className="doc-icon">⏳</span>` with `<span className="doc-icon"><Hourglass size={15} aria-hidden="true" /></span>`.
+3. Replace
+   ```tsx
+   <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+   ```
+   with
+   ```tsx
+   <span className="doc-icon">{d.fileType.includes("image") ? <ImageIcon size={15} aria-hidden="true" /> : <FileText size={15} aria-hidden="true" />}</span>
+   ```
+4. Replace `.doc-icon { flex-shrink: 0; }` with `.doc-icon { flex-shrink: 0; display: flex; color: var(--staff-muted); }`.
+
+**7. `src/app/admin/employees/secretaries/page.tsx`**
+
+1. Replace `import { Archive, ChevronRight, Contact, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";` with `import { Archive, ChevronRight, Contact, FileText, Hourglass, ImageIcon, Pencil, Plus, RotateCcw, Trash2, UserX } from "lucide-react";`.
+2. Replace `<span className="doc-icon">⏳</span>` with `<span className="doc-icon"><Hourglass size={15} aria-hidden="true" /></span>`.
+3. Replace
+   ```tsx
+   <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+   ```
+   with
+   ```tsx
+   <span className="doc-icon">{d.fileType.includes("image") ? <ImageIcon size={15} aria-hidden="true" /> : <FileText size={15} aria-hidden="true" />}</span>
+   ```
+4. Replace `.doc-icon { flex-shrink: 0; }` with `.doc-icon { flex-shrink: 0; display: flex; color: var(--staff-muted); }`.
+
+**8. `src/app/admin/notes/page.tsx`**
+
+1. Replace `import { ChevronRight, Pencil, Plus, Search, StickyNote, Trash2 } from "lucide-react";` with `import { ChevronRight, CircleCheck, Pencil, Plus, Search, StickyNote, Trash2 } from "lucide-react";`.
+2. Replace `<td>{n.doctorCheckNote ? "✅" : "—"}</td>` with `<td>{n.doctorCheckNote ? <span className="check-yes"><CircleCheck size={16} role="img" aria-label="Checked" /></span> : "—"}</td>`.
+3. Replace
+   ```tsx
+                   .note-details { max-width: 250px;
+   ```
+   with
+   ```tsx
+                   .check-yes { display: inline-flex; color: var(--staff-ok); }
+                   .note-details { max-width: 250px;
+   ```
+
+**9. `src/app/secretary/notes/page.tsx`**
+
+1. Replace `import { Plus, Search, StickyNote } from "lucide-react";` with `import { CircleCheck, Plus, Search, StickyNote } from "lucide-react";`.
+2. Replace `<td>{n.doctorCheckNote ? "✅" : "—"}</td>` with `<td>{n.doctorCheckNote ? <span className="check-yes"><CircleCheck size={16} role="img" aria-label="Checked" /></span> : "—"}</td>`.
+3. Replace
+   ```tsx
+                   .note-details { max-width: 250px;
+   ```
+   with
+   ```tsx
+                   .check-yes { display: inline-flex; color: var(--staff-ok); }
+                   .note-details { max-width: 250px;
+   ```
+
+**10. `src/app/doctor/notes/page.tsx`**
+
+1. Replace `import { StickyNote } from "lucide-react";` with `import { Circle, CircleCheck, StickyNote } from "lucide-react";`.
+2. Replace
+   ```tsx
+                                       <button className="check-btn" onClick={() => toggleCheck(n)}>
+                                           {n.doctorCheckNote ? "✅" : "☐"}
+                                       </button>
+   ```
+   with
+   ```tsx
+                                       <button className="check-btn" aria-label="Checked" aria-pressed={n.doctorCheckNote} onClick={() => toggleCheck(n)}>
+                                           {n.doctorCheckNote ? <CircleCheck size={18} aria-hidden="true" /> : <Circle size={18} aria-hidden="true" />}
+                                       </button>
+   ```
+3. Replace
+   ```tsx
+   .check-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0.2rem; }
+   ```
+   with
+   ```tsx
+   .check-btn { display: inline-flex; background: none; border: none; cursor: pointer; padding: 0.2rem; color: var(--staff-faint); }
+                   .check-btn[aria-pressed="true"] { color: var(--staff-ok); }
+   ```
+
+**11. `src/app/admin/blog/BlogEditor.tsx`**
+
+1. After the line `import { useRouter } from "next/navigation";` insert the line `import { LinkIcon } from "lucide-react";`.
+2. Replace `<span>B</span><span><em>I</em></span><span>🔗</span><span>≡</span>` with `<span>B</span><span><em>I</em></span><span><LinkIcon size={13} aria-hidden="true" /></span><span>≡</span>`.
+
+**Verification:**
+- Batch check, this prints `0`:
+  ```
+  python -c "import re,subprocess; fs=subprocess.run(['git','ls-files','src/app/admin','src/app/secretary','src/app/doctor','src/app/components/ReservationSlot.tsx'],capture_output=True,text=True).stdout.split(); p=re.compile('[\U0001F300-\U0001FAFF\u2600-\u2712\u2714-\u27BF\u2B00-\u2BFF\u2300-\u23FF\u21A9]'); print(len([(f,i) for f in fs for i,l in enumerate(open(f,encoding='utf-8'),1) if p.search(l) and not l.strip().startswith(('//','*','/*'))]))"
+  ```
+- `git diff --stat` against the TJ-069f1 commit lists exactly the 11 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] No emoji used as an icon is left in the staff portal; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069g — Every text size snaps to the six steps
+
+- **Status:** READY — passed 2026-11-23. Batch 4, step 6 of 6.
+- **Branch:** `feat/staff-type-scale`, cut from the tip of `feat/staff-icons-pages`.
+- **Why:** decision P1-5. After batch 3, the staff files still name 23 different text sizes. Every remaining size in rem becomes one of the six tokens from TJ-069a, so a page cannot invent a new size.
+
+**Planning pass:** 2026-11-23, on the TJ-069f2 result. Inventory by script: 286 sizes in 35 files (every `.tsx` under `src/app/admin`, `src/app/secretary`, `src/app/doctor`, plus `ClinicalAssessment.tsx`, `RowMenu.tsx` and the staff section of `globals.css`); no inline `fontSize` styles are left. Steps, as approved: up to 0.74rem → `xs` (0.72), 0.75–0.8 → `sm` (0.8), 0.82–0.9 → `base` (0.85), 0.95–1.1 → `md` (1), 1.15–1.3 → `lg` (1.2), 1.5 and up → `xl` (1.5). Values found: 0.65, 0.68, 0.7, 0.72, 0.74 → xs; 0.75, 0.76, 0.78, 0.8 → sm; 0.82, 0.83, 0.85, 0.88, 0.9 → base; 0.95, 0.98, 1, 1.1 → md; 1.5, 1.6 → xl. Visible effects: page titles at 1.6rem become 1.5rem; menu text 0.82rem becomes 0.85rem; the wordmark 1.1rem becomes 1rem; small buttons 0.78rem become 0.8rem; most other text moves by less than a pixel.
+- **Left out on purpose:** `Calendar.tsx`, `ReservationSlot.tsx`, `DatePicker.tsx`, `DatePickerPopover.tsx`. They are the dense schedule and date widgets whose card heights and grid were tuned in TJ-044 and TJ-049 (how many sessions fit before the schedule scrolls); snapping them would undo that measurement. They move with the dashboard rework (TJ-071).
+- The change is mechanical, so it is applied by the script below; the planner re-runs the same script to check byte-identity.
+
+**Scope — touch only these (35):** the files the script prints (all under `src/app/admin`, `src/app/secretary`, `src/app/doctor`, plus `src/app/components/ClinicalAssessment.tsx`, `src/app/components/RowMenu.tsx`, `src/app/globals.css`).
+
+**Do not touch:** the four widgets above; any value other than a `font-size` in rem.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list. Do the steps in order.
+
+1. Save this script outside the repository (for example as `tj069g.py` in your scratchpad), run it from the repository root with `python <path>/tj069g.py`, and check that it prints 35 file lines and `total 286`. Do not commit the script.
+   ```python
+   # TJ-069g: every font-size given in rem in the staff files snaps to one of
+   # the six text-size tokens (decision P1-5). Run from the repository root.
+   # Files are read and written byte for byte apart from the sizes (CRLF kept).
+   import re
+   import subprocess
+
+   PAT = re.compile(r"(font-size:\s*)(\d*\.?\d+)rem")
+
+
+   def step(value):
+       x = float(value)
+       if x <= 0.74:
+           return "xs"
+       if x <= 0.8:
+           return "sm"
+       if x <= 0.9:
+           return "base"
+       if x <= 1.1:
+           return "md"
+       if x <= 1.3:
+           return "lg"
+       if x >= 1.5:
+           return "xl"
+       raise SystemExit("no step for " + value)
+
+
+   def snap(text):
+       return PAT.subn(lambda m: m.group(1) + "var(--staff-size-" + step(m.group(2)) + ")", text)
+
+
+   listed = subprocess.run(["git", "ls-files", "src/app/admin", "src/app/secretary", "src/app/doctor"],
+                           capture_output=True, text=True, check=True).stdout.split()
+   files = sorted(f for f in listed if f.endswith(".tsx"))
+   files += ["src/app/components/ClinicalAssessment.tsx", "src/app/components/RowMenu.tsx"]
+   total = 0
+   for f in files:
+       with open(f, encoding="utf-8", newline="") as h:
+           s = h.read()
+       new, n = snap(s)
+       if n:
+           with open(f, "w", encoding="utf-8", newline="") as h:
+               h.write(new)
+           print(n, f)
+           total += n
+   p = "src/app/globals.css"
+   with open(p, encoding="utf-8", newline="") as h:
+       s = h.read()
+   i = s.index("/* ===== STAFF PORTAL ===== */")
+   new, n = snap(s[i:])
+   if n:
+       with open(p, "w", encoding="utf-8", newline="") as h:
+           h.write(s[:i] + new)
+       print(n, p, "(staff section)")
+       total += n
+   print("total", total)
+   ```
+
+**Verification:**
+- The script printed `total 286` across 35 files.
+- `grep -rnE "font-size:\s*[0-9.]+rem" src/app/admin src/app/secretary src/app/doctor src/app/components/ClinicalAssessment.tsx src/app/components/RowMenu.tsx` prints nothing.
+- `git diff --stat` against the TJ-069f2 commit lists exactly 35 files, 286 insertions and 286 deletions, and none of the four widgets.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] Every rem text size in scope is one of the six tokens; the four widgets are untouched; `tsc` and the build exit 0; the planner's re-application is byte-identical.
 
 ---
 
