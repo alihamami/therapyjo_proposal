@@ -289,7 +289,7 @@ export default function NotesPage() {
                 .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
                 .checkbox-label {
                     flex-direction: row !important; display: flex; align-items: center; gap: 0.4rem;
-                    font-size: 0.8rem !important; cursor: pointer;
+                    font-size: var(--staff-size-sm) !important; cursor: pointer;
                 }
                 .checkbox-label input[type="checkbox"] { width: auto; }
             `}</style>

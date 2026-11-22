@@ -142,12 +142,12 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                     padding: 0 1.5rem; height: 56px;
                     background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06);
                 }
-                .nav :global(.logo) { font-weight: 700; font-size: 1.1rem; color: var(--primary, #4CAF93); text-decoration: none; }
+                .nav :global(.logo) { font-weight: 700; font-size: var(--staff-size-md); color: var(--primary, #4CAF93); text-decoration: none; }
                 .nav-links { display: flex; align-items: center; gap: 0.25rem; }
                 :global(.nav-link) {
                     display: flex; align-items: center; gap: 0.35rem;
                     padding: 0.4rem 0.85rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; color: rgba(255,255,255,0.6); text-decoration: none;
+                    font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); text-decoration: none;
                     transition: all 0.15s;
                     background: none; border: none; cursor: pointer; font-family: inherit;
                 }
@@ -178,7 +178,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                 :global(.dropdown-item) {
                     display: flex; align-items: center; gap: 0.55rem;
                     color: #fff; text-decoration: none; padding: 0.5rem 0.75rem;
-                    border-radius: var(--radius-sm, 2px); font-size: 0.82rem; transition: all 0.15s;
+                    border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); transition: all 0.15s;
                 }
                 :global(.dropdown-item:hover) { color: #fff; background: rgba(76, 175, 147, 0.1); }
                 :global(.dropdown-item.current) { color: var(--primary, #4CAF93); background: rgba(76, 175, 147, 0.08); }
@@ -187,7 +187,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                 .user-area { position: relative; }
                 .user-btn {
                     background: none; border: none; color: rgba(255,255,255,0.6);
-                    font-size: 0.82rem; cursor: pointer; padding: 0.4rem 0.7rem;
+                    font-size: var(--staff-size-base); cursor: pointer; padding: 0.4rem 0.7rem;
                     border-radius: var(--radius-sm, 2px); font-family: inherit;
                 }
                 .user-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
@@ -200,7 +200,7 @@ export default function SecretaryLayout({ children }: { children: React.ReactNod
                 .menu-item {
                     display: block; width: 100%; background: none; border: none;
                     color: rgba(255,255,255,0.8); padding: 0.45rem 0.7rem;
-                    font-size: 0.82rem; cursor: pointer; text-align: left;
+                    font-size: var(--staff-size-base); cursor: pointer; text-align: left;
                     border-radius: 2px; font-family: inherit;
                 }
                 .menu-item:hover { background: rgba(255,255,255,0.06); }

@@ -111,10 +111,10 @@ export default function SecretaryArchivedPatientsPage() {
             )}
 
             <style jsx>{`
-                .staff-page-header :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
+                .staff-page-header :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: var(--staff-size-base); transition: color 0.15s; }
                 .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .btn-sm {
-                    padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem;
+                    padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
                 }

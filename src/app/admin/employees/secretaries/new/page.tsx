@@ -202,11 +202,11 @@ export default function NewSecretaryPage() {
 
             <style jsx>{`
                 .page { max-width: 860px; }
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: 0.85rem; cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
                 .back-btn:hover { color: #fff; }
-                h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 0.25rem; }
-                .subtitle { color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 1.5rem; }
-                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px); font-size: 0.85rem; margin-bottom: 1.25rem; }
+                h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 1.25rem; }
 
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
 
@@ -228,29 +228,29 @@ export default function NewSecretaryPage() {
                 .avatar-img { width: 100%; height: 100%; object-fit: cover; }
                 .upload-btn {
                     background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
-                    padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: 0.8rem;
+                    padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
                     font-weight: 600; cursor: pointer; font-family: inherit;
                 }
                 .upload-btn:hover { background: rgba(76,175,147,0.22); }
-                .remove-btn { background: none; border: none; color: rgba(220,100,100,0.7); font-size: 0.76rem; cursor: pointer; font-family: inherit; }
+                .remove-btn { background: none; border: none; color: rgba(220,100,100,0.7); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
                 .remove-btn:hover { color: #fca5a5; }
-                .upload-hint { color: rgba(255,255,255,0.25); font-size: 0.72rem; text-align: center; margin: 0; }
+                .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
 
                 .fields-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
                 .fields-card {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
                     border-radius: var(--radius-md, 4px); padding: 1.5rem;
                 }
-                .fields-card h2 { font-size: 1rem; font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
+                .fields-card h2 { font-size: var(--staff-size-md); font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
                 .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
                 .field:last-child { margin-bottom: 0; }
-                .field label { font-size: 0.78rem; color: rgba(255,255,255,0.55); font-weight: 500; }
+                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
                 .req { color: var(--primary, #4CAF93); }
                 .field input {
                     width: 100%; min-width: 0;
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
                     border-radius: var(--radius-sm, 2px); padding: 0.65rem 0.85rem; color: #fff;
-                    font-size: 0.9rem; outline: none; font-family: inherit; transition: border-color 0.15s;
+                    font-size: var(--staff-size-base); outline: none; font-family: inherit; transition: border-color 0.15s;
                 }
                 .field input:focus { border-color: var(--primary, #4CAF93); }
                 .field input::placeholder { color: rgba(255,255,255,0.2); }
@@ -260,7 +260,7 @@ export default function NewSecretaryPage() {
                    icon (measured). 9.5rem leaves room for that; below it the row
                    wraps rather than clipping the time. (TJ-020) */
                 .hours-row input { flex: 1 1 9.5rem; min-width: 0; }
-                .hours-sep { font-size: 0.8rem; color: rgba(255,255,255,0.4); flex-shrink: 0; }
+                .hours-sep { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.4); flex-shrink: 0; }
                 .password-wrap { position: relative; }
                 .password-wrap input { width: 100%; padding-inline-end: 2.4rem; }
                 .toggle-password {
@@ -269,7 +269,7 @@ export default function NewSecretaryPage() {
                   color: rgba(255,255,255,0.45); cursor: pointer;
                 }
                 .toggle-password:hover { color: #fff; }
-                .field-hint { font-size: 0.72rem; color: rgba(255,255,255,0.35); }
+                .field-hint { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); }
 
                 .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
 

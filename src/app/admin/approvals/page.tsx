@@ -132,21 +132,21 @@ export default function ApprovalsPage() {
                 }
                 .change-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; }
                 .change-who { display: flex; align-items: center; gap: 0.6rem; }
-                .doctor-name { font-size: 0.95rem; font-weight: 700; }
+                .doctor-name { font-size: var(--staff-size-md); font-weight: 700; }
                 .field-chip {
                     background: rgba(245,158,11,0.15); color: #fcd34d; border-radius: 999px;
-                    padding: 0.15rem 0.6rem; font-size: 0.72rem; font-weight: 600;
+                    padding: 0.15rem 0.6rem; font-size: var(--staff-size-xs); font-weight: 600;
                 }
-                .change-time { font-size: 0.76rem; color: rgba(255,255,255,0.3); }
+                .change-time { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.3); }
 
                 .diff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem; }
                 .diff-panel { border-radius: 8px; padding: 0.8rem; }
                 .diff-current { background: rgba(255,255,255,0.03); }
                 .diff-proposed { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.18); }
-                .diff-label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
+                .diff-label { display: block; font-size: var(--staff-size-xs); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
                 .diff-current .diff-label { color: rgba(255,255,255,0.3); }
                 .diff-proposed .diff-label { color: #6ee7b7; }
-                .diff-value { font-size: 0.88rem; white-space: pre-wrap; }
+                .diff-value { font-size: var(--staff-size-base); white-space: pre-wrap; }
                 .diff-current .diff-value { color: rgba(255,255,255,0.55); }
                 .diff-proposed .diff-value { color: rgba(255,255,255,0.85); }
                 .diff-photo { width: 100%; max-width: 140px; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
@@ -156,7 +156,7 @@ export default function ApprovalsPage() {
                 .toast {
                     position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1300;
                     background: #06281f; color: #10b981; border-radius: 8px; padding: 0.8rem 1.2rem;
-                    font-size: 0.88rem; font-weight: 600; box-shadow: 0 12px 32px rgba(16,185,129,0.35);
+                    font-size: var(--staff-size-base); font-weight: 600; box-shadow: 0 12px 32px rgba(16,185,129,0.35);
                 }
 
                 @media (max-width: 700px) {

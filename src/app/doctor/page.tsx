@@ -163,15 +163,15 @@ export default function DoctorDashboard() {
 
             <style jsx>{`
                 .controls { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 0.5rem; }
-                .controls h1 { font-size: 1.5rem; font-weight: 600; }
+                .controls h1 { font-size: var(--staff-size-xl); font-weight: 600; }
                 .date-nav { display: flex; gap: 0.35rem; }
-                .btn-nav { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem; cursor: pointer; font-family: inherit; }
+                .btn-nav { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
                 .btn-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
                 .btn-today { font-weight: 600; color: var(--primary, #4CAF93); border-color: var(--primary, #4CAF93); }
-                .doctor-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; font-family: inherit; margin-left: auto; }
+                .doctor-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); font-family: inherit; margin-left: auto; }
                 .doctor-select option { background: #1a2e35; }
                 .date-trigger-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-                .session-count { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+                .session-count { color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }
             `}</style>

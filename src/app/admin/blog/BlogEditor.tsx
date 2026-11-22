@@ -259,23 +259,23 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
 
             <style jsx>{`
                 .editor-page { max-width: 1200px; }
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: 0.85rem; cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
                 .back-btn:hover { color: #fff; }
-                h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 1.25rem; }
-                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1.25rem; }
+                h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 1.25rem; }
+                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: 6px; font-size: var(--staff-size-base); margin-bottom: 1.25rem; }
 
                 .editor-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start; }
                 .left-col, .right-col { display: flex; flex-direction: column; gap: 1rem; }
 
                 .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 1.25rem; }
-                .section-label { display: block; font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+                .section-label { display: block; font-size: var(--staff-size-sm); font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
 
                 .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
                 .field:last-child { margin-bottom: 0; }
-                .field label { font-size: 0.78rem; color: rgba(255,255,255,0.55); font-weight: 500; }
+                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
                 .field input, .field select {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px; padding: 0.65rem 0.85rem; color: #fff; font-size: 0.9rem;
+                    border-radius: 8px; padding: 0.65rem 0.85rem; color: #fff; font-size: var(--staff-size-base);
                     outline: none; font-family: inherit;
                 }
                 .field input:focus, .field select:focus { border-color: var(--primary, #4CAF93); }
@@ -285,7 +285,7 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                 .toggle-group { display: flex; gap: 0.4rem; }
                 .toggle-btn {
                     flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    color: rgba(255,255,255,0.6); padding: 0.6rem; border-radius: 8px; font-size: 0.85rem;
+                    color: rgba(255,255,255,0.6); padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base);
                     cursor: pointer; font-family: inherit; transition: all 0.15s;
                 }
                 .toggle-btn.active { background: rgba(76,175,147,0.18); border-color: var(--primary, #4CAF93); color: var(--primary, #4CAF93); font-weight: 600; }
@@ -294,7 +294,7 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                 .status-buttons { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
                 .status-btn {
                     flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    color: rgba(255,255,255,0.6); padding: 0.6rem; border-radius: 8px; font-size: 0.85rem;
+                    color: rgba(255,255,255,0.6); padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base);
                     font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s;
                 }
                 .status-btn.status-draft.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
@@ -303,33 +303,33 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
 
                 .status-panel { border-radius: 8px; padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem; }
                 .panel-scheduled { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); }
-                .panel-scheduled label { font-size: 0.78rem; color: #93c5fd; }
+                .panel-scheduled label { font-size: var(--staff-size-sm); color: #93c5fd; }
                 .panel-scheduled input {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
                     border-radius: 6px; padding: 0.5rem 0.7rem; color: #fff; font-family: inherit;
                 }
                 .panel-published { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); }
-                .panel-published p { margin: 0; font-size: 0.85rem; color: #6ee7b7; }
+                .panel-published p { margin: 0; font-size: var(--staff-size-base); color: #6ee7b7; }
                 .unpublish-btn {
                     align-self: flex-start; background: rgba(239,68,68,0.12); color: #fca5a5; border: none;
-                    padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.78rem; cursor: pointer; font-family: inherit;
+                    padding: 0.4rem 0.8rem; border-radius: 6px; font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit;
                 }
                 .unpublish-btn:hover { background: rgba(239,68,68,0.2); }
 
                 .toolbar {
                     display: flex; gap: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.04);
                     border: 1px solid rgba(255,255,255,0.08); border-bottom: none; border-radius: 6px 6px 0 0;
-                    color: rgba(255,255,255,0.4); font-size: 0.85rem;
+                    color: rgba(255,255,255,0.4); font-size: var(--staff-size-base);
                 }
                 .body-textarea {
                     width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 0 0 8px 8px; padding: 0.75rem; color: #fff; font-size: 0.9rem;
+                    border-radius: 0 0 8px 8px; padding: 0.75rem; color: #fff; font-size: var(--staff-size-base);
                     outline: none; font-family: inherit; resize: vertical; line-height: 1.6; box-sizing: border-box;
                 }
                 .body-textarea:focus { border-color: var(--primary, #4CAF93); }
 
                 .footer-row { display: flex; align-items: center; justify-content: space-between; }
-                .saved-hint { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+                .saved-hint { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); }
                 .footer-actions { display: flex; gap: 0.75rem; }
 
                 .drop-zone {
@@ -338,13 +338,13 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                     background: rgba(255,255,255,0.02); overflow: hidden; transition: border-color 0.2s;
                 }
                 .drop-zone:hover { border-color: var(--primary, #4CAF93); }
-                .drop-hint { color: rgba(255,255,255,0.3); font-size: 0.85rem; }
+                .drop-hint { color: rgba(255,255,255,0.3); font-size: var(--staff-size-base); }
                 .cover-preview { width: 100%; height: 100%; object-fit: cover; }
 
-                .translation-note { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin: 0 0 0.75rem; }
+                .translation-note { font-size: var(--staff-size-base); color: rgba(255,255,255,0.5); margin: 0 0 0.75rem; }
                 .translate-btn {
                     width: 100%; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
-                    padding: 0.6rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit;
+                    padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base); font-weight: 600; cursor: pointer; font-family: inherit;
                 }
                 .translate-btn:hover { background: rgba(76,175,147,0.22); }
                 .translate-btn:disabled { opacity: 0.5; cursor: not-allowed; }

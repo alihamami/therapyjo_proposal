@@ -110,7 +110,7 @@ export default function DuplicatePatientsPage() {
 
             <style jsx>{`
                 .staff-page-header :global(.btn-back) {
-                    color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
+                    color: rgba(255,255,255,0.5); text-decoration: none; font-size: var(--staff-size-base);
                     transition: color 0.15s;
                 }
                 .staff-page-header :global(.btn-back:hover) { color: #fff; }
@@ -126,13 +126,13 @@ export default function DuplicatePatientsPage() {
                     flex-wrap: wrap; gap: 0.5rem;
                 }
                 .group-header-left { display: flex; align-items: center; gap: 0.6rem; }
-                .phone-label { font-weight: 600; font-size: 0.9rem; }
+                .phone-label { font-weight: 600; font-size: var(--staff-size-base); }
                 .dupe-count {
                     background: rgba(239,68,68,0.12); color: #fca5a5;
-                    padding: 0.15rem 0.55rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+                    padding: 0.15rem 0.55rem; border-radius: 20px; font-size: var(--staff-size-xs); font-weight: 600;
                 }
                 .match-badge {
-                    padding: 0.15rem 0.55rem; border-radius: 20px; font-size: 0.68rem; font-weight: 600;
+                    padding: 0.15rem 0.55rem; border-radius: 20px; font-size: var(--staff-size-xs); font-weight: 600;
                     text-transform: uppercase; letter-spacing: 0.03em;
                 }
                 .match-same { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
@@ -140,7 +140,7 @@ export default function DuplicatePatientsPage() {
                 .match-different { background: rgba(239,68,68,0.15); color: #fca5a5; }
                 .row-archived { opacity: 0.55; }
                 .archived-tag {
-                    margin-left: 0.5rem; font-size: 0.65rem; font-weight: 600;
+                    margin-left: 0.5rem; font-size: var(--staff-size-xs); font-weight: 600;
                     background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);
                     padding: 0.1rem 0.4rem; border-radius: 20px;
                     text-transform: uppercase; letter-spacing: 0.03em;
@@ -148,7 +148,7 @@ export default function DuplicatePatientsPage() {
                 .table-scroll { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
                 .staff-table { min-width: 640px; }
                 .groups :global(.btn-sm) {
-                    padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.76rem;
+                    padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                     text-decoration: none; display: inline-block;
                 }

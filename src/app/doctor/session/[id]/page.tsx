@@ -337,39 +337,39 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
             )}
 
             <style jsx>{`
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                .back-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
                 .back-btn:hover { color: #fff; }
                 .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
-                .header h1 { font-size: 1.5rem; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
-                .badge-archived { background: rgba(239,68,68,0.12); color: #fca5a5; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; }
-                .header-meta { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 0.2rem; display: flex; gap: 0.5rem; }
+                .header h1 { font-size: var(--staff-size-xl); font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
+                .badge-archived { background: rgba(239,68,68,0.12); color: #fca5a5; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em; }
+                .header-meta { color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); margin-top: 0.2rem; display: flex; gap: 0.5rem; }
                 .header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-                .status-badge { padding: 0.3rem 0.8rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+                .status-badge { padding: 0.3rem 0.8rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
                 .status-actions { display: flex; gap: 0.35rem; }
-                .action-btn { background: var(--primary, #4CAF93); color: #fff; border: none; padding: 0.35rem 0.85rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+                .action-btn { background: var(--primary, #4CAF93); color: #fff; border: none; padding: 0.35rem 0.85rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); font-weight: 600; cursor: pointer; font-family: inherit; }
                 .action-btn.checkout { background: #16a34a; }
                 .action-btn.waiting { background: transparent; border: 1px solid #f59e0b; color: #f59e0b; }
-                .prev-note-banner { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(76,175,147,0.4); border-radius: var(--radius-sm, 2px); padding: 0.65rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.15rem; }
-                .prev-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.4); font-weight: 600; }
+                .prev-note-banner { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(76,175,147,0.4); border-radius: var(--radius-sm, 2px); padding: 0.65rem 1rem; margin-bottom: 1rem; font-size: var(--staff-size-base); display: flex; flex-direction: column; gap: 0.15rem; }
+                .prev-label { font-size: var(--staff-size-xs); text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.4); font-weight: 600; }
                 .tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
-                .tab { background: none; border: none; border-bottom: 2px solid transparent; color: rgba(255,255,255,0.5); padding: 0.65rem 1.1rem; font-size: 0.85rem; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+                .tab { background: none; border: none; border-bottom: 2px solid transparent; color: rgba(255,255,255,0.5); padding: 0.65rem 1.1rem; font-size: var(--staff-size-base); cursor: pointer; font-family: inherit; transition: all 0.15s; }
                 .tab:hover { color: rgba(255,255,255,0.8); }
                 .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); font-weight: 600; }
                 .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
                 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
                 .soap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
                 .form-group { display: flex; flex-direction: column; gap: 0.25rem; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; display: flex; align-items: center; gap: 0.35rem; }
-                .soap-letter { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border-radius: 2px; font-weight: 700; font-size: 0.7rem; }
-                .form-group input, .form-group textarea, .form-group select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.7rem; color: #fff; font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical; }
+                .form-group label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.5); font-weight: 500; display: flex; align-items: center; gap: 0.35rem; }
+                .soap-letter { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border-radius: 2px; font-weight: 700; font-size: var(--staff-size-xs); }
+                .form-group input, .form-group textarea, .form-group select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.7rem; color: #fff; font-size: var(--staff-size-base); outline: none; font-family: inherit; resize: vertical; }
                 .form-group select option { background: #1a2e35; }
                 .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
-                .readonly-value { margin: 0; padding: 0.5rem 0.7rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; }
-                .field-hint { font-size: 0.76rem; color: rgba(255,255,255,0.35); margin: 0.75rem 0 0; }
+                .readonly-value { margin: 0; padding: 0.5rem 0.7rem; color: rgba(255,255,255,0.7); font-size: var(--staff-size-base); }
+                .field-hint { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); margin: 0.75rem 0 0; }
                 .card-actions { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
                 .table-container { overflow-x: auto; }
-                .mini-status { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
-                .view-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: 0.75rem; cursor: pointer; font-family: inherit; }
+                .mini-status { font-size: var(--staff-size-xs); font-weight: 600; text-transform: uppercase; }
+                .view-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
                 .view-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
                 @media (max-width: 640px) { .form-grid, .soap-grid { grid-template-columns: 1fr; } }
             `}</style>

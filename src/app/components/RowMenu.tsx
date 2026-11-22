@@ -163,7 +163,7 @@ export default function RowMenu({ items, label }: Props) {
                 .row-menu-panel :global(.row-menu-item) {
                     display: flex; align-items: center; gap: 8px; width: 100%;
                     padding: 8px 10px; border: none; border-radius: 6px; background: none;
-                    color: rgba(255, 255, 255, 0.88); font-family: inherit; font-size: 0.82rem;
+                    color: rgba(255, 255, 255, 0.88); font-family: inherit; font-size: var(--staff-size-base);
                     text-align: start; cursor: pointer;
                 }
                 .row-menu-panel :global(.row-menu-item:hover),

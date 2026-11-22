@@ -99,8 +99,8 @@ export default function DoctorProfilePage() {
                 <p className="empty-note">Your account isn&apos;t linked to a public doctor profile yet. Ask an admin to link it from the Doctors CMS.</p>
                 <style jsx>{`
                     .page { max-width: 640px; }
-                    h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 1rem; }
-                    .empty-note { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+                    h1 { font-size: var(--staff-size-xl); font-weight: 600; margin: 0 0 1rem; }
+                    .empty-note { color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); }
                 `}</style>
             </div>
         );
@@ -159,30 +159,30 @@ export default function DoctorProfilePage() {
 
             <style jsx>{`
                 .page { max-width: 720px; }
-                h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.25rem; }
-                .subtitle { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin: 0 0 1.25rem; }
+                h1 { font-size: var(--staff-size-xl); font-weight: 600; margin: 0 0 0.25rem; }
+                .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin: 0 0 1.25rem; }
                 .pending-banner {
                     background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.25); color: #93c5fd;
-                    padding: 0.6rem 0.9rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;
+                    padding: 0.6rem 0.9rem; border-radius: 8px; font-size: var(--staff-size-base); margin-bottom: 1rem;
                 }
                 .message {
                     background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7;
-                    padding: 0.6rem 0.9rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;
+                    padding: 0.6rem 0.9rem; border-radius: 8px; font-size: var(--staff-size-base); margin-bottom: 1rem;
                 }
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
                 .photo-col { width: 140px; flex-shrink: 0; }
                 .photo-drop {
                     width: 140px; height: 140px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.15);
                     display: flex; align-items: center; justify-content: center; cursor: pointer;
-                    color: rgba(255,255,255,0.3); font-size: 0.8rem; overflow: hidden; text-align: center;
+                    color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); overflow: hidden; text-align: center;
                 }
                 .photo-img { width: 100%; height: 100%; object-fit: cover; }
                 .fields-col { flex: 1; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
                 .field { display: flex; flex-direction: column; gap: 0.3rem; }
-                .field label { font-size: 0.78rem; color: rgba(255,255,255,0.55); font-weight: 500; }
+                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
                 .field input, .field textarea {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px; padding: 0.6rem 0.8rem; color: #fff; font-size: 0.88rem;
+                    border-radius: 8px; padding: 0.6rem 0.8rem; color: #fff; font-size: var(--staff-size-base);
                     outline: none; font-family: inherit; resize: vertical;
                 }
                 .field input:focus, .field textarea:focus { border-color: var(--primary, #4CAF93); }

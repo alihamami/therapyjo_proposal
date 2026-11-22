@@ -610,7 +610,7 @@ export default function SecretariesPage() {
         .chip {
           background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
           color: rgba(255,255,255,0.65); padding: 0.4rem 0.9rem; border-radius: 999px;
-          font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit;
+          font-size: var(--staff-size-sm); font-weight: 600; cursor: pointer; font-family: inherit;
           display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.15s;
         }
         .chip:hover { background: rgba(255,255,255,0.08); }
@@ -618,12 +618,12 @@ export default function SecretariesPage() {
         .chip-count { color: rgba(255,255,255,0.4); font-weight: 500; }
         .chip.active .chip-count { color: rgba(255,255,255,0.7); }
         .staff-table { min-width: 640px; }
-        .employee-username { margin-top: 0.15rem; font-size: 0.78rem; color: rgba(255,255,255,0.45); }
-        .status-badge { padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .employee-username { margin-top: 0.15rem; font-size: var(--staff-size-sm); color: rgba(255,255,255,0.45); }
+        .status-badge { padding: 0.25rem 0.6rem; border-radius: 20px; font-size: var(--staff-size-sm); font-weight: 600; }
         .status-badge.active { background: rgba(16,185,129,0.15); color: #6ee7b7; }
         .status-badge.resigned { background: rgba(239,68,68,0.15); color: #fca5a5; }
         .btn-sm {
-          padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.8rem;
+          padding: 0.3rem 0.7rem; border-radius: 6px; font-size: var(--staff-size-sm);
           border: none; cursor: pointer; font-weight: 500; font-family: inherit;
         }
         .btn-delete { background: rgba(239,68,68,0.15); color: #fca5a5; }
@@ -637,7 +637,7 @@ export default function SecretariesPage() {
            icon (measured). 9.5rem leaves room for that; below it the row
            wraps rather than clipping the time. (TJ-020) */
         .hours-row input { flex: 1 1 9.5rem; min-width: 0; }
-        .hours-sep { font-size: 0.8rem; color: rgba(255,255,255,0.4); flex-shrink: 0; }
+        .hours-sep { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.4); flex-shrink: 0; }
         .password-wrap { position: relative; }
         .password-wrap input { width: 100%; padding-inline-end: 2.4rem; }
         .toggle-password {
@@ -646,12 +646,12 @@ export default function SecretariesPage() {
           color: rgba(255,255,255,0.45); cursor: pointer;
         }
         .toggle-password:hover { color: #fff; }
-        .doc-input { font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+        .doc-input { font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); }
         .doc-input::file-selector-button {
           margin-inline-end: 0.75rem; padding: 0.35rem 0.85rem;
           background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85);
           border: 1px solid rgba(255,255,255,0.14); border-radius: 6px;
-          font-family: inherit; font-size: 0.8rem; font-weight: 500; cursor: pointer;
+          font-family: inherit; font-size: var(--staff-size-sm); font-weight: 500; cursor: pointer;
         }
         .doc-input::file-selector-button:hover { background: rgba(255,255,255,0.14); }
         .doc-list {
@@ -665,20 +665,20 @@ export default function SecretariesPage() {
         }
         .doc-icon { flex-shrink: 0; display: flex; color: var(--staff-muted); }
         .doc-name {
-          flex: 1; min-width: 0; font-size: 0.82rem; color: #fff;
+          flex: 1; min-width: 0; font-size: var(--staff-size-base); color: #fff;
           overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
           text-decoration: none;
         }
         a.doc-name:hover { text-decoration: underline; }
         .doc-row.uploading .doc-name { color: rgba(255,255,255,0.5); }
-        .doc-empty { font-size: 0.8rem; color: rgba(255,255,255,0.35); padding: 0.25rem 0; }
+        .doc-empty { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); padding: 0.25rem 0; }
         .grant-row { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
         .grant-row input[type="checkbox"] {
           width: 16px; height: 16px; flex-shrink: 0;
           margin: 0; padding: 0; border: none; background: none;
           border-radius: 0; accent-color: #10b981; cursor: pointer;
         }
-        .grant-row span { font-size: 0.85rem; color: rgba(255,255,255,0.85); font-weight: 400; }
+        .grant-row span { font-size: var(--staff-size-base); color: rgba(255,255,255,0.85); font-weight: 400; }
 
         @media (max-width: 560px) {
           .form-grid { grid-template-columns: minmax(0, 1fr); }
