@@ -2521,3 +2521,352 @@ button.staff-row-name {
 .staff-page-header .staff-back {
   margin: 0;
 }
+/* Menu bar and page frame, one for every role (TJ-070,
+   components/StaffShell.tsx). Phase 0's admin bar, shared: solid and
+   sticky; its side padding lines the wordmark up with the 1400px content
+   column; below 861px the links fold into a menu behind a button. */
+.staff-shell {
+  min-height: 100vh;
+  background: var(--staff-bg);
+  color: var(--staff-text);
+}
+.staff-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.5rem max(2rem, calc((100% - 1400px) / 2 + 2rem));
+  background: var(--staff-bg);
+  border-bottom: 1px solid var(--staff-border);
+}
+.staff-nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+.staff-nav-brand {
+  color: var(--staff-accent);
+  font-family: var(--font-outfit, 'Outfit', sans-serif);
+  font-size: var(--staff-size-md);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.staff-nav-toggle {
+  display: none;
+  margin: -0.5rem;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.staff-nav-toggle-icon,
+.staff-nav-toggle-icon::before,
+.staff-nav-toggle-icon::after {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--staff-text);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.staff-nav-toggle-icon {
+  position: relative;
+}
+.staff-nav-toggle-icon::before,
+.staff-nav-toggle-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+.staff-nav-toggle-icon::before {
+  top: -6px;
+}
+.staff-nav-toggle-icon::after {
+  top: 6px;
+}
+.staff-nav-toggle-icon.open {
+  background: transparent;
+}
+.staff-nav-toggle-icon.open::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+.staff-nav-toggle-icon.open::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+.staff-nav-body {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 0;
+  min-height: 44px;
+}
+.staff-nav-links {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.1rem;
+}
+.staff-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.85rem;
+  background: none;
+  border: none;
+  border-radius: var(--staff-radius-sm);
+  color: var(--staff-text);
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.staff-nav-link:hover {
+  background: var(--staff-surface-2);
+}
+.staff-nav-link.active {
+  color: var(--staff-accent);
+}
+.staff-nav-link:focus-visible,
+.staff-nav-item:focus-visible,
+.staff-nav-toggle:focus-visible,
+.staff-nav-signout:focus-visible {
+  outline: 2px solid var(--staff-focus);
+  outline-offset: 2px;
+}
+.staff-nav-divider {
+  flex-shrink: 0;
+  width: 1px;
+  height: 20px;
+  margin: 0 0.35rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+.staff-nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  margin-inline-start: 0.35rem;
+  padding: 0 0.3rem;
+  background: #f59e0b;
+  color: #3a2606;
+  border-radius: 999px;
+  font-size: var(--staff-size-xs);
+  font-weight: 700;
+}
+.staff-nav-chevron {
+  opacity: 0.5;
+  transition: transform 0.25s ease;
+}
+.staff-nav-chevron.open {
+  opacity: 0.8;
+  transform: rotate(180deg);
+}
+.staff-nav-menu {
+  position: relative;
+}
+.staff-nav-panel {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 300;
+  padding-top: 4px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(4px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.staff-nav-panel.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+  transform: translateX(-50%) translateY(0);
+}
+.staff-nav-panel-inner {
+  min-width: 180px;
+  padding: 0.35rem;
+  background: var(--staff-raised);
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-md);
+  box-shadow: var(--staff-shadow-pop);
+}
+.staff-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--staff-radius-sm);
+  color: var(--staff-text);
+  font-size: var(--staff-size-base);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.staff-nav-item:hover {
+  background: rgba(76, 175, 147, 0.1);
+}
+.staff-nav-item.current {
+  background: rgba(76, 175, 147, 0.08);
+  color: var(--staff-accent);
+}
+.staff-nav-item-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: center;
+  width: 20px;
+}
+.staff-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.staff-nav-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--staff-accent-soft);
+  border: 1px solid rgba(76, 175, 147, 0.25);
+  border-radius: var(--staff-radius-sm);
+  color: var(--staff-accent);
+  font-size: var(--staff-size-sm);
+  font-weight: 700;
+}
+.staff-nav-name {
+  color: var(--staff-faint);
+  font-size: var(--staff-size-base);
+}
+.staff-nav-signout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.75rem;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  border-radius: var(--staff-radius-sm);
+  color: rgba(252, 165, 165, 0.8);
+  font-family: inherit;
+  font-size: var(--staff-size-sm);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.staff-nav-signout:hover {
+  background: rgba(220, 38, 38, 0.18);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: var(--staff-bad);
+}
+.staff-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+/* The phase 0 breakpoints, measured on the longer admin bar of TJ-068b/g:
+   below 1180px the name goes (it stays in the avatar's tooltip); from
+   861px to 1040px tighter spacing and an icon-only Sign Out. */
+@media (min-width: 861px) and (max-width: 1180px) {
+  .staff-nav-name {
+    display: none;
+  }
+}
+@media (min-width: 861px) and (max-width: 1040px) {
+  .staff-nav {
+    gap: 1rem;
+  }
+  .staff-nav-body {
+    gap: 0.75rem;
+  }
+  .staff-nav-link {
+    padding: 0.4rem 0.5rem;
+  }
+  .staff-nav-signout-label {
+    display: none;
+  }
+}
+/* Phones and small tablets: the links fold into a menu, and each link
+   menu opens in place instead of floating. */
+@media (max-width: 860px) {
+  .staff-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 1rem;
+  }
+  .staff-nav-toggle {
+    display: block;
+  }
+  .staff-nav-body {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-height: 0;
+  }
+  .staff-nav-body.open {
+    display: flex;
+    margin-top: 0.5rem;
+    padding: 0.75rem 0 1rem;
+    border-top: 1px solid var(--staff-border);
+  }
+  .staff-nav-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+  }
+  .staff-nav-link {
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.7rem 0.5rem;
+  }
+  .staff-nav-divider {
+    display: none;
+  }
+  .staff-nav-menu {
+    width: 100%;
+  }
+  .staff-nav-panel,
+  .staff-nav-panel.visible {
+    position: static;
+    left: auto;
+    padding-top: 0;
+    transform: none;
+  }
+  .staff-nav-panel {
+    display: none;
+  }
+  .staff-nav-panel.visible {
+    display: block;
+  }
+  .staff-nav-panel-inner {
+    min-width: 0;
+    margin: 0.15rem 0 0.35rem;
+    background: var(--staff-surface);
+    box-shadow: none;
+  }
+  .staff-nav-user {
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--staff-border);
+  }
+  .staff-nav-name {
+    flex: 1;
+  }
+}
+@media (max-width: 640px) {
+  .staff-content {
+    padding: 1rem;
+  }
+}
