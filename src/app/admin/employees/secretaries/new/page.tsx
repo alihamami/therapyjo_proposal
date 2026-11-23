@@ -75,7 +75,7 @@ export default function NewSecretaryPage() {
 
     return (
         <div className="page">
-            <button className="back-btn" onClick={() => router.push("/admin/employees/secretaries")}>← Back to Secretaries</button>
+            <button className="staff-back" onClick={() => router.push("/admin/employees/secretaries")}>← Back to Secretaries</button>
             <h1>New Secretary</h1>
             <p className="subtitle">Create a new secretary account with login credentials.</p>
 
@@ -202,8 +202,6 @@ export default function NewSecretaryPage() {
 
             <style jsx>{`
                 .page { max-width: 860px; }
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
-                .back-btn:hover { color: #fff; }
                 h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
                 .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
                 .page > .staff-form-error { margin-bottom: 1.25rem; }

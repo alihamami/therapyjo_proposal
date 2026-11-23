@@ -179,7 +179,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
         <div>
             {/* Back + Header */}
             <button
-                className="back-btn"
+                className="staff-back"
                 onClick={async () => {
                     if (await confirmDiscard({ title: "Leave without saving?", message: "Your unsaved SOAP or Clinical Intake text will be lost." })) {
                         router.push("/doctor");
@@ -338,8 +338,6 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
             )}
 
             <style jsx>{`
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
-                .back-btn:hover { color: #fff; }
                 .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
                 .header h1 { font-size: var(--staff-size-xl); font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
                 .badge-archived { background: rgba(239,68,68,0.12); color: #fca5a5; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em; }

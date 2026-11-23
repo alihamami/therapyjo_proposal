@@ -61,7 +61,7 @@ export default function NewPatientPage() {
 
     return (
         <div className="page">
-            <button className="back-btn" onClick={() => router.push("/admin/patients")}>← Back to Patients</button>
+            <button className="staff-back" onClick={() => router.push("/admin/patients")}>← Back to Patients</button>
             <h1>New Patient</h1>
             <p className="subtitle">Fill in the patient&apos;s details to create their profile.</p>
 
@@ -151,8 +151,6 @@ export default function NewPatientPage() {
 
             <style jsx>{`
                 .page { max-width: 820px; }
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
-                .back-btn:hover { color: #fff; }
                 h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
                 .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
 

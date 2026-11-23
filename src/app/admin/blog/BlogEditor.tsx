@@ -112,7 +112,7 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
 
     return (
         <div className="editor-page">
-            <button className="back-btn" onClick={() => router.push("/admin/blog")}>← Back to Blog</button>
+            <button className="staff-back" onClick={() => router.push("/admin/blog")}>← Back to Blog</button>
             <h1>{isEdit ? "Edit Post" : "New Post"}</h1>
 
             {error && <div className="staff-form-error" role="alert">{error}</div>}
@@ -262,8 +262,6 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
 
             <style jsx>{`
                 .editor-page { max-width: 1200px; }
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
-                .back-btn:hover { color: #fff; }
                 h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 1.25rem; }
                 .editor-page > .staff-form-error { margin-bottom: 1.25rem; }
 
