@@ -261,7 +261,7 @@ export default function NotesPage() {
                             </select>
                         </div>
                     </div>
-                    <label className="checkbox-label">
+                    <label className="staff-check">
                         <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
                         Doctor check note
                     </label>
@@ -287,11 +287,6 @@ export default function NotesPage() {
                 .check-yes { display: inline-flex; color: var(--staff-ok); }
                 .note-details { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(255,255,255,0.5); }
                 .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
-                .checkbox-label {
-                    flex-direction: row !important; display: flex; align-items: center; gap: 0.4rem;
-                    font-size: var(--staff-size-sm) !important; cursor: pointer;
-                }
-                .checkbox-label input[type="checkbox"] { width: auto; }
             `}</style>
         </div>
     );
