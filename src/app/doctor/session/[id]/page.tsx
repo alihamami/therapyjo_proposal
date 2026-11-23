@@ -246,21 +246,21 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
             {activeTab === "details" && (
                 <div className="card">
                     <div className="form-grid">
-                        <div className="form-group">
+                        <div className="staff-field">
                             <label>Session Date</label>
                             <p className="readonly-value">{formatDate(reservation.sessionDate)}</p>
                         </div>
-                        <div className="form-group">
+                        <div className="staff-field">
                             <label>Session Time</label>
                             <p className="readonly-value">{formatTime(reservation.sessionTime)}</p>
                         </div>
-                        <div className="form-group">
+                        <div className="staff-field">
                             <label>Doctor</label>
                             <p className="readonly-value">{reservation.doctor?.name ?? reservation.doctorNameSnapshot ?? "—"}</p>
                         </div>
-                        <div className="form-group">
-                            <label>Injury Place</label>
-                            <input value={editInjury} onChange={(e) => setEditInjury(e.target.value)} placeholder="e.g. Lower back, Knee…" readOnly={readOnly} />
+                        <div className="staff-field">
+                            <label htmlFor="session-injury">Injury Place</label>
+                            <input id="session-injury" value={editInjury} onChange={(e) => setEditInjury(e.target.value)} placeholder="e.g. Lower back, Knee…" readOnly={readOnly} />
                         </div>
                     </div>
                     <p className="field-hint">Date, time, and doctor are set by front-desk staff — contact them to reschedule or reassign this session.</p>
@@ -277,12 +277,13 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 <div className="card">
                     <div className="soap-grid">
                         {(["subjective", "objective", "assessment", "plan"] as const).map((field) => (
-                            <div className="form-group" key={field}>
-                                <label>
+                            <div className="staff-field" key={field}>
+                                <label htmlFor={`soap-${field}`}>
                                     <span className="soap-letter">{field[0].toUpperCase()}</span>
                                     {field.charAt(0).toUpperCase() + field.slice(1)}
                                 </label>
                                 <textarea
+                                    id={`soap-${field}`}
                                     rows={3}
                                     value={soapForm[field]}
                                     readOnly={readOnly}
@@ -358,12 +359,8 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
                 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
                 .soap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-                .form-group { display: flex; flex-direction: column; gap: 0.25rem; }
-                .form-group label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.5); font-weight: 500; display: flex; align-items: center; gap: 0.35rem; }
+                .soap-grid label { display: flex; align-items: center; gap: 0.35rem; }
                 .soap-letter { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border-radius: 2px; font-weight: 700; font-size: var(--staff-size-xs); }
-                .form-group input, .form-group textarea, .form-group select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm, 2px); padding: 0.5rem 0.7rem; color: #fff; font-size: var(--staff-size-base); outline: none; font-family: inherit; resize: vertical; }
-                .form-group select option { background: #1a2e35; }
-                .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
                 .readonly-value { margin: 0; padding: 0.5rem 0.7rem; color: rgba(255,255,255,0.7); font-size: var(--staff-size-base); }
                 .field-hint { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); margin: 0.75rem 0 0; }
                 .card-actions { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
