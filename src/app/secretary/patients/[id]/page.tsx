@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
 import { clinicalFileUrl } from "@/lib/storageUrl";
 import { isMissingPhone } from "@/lib/phone";
-import { Archive, CalendarDays, FileText, Pencil } from "lucide-react";
+import { Archive, CalendarDays, FileText, ImageIcon, Pencil, Phone } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
@@ -173,8 +173,8 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                     <div className="header-info">
                         <h1>{patient.name}</h1>
                         <div className="header-meta">
-                            <span>📞 {isMissingPhone(patient.phone1) ? <span className="no-phone">No phone</span> : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>
-                            {patient.phone2 && <span>📞 <a href={`tel:${patient.phone2}`}>{patient.phone2}</a></span>}
+                            <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1) ? <span className="no-phone">No phone</span> : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>
+                            {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>{patient.phone2}</a></span>}
                             <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
                             <span>Patient #{patient.id}</span>
                         </div>
@@ -286,7 +286,7 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                             {patient.files.map((f) => (
                                 <div key={f.id} className="file-card">
                                     <a href={clinicalFileUrl(f.filePath)} target="_blank" rel="noreferrer" className="file-open">
-                                        <span className="file-icon">{f.fileType.includes("image") ? "🖼" : "📄"}</span>
+                                        <span className="file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
                                         <span className="file-name">{f.fileName}</span>
                                         <span className="file-date">{formatDate(f.uploadedAt)}</span>
                                     </a>
@@ -340,7 +340,7 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                 .btn-remove:hover:not(:disabled) { background: rgba(239,68,68,0.25); }
                 .btn-remove:disabled { opacity: 0.5; cursor: not-allowed; }
                 .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2); color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; margin-bottom: 1rem; }
-                .file-icon { font-size: 1.5rem; }
+                .file-icon { display: flex; color: var(--staff-muted); }
                 .file-name { font-size: 0.78rem; text-align: center; word-break: break-all; }
                 .file-date { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
             `}</style>

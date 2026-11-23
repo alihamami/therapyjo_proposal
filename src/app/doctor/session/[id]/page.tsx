@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { use } from "react";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
-import { History } from "lucide-react";
+import { History, Phone } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
@@ -195,7 +195,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                     </h1>
                     {typeof reservation.patient.phone1 === "string" && (
                         <div className="header-meta">
-                            <span>📞 {isMissingPhone(reservation.patient.phone1) ? <span className="no-phone">No phone</span> : reservation.patient.phone1}</span>
+                            <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(reservation.patient.phone1) ? <span className="no-phone">No phone</span> : reservation.patient.phone1}</span>
                             {!isMissingPhone(reservation.patient.phone2) && <span>· {reservation.patient.phone2}</span>}
                         </div>
                     )}

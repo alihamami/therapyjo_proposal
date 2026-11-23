@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, Phone } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
 
 interface DuplicateGroup {
@@ -65,7 +65,7 @@ export default function DuplicatePatientsPage() {
                         <div key={group.phone} className="dupe-group">
                             <div className="group-header">
                                 <div className="group-header-left">
-                                    <span className="phone-label">📞 {group.phoneDisplay}</span>
+                                    <span className="phone-label staff-inline-icon"><Phone size={13} aria-hidden="true" />{group.phoneDisplay}</span>
                                     <span className={`match-badge match-${group.nameMatch}`}>
                                         {NAME_MATCH_LABEL[group.nameMatch]}
                                     </span>

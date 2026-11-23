@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { parseWorkingHours, formatWorkingHours, isLegacyWorkingHours } from "@/lib/workingHours";
 import { clinicalFileUrl } from "@/lib/storageUrl";
-import { Archive, ChevronRight, Pencil, Plus, RotateCcw, Stethoscope, Trash2, UserX } from "lucide-react";
+import { Archive, ChevronRight, FileText, Hourglass, ImageIcon, Pencil, Plus, RotateCcw, Stethoscope, Trash2, UserX } from "lucide-react";
 import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
@@ -598,13 +598,13 @@ export default function DoctorsPage() {
                             <ul className="doc-list">
                                 {uploadingName && (
                                     <li className="doc-row uploading">
-                                        <span className="doc-icon">⏳</span>
+                                        <span className="doc-icon"><Hourglass size={15} aria-hidden="true" /></span>
                                         <span className="doc-name">Uploading {uploadingName}…</span>
                                     </li>
                                 )}
                                 {docs.map((d) => (
                                     <li key={d.id} className="doc-row">
-                                        <span className="doc-icon">{d.fileType.includes("image") ? "🖼" : "📄"}</span>
+                                        <span className="doc-icon">{d.fileType.includes("image") ? <ImageIcon size={15} aria-hidden="true" /> : <FileText size={15} aria-hidden="true" />}</span>
                                         <a
                                             className="doc-name"
                                             href={clinicalFileUrl(d.filePath)}
@@ -745,7 +745,7 @@ export default function DoctorsPage() {
           background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
           border-radius: 8px; padding: 0.5rem 0.7rem;
         }
-        .doc-icon { flex-shrink: 0; }
+        .doc-icon { flex-shrink: 0; display: flex; color: var(--staff-muted); }
         .doc-name {
           flex: 1; min-width: 0; font-size: 0.82rem; color: #fff;
           overflow: hidden; text-overflow: ellipsis; white-space: nowrap;

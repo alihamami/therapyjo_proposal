@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { LinkIcon } from "lucide-react";
 
 const CATEGORIES = ["Recovery Tips", "Rehabilitation", "Treatments", "Sports", "Women's Health", "Guidance"];
 
@@ -188,7 +189,7 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                     <div className="card">
                         <label className="section-label">Body</label>
                         <div className="toolbar">
-                            <span>B</span><span><em>I</em></span><span>🔗</span><span>≡</span>
+                            <span>B</span><span><em>I</em></span><span><LinkIcon size={13} aria-hidden="true" /></span><span>≡</span>
                         </div>
                         <textarea
                             className="body-textarea"
