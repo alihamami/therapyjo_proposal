@@ -77,7 +77,7 @@ export default function ArchivedDoctorsPage() {
         <div>
             <div className="staff-page-header">
                 <h1>Archived Doctors <span className="staff-page-count">({doctors.length})</span></h1>
-                <Link href="/admin/doctors" className="btn-back">← Active Doctors</Link>
+                <Link href="/admin/doctors" className="staff-back">← Active Doctors</Link>
             </div>
 
             <div className="staff-table-wrap">
@@ -152,8 +152,6 @@ export default function ArchivedDoctorsPage() {
             )}
 
             <style jsx>{`
-                .staff-page-header :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: var(--staff-size-base); transition: color 0.15s; }
-                .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .staff-table { min-width: 640px; }
                 .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
                 .btn-restore {

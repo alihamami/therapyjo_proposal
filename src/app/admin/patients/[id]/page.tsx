@@ -322,7 +322,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
             {/* Header */}
             <div className="profile-header">
                 <button
-                    className="btn-back"
+                    className="staff-back"
                     onClick={async () => {
                         if (await confirmDiscard({ title: "Leave without saving?", message: "Your unsaved Clinical Assessment edits will be lost." })) {
                             router.push("/admin/patients");
@@ -569,12 +569,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
 
             <style jsx>{`
                 .profile-header { margin-bottom: 1.5rem; }
-                .btn-back {
-                    background: none; border: none; color: rgba(255,255,255,0.45);
-                    font-size: var(--staff-size-base); cursor: pointer; margin-bottom: 0.75rem;
-                    display: inline-block; font-family: inherit;
-                }
-                .btn-back:hover { color: #fff; }
                 .header-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
                 .header-info h1 { font-size: var(--staff-size-xl); font-weight: 600; margin-bottom: 0.35rem; }
                 .header-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); }

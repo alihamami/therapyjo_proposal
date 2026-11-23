@@ -63,7 +63,7 @@ export default function SecretaryArchivedPatientsPage() {
         <div>
             <div className="staff-page-header">
                 <h1>Archived Patients <span className="staff-page-count">({total})</span></h1>
-                <Link href="/secretary/patients" className="btn-back">← Active Patients</Link>
+                <Link href="/secretary/patients" className="staff-back">← Active Patients</Link>
             </div>
 
             <div className="staff-table-wrap">
@@ -111,8 +111,6 @@ export default function SecretaryArchivedPatientsPage() {
             )}
 
             <style jsx>{`
-                .staff-page-header :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: var(--staff-size-base); transition: color 0.15s; }
-                .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .btn-sm {
                     padding: 0.28rem 0.65rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;

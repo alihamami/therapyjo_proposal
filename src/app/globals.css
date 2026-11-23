@@ -2493,3 +2493,31 @@ button.staff-row-name {
     align-items: stretch;
   }
 }
+/* The "← Back to …" link above a page title, or at the end of a list's
+   header (TJ-069k). A link or a button; both look the same. */
+.staff-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--staff-faint);
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.staff-back:hover {
+  color: var(--staff-text);
+}
+.staff-back:focus-visible {
+  outline: 2px solid var(--staff-focus);
+  outline-offset: 2px;
+  border-radius: var(--staff-radius-sm);
+}
+.staff-page-header .staff-back {
+  margin: 0;
+}

@@ -50,7 +50,7 @@ export default function DuplicatePatientsPage() {
         <div>
             <div className="staff-page-header">
                 <h1>Duplicate Check <span className="staff-page-count">({total} groups)</span></h1>
-                <Link href="/admin/patients" className="btn-back">← Back to Patients</Link>
+                <Link href="/admin/patients" className="staff-back">← Back to Patients</Link>
             </div>
 
             {loading ? (
@@ -109,11 +109,6 @@ export default function DuplicatePatientsPage() {
             )}
 
             <style jsx>{`
-                .staff-page-header :global(.btn-back) {
-                    color: rgba(255,255,255,0.5); text-decoration: none; font-size: var(--staff-size-base);
-                    transition: color 0.15s;
-                }
-                .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .groups { display: flex; flex-direction: column; gap: 1rem; }
                 .dupe-group {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
