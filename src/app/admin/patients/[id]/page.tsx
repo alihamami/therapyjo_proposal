@@ -571,24 +571,24 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 .profile-header { margin-bottom: 1.5rem; }
                 .btn-back {
                     background: none; border: none; color: rgba(255,255,255,0.45);
-                    font-size: 0.85rem; cursor: pointer; margin-bottom: 0.75rem;
+                    font-size: var(--staff-size-base); cursor: pointer; margin-bottom: 0.75rem;
                     display: inline-block; font-family: inherit;
                 }
                 .btn-back:hover { color: #fff; }
                 .header-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-                .header-info h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.35rem; }
-                .header-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: rgba(255,255,255,0.45); font-size: 0.85rem; }
+                .header-info h1 { font-size: var(--staff-size-xl); font-weight: 600; margin-bottom: 0.35rem; }
+                .header-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); }
                 .header-meta a { color: var(--primary, #4CAF93); text-decoration: none; }
                 .header-meta a:hover { text-decoration: underline; }
-                .updated-by { margin-top: 0.4rem; color: rgba(255,255,255,0.3); font-size: 0.76rem; }
+                .updated-by { margin-top: 0.4rem; color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); }
                 .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; flex-wrap: wrap; }
                 .badge-archived {
                     background: rgba(239,68,68,0.12); color: #fca5a5;
                     padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+                    font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em;
                 }
                 .btn-sm {
-                    padding: 0.3rem 0.7rem; border-radius: var(--radius-sm, 2px); font-size: 0.8rem;
+                    padding: 0.3rem 0.7rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
                     border: none; cursor: pointer; font-weight: 500; font-family: inherit;
                 }
                 .btn-edit { background: rgba(96,165,250,0.12); color: #93c5fd; }
@@ -602,7 +602,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 }
                 .tab {
                     background: none; border: none; color: rgba(255,255,255,0.4);
-                    padding: 0.7rem 1.2rem; font-size: 0.85rem; font-weight: 500;
+                    padding: 0.7rem 1.2rem; font-size: var(--staff-size-base); font-weight: 500;
                     cursor: pointer; border-bottom: 2px solid transparent;
                     transition: all 0.15s; font-family: inherit; white-space: nowrap; flex-shrink: 0;
                 }
@@ -638,8 +638,8 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     margin-bottom: 1rem; padding-bottom: 1rem;
                     border-bottom: 1px solid rgba(255,255,255,0.06);
                 }
-                .file-input { font-size: 0.82rem; color: rgba(255,255,255,0.6); max-width: 100%; }
-                .field-hint { font-size: 0.72rem; color: rgba(255,255,255,0.35); }
+                .file-input { font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); max-width: 100%; }
+                .field-hint { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); }
                 .btn-remove {
                     background: rgba(239,68,68,0.15); color: #fca5a5; margin-top: 0.5rem;
                 }
@@ -648,11 +648,11 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                 .error-msg {
                     background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
                     color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; margin-bottom: 1rem;
+                    font-size: var(--staff-size-base); margin-bottom: 1rem;
                 }
                 .file-icon { display: flex; color: var(--staff-muted); }
-                .file-name { font-size: 0.78rem; text-align: center; word-break: break-all; }
-                .file-date { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+                .file-name { font-size: var(--staff-size-sm); text-align: center; word-break: break-all; }
+                .file-date { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.3); }
 
                 @media (max-width: 640px) {
                     .section-card { padding: 1rem; }

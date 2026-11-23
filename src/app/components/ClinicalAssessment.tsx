@@ -264,36 +264,36 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
                     color: var(--primary, #4CAF93);
                 }
                 .page-pill.draft { cursor: default; }
-                .pill-title { font-size: 0.82rem; font-weight: 600; }
+                .pill-title { font-size: var(--staff-size-base); font-weight: 600; }
                 .pill-meta {
-                    max-width: 100%; font-size: 0.72rem; color: rgba(255,255,255,0.4);
+                    max-width: 100%; font-size: var(--staff-size-xs); color: rgba(255,255,255,0.4);
                     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
                 }
                 .btn-new {
                     padding: 0.45rem 0.9rem;
                     background: none; border: 1px dashed rgba(255,255,255,0.18);
                     border-radius: var(--radius-sm, 2px); color: rgba(255,255,255,0.6);
-                    font-size: 0.82rem; font-weight: 500; font-family: inherit; cursor: pointer;
+                    font-size: var(--staff-size-base); font-weight: 500; font-family: inherit; cursor: pointer;
                 }
                 .btn-new:hover { color: #fff; border-color: var(--primary, #4CAF93); }
                 .success-msg {
                     background: rgba(76,175,147,0.1); border: 1px solid rgba(76,175,147,0.2);
                     color: #6ee7b7; padding: 0.5rem 0.85rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; margin-bottom: 1rem;
+                    font-size: var(--staff-size-base); margin-bottom: 1rem;
                 }
                 .error-msg {
                     background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
                     color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; margin-bottom: 1rem;
+                    font-size: var(--staff-size-base); margin-bottom: 1rem;
                 }
                 .intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
                 .full-width { grid-column: 1 / -1; }
                 .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
-                .form-group label { font-size: 0.76rem; color: rgba(255,255,255,0.5); font-weight: 500; }
+                .form-group label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.5); font-weight: 500; }
                 .form-group input, .form-group textarea {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
                     border-radius: var(--radius-sm, 2px); padding: 0.55rem 0.75rem; color: #fff;
-                    font-size: 0.85rem; outline: none; font-family: inherit; resize: vertical;
+                    font-size: var(--staff-size-base); outline: none; font-family: inherit; resize: vertical;
                 }
                 .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
                 .section-actions { margin-top: 1.25rem; display: flex; justify-content: flex-end; }

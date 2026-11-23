@@ -1955,7 +1955,7 @@ ol {
 .staff-btn-sm {
   height: 30px;
   padding: 0 10px;
-  font-size: 0.78rem;
+  font-size: var(--staff-size-sm);
 }
 .staff-row-link {
   cursor: pointer;

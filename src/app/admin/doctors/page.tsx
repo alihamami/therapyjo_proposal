@@ -321,23 +321,23 @@ export default function DoctorsCmsPage() {
                 .photo-img { width: 100%; height: 100%; object-fit: cover; }
                 .photo-placeholder {
                     width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-                    color: rgba(255,255,255,0.2); font-size: 0.8rem; border: 2px dashed rgba(255,255,255,0.08);
+                    color: rgba(255,255,255,0.2); font-size: var(--staff-size-sm); border: 2px dashed rgba(255,255,255,0.08);
                     box-sizing: border-box;
                 }
                 .order-badge {
                     position: absolute; top: 0.5rem; left: 0.5rem; background: rgba(10,18,22,0.75);
-                    color: #fff; border-radius: 5px; padding: 0.15rem 0.4rem; font-size: 0.7rem; font-weight: 700;
+                    color: #fff; border-radius: 5px; padding: 0.15rem 0.4rem; font-size: var(--staff-size-xs); font-weight: 700;
                 }
                 .hidden-badge {
                     position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(245,158,11,0.9);
-                    color: #3a2606; border-radius: 5px; padding: 0.15rem 0.4rem; font-size: 0.7rem; font-weight: 700;
+                    color: #3a2606; border-radius: 5px; padding: 0.15rem 0.4rem; font-size: var(--staff-size-xs); font-weight: 700;
                 }
 
                 .card-body { padding: 0.9rem 1rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
                 .card-text { min-width: 0; }
                 .card-body h3 .staff-row-name { font-weight: 700; }
-                .card-body h3 { font-size: 0.98rem; font-weight: 700; margin: 0 0 0.15rem; }
-                .doc-title { font-size: 0.8rem; color: #6ec4ab; margin: 0; }
+                .card-body h3 { font-size: var(--staff-size-md); font-weight: 700; margin: 0 0 0.15rem; }
+                .doc-title { font-size: var(--staff-size-sm); color: #6ec4ab; margin: 0; }
 
                 .modal-top-row { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
                 .photo-drop {
@@ -346,7 +346,7 @@ export default function DoctorsCmsPage() {
                     background: rgba(255,255,255,0.03); overflow: hidden;
                 }
                 .photo-drop:hover { border-color: var(--primary, #4CAF93); }
-                .drop-hint { color: rgba(255,255,255,0.3); font-size: 0.78rem; }
+                .drop-hint { color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); }
                 .photo-preview-img { width: 100%; height: 100%; object-fit: cover; }
                 .modal-top-fields { flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
 
@@ -355,7 +355,7 @@ export default function DoctorsCmsPage() {
                 .toast {
                     position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1300;
                     background: #06281f; color: #10b981; border-radius: 8px; padding: 0.8rem 1.2rem;
-                    font-size: 0.88rem; font-weight: 600; box-shadow: 0 12px 32px rgba(16,185,129,0.35);
+                    font-size: var(--staff-size-base); font-weight: 600; box-shadow: 0 12px 32px rgba(16,185,129,0.35);
                 }
 
                 @media (max-width: 560px) {

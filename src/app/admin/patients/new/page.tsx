@@ -151,15 +151,15 @@ export default function NewPatientPage() {
 
             <style jsx>{`
                 .page { max-width: 820px; }
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: 0.85rem; cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
                 .back-btn:hover { color: #fff; }
-                h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 0.25rem; }
-                .subtitle { color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 1.5rem; }
+                h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
 
                 .error-banner {
                     background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25);
                     color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.85rem; margin-bottom: 1.25rem;
+                    font-size: var(--staff-size-base); margin-bottom: 1.25rem;
                 }
 
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
@@ -183,16 +183,16 @@ export default function NewPatientPage() {
                 .avatar-img { width: 100%; height: 100%; object-fit: cover; }
                 .upload-btn {
                     background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
-                    padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: 0.8rem;
+                    padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
                     font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s;
                 }
                 .upload-btn:hover { background: rgba(76,175,147,0.22); }
                 .remove-btn {
-                    background: none; border: none; color: rgba(220,100,100,0.7); font-size: 0.76rem;
+                    background: none; border: none; color: rgba(220,100,100,0.7); font-size: var(--staff-size-sm);
                     cursor: pointer; font-family: inherit;
                 }
                 .remove-btn:hover { color: #fca5a5; }
-                .upload-hint { color: rgba(255,255,255,0.25); font-size: 0.72rem; text-align: center; margin: 0; }
+                .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
 
                 /* Fields column */
                 .fields-column { flex: 1; min-width: 0; }
@@ -200,16 +200,16 @@ export default function NewPatientPage() {
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
                     border-radius: var(--radius-md, 4px); padding: 1.5rem;
                 }
-                .fields-card h2 { font-size: 1rem; font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
+                .fields-card h2 { font-size: var(--staff-size-md); font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
                 .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
                 .field label {
-                    font-size: 0.78rem; color: rgba(255,255,255,0.55); font-weight: 500;
+                    font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500;
                 }
                 .req { color: var(--primary, #4CAF93); }
                 .field input {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
                     border-radius: var(--radius-sm, 2px); padding: 0.65rem 0.85rem; color: #fff;
-                    font-size: 0.9rem; outline: none; font-family: inherit;
+                    font-size: var(--staff-size-base); outline: none; font-family: inherit;
                     transition: border-color 0.15s;
                 }
                 .field input:focus { border-color: var(--primary, #4CAF93); }

@@ -152,19 +152,19 @@ export default function ArchivedDoctorsPage() {
             )}
 
             <style jsx>{`
-                .staff-page-header :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
+                .staff-page-header :global(.btn-back) { color: rgba(255,255,255,0.5); text-decoration: none; font-size: var(--staff-size-base); transition: color 0.15s; }
                 .staff-page-header :global(.btn-back:hover) { color: #fff; }
                 .staff-table { min-width: 640px; }
                 .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
                 .btn-restore {
                     background: rgba(16,185,129,0.15); color: #6ee7b7; border: none;
-                    padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem;
+                    padding: 0.3rem 0.75rem; border-radius: 6px; font-size: var(--staff-size-sm);
                     cursor: pointer; font-weight: 500; font-family: inherit;
                 }
                 .btn-restore:hover { background: rgba(16,185,129,0.25); }
                 .btn-delete {
                     background: rgba(239,68,68,0.15); color: #fca5a5; border: none;
-                    padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem;
+                    padding: 0.3rem 0.75rem; border-radius: 6px; font-size: var(--staff-size-sm);
                     cursor: pointer; font-weight: 500; font-family: inherit;
                 }
                 .btn-delete:hover { background: rgba(239,68,68,0.25); }

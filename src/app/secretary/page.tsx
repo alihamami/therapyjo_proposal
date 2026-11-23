@@ -256,25 +256,25 @@ export default function SecretaryDashboard() {
             <style jsx>{`
                 .controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem; }
                 .controls-left { display: flex; align-items: center; gap: 1.25rem; }
-                .controls-left h1 { font-size: 1.5rem; font-weight: 600; }
+                .controls-left h1 { font-size: var(--staff-size-xl); font-weight: 600; }
                 .date-nav { display: flex; gap: 0.35rem; }
-                .btn-nav { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: 0.78rem; cursor: pointer; font-family: inherit; }
+                .btn-nav { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
                 .btn-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
                 .btn-today { font-weight: 600; color: var(--primary, #4CAF93); border-color: var(--primary, #4CAF93); }
                 .controls-right { display: flex; align-items: center; gap: 0.5rem; }
-                .doctor-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; font-family: inherit; }
+                .doctor-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); font-family: inherit; }
                 .doctor-select option { background: #1a2e35; }
                 .date-trigger-row { margin-bottom: 1rem; }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }
-                .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2); color: #fca5a5; padding: 0.5rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; margin-bottom: 0.75rem; }
+                .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2); color: #fca5a5; padding: 0.5rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 0.75rem; }
                 .status-error {
                     display: flex; align-items: center; justify-content: space-between;
                     gap: 0.75rem; margin-bottom: 1rem;
                 }
                 .dismiss-error {
                     background: none; border: none; color: #fca5a5; text-decoration: underline;
-                    font-size: 0.78rem; cursor: pointer; font-family: inherit; flex-shrink: 0;
+                    font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; flex-shrink: 0;
                 }
                 .dismiss-error:hover { color: #fff; }
                 @media (max-width: 768px) { .controls { flex-direction: column; align-items: flex-start; } }

@@ -53,16 +53,16 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
             <style jsx>{`
                 .doctor-layout { min-height: 100vh; background: var(--bg-dark, #1a2e35); color: #fff; }
                 .nav { display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; height: 56px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06); }
-                .nav :global(.logo) { font-weight: 700; font-size: 1.1rem; color: var(--primary, #4CAF93); text-decoration: none; }
+                .nav :global(.logo) { font-weight: 700; font-size: var(--staff-size-md); color: var(--primary, #4CAF93); text-decoration: none; }
                 .nav-links { display: flex; gap: 0.25rem; }
-                .nav :global(.nav-link) { display: flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.85rem; border-radius: var(--radius-sm, 2px); font-size: 0.82rem; color: rgba(255,255,255,0.6); text-decoration: none; transition: all 0.15s; }
+                .nav :global(.nav-link) { display: flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.85rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); text-decoration: none; transition: all 0.15s; }
                 .nav :global(.nav-link:hover) { background: rgba(255,255,255,0.06); color: #fff; }
                 .nav :global(.nav-link.active) { background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); font-weight: 600; }
                 .user-area { position: relative; }
-                .user-btn { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 0.82rem; cursor: pointer; padding: 0.4rem 0.7rem; border-radius: var(--radius-sm, 2px); font-family: inherit; }
+                .user-btn { background: none; border: none; color: rgba(255,255,255,0.6); font-size: var(--staff-size-base); cursor: pointer; padding: 0.4rem 0.7rem; border-radius: var(--radius-sm, 2px); font-family: inherit; }
                 .user-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
                 .user-menu { position: absolute; right: 0; top: 100%; z-index: 100; background: var(--bg-dark-secondary, #243b44); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm, 2px); min-width: 140px; padding: 0.25rem; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-                .menu-item { display: block; width: 100%; background: none; border: none; color: rgba(255,255,255,0.8); padding: 0.45rem 0.7rem; font-size: 0.82rem; cursor: pointer; text-align: left; border-radius: 2px; font-family: inherit; }
+                .menu-item { display: block; width: 100%; background: none; border: none; color: rgba(255,255,255,0.8); padding: 0.45rem 0.7rem; font-size: var(--staff-size-base); cursor: pointer; text-align: left; border-radius: 2px; font-family: inherit; }
                 .menu-item:hover { background: rgba(255,255,255,0.06); }
                 .main { padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
             `}</style>

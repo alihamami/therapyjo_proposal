@@ -336,12 +336,12 @@ export default function AdminDashboard() {
                 .dashboard { display: flex; flex-direction: column; gap: 1rem; }
                 .controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
                 .controls-left { display: flex; align-items: center; gap: 1.25rem; }
-                .controls-left h1 { font-size: 1.5rem; font-weight: 600; }
+                .controls-left h1 { font-size: var(--staff-size-xl); font-weight: 600; }
                 .date-nav { display: flex; gap: 0.35rem; }
                 .btn-nav {
                     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
                     color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.78rem; cursor: pointer; font-family: inherit;
+                    font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit;
                 }
                 .btn-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
                 .btn-today { font-weight: 600; color: var(--primary, #4CAF93); border-color: var(--primary, #4CAF93); }
@@ -349,16 +349,16 @@ export default function AdminDashboard() {
                 .doctor-select {
                     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
                     color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; font-family: inherit;
+                    font-size: var(--staff-size-base); font-family: inherit;
                 }
                 .doctor-select option { background: #1a2e35; }
                 .sub-header {
                     display: flex; align-items: center; justify-content: space-between;
                     flex-wrap: wrap; gap: 0.5rem;
                 }
-                .current-date { font-size: 1rem; font-weight: 500; color: rgba(255,255,255,0.7); }
+                .current-date { font-size: var(--staff-size-md); font-weight: 500; color: rgba(255,255,255,0.7); }
                 .legend { display: flex; gap: 1rem; flex-wrap: wrap; }
-                .legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.76rem; color: rgba(255,255,255,0.5); }
+                .legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: var(--staff-size-sm); color: rgba(255,255,255,0.5); }
                 .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }
@@ -370,7 +370,7 @@ export default function AdminDashboard() {
                     border: 1px solid rgba(255,255,255,0.08);
                     border-radius: var(--radius-sm, 2px);
                     padding: 0.2rem 0.5rem;
-                    font-size: 0.74rem; color: rgba(255,255,255,0.55);
+                    font-size: var(--staff-size-xs); color: rgba(255,255,255,0.55);
                     white-space: nowrap;
                 }
                 .chip-val { font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
@@ -383,7 +383,7 @@ export default function AdminDashboard() {
                 .error-msg {
                     background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
                     color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem; margin-bottom: 0.75rem;
+                    font-size: var(--staff-size-base); margin-bottom: 0.75rem;
                 }
                 .status-error {
                     display: flex; align-items: center; justify-content: space-between;
@@ -391,18 +391,18 @@ export default function AdminDashboard() {
                 }
                 .dismiss-error {
                     background: none; border: none; color: #fca5a5; text-decoration: underline;
-                    font-size: 0.78rem; cursor: pointer; font-family: inherit; flex-shrink: 0;
+                    font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; flex-shrink: 0;
                 }
                 .dismiss-error:hover { color: #fff; }
                 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1rem; margin-top: 0.75rem; }
                 .detail-item { display: flex; flex-direction: column; gap: 0.15rem; }
                 .detail-item.full { grid-column: 1 / -1; }
-                .detail-label { font-size: 0.7rem; color: rgba(255,255,255,0.4); font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
-                .detail-item span:not(.detail-label) { font-size: 0.88rem; color: rgba(255,255,255,0.85); }
+                .detail-label { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.4); font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
+                .detail-item span:not(.detail-label) { font-size: var(--staff-size-base); color: rgba(255,255,255,0.85); }
                 .prev-note { background: rgba(255,255,255,0.03); padding: 0.5rem 0.65rem; border-radius: var(--radius-sm, 2px); border-left: 2px solid rgba(255,255,255,0.1); }
                 .soap-section { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
-                .soap-section h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
-                .soap-field { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-bottom: 0.3rem; white-space: pre-wrap; }
+                .soap-section h3 { font-size: var(--staff-size-base); font-weight: 600; margin-bottom: 0.5rem; }
+                .soap-field { font-size: var(--staff-size-base); color: rgba(255,255,255,0.7); margin-bottom: 0.3rem; white-space: pre-wrap; }
 
                 @media (max-width: 768px) {
                     .calendar-col { width: 100%; }

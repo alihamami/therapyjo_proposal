@@ -205,11 +205,11 @@ export default function EditReservationPage({ params }: { params: Promise<{ id: 
 
             <style jsx>{`
                 .page { max-width: 900px; }
-                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: 0.85rem; cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
                 .back-btn:hover { color: #fff; }
-                h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 0.25rem; }
-                .subtitle { color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 1.5rem; }
-                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px); font-size: 0.85rem; margin-bottom: 1.25rem; }
+                h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 1.25rem; }
 
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
                 .main-column { flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
@@ -219,26 +219,26 @@ export default function EditReservationPage({ params }: { params: Promise<{ id: 
                     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
                     border-radius: var(--radius-md, 4px); padding: 1.5rem;
                 }
-                .card h2 { font-size: 1rem; font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
+                .card h2 { font-size: var(--staff-size-md); font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
 
                 .patient-readonly { display: flex; align-items: baseline; gap: 0.6rem; }
-                .pr-name { font-size: 0.95rem; font-weight: 600; color: #fff; }
-                .pr-phone { font-size: 0.85rem; color: rgba(255,255,255,0.45); }
+                .pr-name { font-size: var(--staff-size-md); font-weight: 600; color: #fff; }
+                .pr-phone { font-size: var(--staff-size-base); color: rgba(255,255,255,0.45); }
                 .pr-link {
                     margin-top: 0.75rem; background: none; border: none; padding: 0;
-                    color: var(--primary, #4CAF93); font-size: 0.82rem; cursor: pointer;
+                    color: var(--primary, #4CAF93); font-size: var(--staff-size-base); cursor: pointer;
                     font-family: inherit;
                 }
                 .pr-link:hover { text-decoration: underline; }
 
                 .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; position: relative; }
                 .field:last-child { margin-bottom: 0; }
-                .field label { font-size: 0.78rem; color: rgba(255,255,255,0.55); font-weight: 500; }
+                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
                 .req { color: var(--primary, #4CAF93); }
                 .field input, .field textarea, .field select {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
                     border-radius: var(--radius-sm, 2px); padding: 0.65rem 0.85rem; color: #fff;
-                    font-size: 0.9rem; outline: none; font-family: inherit; transition: border-color 0.15s;
+                    font-size: var(--staff-size-base); outline: none; font-family: inherit; transition: border-color 0.15s;
                 }
                 .field textarea { resize: vertical; }
                 .field select option { background: #1a2e35; }
@@ -249,7 +249,7 @@ export default function EditReservationPage({ params }: { params: Promise<{ id: 
                 .checkbox-field { margin-top: 0.5rem; }
                 .checkbox-label {
                     display: flex; align-items: center; gap: 0.4rem;
-                    font-size: 0.82rem; color: rgba(255,255,255,0.6); cursor: pointer;
+                    font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); cursor: pointer;
                 }
                 .checkbox-label input[type="checkbox"] { width: auto; accent-color: var(--primary, #4CAF93); }
 

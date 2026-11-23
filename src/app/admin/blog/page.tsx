@@ -248,7 +248,7 @@ export default function BlogListPage() {
                 .chip {
                     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
                     color: rgba(255,255,255,0.65); padding: 0.4rem 0.9rem; border-radius: 999px;
-                    font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit;
+                    font-size: var(--staff-size-sm); font-weight: 600; cursor: pointer; font-family: inherit;
                     display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.15s;
                 }
                 .chip:hover { background: rgba(255,255,255,0.08); }
@@ -259,17 +259,17 @@ export default function BlogListPage() {
                 .staff-table { min-width: 680px; }
                 .staff-table td { vertical-align: top; }
                 .title-cell { font-weight: 500; }
-                .sub-line { font-size: 0.74rem; color: rgba(255,255,255,0.35); margin-top: 0.15rem; }
+                .sub-line { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); margin-top: 0.15rem; }
                 .lang-chip {
                     border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 0.15rem 0.45rem;
-                    font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.7);
+                    font-size: var(--staff-size-xs); font-weight: 700; color: rgba(255,255,255,0.7);
                 }
-                .status-pill { padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.74rem; font-weight: 600; white-space: nowrap; }
+                .status-pill { padding: 0.25rem 0.6rem; border-radius: 999px; font-size: var(--staff-size-xs); font-weight: 600; white-space: nowrap; }
                 .status-published { background: rgba(16,185,129,0.15); color: #6ee7b7; }
                 .status-scheduled { background: rgba(96,165,250,0.15); color: #93c5fd; }
                 .status-archived { background: rgba(245,158,11,0.13); color: #fcd34d; }
                 .status-draft { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
-                .btn-sm { padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
+                .btn-sm { padding: 0.3rem 0.7rem; border-radius: 6px; font-size: var(--staff-size-sm); border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
                 .btn-restore { background: rgba(16,185,129,0.15); color: #6ee7b7; }
                 .btn-restore:hover { background: rgba(16,185,129,0.25); }
             `}</style>

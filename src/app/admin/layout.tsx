@@ -254,7 +254,7 @@ export default function AdminLayout({
                 .nav-brand :global(a) {
                     font-family: var(--font-outfit, 'Outfit', sans-serif);
                     color: var(--primary, #4CAF93);
-                    font-size: 1.1rem;
+                    font-size: var(--staff-size-md);
                     font-weight: 700;
                     text-decoration: none;
                     letter-spacing: -0.02em;
@@ -319,7 +319,7 @@ export default function AdminLayout({
                     text-decoration: none;
                     padding: 0.4rem 0.85rem;
                     border-radius: var(--radius-sm, 2px);
-                    font-size: 0.83rem;
+                    font-size: var(--staff-size-base);
                     font-weight: 500;
                     transition: all 0.2s;
                     background: none;
@@ -343,7 +343,7 @@ export default function AdminLayout({
                 :global(.badge) {
                     display: inline-flex; align-items: center; justify-content: center;
                     background: #f59e0b; color: #3a2606; border-radius: 999px;
-                    min-width: 17px; height: 17px; padding: 0 0.3rem; font-size: 0.68rem;
+                    min-width: 17px; height: 17px; padding: 0 0.3rem; font-size: var(--staff-size-xs);
                     font-weight: 700; margin-inline-start: 0.35rem;
                 }
 
@@ -401,7 +401,7 @@ export default function AdminLayout({
                     text-decoration: none;
                     padding: 0.5rem 0.75rem;
                     border-radius: var(--radius-sm, 2px);
-                    font-size: 0.82rem;
+                    font-size: var(--staff-size-base);
                     transition: all 0.15s;
                 }
                 :global(.dropdown-item:hover) {
@@ -434,13 +434,13 @@ export default function AdminLayout({
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 0.75rem;
+                    font-size: var(--staff-size-sm);
                     font-weight: 700;
                     color: var(--primary, #4CAF93);
                 }
                 .user-name {
                     color: rgba(255, 255, 255, 0.45);
-                    font-size: 0.82rem;
+                    font-size: var(--staff-size-base);
                 }
                 .logout-btn {
                     display: inline-flex;
@@ -451,7 +451,7 @@ export default function AdminLayout({
                     color: rgba(252, 165, 165, 0.8);
                     padding: 0.32rem 0.75rem;
                     border-radius: var(--radius-sm, 2px);
-                    font-size: 0.76rem;
+                    font-size: var(--staff-size-sm);
                     cursor: pointer;
                     transition: all 0.2s;
                     font-family: inherit;
@@ -510,7 +510,7 @@ export default function AdminLayout({
                         width: 100%;
                         justify-content: space-between;
                         padding: 0.7rem 0.5rem;
-                        font-size: 0.9rem;
+                        font-size: var(--staff-size-base);
                     }
                     .nav-divider {
                         display: none;
