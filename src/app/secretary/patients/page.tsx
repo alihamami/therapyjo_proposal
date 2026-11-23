@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { isMissingPhone } from "@/lib/phone";
@@ -26,12 +26,17 @@ export default function SecretaryPatientsPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [total, setTotal] = useState(0);
 
+    // Only the newest request may fill the list: an older, slower answer is
+    // dropped instead of overwriting a newer one. (TJ-069h)
+    const latest = useRef(0);
     const fetchPatients = useCallback(async () => {
+        const req = ++latest.current;
         setLoading(true);
         const params = new URLSearchParams({ page: String(page), limit: "20" });
         if (search) params.set("search", search);
         const res = await fetch(`/api/patients?${params}`);
         const data = await res.json();
+        if (req !== latest.current) return;
         setPatients(data.patients || []);
         setTotalPages(data.totalPages || 1);
         setTotal(data.total || 0);
@@ -39,6 +44,14 @@ export default function SecretaryPatientsPage() {
     }, [page, search]);
 
     useEffect(() => { fetchPatients(); }, [fetchPatients]);
+
+    // The box updates as you type; the search waits until typing pauses for
+    // 300ms, as on admin's patient list. (TJ-069h)
+    const [searchInput, setSearchInput] = useState("");
+    useEffect(() => {
+        const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
+        return () => clearTimeout(t);
+    }, [searchInput]);
 
     const formatDate = (d: string | null) => {
         if (!d) return "—";
@@ -58,8 +71,8 @@ export default function SecretaryPatientsPage() {
                     type="text"
                     aria-label="Search patients"
                     placeholder="Search by name or phone…"
-                    value={search}
-                    onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
 

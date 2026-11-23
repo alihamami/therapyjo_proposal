@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { joinPhones } from "@/lib/phone";
@@ -31,7 +31,11 @@ export default function PatientsPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [total, setTotal] = useState(0);
 
+    // Only the newest request may fill the list: an older, slower answer is
+    // dropped instead of overwriting a newer one. (TJ-069h)
+    const latest = useRef(0);
     const fetchPatients = useCallback(async () => {
+        const req = ++latest.current;
         setLoading(true);
         const params = new URLSearchParams({
             page: page.toString(),
@@ -40,6 +44,7 @@ export default function PatientsPage() {
         });
         const res = await fetch(`/api/patients?${params}`);
         const data = await res.json();
+        if (req !== latest.current) return;
         setPatients(data.patients);
         setTotalPages(data.totalPages);
         setTotal(data.total);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Plus, Search, StickyNote } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
 
@@ -36,13 +36,18 @@ export default function SecretaryNotesPage() {
         setDoctors(data.filter((d: Doctor & { status: string }) => d.status === "ACTIVE"));
     }, []);
 
+    // Only the newest request may fill the list: an older, slower answer is
+    // dropped instead of overwriting a newer one. (TJ-069h)
+    const latest = useRef(0);
     const fetchNotes = useCallback(async () => {
+        const req = ++latest.current;
         setLoading(true);
         const params = new URLSearchParams({ page: String(page), limit: "20" });
         if (search) params.set("search", search);
         if (doctorFilter !== "all") params.set("doctorId", doctorFilter);
         const res = await fetch(`/api/notes?${params}`);
         const data = await res.json();
+        if (req !== latest.current) return;
         setNotes(data.notes || []);
         setTotalPages(data.totalPages || 1);
         setTotal(data.total || 0);
@@ -51,6 +56,14 @@ export default function SecretaryNotesPage() {
 
     useEffect(() => { fetchDoctors(); }, [fetchDoctors]);
     useEffect(() => { fetchNotes(); }, [fetchNotes]);
+
+    // The box updates as you type; the search waits until typing pauses for
+    // 300ms, as on admin's patient list. (TJ-069h)
+    const [searchInput, setSearchInput] = useState("");
+    useEffect(() => {
+        const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
+        return () => clearTimeout(t);
+    }, [searchInput]);
 
     const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 
@@ -63,7 +76,7 @@ export default function SecretaryNotesPage() {
             <div className="filters">
                 <div className="staff-search">
                     <Search size={15} aria-hidden="true" />
-                    <input type="text" aria-label="Search notes" placeholder="Search notes…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+                    <input type="text" aria-label="Search notes" placeholder="Search notes…" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
                 </div>
                 <select className="filter-select" aria-label="Doctor" value={doctorFilter} onChange={(e) => { setDoctorFilter(e.target.value); setPage(1); }}>
                     <option value="all">All Doctors</option>
