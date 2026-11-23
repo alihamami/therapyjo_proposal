@@ -175,9 +175,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069j | Approve and Reject on the shared buttons | DONE — task commit `a67157b`, merged to `master` as `19033ff` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/approvals-buttons` |
 | TJ-069k | One Back link for every staff page | DONE — task commit `65d920f`, merged to `master` as `159bc3d` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `ba22783`** | `feat/staff-back-link` |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | DONE — task commit `463681e`, merged to `master` as `f80353f` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `ba22783`** | `feat/staff-shell` |
-| TJ-071 | Staff portal refresh, phase 3: the dashboard | SPLIT — TJ-071a, b merged 2026-11-24, not pushed; TJ-071c held | — |
-| TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-day-header` |
-| TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-card-status` |
+| TJ-071 | Staff portal refresh, phase 3: the dashboard | SPLIT — TJ-071a, b merged 2026-11-24, pushed and deployed 2026-11-24 in `68856b8`; TJ-071c held | — |
+| TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-day-header` |
+| TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
 
@@ -15690,7 +15690,7 @@ button.staff-row-name {
 **Batch 6 — deployed (2026-11-24):** pushed at the user's request ("Push it and then start planning phase 3") by SHA (`git push origin ba22783:master`, fast-forward from `4590c4f`, 8 commits, all from this planning session; no unmerged branch on `origin`). The `src/` tree is `5e202ef`, the tree verified under batch 6. Deployed ~01:19 (Amman), Vercel `success` (deployment `F52QoyKd25qCvV6K4NU2Uu1ZH9Gq`). The batch 5 deploy record (`dbb03a4`) went out with it.
 - **Live check, read-only, without signing in:** the live stylesheet carries the new shell (`.staff-shell`, `.staff-nav-brand`, `.staff-nav-panel`, `.staff-content`) and `.staff-back`; `/`, `/blog` and `/login` answer 200, and a signed-out `/admin` still redirects.
 - **Not checked live:** the staff screens. The user's Chrome is signed out of the staff portal, and the planner does not sign in. Most worth a look, in order: the secretary's and doctor's bars on a phone (menu button, no sideways scroll), the admin's Website menu and its badge, and Sign Out from each role.
-- **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at `4590c4f`'s deployment.
+- **Hold:** this record stayed local until batch 7's push (`68856b8`, 2026-11-24).
 
 **Batch 6 — verified and merged (2026-11-24):**
 - **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `159bc3d` (TJ-069k), `f80353f` (TJ-070). The merged `src/` tree is identical to the verified tip `463681e` (`5e202ef`); only `tasks.md` differs. Pushed later in `ba22783` (see "Batch 6 — deployed").
@@ -22617,11 +22617,16 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-071 — Staff portal refresh, phase 3: the dashboard
 
-- **Status:** SPLIT — TJ-071a and TJ-071b merged 2026-11-24 as `48e647b`, `6711d09` after the user's review, not pushed (see "Batch 7 — verified"); TJ-071c BLOCKED, needs the user.
+- **Status:** SPLIT — TJ-071a and TJ-071b merged 2026-11-24 as `48e647b`, `6711d09` after the user's review, pushed and deployed 2026-11-24 ~01:39 (Amman) as `68856b8`, Vercel `success` (see "Batch 7 — deployed"); TJ-071c BLOCKED, needs the user.
 - **Why:** Six status counters, mostly zeros, crowd the date. Doctor colours are too close: two near-identical greens, and a pink beside a red. Status shows only as a small dot for three statuses. Proposed: a summary that shows only non-zero statuses, a curated set of eight clearly distinct doctor colours, and clearer card states.
 
+**Batch 7 — deployed (2026-11-24):** pushed at the user's request ("Push") by SHA (`git push origin 68856b8:master`, fast-forward from `ba22783`, 8 commits, all from this planning session; no unmerged branch on `origin`). The `src/` tree is `6595c44`, the tree verified under batch 7. Deployed ~01:39 (Amman), Vercel `success` (deployment `7eTe6MZHYvfJS7YQxEjpughBjCfi`). The batch 6 deploy record (`2d45c4d`) went out with it.
+- **Live check, read-only, without signing in:** the live stylesheet carries the day header (`.staff-day-header`, `.staff-day-chip`, `.staff-day-legend`) beside batch 6's shell and Back link; `/`, `/blog` and `/login` answer 200.
+- **Not checked live:** the staff screens. The user's Chrome is still signed out of the staff portal, and the planner does not sign in. Most worth a look, in order: a busy day's cards (the status words, and in a crowded hour the dots), the summary on a quiet day (no zero counts), and the doctor dashboard on a day that has not opened yet (no summary, the notice still shown).
+- **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at `ba22783`'s deployment.
+
 **Batch 7 — verified and merged (2026-11-24):**
-- **Merged** after the user's review of the preview ("Yes" to merging; read as "merge, push later", since a push needs a clear go-ahead), in order with `--no-ff`: `48e647b` (TJ-071a), `6711d09` (TJ-071b). The merged `src/` tree is identical to the verified tip `d1d4ab1` (`6595c44`); only `tasks.md` differs. **Not pushed.** Pushing is the user's call; push by SHA (`git push origin <sha>:master`), as master is shared. The batch 6 deploy record (`2d45c4d`) is also still local.
+- **Merged** after the user's review of the preview ("Yes" to merging; read as "merge, push later", since a push needs a clear go-ahead), in order with `--no-ff`: `48e647b` (TJ-071a), `6711d09` (TJ-071b). The merged `src/` tree is identical to the verified tip `d1d4ab1` (`6595c44`); only `tasks.md` differs. Pushed later in `68856b8` (see "Batch 7 — deployed").
 - **Executed** by the Sonnet executor on stacked branches from `5bbd5b8`: `79dfd1b` (TJ-071a), `d1d4ab1` (TJ-071b). Commit messages and trailers as specified; `tasks.md` untouched on both branches; TJ-071c not touched; checkout left on `master`, clean.
 - **Scope:** each commit changes exactly its task's files (6, two of them new; 1).
 - **Re-application:** all 7 changed file versions are byte-identical to the planner's expected blobs (`b7/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`6595c44`).
@@ -22636,7 +22641,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-071a — One day header for the three dashboards
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `79dfd1b` on `feat/staff-day-header`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071). Merged to `master` with `--no-ff` as `48e647b` on 2026-11-24, after the user saw the preview. Not pushed (the user answered "Yes" to "merge and push later, or merge and push now?"; read as the first).
+- **Status:** DONE. Executed by the Sonnet executor: task commit `79dfd1b` on `feat/staff-day-header`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071). Merged to `master` with `--no-ff` as `48e647b` on 2026-11-24, after the user saw the preview. Pushed and deployed 2026-11-24 in `68856b8`, at the user's request ("Push").
 - **Branch:** `feat/staff-day-header`, cut from `master` at the commit that adds this spec.
 - **Why:** the admin dashboard shows six status counters beside the date, mostly zeros on any given morning; the secretary's dashboard has no summary and no doctor colour key; the doctor's shows only a count. The three headers are separate copies of the same controls.
 
@@ -23390,7 +23395,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-071b — Name the status on every schedule card
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `d1d4ab1` on `feat/staff-card-status`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071). Merged to `master` with `--no-ff` as `6711d09` on 2026-11-24, after the user saw the preview. Not pushed (the user answered "Yes" to "merge and push later, or merge and push now?"; read as the first).
+- **Status:** DONE. Executed by the Sonnet executor: task commit `d1d4ab1` on `feat/staff-card-status`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071). Merged to `master` with `--no-ff` as `6711d09` on 2026-11-24, after the user saw the preview. Pushed and deployed 2026-11-24 in `68856b8`, at the user's request ("Push").
 - **Branch:** `feat/staff-card-status`, cut from the tip of `feat/staff-day-header`.
 - **Why:** a schedule card shows its status only as a 7px dot in a corner, and only for Waiting, Checked In and With Doctor; Checked Out (faded), Cancelled and No Show (striped) say it by look alone.
 
