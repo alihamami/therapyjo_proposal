@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
 import { isMissingPhone } from "@/lib/phone";
 import { Ban, CalendarPlus, DoorOpen, FileText, Hourglass, LogIn, LogOut, Pencil, StickyNote, Trash2, Undo2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
 
 interface SlotAction {
     label: string;
@@ -43,30 +44,6 @@ interface ReservationSlotProps {
     // trigger. The card still opens the session to read. (TJ-062)
     readOnly?: boolean;
 }
-
-const STATUS_LABELS: Record<string, string> = {
-    SCHEDULED: "Scheduled",
-    WAITING: "Waiting",
-    CHECKED_IN: "Checked In",
-    WITH_DOCTOR: "With Doctor",
-    CHECKED_OUT: "Checked Out",
-    CANCELLED: "Cancelled",
-    NO_SHOW: "No Show",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-    SCHEDULED: "#60a5fa",
-    WAITING: "#fbbf24",
-    CHECKED_IN: "#34d399",
-    WITH_DOCTOR: "#a78bfa",
-    CHECKED_OUT: "rgba(255,255,255,0.3)",
-    CANCELLED: "#f87171",
-    NO_SHOW: "#f87171",
-};
-
-// Statuses that read fine on their own steam (plain, or via opacity/hatch)
-// don't get a dot — only the "in progress" ones do.
-const DOT_STATUSES = new Set(["WAITING", "CHECKED_IN", "WITH_DOCTOR"]);
 
 // --- Contrast helper ---------------------------------------------------
 // The doctor palette is all light pastels, so a filled card needs dark text
@@ -238,7 +215,8 @@ export default function ReservationSlot({
     const edgeColor = `color-mix(in srgb, ${doctorColor} 75%, black)`;
     const isCheckedOut = status === "CHECKED_OUT";
     const isVoided = status === "CANCELLED" || status === "NO_SHOW";
-    const showDot = DOT_STATUSES.has(status);
+    // Scheduled is the plain card; every other state is named on it. (TJ-071b)
+    const showStatus = status !== "SCHEDULED";
     const statusLabel = STATUS_LABELS[status] ?? status;
 
     return (
@@ -256,12 +234,12 @@ export default function ReservationSlot({
             title={`${patientName} — ${statusLabel} — ${doctorName}`}
             aria-label={`${patientName}, ${statusLabel}, with ${doctorName} at ${time}`}
         >
-            {showDot && (
-                <span className="status-dot" style={{ background: STATUS_COLORS[status] }} />
-            )}
             <div className="slot-main">
                 <span className={`slot-name ${isVoided ? "strike" : ""}`} dir="auto">{patientName}</span>
                 <span className="slot-sub">
+                    {showStatus && (
+                        <span className="slot-status" style={{ "--status": STATUS_COLORS[status] ?? "#cbd5e1" } as CSSProperties}>{statusLabel}</span>
+                    )}
                     {/* A doctor is never sent the phone (TJ-054), so undefined
                         hides it; a stored blank or "0" says so. (TJ-068d) */}
                     {patientPhone != null && (
@@ -330,10 +308,14 @@ export default function ReservationSlot({
                         135deg, rgba(0,0,0,0.14) 0 6px, transparent 6px 12px
                     );
                 }
-                .status-dot {
-                    position: absolute; top: 5px; right: 5px;
-                    width: 7px; height: 7px; border-radius: 50%;
-                    box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+                /* The state in words, light on a dark pill so it reads on every
+                   doctor colour (4.5:1 or better on the palest swatch). It takes
+                   the line's start; the phone gives way first. (TJ-071b) */
+                .slot-status {
+                    flex-shrink: 0; padding: 0 0.3rem; border-radius: 999px;
+                    background: rgba(13, 26, 31, 0.88); color: var(--status);
+                    font-size: 0.6rem; font-weight: 700; line-height: 1.45;
+                    letter-spacing: 0.02em; text-transform: uppercase;
                 }
                 .slot-main {
                     display: flex; flex-direction: column; gap: 0.05rem; min-width: 0; flex: 1;
@@ -416,6 +398,11 @@ export default function ReservationSlot({
                     .slot-phone, .slot-sep { display: none; }
                     .slot-right { margin-left: 0.15rem; }
                     .menu-trigger { font-size: 1rem; padding: 0.1rem 0.15rem; }
+                    /* Too narrow for the word: a dot in the status colour. */
+                    .slot-status {
+                        width: 8px; height: 8px; padding: 0; font-size: 0;
+                        background: var(--status); box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+                    }
                 }
 
                 @media (max-width: 768px) {
