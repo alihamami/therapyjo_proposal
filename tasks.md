@@ -149,7 +149,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review, not pushed**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review, not pushed**; batch 5 = d4 | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review, not pushed**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review, not pushed**; **batch 5 = d4a, d4b, d4c, planned 2026-11-23 (READY)** | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
@@ -157,7 +157,10 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | DONE — task commit `9e30040`, merged to `master` as `1c95795` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal` |
 | TJ-069d2 | Delete popups and the website-doctor editor on the shared component | DONE — task commit `53a873c`, merged to `master` as `73ea998` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-content` |
 | TJ-069d3 | The two employee editors on the shared component | DONE — task commit `431a923`, merged to `master` as `6a22642` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-employees` |
-| TJ-069d4 | Full-page forms on the shared field styles | BACKLOG — found 2026-11-23; **moved to batch 5** (13 forms, as large as batch 3 on its own) | — |
+| TJ-069d4 | Full-page forms on the shared field styles | SPLIT — passed 2026-11-23; see TJ-069d4a, d4b, d4c | — |
+| TJ-069d4a | Full-page forms: the shared pieces, new patient, new note | READY — passed 2026-11-23; batch 5, step 1 of 3 | `feat/staff-forms-patients-notes` |
+| TJ-069d4b | Full-page forms: new doctor and secretary, the profile, the session page, the blog editor | READY — passed 2026-11-23; batch 5, step 2 of 3 | `feat/staff-forms-employees-content` |
+| TJ-069d4c | Full-page forms: booking, new and edit | READY — passed 2026-11-23; batch 5, step 3 of 3 | `feat/staff-forms-booking` |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | SPLIT — **complete**: TJ-069e1–e4 merged 2026-11-23, not pushed | — |
 | TJ-069e1 | Lists: the shared pieces, and the five patient lists | DONE — task commit `15ec254`, merged to `master` as `9bd3840` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-patients` |
 | TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | DONE — task commit `32335ce`, merged to `master` as `0873558` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-notes` |
@@ -170,6 +173,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069h | Searches wait for typing to pause | DONE — task commit `621581c`, merged to `master` as `8ec1c53` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/search-waits-for-typing` |
 | TJ-069i | Keep the small-button rule on its own page | DONE — task commit `1f189ca`, merged to `master` as `1618684` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/page-scoped-button-rules` |
 | TJ-069j | Approve and Reject on the shared buttons | DONE — task commit `a67157b`, merged to `master` as `19033ff` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/approvals-buttons` |
+| TJ-069k | One Back link for every staff page | BACKLOG — found 2026-11-23 during the TJ-069d4 pass | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
@@ -15676,7 +15680,7 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, not pushed** (see "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, not pushed** (see "Batch 4 — verified" and "Batch 4 — planned" below). Batch 5 = TJ-069d4 (the full-page forms), moved out of batch 4 on 2026-11-23 because it is as large as batch 3 on its own.
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, not pushed** (see "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, not pushed** (see "Batch 4 — verified" and "Batch 4 — planned" below). **Batch 5 = TJ-069d4a, d4b, d4c (the full-page forms), passed 2026-11-23, READY** (see "Batch 5 — planned" below).
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -15686,6 +15690,12 @@ button.staff-row-name {
 - Patient file `/admin/patients/562`: Edit Info opens the shared popup (440px, focus on Name); Escape closes it. With test text typed (never saved) into the Clinical Assessment, Back asks "Leave without saving?" with a red "Discard changes" and focus on Cancel; Cancel keeps the page and the text; Back then "Discard changes" leaves for the list with no request sent; on reload the stored field is unchanged (35 characters, no test text).
 - Not seen live: Archive/Resign/Delete confirmations were not clicked on real records; Blog, website Doctors and Notes have no live data. The secretary and doctor portals cannot be opened as admin.
 - **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at the phase 0 deployment.
+
+**Batch 5 — planned (2026-11-23):** TJ-069d4 split three ways: d4a (the shared pieces, new patient ×2, new note ×2, the notes popup's checkbox), d4b (new doctor, new secretary, both employee editors' checkbox, the doctor's profile and session page, the blog editor), d4c (booking new and edit ×2). 17 file changes; one `globals.css` append (`.staff-form-card`, `.staff-form-card-title`, `.staff-field-req`, `.staff-form-actions`, `.staff-check`); no new component.
+- **How the specs were made:** as batches 3–4: edits generated by script on a throwaway worktree of `master` at `873951f`, every anchor asserted to occur once, instructions rendered from the recorded edits. A page whose style block mostly changes gets its new style block in full. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `f5845cc`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 17 file versions came out byte-identical, same tree (6, 7 and 4 files per step), and each step's Verification commands pass on the result.
+- **Mocked preview:** all 13 forms measured at 375px: no old field classes on any screen, every column and action button full width (were 193–308px of 340px), no sideways scroll from the forms. Desktop and phone screenshots of new patient (with its error), new doctor, booking new, the blog editor (scheduled), the profile (failed submit now red, info message green) and the session page's SOAP tab. Labels name their fields; checkboxes are 16px and outside the fields. The secretary and doctor menu bars still scroll sideways on phones, as on every page there (TJ-070).
+- **Expected results** for the byte-identity check are in the planner's scratchpad (`b5/expected_blobs.txt`); the executor's tip must reproduce `src/` tree `f5845cc`.
+- **Found, not in this batch:** the Back link's 19 copies (added as TJ-069k); the booking search dropdown's stray slate background (`#1e293b`), left for the colour pass in phases 3–4.
 
 **Batch 4 — verified and merged (2026-11-23):**
 - **Merged** after the user's review of the preview ("merge, push later"), in order with `--no-ff`: `19033ff` (j), `1618684` (i), `8ec1c53` (h), `18b2470` (f1), `398d5c3` (f2), `d818af2` (g). The merged `src/` tree is identical to the verified tip `dc01ed0` (`aeabca4`); only `tasks.md` differs. **Not pushed.** Pushing is the user's call; push by SHA (`git push origin <sha>:master`), as master is shared.
@@ -18302,8 +18312,1411 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d4 — Full-page forms on the shared field styles
 
-- **Status:** BACKLOG — found during the TJ-069d3 pass, 2026-11-23. **Batch 5** (moved out of batch 4 on 2026-11-23: 13 forms, as large as batch 3 on its own).
-- **Why:** TJ-069d moved every popup onto `.staff-field`, but the phase 1 plan also named "10 form families", and the full-page forms were never specced. Still on their own `.form-group` / `.field` copies on `master` at `2a7099b`: new patient (admin, secretary), new note (admin, secretary), new doctor and new secretary, booking new and edit (admin, secretary; partly moved), the doctor's profile, the doctor's session page, and `BlogEditor.tsx`. `ClinicalAssessment.tsx` also carries `.form-group` (12 on the patient file), but it is reworked in phase 4 (TJ-072), so it stays out.
+- **Status:** SPLIT — passed 2026-11-23; see TJ-069d4a, d4b, d4c. Batch 5, steps 1–3.
+- **Why:** TJ-069d moved every popup onto `.staff-field`, but the phase 1 plan also named "10 form families", and the full-page forms were never specced. They still carry their own `.field` / `.form-group` copies: new patient (admin, secretary), new note (admin, secretary), new doctor and new secretary, booking new and edit (admin, secretary), the doctor's profile, the doctor's session page, and `BlogEditor.tsx`. `ClinicalAssessment.tsx` also carries `.form-group`, but it is reworked in phase 4 (TJ-072), so it stays out.
+
+**Shared design.** No new decision: the fields are the approved popup fields (P1-2), and the card is the panel look the lists already use (P1-3).
+
+| Piece | Class | Look |
+|---|---|---|
+| Field (label, control, hint) | `.staff-field`, `.staff-field-row`, `.staff-field-hint` (TJ-069c) | as in the popups: 36px controls, 8px corners, teal focus ring; two-up rows stack below 480px |
+| Required mark | `.staff-field-req` (new) | teal star |
+| Form card | `.staff-form-card`, `.staff-form-card-title` (new) | the panel's surface, line and 12px corners, 1.25rem padding; title, then fields 0.85rem apart (the popup body's spacing) |
+| Actions row | `.staff-form-actions` (new) | right-aligned; on phones (480px and below) full-width buttons stacked, the main action on top |
+| Checkbox line | `.staff-check` (new) | 16px teal box with its label to the right; never inside a `.staff-field` |
+| Error box | `.staff-form-error` (TJ-069c), now with `role="alert"` | the popups' red box; on a page it keeps 1.25rem below it |
+| Loading line | `.staff-loading` (TJ-069e1), with `role="status"` | as on the lists |
+
+- **Labels point at their controls:** every label with one control gets `htmlFor` and the control the matching `id` (the booking forms, the profile, the session page and the blog editor had none), so clicking a label focuses its field and a screen reader names each field.
+- **Found and fixed in the pass:**
+  - On phones, the booking, note, new-patient and new-employee forms stacked their columns but kept the desktop `align-items: flex-start`, so each column shrank to its content (measured at 375px: columns 193–308px wide on a 340px page). The phone rule now stretches them; the doctor's profile likewise, with its photo kept centred.
+  - The doctor's profile showed a failed submit in the green success box. It now shows it in the red error box; the green box stays for "Submitted for approval" and "No changes to submit."
+  - The three popups' checkbox lines (notes, both employee editors) had their own copies, one with `!important` overrides and one in a different green; they move onto `.staff-check`.
+- **Visible changes to expect:** fields about 5px shorter (36px) with 8px corners and a focus ring; cards with 12px corners (were 4px, the blog editor's 10px); one card title style, so the blog editor's small uppercase section labels become normal titles; on phones, full-width columns and stacked action buttons.
+- **Not changed:** each page's layout (columns, avatar and photo blocks, the colour swatches, the blog editor's status buttons, toolbar and cover drop zone), the Back links and page titles, the session page's tab cards, wording and behaviour.
+
+---
+
+### TJ-069d4a — Full-page forms: the shared pieces, new patient, new note
+
+- **Status:** READY — passed 2026-11-23. Batch 5, step 1 of 3.
+- **Branch:** `feat/staff-forms-patients-notes`, cut from `master` at the commit that adds this spec.
+- **Why:** defines the new shared pieces (see TJ-069d4) and moves the four simplest forms onto them, with the notes popup's checkbox line.
+
+**Planning pass:** 2026-11-23, on `master` at `873951f`. Read in full: `src/app/admin/patients/new/page.tsx`, `src/app/secretary/patients/new/page.tsx`, `src/app/admin/notes/new/page.tsx`, `src/app/secretary/notes/new/page.tsx`; the checkbox and style block of `src/app/admin/notes/page.tsx`; the field, popup and panel rules in the `globals.css` staff section. The admin and secretary twins differ in formatting (the secretary files put several rules on one line), so each file has its own steps. A page's style block is given in full where most of it changes; it keeps only its layout rules.
+
+**Scope — touch only these (6):** `src/app/globals.css`, `src/app/admin/patients/new/page.tsx`, `src/app/secretary/patients/new/page.tsx`, `src/app/admin/notes/new/page.tsx`, `src/app/secretary/notes/new/page.tsx`, `src/app/admin/notes/page.tsx`.
+
+**Do not touch:** any other file; handlers, state, API calls and wording.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace every line between the line that opens the `<style jsx>` block and the line that closes it" keeps those two lines and swaps everything between them for exactly the lines shown. Do the steps in order.
+
+**1. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* Full-page forms (TJ-069d4): the popups' fields, in cards with the panel's
+      look. A card stacks its title and fields with the popup body's spacing;
+      the actions row sits under the last card. On phones the actions stack
+      full width, the main one on top. */
+   .staff-form-card {
+     display: flex;
+     flex-direction: column;
+     gap: 0.85rem;
+     min-width: 0;
+     padding: 1.25rem;
+     background: var(--staff-surface);
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-lg);
+   }
+   .staff-form-card-title {
+     margin: 0 0 0.15rem;
+     font-size: var(--staff-size-md);
+     font-weight: 600;
+     color: var(--staff-text-2);
+   }
+   .staff-field-req {
+     color: var(--staff-accent);
+   }
+   .staff-form-actions {
+     display: flex;
+     justify-content: flex-end;
+     gap: 0.5rem;
+   }
+   /* A checkbox with its label to the right. It never goes inside a
+      .staff-field, whose input rule would stretch the box. */
+   .staff-check {
+     display: flex;
+     align-items: center;
+     align-self: flex-start;
+     gap: 0.5rem;
+     color: var(--staff-text-2);
+     font-size: var(--staff-size-base);
+     cursor: pointer;
+   }
+   .staff-check input {
+     flex-shrink: 0;
+     width: 16px;
+     height: 16px;
+     margin: 0;
+     accent-color: var(--staff-accent);
+     cursor: pointer;
+   }
+   @media (max-width: 480px) {
+     .staff-form-actions {
+       flex-direction: column-reverse;
+       align-items: stretch;
+     }
+   }
+   ```
+
+**2. `src/app/admin/patients/new/page.tsx`**
+
+1. Replace `<div className="avatar-card">` with `<div className="staff-form-card avatar-card">`.
+2. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+3. Replace `<div className="fields-card">` with `<div className="staff-form-card">`.
+4. Replace `<h2>` with `<h2 className="staff-form-card-title">`.
+5. Replace `className="field"` with `className="staff-field"` (it occurs exactly 3 times; replace all 3).
+6. Replace `className="field-row"` with `className="staff-field-row"`.
+7. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly twice; replace both).
+8. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+9. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 820px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+
+                   /* Avatar column */
+                   .avatar-column { width: 220px; flex-shrink: 0; }
+                   .avatar-card { align-items: center; gap: 0.75rem; }
+                   .avatar-circle {
+                       width: 140px; height: 140px; border-radius: 50%;
+                       border: 2px dashed rgba(255,255,255,0.12);
+                       display: flex; align-items: center; justify-content: center;
+                       overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+                       background: rgba(255,255,255,0.03);
+                   }
+                   .avatar-circle:hover { border-color: var(--primary, #4CAF93); }
+                   .avatar-placeholder { color: rgba(255,255,255,0.2); }
+                   .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+                   .upload-btn {
+                       background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
+                       padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
+                       font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s;
+                   }
+                   .upload-btn:hover { background: rgba(76,175,147,0.22); }
+                   .remove-btn {
+                       background: none; border: none; color: rgba(220,100,100,0.7); font-size: var(--staff-size-sm);
+                       cursor: pointer; font-family: inherit;
+                   }
+                   .remove-btn:hover { color: #fca5a5; }
+                   .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
+
+                   /* Fields column */
+                   .fields-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+
+                   @media (max-width: 640px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                       .avatar-column { width: 100%; }
+                       .avatar-card { flex-direction: row; flex-wrap: wrap; gap: 0.6rem 1rem; padding: 1rem; }
+                       .avatar-circle { width: 80px; height: 80px; flex-shrink: 0; }
+                       .upload-hint { flex: 1 1 100%; text-align: left; }
+                   }
+   ```
+
+**3. `src/app/secretary/patients/new/page.tsx`**
+
+1. Replace `<div className="avatar-card">` with `<div className="staff-form-card avatar-card">`.
+2. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+3. Replace `<div className="fields-card">` with `<div className="staff-form-card">`.
+4. Replace `<h2>` with `<h2 className="staff-form-card-title">`.
+5. Replace `className="field"` with `className="staff-field"` (it occurs exactly 3 times; replace all 3).
+6. Replace `className="field-row"` with `className="staff-field-row"`.
+7. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly twice; replace both).
+8. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+9. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 820px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+
+                   .avatar-column { width: 220px; flex-shrink: 0; }
+                   .avatar-card { align-items: center; gap: 0.75rem; }
+                   .avatar-circle {
+                       width: 140px; height: 140px; border-radius: 50%;
+                       border: 2px dashed rgba(255,255,255,0.12);
+                       display: flex; align-items: center; justify-content: center;
+                       overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+                       background: rgba(255,255,255,0.03);
+                   }
+                   .avatar-circle:hover { border-color: var(--primary, #4CAF93); }
+                   .avatar-placeholder { color: rgba(255,255,255,0.2); }
+                   .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+                   .upload-btn {
+                       background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
+                       padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
+                       font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s;
+                   }
+                   .upload-btn:hover { background: rgba(76,175,147,0.22); }
+                   .remove-btn {
+                       background: none; border: none; color: rgba(220,100,100,0.7); font-size: var(--staff-size-sm);
+                       cursor: pointer; font-family: inherit;
+                   }
+                   .remove-btn:hover { color: #fca5a5; }
+                   .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
+
+                   .fields-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+
+                   @media (max-width: 640px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                       .avatar-column { width: 100%; }
+                       .avatar-card { flex-direction: row; gap: 1rem; padding: 1rem; }
+                       .avatar-circle { width: 80px; height: 80px; flex-shrink: 0; }
+                   }
+   ```
+
+**4. `src/app/admin/notes/new/page.tsx`**
+
+1. Replace
+   ```tsx
+                           <div className="checkbox-field">
+                               <label className="checkbox-label">
+                                   <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
+                                   Doctor check note
+                               </label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <label className="staff-check">
+                               <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
+                               Doctor check note
+                           </label>
+
+   ```
+2. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+3. Replace `<div className="card">` with `<div className="staff-form-card">` (it occurs exactly twice; replace both).
+4. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly twice; replace both).
+5. Replace `className="field"` with `className="staff-field"` (it occurs exactly 4 times; replace all 4).
+6. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly twice; replace both).
+7. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+8. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 820px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+                   .main-column { flex: 1.4; min-width: 0; }
+                   .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+
+                   @media (max-width: 640px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                   }
+   ```
+
+**5. `src/app/secretary/notes/new/page.tsx`**
+
+1. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+2. Replace `<div className="card">` with `<div className="staff-form-card">` (it occurs exactly twice; replace both).
+3. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly twice; replace both).
+4. Replace `className="field"` with `className="staff-field"` (it occurs exactly 4 times; replace all 4).
+5. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly twice; replace both).
+6. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+7. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 820px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+                   .main-column { flex: 1.4; min-width: 0; }
+                   .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   @media (max-width: 640px) { .form-layout { flex-direction: column; align-items: stretch; } }
+   ```
+
+**6. `src/app/admin/notes/page.tsx`**
+
+1. Replace `<label className="checkbox-label">` with `<label className="staff-check">`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.checkbox-label {…}`, `.checkbox-label input[type="checkbox"] {…}`. Nothing else.
+
+**Verification:**
+- This prints nothing:
+  ```
+  grep -nE 'className="(field|field-row|req|error-banner|fields-card|card|form-actions|checkbox-label|checkbox-field|form-group|field-hint|grant-row|section-label|footer-actions)"' "src/app/admin/patients/new/page.tsx" "src/app/secretary/patients/new/page.tsx" "src/app/admin/notes/new/page.tsx" "src/app/secretary/notes/new/page.tsx" "src/app/admin/notes/page.tsx"
+  ```
+- `git diff --stat` against the parent lists exactly the 6 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The four forms and the notes popup's checkbox use the shared pieces; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069d4b — Full-page forms: new doctor and secretary, the profile, the session page, the blog editor
+
+- **Status:** READY — passed 2026-11-23. Batch 5, step 2 of 3.
+- **Branch:** `feat/staff-forms-employees-content`, cut from the tip of `feat/staff-forms-patients-notes`.
+- **Why:** the new-employee forms, the doctor's own forms and the blog editor move onto the TJ-069d4a pieces; the two employee editors' checkbox lines follow.
+
+**Planning pass:** 2026-11-23, on the TJ-069d4a result. Read in full: `src/app/admin/employees/doctors/new/page.tsx`, `src/app/admin/employees/secretaries/new/page.tsx`, `src/app/doctor/profile/page.tsx`, `src/app/admin/blog/BlogEditor.tsx`; the details and SOAP tabs and the style block of `src/app/doctor/session/[id]/page.tsx`; the Content management checkbox and its rules in both employee editors. The working-hours row and the password eye keep their own rules, as in TJ-069d3. The profile has two style blocks; only the last one (the main page) changes. On the session page only the fields move; its tab cards stay until the session page itself is reworked. In the blog editor, the Body label now names the textarea, the toolbar and textarea are wrapped together so the card's spacing does not separate them, and the scheduled-date panel keeps its blue look while its field uses `.staff-field`.
+
+**Scope — touch only these (7):** `src/app/admin/employees/doctors/new/page.tsx`, `src/app/admin/employees/secretaries/new/page.tsx`, `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/secretaries/page.tsx`, `src/app/doctor/profile/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, `src/app/admin/blog/BlogEditor.tsx`.
+
+**Do not touch:** any other file; handlers, state, API calls and wording; the colour list and its rules; `ClinicalAssessment.tsx`.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace every line between the line that opens the `<style jsx>` block and the line that closes it" keeps those two lines and swaps everything between them for exactly the lines shown. Do the steps in order.
+
+**1. `src/app/admin/employees/doctors/new/page.tsx`**
+
+1. Replace `<div className="avatar-card">` with `<div className="staff-form-card avatar-card">`.
+2. Replace `<div className="color-card">` with `<div className="staff-form-card color-card">`.
+3. Replace `<h3>Calendar Color</h3>` with `<h3 className="staff-form-card-title">Calendar Color</h3>`.
+4. Replace `<span className="field-hint">` with `<span className="staff-field-hint">`.
+5. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+6. Replace `<div className="fields-card">` with `<div className="staff-form-card">` (it occurs exactly twice; replace both).
+7. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly twice; replace both).
+8. Replace `className="field"` with `className="staff-field"` (it occurs exactly 7 times; replace all 7).
+9. Replace `className="field-row"` with `className="staff-field-row"` (it occurs exactly twice; replace both).
+10. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly 4 times; replace all 4).
+11. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+12. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 860px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+
+                   .avatar-column { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .avatar-card { align-items: center; gap: 0.75rem; }
+                   .avatar-circle {
+                       width: 140px; height: 140px; border-radius: 50%;
+                       border: 2px dashed rgba(255,255,255,0.12);
+                       display: flex; align-items: center; justify-content: center;
+                       overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+                       background: rgba(255,255,255,0.03);
+                   }
+                   .avatar-circle:hover { border-color: var(--primary, #4CAF93); }
+                   .avatar-placeholder { color: rgba(255,255,255,0.2); }
+                   .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+                   .upload-btn {
+                       background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
+                       padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
+                       font-weight: 600; cursor: pointer; font-family: inherit;
+                   }
+                   .upload-btn:hover { background: rgba(76,175,147,0.22); }
+                   .remove-btn { background: none; border: none; color: rgba(220,100,100,0.7); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
+                   .remove-btn:hover { color: #fca5a5; }
+                   .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
+
+                   .color-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+                   .color-swatch {
+                       width: 100%; aspect-ratio: 1; border-radius: 8px; border: 2px solid transparent;
+                       cursor: pointer; transition: transform 0.15s;
+                   }
+                   .color-swatch:disabled { opacity: 0.25; cursor: not-allowed; }
+                   .color-swatch:disabled:hover { transform: none; }
+                   .color-swatch.selected { border-color: #fff; transform: scale(1.12); }
+                   .color-swatch:hover { transform: scale(1.08); }
+
+                   .fields-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .hours-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+                   /* A time input needs about 125px to show "09:00 AM" and its clock
+                      icon (measured). 9.5rem leaves room for that; below it the row
+                      wraps rather than clipping the time. (TJ-020) */
+                   .hours-row input { flex: 1 1 9.5rem; min-width: 0; }
+                   .hours-sep { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.4); flex-shrink: 0; }
+                   .password-wrap { position: relative; }
+                   .password-wrap input { width: 100%; padding-inline-end: 2.4rem; }
+                   .toggle-password {
+                     position: absolute; inset-inline-end: 0.5rem; top: 50%; transform: translateY(-50%);
+                     background: none; border: none; padding: 0.15rem; line-height: 0;
+                     color: rgba(255,255,255,0.45); cursor: pointer;
+                   }
+                   .toggle-password:hover { color: #fff; }
+
+                   @media (max-width: 640px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                       .avatar-column { width: 100%; flex-direction: row; flex-wrap: wrap; }
+                       .avatar-card { flex-direction: row; flex-wrap: wrap; gap: 1rem; padding: 1rem; }
+                       .avatar-circle { width: 80px; height: 80px; flex-shrink: 0; }
+                       .color-card { flex: 1 1 200px; }
+                   }
+   ```
+
+**2. `src/app/admin/employees/secretaries/new/page.tsx`**
+
+1. Replace `<div className="avatar-card">` with `<div className="staff-form-card avatar-card">`.
+2. Replace `<span className="field-hint">` with `<span className="staff-field-hint">`.
+3. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+4. Replace `<div className="fields-card">` with `<div className="staff-form-card">` (it occurs exactly twice; replace both).
+5. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly twice; replace both).
+6. Replace `className="field"` with `className="staff-field"` (it occurs exactly 7 times; replace all 7).
+7. Replace `className="field-row"` with `className="staff-field-row"` (it occurs exactly twice; replace both).
+8. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly 4 times; replace all 4).
+9. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+10. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 860px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+
+                   .avatar-column { width: 220px; flex-shrink: 0; }
+                   .avatar-card { align-items: center; gap: 0.75rem; }
+                   .avatar-circle {
+                       width: 140px; height: 140px; border-radius: 50%;
+                       border: 2px dashed rgba(255,255,255,0.12);
+                       display: flex; align-items: center; justify-content: center;
+                       overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+                       background: rgba(255,255,255,0.03);
+                   }
+                   .avatar-circle:hover { border-color: var(--primary, #4CAF93); }
+                   .avatar-placeholder { color: rgba(255,255,255,0.2); }
+                   .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+                   .upload-btn {
+                       background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
+                       padding: 0.4rem 0.9rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
+                       font-weight: 600; cursor: pointer; font-family: inherit;
+                   }
+                   .upload-btn:hover { background: rgba(76,175,147,0.22); }
+                   .remove-btn { background: none; border: none; color: rgba(220,100,100,0.7); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
+                   .remove-btn:hover { color: #fca5a5; }
+                   .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
+
+                   .fields-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .hours-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+                   /* A time input needs about 125px to show "09:00 AM" and its clock
+                      icon (measured). 9.5rem leaves room for that; below it the row
+                      wraps rather than clipping the time. (TJ-020) */
+                   .hours-row input { flex: 1 1 9.5rem; min-width: 0; }
+                   .hours-sep { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.4); flex-shrink: 0; }
+                   .password-wrap { position: relative; }
+                   .password-wrap input { width: 100%; padding-inline-end: 2.4rem; }
+                   .toggle-password {
+                     position: absolute; inset-inline-end: 0.5rem; top: 50%; transform: translateY(-50%);
+                     background: none; border: none; padding: 0.15rem; line-height: 0;
+                     color: rgba(255,255,255,0.45); cursor: pointer;
+                   }
+                   .toggle-password:hover { color: #fff; }
+
+                   @media (max-width: 640px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                       .avatar-column { width: 100%; }
+                       .avatar-card { flex-direction: row; flex-wrap: wrap; gap: 1rem; padding: 1rem; }
+                       .avatar-circle { width: 80px; height: 80px; flex-shrink: 0; }
+                   }
+   ```
+
+**3. `src/app/admin/employees/doctors/page.tsx`**
+
+1. Replace `<label className="grant-row">` with `<label className="staff-check">`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.grant-row {…}`, `.grant-row input[type="checkbox"] {…}`, `.grant-row span {…}`. Nothing else.
+
+**4. `src/app/admin/employees/secretaries/page.tsx`**
+
+1. Replace `<label className="grant-row">` with `<label className="staff-check">`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.grant-row {…}`, `.grant-row input[type="checkbox"] {…}`, `.grant-row span {…}`. Nothing else.
+
+**5. `src/app/doctor/profile/page.tsx`**
+
+1. After the line `const [message, setMessage] = useState("");` insert the line `    const [error, setError] = useState("");`.
+2. Replace
+   ```tsx
+           setMessage("");
+           setSaving(true);
+   ```
+   with
+   ```tsx
+           setMessage("");
+           setError("");
+           setSaving(true);
+   ```
+3. Replace `            setMessage(data.error || "Failed to submit changes");` with `            setError(data.error || "Failed to submit changes");`.
+4. Replace `        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;` with `        return <p className="staff-loading" role="status">Loading…</p>;`.
+5. Replace
+   ```tsx
+               {message && <div className="message">{message}</div>}
+   ```
+   with
+   ```tsx
+               {message && <div className="message" role="status">{message}</div>}
+               {error && <div className="staff-form-error" role="alert">{error}</div>}
+   ```
+6. Replace `<div className="field">` with `<div className="staff-field">` (it occurs exactly 5 times; replace all 5).
+7. Replace
+   ```tsx
+                           <label>Name</label>
+                           <input value={form.name}
+   ```
+   with
+   ```tsx
+                           <label htmlFor="profile-name">Name</label>
+                           <input id="profile-name" value={form.name}
+   ```
+8. Replace
+   ```tsx
+                           <label>Title</label>
+                           <input value={form.title}
+   ```
+   with
+   ```tsx
+                           <label htmlFor="profile-title">Title</label>
+                           <input id="profile-title" value={form.title}
+   ```
+9. Replace
+   ```tsx
+                           <label>Specialty</label>
+                           <input value={form.specialty}
+   ```
+   with
+   ```tsx
+                           <label htmlFor="profile-specialty">Specialty</label>
+                           <input id="profile-specialty" value={form.specialty}
+   ```
+10. Replace
+   ```tsx
+                           <label>Bio</label>
+                           <textarea rows={3} value={form.bio}
+   ```
+   with
+   ```tsx
+                           <label htmlFor="profile-bio">Bio</label>
+                           <textarea id="profile-bio" rows={3} value={form.bio}
+   ```
+11. Replace
+   ```tsx
+                           <label>Contact</label>
+                           <input value={form.contact}
+   ```
+   with
+   ```tsx
+                           <label htmlFor="profile-contact">Contact</label>
+                           <input id="profile-contact" value={form.contact}
+   ```
+12. Replace every line between the line that opens the last `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 720px; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 600; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin: 0 0 1.25rem; }
+                   .pending-banner {
+                       background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.25); color: #93c5fd;
+                       padding: 0.6rem 0.9rem; border-radius: 8px; font-size: var(--staff-size-base); margin-bottom: 1rem;
+                   }
+                   .message {
+                       background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7;
+                       padding: 0.6rem 0.9rem; border-radius: 8px; font-size: var(--staff-size-base); margin-bottom: 1rem;
+                   }
+                   .page > .staff-form-error { margin-bottom: 1rem; }
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+                   .photo-col { width: 140px; flex-shrink: 0; }
+                   .photo-drop {
+                       width: 140px; height: 140px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.15);
+                       display: flex; align-items: center; justify-content: center; cursor: pointer;
+                       color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); overflow: hidden; text-align: center;
+                   }
+                   .photo-img { width: 100%; height: 100%; object-fit: cover; }
+                   .fields-col { flex: 1; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+                   .staff-btn { align-self: flex-start; }
+
+                   @media (max-width: 560px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                       .photo-col { align-self: center; }
+                   }
+   ```
+
+**6. `src/app/doctor/session/[id]/page.tsx`**
+
+1. Replace `className="form-group"` with `className="staff-field"` (it occurs exactly 5 times; replace all 5).
+2. Replace
+   ```tsx
+                               <label>Injury Place</label>
+                               <input value={editInjury}
+   ```
+   with
+   ```tsx
+                               <label htmlFor="session-injury">Injury Place</label>
+                               <input id="session-injury" value={editInjury}
+   ```
+3. Replace
+   ```tsx
+                                   <label>
+                                       <span className="soap-letter">
+   ```
+   with
+   ```tsx
+                                   <label htmlFor={`soap-${field}`}>
+                                       <span className="soap-letter">
+   ```
+4. Replace
+   ```tsx
+                                   <textarea
+                                       rows={3}
+                                       value={soapForm[field]}
+   ```
+   with
+   ```tsx
+                                   <textarea
+                                       id={`soap-${field}`}
+                                       rows={3}
+                                       value={soapForm[field]}
+   ```
+5. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
+                   .header h1 { font-size: var(--staff-size-xl); font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
+                   .badge-archived { background: rgba(239,68,68,0.12); color: #fca5a5; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em; }
+                   .header-meta { color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); margin-top: 0.2rem; display: flex; gap: 0.5rem; }
+                   .header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+                   .status-badge { padding: 0.3rem 0.8rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+                   .status-actions { display: flex; gap: 0.35rem; }
+                   .action-btn { background: var(--primary, #4CAF93); color: #fff; border: none; padding: 0.35rem 0.85rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); font-weight: 600; cursor: pointer; font-family: inherit; }
+                   .action-btn.checkout { background: #16a34a; }
+                   .action-btn.waiting { background: transparent; border: 1px solid #f59e0b; color: #f59e0b; }
+                   .prev-note-banner { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(76,175,147,0.4); border-radius: var(--radius-sm, 2px); padding: 0.65rem 1rem; margin-bottom: 1rem; font-size: var(--staff-size-base); display: flex; flex-direction: column; gap: 0.15rem; }
+                   .prev-label { font-size: var(--staff-size-xs); text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.4); font-weight: 600; }
+                   .tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+                   .tab { background: none; border: none; border-bottom: 2px solid transparent; color: rgba(255,255,255,0.5); padding: 0.65rem 1.1rem; font-size: var(--staff-size-base); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+                   .tab:hover { color: rgba(255,255,255,0.8); }
+                   .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); font-weight: 600; }
+                   .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
+                   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+                   .soap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+                   .soap-grid label { display: flex; align-items: center; gap: 0.35rem; }
+                   .soap-letter { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border-radius: 2px; font-weight: 700; font-size: var(--staff-size-xs); }
+                   .readonly-value { margin: 0; padding: 0.5rem 0.7rem; color: rgba(255,255,255,0.7); font-size: var(--staff-size-base); }
+                   .field-hint { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); margin: 0.75rem 0 0; }
+                   .card-actions { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
+                   .table-container { overflow-x: auto; }
+                   .mini-status { font-size: var(--staff-size-xs); font-weight: 600; text-transform: uppercase; }
+                   .view-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
+                   .view-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+                   @media (max-width: 640px) { .form-grid, .soap-grid { grid-template-columns: 1fr; } }
+   ```
+
+**7. `src/app/admin/blog/BlogEditor.tsx`**
+
+1. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+2. Replace `<div className="card">` with `<div className="staff-form-card">` (it occurs exactly 5 times; replace all 5).
+3. Replace `className="field"` with `className="staff-field"` (it occurs exactly 3 times; replace all 3).
+4. Replace `className="field-row"` with `className="staff-field-row"`.
+5. Replace
+   ```tsx
+                               <label>Title</label>
+                               <input value={title}
+   ```
+   with
+   ```tsx
+                               <label htmlFor="post-title">Title</label>
+                               <input id="post-title" value={title}
+   ```
+6. Replace
+   ```tsx
+                                   <label>Category</label>
+                                   <select value={category}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="post-category">Category</label>
+                                   <select id="post-category" value={category}
+   ```
+7. Replace `<label className="section-label">Publishing</label>` with `<h2 className="staff-form-card-title">Publishing</h2>`.
+8. Replace `<label className="section-label">Cover Image</label>` with `<h2 className="staff-form-card-title">Cover Image</h2>`.
+9. Replace `<label className="section-label">Translation</label>` with `<h2 className="staff-form-card-title">Translation</h2>`.
+10. Replace
+   ```tsx
+                               <div className="status-panel panel-scheduled">
+                                   <label>Goes live on</label>
+                                   <input type="datetime-local"
+   ```
+   with
+   ```tsx
+                               <div className="status-panel panel-scheduled staff-field">
+                                   <label htmlFor="post-publish-at">Goes live on</label>
+                                   <input id="post-publish-at" type="datetime-local"
+   ```
+11. Replace
+   ```tsx
+                           <label className="section-label">Body</label>
+                           <div className="toolbar">
+                               <span>B</span><span><em>I</em></span><span><LinkIcon size={13} aria-hidden="true" /></span><span>≡</span>
+                           </div>
+                           <textarea
+                               className="body-textarea"
+                               rows={10}
+                               dir={lang === "AR" ? "rtl" : "ltr"}
+                               value={body}
+                               onChange={(e) => setBody(e.target.value)}
+                               placeholder="Write the post…"
+                           />
+
+   ```
+   with
+   ```tsx
+                           <label htmlFor="post-body" className="staff-form-card-title">Body</label>
+                           <div>
+                               <div className="toolbar">
+                                   <span>B</span><span><em>I</em></span><span><LinkIcon size={13} aria-hidden="true" /></span><span>≡</span>
+                               </div>
+                               <textarea
+                                   id="post-body"
+                                   className="body-textarea"
+                                   rows={10}
+                                   dir={lang === "AR" ? "rtl" : "ltr"}
+                                   value={body}
+                                   onChange={(e) => setBody(e.target.value)}
+                                   placeholder="Write the post…"
+                               />
+                           </div>
+
+   ```
+12. Replace `<div className="footer-actions">` with `<div className="staff-form-actions">`.
+13. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .editor-page { max-width: 1200px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 1.25rem; }
+                   .editor-page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .editor-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start; }
+                   .left-col, .right-col { display: flex; flex-direction: column; gap: 1rem; }
+
+                   .toggle-group { display: flex; gap: 0.4rem; }
+                   .toggle-btn {
+                       flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+                       color: rgba(255,255,255,0.6); padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base);
+                       cursor: pointer; font-family: inherit; transition: all 0.15s;
+                   }
+                   .toggle-btn.active { background: rgba(76,175,147,0.18); border-color: var(--primary, #4CAF93); color: var(--primary, #4CAF93); font-weight: 600; }
+                   .toggle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+                   .status-buttons { display: flex; gap: 0.5rem; }
+                   .status-btn {
+                       flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+                       color: rgba(255,255,255,0.6); padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base);
+                       font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s;
+                   }
+                   .status-btn.status-draft.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
+                   .status-btn.status-scheduled.active { background: rgba(96,165,250,0.15); border-color: rgba(96,165,250,0.4); color: #93c5fd; }
+                   .status-btn.status-published.active { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.4); color: #6ee7b7; }
+
+                   .status-panel { border-radius: 8px; padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem; }
+                   .panel-scheduled { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); }
+                   .panel-scheduled label { font-size: var(--staff-size-sm); color: #93c5fd; }
+                   .panel-published { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); }
+                   .panel-published p { margin: 0; font-size: var(--staff-size-base); color: #6ee7b7; }
+                   .unpublish-btn {
+                       align-self: flex-start; background: rgba(239,68,68,0.12); color: #fca5a5; border: none;
+                       padding: 0.4rem 0.8rem; border-radius: 6px; font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit;
+                   }
+                   .unpublish-btn:hover { background: rgba(239,68,68,0.2); }
+
+                   .toolbar {
+                       display: flex; gap: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.04);
+                       border: 1px solid rgba(255,255,255,0.08); border-bottom: none; border-radius: 6px 6px 0 0;
+                       color: rgba(255,255,255,0.4); font-size: var(--staff-size-base);
+                   }
+                   .body-textarea {
+                       width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+                       border-radius: 0 0 8px 8px; padding: 0.75rem; color: #fff; font-size: var(--staff-size-base);
+                       outline: none; font-family: inherit; resize: vertical; line-height: 1.6; box-sizing: border-box;
+                   }
+                   .body-textarea:focus { border-color: var(--primary, #4CAF93); }
+
+                   .footer-row { display: flex; align-items: center; justify-content: space-between; }
+                   .saved-hint { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); }
+
+                   .drop-zone {
+                       aspect-ratio: 16/9; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.12);
+                       display: flex; align-items: center; justify-content: center; cursor: pointer;
+                       background: rgba(255,255,255,0.02); overflow: hidden; transition: border-color 0.2s;
+                   }
+                   .drop-zone:hover { border-color: var(--primary, #4CAF93); }
+                   .drop-hint { color: rgba(255,255,255,0.3); font-size: var(--staff-size-base); }
+                   .cover-preview { width: 100%; height: 100%; object-fit: cover; }
+
+                   .translation-note { font-size: var(--staff-size-base); color: rgba(255,255,255,0.5); margin: 0; }
+                   .translate-btn {
+                       width: 100%; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
+                       padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base); font-weight: 600; cursor: pointer; font-family: inherit;
+                   }
+                   .translate-btn:hover { background: rgba(76,175,147,0.22); }
+                   .translate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+                   @media (max-width: 900px) {
+                       .editor-layout { grid-template-columns: 1fr; }
+                   }
+
+                   @media (max-width: 560px) {
+                       .editor-page { padding-bottom: 1rem; }
+                       .status-buttons { flex-wrap: wrap; }
+                       .status-btn { flex: 1 1 45%; }
+                       .toolbar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+                       .footer-row { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+                   }
+   ```
+
+**Verification:**
+- This prints nothing:
+  ```
+  grep -nE 'className="(field|field-row|req|error-banner|fields-card|card|form-actions|checkbox-label|checkbox-field|form-group|field-hint|grant-row|section-label|footer-actions)"' "src/app/admin/employees/doctors/new/page.tsx" "src/app/admin/employees/secretaries/new/page.tsx" "src/app/admin/employees/doctors/page.tsx" "src/app/admin/employees/secretaries/page.tsx" "src/app/doctor/profile/page.tsx" "src/app/admin/blog/BlogEditor.tsx"
+  ```
+- `grep -c 'className="staff-field"' "src/app/doctor/session/[id]/page.tsx"` prints `5`.
+- `git diff --stat` against the TJ-069d4a commit lists exactly the 7 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The seven files use the shared pieces; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069d4c — Full-page forms: booking, new and edit
+
+- **Status:** READY — passed 2026-11-23. Batch 5, step 3 of 3.
+- **Branch:** `feat/staff-forms-booking`, cut from the tip of `feat/staff-forms-employees-content`.
+- **Why:** the four booking forms (admin and secretary, new and edit), the largest of the set. Their new-patient popup was already on the shared fields (TJ-069d1).
+
+**Planning pass:** 2026-11-23, on the TJ-069d4b result. Read in full: `src/app/admin/reservations/new/page.tsx`, `src/app/secretary/reservations/new/page.tsx`, `src/app/admin/reservations/[id]/edit/page.tsx`, `src/app/secretary/reservations/[id]/edit/page.tsx`. The patient search keeps its results dropdown anchored with a page rule (`.patient-search { position: relative; }`). "Show on calendar" moves out of the Session Note field, whose shared input rule would stretch a checkbox, and sits under it in a small group (`.note-group`). The edit pages' loading line and the new pages' Suspense fallback use `.staff-loading`. The "Open patient file" link keeps its own width (`align-self: flex-start`) now that the card is a flex column.
+
+**Scope — touch only these (4):** `src/app/admin/reservations/new/page.tsx`, `src/app/secretary/reservations/new/page.tsx`, `src/app/admin/reservations/[id]/edit/page.tsx`, `src/app/secretary/reservations/[id]/edit/page.tsx`.
+
+**Do not touch:** any other file; handlers, state, API calls and wording; the new-patient popup beyond its required marks.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace every line between the line that opens the `<style jsx>` block and the line that closes it" keeps those two lines and swaps everything between them for exactly the lines shown. Do the steps in order.
+
+**1. `src/app/admin/reservations/new/page.tsx`**
+
+1. Replace
+   ```tsx
+                           <div className="field">
+                               <label>Search by name or phone <span className="req">*</span></label>
+                               <input
+                                   placeholder="Type to search…"
+   ```
+   with
+   ```tsx
+                           <div className="staff-field patient-search">
+                               <label htmlFor="patient-search">Search by name or phone <span className="req">*</span></label>
+                               <input
+                                   id="patient-search"
+                                   placeholder="Type to search…"
+   ```
+2. Replace
+   ```tsx
+                                   <label>Date</label>
+                                   <input type="date"
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-date">Date</label>
+                                   <input id="res-date" type="date"
+   ```
+3. Replace
+   ```tsx
+                                   <label>Time</label>
+                                   <input type="time"
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-time">Time</label>
+                                   <input id="res-time" type="time"
+   ```
+4. Replace
+   ```tsx
+                           <div className="checkbox-field">
+                               <label className="checkbox-label">
+                                   <input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} />
+                                   2-hour session
+                               </label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <label className="staff-check">
+                               <input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} />
+                               2-hour session
+                           </label>
+
+   ```
+5. Replace
+   ```tsx
+                           <div className="field">
+                               <label>Session Note</label>
+                               <textarea rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note for this session…" />
+                               <label className="checkbox-label">
+                                   <input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} />
+                                   Show on calendar
+                               </label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <div className="note-group">
+                               <div className="staff-field">
+                                   <label htmlFor="res-note">Session Note</label>
+                                   <textarea id="res-note" rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note for this session…" />
+                               </div>
+                               <label className="staff-check">
+                                   <input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} />
+                                   Show on calendar
+                               </label>
+                           </div>
+
+   ```
+6. Replace
+   ```tsx
+                               <label>Next Session Note</label>
+                               <textarea rows={3} value={form.nextSessionNote}
+   ```
+   with
+   ```tsx
+                               <label htmlFor="res-next-note">Next Session Note</label>
+                               <textarea id="res-next-note" rows={3} value={form.nextSessionNote}
+   ```
+7. Replace
+   ```tsx
+                                   <label>Doctor <span className="req">*</span></label>
+                                   <select value={form.doctorId}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-doctor">Doctor <span className="req">*</span></label>
+                                   <select id="res-doctor" value={form.doctorId}
+   ```
+8. Replace
+   ```tsx
+                                   <label>Payment</label>
+                                   <select value={form.paymentType}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-payment">Payment</label>
+                                   <select id="res-payment" value={form.paymentType}
+   ```
+9. Replace `<Suspense fallback={<div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</div>}>` with `<Suspense fallback={<p className="staff-loading" role="status">Loading…</p>}>`.
+10. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+11. Replace `<div className="card">` with `<div className="staff-form-card">` (it occurs exactly 3 times; replace all 3).
+12. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly 3 times; replace all 3).
+13. Replace `className="field"` with `className="staff-field"` (it occurs exactly 5 times; replace all 5).
+14. Replace `className="field-row"` with `className="staff-field-row"` (it occurs exactly twice; replace both).
+15. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly 4 times; replace all 4).
+16. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+17. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 900px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+                   .main-column { flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+
+                   .note-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+                   .patient-search { position: relative; }
+                   .search-dropdown {
+                       position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+                       background: #1e293b; border: 1px solid rgba(255,255,255,0.12);
+                       border-radius: var(--radius-sm, 2px); overflow: hidden; margin-top: 2px;
+                   }
+                   .search-item {
+                       width: 100%; display: flex; justify-content: space-between; align-items: center;
+                       padding: 0.6rem 0.85rem; border: none; background: none; color: #fff;
+                       cursor: pointer; font-size: var(--staff-size-base); font-family: inherit; text-align: left;
+                   }
+                   .search-item:hover { background: rgba(76,175,147,0.12); }
+                   .sr-phone { color: rgba(255,255,255,0.4); font-size: var(--staff-size-sm); }
+
+                   .selected-patient {
+                       display: flex; justify-content: space-between; align-items: center;
+                       background: rgba(76,175,147,0.08); border: 1px solid rgba(76,175,147,0.2);
+                       padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
+                       font-size: var(--staff-size-base); color: var(--primary, #4CAF93); margin-top: 0.25rem;
+                   }
+                   .clear-btn { background: none; border: none; color: rgba(255,255,255,0.4); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
+                   .clear-btn:hover { color: #fff; }
+                   .new-patient-btn {
+                       margin-top: 0.5rem; align-self: flex-start;
+                       background: none; border: 1px dashed rgba(76,175,147,0.35);
+                       color: var(--primary, #4CAF93); border-radius: var(--radius-sm, 2px);
+                       padding: 0.4rem 0.75rem; font-size: var(--staff-size-sm); cursor: pointer;
+                       font-family: inherit; transition: all 0.15s;
+                   }
+                   .new-patient-btn:hover { background: rgba(76,175,147,0.08); border-color: var(--primary, #4CAF93); }
+                   .new-patient-error { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+                   .use-existing {
+                       background: rgba(76,175,147,0.12); border: none; color: var(--primary, #4CAF93);
+                       padding: 0.3rem 0.65rem; border-radius: var(--radius-sm, 2px);
+                       font-size: var(--staff-size-sm); font-weight: 600; cursor: pointer; font-family: inherit;
+                   }
+                   .use-existing:hover { background: rgba(76,175,147,0.22); }
+
+                   @media (max-width: 640px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                   }
+   ```
+
+**2. `src/app/secretary/reservations/new/page.tsx`**
+
+1. Replace
+   ```tsx
+                           <div className="field">
+                               <label>Search by name or phone <span className="req">*</span></label>
+                               <input placeholder="Type to search…"
+   ```
+   with
+   ```tsx
+                           <div className="staff-field patient-search">
+                               <label htmlFor="patient-search">Search by name or phone <span className="req">*</span></label>
+                               <input id="patient-search" placeholder="Type to search…"
+   ```
+2. Replace `<label>Date</label><input type="date"` with `<label htmlFor="res-date">Date</label><input id="res-date" type="date"`.
+3. Replace `<label>Time</label><input type="time"` with `<label htmlFor="res-time">Time</label><input id="res-time" type="time"`.
+4. Replace
+   ```tsx
+                           <div className="checkbox-field">
+                               <label className="checkbox-label"><input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} /> 2-hour session</label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <label className="staff-check">
+                               <input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} />
+                               2-hour session
+                           </label>
+
+   ```
+5. Replace
+   ```tsx
+                           <div className="field">
+                               <label>Session Note</label>
+                               <textarea rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note…" />
+                               <label className="checkbox-label"><input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} /> Show on calendar</label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <div className="note-group">
+                               <div className="staff-field">
+                                   <label htmlFor="res-note">Session Note</label>
+                                   <textarea id="res-note" rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note…" />
+                               </div>
+                               <label className="staff-check">
+                                   <input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} />
+                                   Show on calendar
+                               </label>
+                           </div>
+
+   ```
+6. Replace
+   ```tsx
+                                   <label>Doctor <span className="req">*</span></label>
+                                   <select value={form.doctorId}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-doctor">Doctor <span className="req">*</span></label>
+                                   <select id="res-doctor" value={form.doctorId}
+   ```
+7. Replace
+   ```tsx
+                                   <label>Payment</label>
+                                   <select value={form.paymentType}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-payment">Payment</label>
+                                   <select id="res-payment" value={form.paymentType}
+   ```
+8. Replace `<Suspense fallback={<div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem" }}>Loading…</div>}>` with `<Suspense fallback={<p className="staff-loading" role="status">Loading…</p>}>`.
+9. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+10. Replace `<div className="card">` with `<div className="staff-form-card">` (it occurs exactly 3 times; replace all 3).
+11. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly 3 times; replace all 3).
+12. Replace `className="field"` with `className="staff-field"` (it occurs exactly 4 times; replace all 4).
+13. Replace `className="field-row"` with `className="staff-field-row"` (it occurs exactly twice; replace both).
+14. Replace `className="req"` with `className="staff-field-req"` (it occurs exactly 4 times; replace all 4).
+15. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+16. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 900px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+                   .main-column { flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .note-group { display: flex; flex-direction: column; gap: 0.5rem; }
+                   .patient-search { position: relative; }
+                   .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; background: #1e293b; border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-sm, 2px); overflow: hidden; margin-top: 2px; }
+                   .search-item { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.85rem; border: none; background: none; color: #fff; cursor: pointer; font-size: var(--staff-size-base); font-family: inherit; text-align: left; }
+                   .search-item:hover { background: rgba(76,175,147,0.12); }
+                   .sr-phone { color: rgba(255,255,255,0.4); font-size: var(--staff-size-sm); }
+                   .selected-patient { display: flex; justify-content: space-between; align-items: center; background: rgba(76,175,147,0.08); border: 1px solid rgba(76,175,147,0.2); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); color: var(--primary, #4CAF93); margin-top: 0.25rem; }
+                   .clear-btn { background: none; border: none; color: rgba(255,255,255,0.4); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
+                   .clear-btn:hover { color: #fff; }
+                   .new-patient-btn {
+                       margin-top: 0.5rem; align-self: flex-start;
+                       background: none; border: 1px dashed rgba(76,175,147,0.35);
+                       color: var(--primary, #4CAF93); border-radius: var(--radius-sm, 2px);
+                       padding: 0.4rem 0.75rem; font-size: var(--staff-size-sm); cursor: pointer;
+                       font-family: inherit; transition: all 0.15s;
+                   }
+                   .new-patient-btn:hover { background: rgba(76,175,147,0.08); border-color: var(--primary, #4CAF93); }
+                   .new-patient-error { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+                   .use-existing {
+                       background: rgba(76,175,147,0.12); border: none; color: var(--primary, #4CAF93);
+                       padding: 0.3rem 0.65rem; border-radius: var(--radius-sm, 2px);
+                       font-size: var(--staff-size-sm); font-weight: 600; cursor: pointer; font-family: inherit;
+                   }
+                   .use-existing:hover { background: rgba(76,175,147,0.22); }
+                   @media (max-width: 640px) { .form-layout { flex-direction: column; align-items: stretch; } }
+   ```
+
+**3. `src/app/admin/reservations/[id]/edit/page.tsx`**
+
+1. Replace `                <p className="subtitle">Loading…</p>` with `                <p className="staff-loading" role="status">Loading…</p>`.
+2. Replace
+   ```tsx
+                                   <label>Date</label>
+                                   <input type="date"
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-date">Date</label>
+                                   <input id="res-date" type="date"
+   ```
+3. Replace
+   ```tsx
+                                   <label>Time</label>
+                                   <input type="time"
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-time">Time</label>
+                                   <input id="res-time" type="time"
+   ```
+4. Replace
+   ```tsx
+                           <div className="checkbox-field">
+                               <label className="checkbox-label">
+                                   <input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} />
+                                   2-hour session
+                               </label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <label className="staff-check">
+                               <input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} />
+                               2-hour session
+                           </label>
+
+   ```
+5. Replace
+   ```tsx
+                           <div className="field">
+                               <label>Session Note</label>
+                               <textarea rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note for this session…" />
+                               <label className="checkbox-label">
+                                   <input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} />
+                                   Show on calendar
+                               </label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <div className="note-group">
+                               <div className="staff-field">
+                                   <label htmlFor="res-note">Session Note</label>
+                                   <textarea id="res-note" rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note for this session…" />
+                               </div>
+                               <label className="staff-check">
+                                   <input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} />
+                                   Show on calendar
+                               </label>
+                           </div>
+
+   ```
+6. Replace
+   ```tsx
+                               <label>Next Session Note</label>
+                               <textarea rows={3} value={form.nextSessionNote}
+   ```
+   with
+   ```tsx
+                               <label htmlFor="res-next-note">Next Session Note</label>
+                               <textarea id="res-next-note" rows={3} value={form.nextSessionNote}
+   ```
+7. Replace
+   ```tsx
+                                   <label>Doctor <span className="req">*</span></label>
+                                   <select value={form.doctorId}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-doctor">Doctor <span className="req">*</span></label>
+                                   <select id="res-doctor" value={form.doctorId}
+   ```
+8. Replace
+   ```tsx
+                                   <label>Payment</label>
+                                   <select value={form.paymentType}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-payment">Payment</label>
+                                   <select id="res-payment" value={form.paymentType}
+   ```
+9. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+10. Replace `<div className="card">` with `<div className="staff-form-card">` (it occurs exactly 3 times; replace all 3).
+11. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly 3 times; replace all 3).
+12. Replace `className="field"` with `className="staff-field"` (it occurs exactly 5 times; replace all 5).
+13. Replace `className="field-row"` with `className="staff-field-row"` (it occurs exactly twice; replace both).
+14. Replace `className="req"` with `className="staff-field-req"`.
+15. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+16. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 900px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+                   .main-column { flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+
+                   .note-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+                   .patient-readonly { display: flex; align-items: baseline; gap: 0.6rem; }
+                   .pr-name { font-size: var(--staff-size-md); font-weight: 600; color: #fff; }
+                   .pr-phone { font-size: var(--staff-size-base); color: rgba(255,255,255,0.45); }
+                   .pr-link {
+                       align-self: flex-start; background: none; border: none; padding: 0;
+                       color: var(--primary, #4CAF93); font-size: var(--staff-size-base); cursor: pointer;
+                       font-family: inherit;
+                   }
+                   .pr-link:hover { text-decoration: underline; }
+
+                   @media (max-width: 640px) {
+                       .form-layout { flex-direction: column; align-items: stretch; }
+                   }
+   ```
+
+**4. `src/app/secretary/reservations/[id]/edit/page.tsx`**
+
+1. Replace `                <p className="subtitle">Loading…</p>` with `                <p className="staff-loading" role="status">Loading…</p>`.
+2. Replace
+   ```tsx
+                                   <label>Date</label>
+                                   <input type="date"
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-date">Date</label>
+                                   <input id="res-date" type="date"
+   ```
+3. Replace
+   ```tsx
+                                   <label>Time</label>
+                                   <input type="time"
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-time">Time</label>
+                                   <input id="res-time" type="time"
+   ```
+4. Replace
+   ```tsx
+                           <div className="checkbox-field">
+                               <label className="checkbox-label">
+                                   <input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} />
+                                   2-hour session
+                               </label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <label className="staff-check">
+                               <input type="checkbox" checked={form.isTwoHours} onChange={(e) => setForm({ ...form, isTwoHours: e.target.checked })} />
+                               2-hour session
+                           </label>
+
+   ```
+5. Replace
+   ```tsx
+                           <div className="field">
+                               <label>Session Note</label>
+                               <textarea rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note for this session…" />
+                               <label className="checkbox-label">
+                                   <input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} />
+                                   Show on calendar
+                               </label>
+                           </div>
+
+   ```
+   with
+   ```tsx
+                           <div className="note-group">
+                               <div className="staff-field">
+                                   <label htmlFor="res-note">Session Note</label>
+                                   <textarea id="res-note" rows={3} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Optional note for this session…" />
+                               </div>
+                               <label className="staff-check">
+                                   <input type="checkbox" checked={form.showNoteOnCalendar} onChange={(e) => setForm({ ...form, showNoteOnCalendar: e.target.checked })} />
+                                   Show on calendar
+                               </label>
+                           </div>
+
+   ```
+6. Replace
+   ```tsx
+                                   <label>Doctor <span className="req">*</span></label>
+                                   <select value={form.doctorId}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-doctor">Doctor <span className="req">*</span></label>
+                                   <select id="res-doctor" value={form.doctorId}
+   ```
+7. Replace
+   ```tsx
+                                   <label>Payment</label>
+                                   <select value={form.paymentType}
+   ```
+   with
+   ```tsx
+                                   <label htmlFor="res-payment">Payment</label>
+                                   <select id="res-payment" value={form.paymentType}
+   ```
+8. Replace `<div className="error-banner">{error}</div>` with `<div className="staff-form-error" role="alert">{error}</div>`.
+9. Replace `<div className="card">` with `<div className="staff-form-card">` (it occurs exactly 3 times; replace all 3).
+10. Replace `<h2>` with `<h2 className="staff-form-card-title">` (it occurs exactly 3 times; replace all 3).
+11. Replace `className="field"` with `className="staff-field"` (it occurs exactly 4 times; replace all 4).
+12. Replace `className="field-row"` with `className="staff-field-row"` (it occurs exactly twice; replace both).
+13. Replace `className="req"` with `className="staff-field-req"`.
+14. Replace `<div className="form-actions">` with `<div className="staff-form-actions">`.
+15. Replace every line between the line that opens the `<style jsx>` block and the line that closes it (keep those two lines) with exactly these lines:
+   ```tsx
+                   .page { max-width: 900px; }
+                   .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
+                   .back-btn:hover { color: #fff; }
+                   h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
+                   .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
+                   .page > .staff-form-error { margin-bottom: 1.25rem; }
+                   .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+                   .main-column { flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+                   .note-group { display: flex; flex-direction: column; gap: 0.5rem; }
+                   .patient-readonly { display: flex; align-items: baseline; gap: 0.6rem; }
+                   .pr-name { font-size: var(--staff-size-md); font-weight: 600; color: #fff; }
+                   .pr-phone { font-size: var(--staff-size-base); color: rgba(255,255,255,0.45); }
+                   .pr-link {
+                       align-self: flex-start; background: none; border: none; padding: 0;
+                       color: var(--primary, #4CAF93); font-size: var(--staff-size-base); cursor: pointer;
+                       font-family: inherit;
+                   }
+                   .pr-link:hover { text-decoration: underline; }
+                   @media (max-width: 640px) { .form-layout { flex-direction: column; align-items: stretch; } }
+   ```
+
+**Verification:**
+- This prints nothing:
+  ```
+  grep -nE 'className="(field|field-row|req|error-banner|fields-card|card|form-actions|checkbox-label|checkbox-field|form-group|field-hint|grant-row|section-label|footer-actions)"' "src/app/admin/reservations/new/page.tsx" "src/app/secretary/reservations/new/page.tsx" "src/app/admin/reservations/[id]/edit/page.tsx" "src/app/secretary/reservations/[id]/edit/page.tsx"
+  ```
+- `git diff --stat` against the TJ-069d4b commit lists exactly the 4 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] The four booking forms use the shared pieces; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-069k — One Back link for every staff page
+
+- **Status:** BACKLOG — found during the TJ-069d4 pass, 2026-11-23.
+- **Why:** the "← Back to …" link has its own copy (`.back-btn` or `.btn-back`, grey at 0.45–0.5 opacity, sizes and margins varying) on 19 staff pages: the 13 forms of TJ-069d4, the three patient files, the archived lists and the duplicates page. It belongs with the shared page header.
 
 ---
 
