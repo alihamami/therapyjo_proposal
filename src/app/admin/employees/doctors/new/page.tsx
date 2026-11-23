@@ -127,12 +127,12 @@ export default function NewDoctorPage() {
             <h1>New Doctor</h1>
             <p className="subtitle">Create a new doctor account with login credentials.</p>
 
-            {error && <div className="error-banner">{error}</div>}
+            {error && <div className="staff-form-error" role="alert">{error}</div>}
 
             <div className="form-layout">
                 {/* Left: Avatar */}
                 <div className="avatar-column">
-                    <div className="avatar-card">
+                    <div className="staff-form-card avatar-card">
                         <div className="avatar-circle" onClick={() => fileInputRef.current?.click()}>
                             {previewUrl ? (
                                 <img src={previewUrl} alt="Preview" className="avatar-img" />
@@ -154,8 +154,8 @@ export default function NewDoctorPage() {
                     </div>
 
                     {/* Color picker */}
-                    <div className="color-card">
-                        <h3>Calendar Color</h3>
+                    <div className="staff-form-card color-card">
+                        <h3 className="staff-form-card-title">Calendar Color</h3>
                         <div className="color-picker">
                             {COLORS.map((c) => {
                                 const taken = blockedColors.includes(c);
@@ -180,23 +180,23 @@ export default function NewDoctorPage() {
 
                 {/* Right: Form fields */}
                 <div className="fields-column">
-                    <div className="fields-card">
-                        <h2>Personal Information</h2>
-                        <div className="field">
-                            <label htmlFor="name">Full Name <span className="req">*</span></label>
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Personal Information</h2>
+                        <div className="staff-field">
+                            <label htmlFor="name">Full Name <span className="staff-field-req">*</span></label>
                             <input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Dr. Ahmad..." autoFocus />
                         </div>
-                        <div className="field-row">
-                            <div className="field">
+                        <div className="staff-field-row">
+                            <div className="staff-field">
                                 <label htmlFor="phone">Phone</label>
                                 <input id="phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="0791234567" />
                             </div>
-                            <div className="field">
+                            <div className="staff-field">
                                 <label htmlFor="email">Email</label>
                                 <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="doctor@clinic.com" />
                             </div>
                         </div>
-                        <div className="field">
+                        <div className="staff-field">
                             <label htmlFor="hours">Working Hours</label>
                             <div className="hours-row">
                                 <input
@@ -223,15 +223,15 @@ export default function NewDoctorPage() {
                         </div>
                     </div>
 
-                    <div className="fields-card">
-                        <h2>Login Credentials</h2>
-                        <div className="field-row">
-                            <div className="field">
-                                <label htmlFor="username">Username <span className="req">*</span></label>
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Login Credentials</h2>
+                        <div className="staff-field-row">
+                            <div className="staff-field">
+                                <label htmlFor="username">Username <span className="staff-field-req">*</span></label>
                                 <input id="username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} placeholder="dr.ahmad" />
                             </div>
-                            <div className="field">
-                                <label htmlFor="password">Password <span className="req">*</span></label>
+                            <div className="staff-field">
+                                <label htmlFor="password">Password <span className="staff-field-req">*</span></label>
                                 <div className="password-wrap">
                                     <input id="password" type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="••••••••" />
                                     <button
@@ -254,16 +254,16 @@ export default function NewDoctorPage() {
                                         )}
                                     </button>
                                 </div>
-                                <span className="field-hint">At least 8 characters.</span>
+                                <span className="staff-field-hint">At least 8 characters.</span>
                             </div>
                         </div>
-                        <div className="field">
-                            <label htmlFor="confirmPassword">Repeat Password <span className="req">*</span></label>
+                        <div className="staff-field">
+                            <label htmlFor="confirmPassword">Repeat Password <span className="staff-field-req">*</span></label>
                             <input id="confirmPassword" type={showPassword ? "text" : "password"} value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} placeholder="••••••••" />
                         </div>
                     </div>
 
-                    <div className="form-actions">
+                    <div className="staff-form-actions">
                         <button className="staff-btn staff-btn-secondary" onClick={() => router.push("/admin/employees/doctors")}>Cancel</button>
                         <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>
                             {saving ? "Creating…" : "Create Doctor"}
@@ -278,16 +278,12 @@ export default function NewDoctorPage() {
                 .back-btn:hover { color: #fff; }
                 h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
                 .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
-                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 1.25rem; }
+                .page > .staff-form-error { margin-bottom: 1.25rem; }
 
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
 
                 .avatar-column { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
-                .avatar-card {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); padding: 1.5rem;
-                    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
-                }
+                .avatar-card { align-items: center; gap: 0.75rem; }
                 .avatar-circle {
                     width: 140px; height: 140px; border-radius: 50%;
                     border: 2px dashed rgba(255,255,255,0.12);
@@ -308,11 +304,6 @@ export default function NewDoctorPage() {
                 .remove-btn:hover { color: #fca5a5; }
                 .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
 
-                .color-card {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); padding: 1.25rem;
-                }
-                .color-card h3 { font-size: var(--staff-size-base); font-weight: 600; color: rgba(255,255,255,0.55); margin: 0 0 0.75rem; }
                 .color-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
                 .color-swatch {
                     width: 100%; aspect-ratio: 1; border-radius: 8px; border: 2px solid transparent;
@@ -324,24 +315,6 @@ export default function NewDoctorPage() {
                 .color-swatch:hover { transform: scale(1.08); }
 
                 .fields-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
-                .fields-card {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); padding: 1.5rem;
-                }
-                .fields-card h2 { font-size: var(--staff-size-md); font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
-                .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
-                .field:last-child { margin-bottom: 0; }
-                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
-                .req { color: var(--primary, #4CAF93); }
-                .field input {
-                    width: 100%; min-width: 0;
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: var(--radius-sm, 2px); padding: 0.65rem 0.85rem; color: #fff;
-                    font-size: var(--staff-size-base); outline: none; font-family: inherit; transition: border-color 0.15s;
-                }
-                .field input:focus { border-color: var(--primary, #4CAF93); }
-                .field input::placeholder { color: rgba(255,255,255,0.2); }
-                .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
                 .hours-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
                 /* A time input needs about 125px to show "09:00 AM" and its clock
                    icon (measured). 9.5rem leaves room for that; below it the row
@@ -356,19 +329,13 @@ export default function NewDoctorPage() {
                   color: rgba(255,255,255,0.45); cursor: pointer;
                 }
                 .toggle-password:hover { color: #fff; }
-                .field-hint { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); }
-
-                .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
 
                 @media (max-width: 640px) {
-                    .form-layout { flex-direction: column; }
+                    .form-layout { flex-direction: column; align-items: stretch; }
                     .avatar-column { width: 100%; flex-direction: row; flex-wrap: wrap; }
                     .avatar-card { flex-direction: row; flex-wrap: wrap; gap: 1rem; padding: 1rem; }
                     .avatar-circle { width: 80px; height: 80px; flex-shrink: 0; }
                     .color-card { flex: 1 1 200px; }
-                    .field-row { grid-template-columns: minmax(0, 1fr); }
-                    .form-actions { flex-wrap: wrap; }
-                    .form-actions button { flex: 1 1 auto; }
                 }
             `}</style>
         </div>

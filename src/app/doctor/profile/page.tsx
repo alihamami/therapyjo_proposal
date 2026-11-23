@@ -21,6 +21,7 @@ export default function DoctorProfilePage() {
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const fetchProfile = useCallback(async () => {
@@ -49,6 +50,7 @@ export default function DoctorProfilePage() {
     const handleSubmit = async () => {
         if (!profile) return;
         setMessage("");
+        setError("");
         setSaving(true);
 
         const changes: Record<string, string> = {};
@@ -88,7 +90,7 @@ export default function DoctorProfilePage() {
             fetchProfile();
         } else {
             const data = await res.json();
-            setMessage(data.error || "Failed to submit changes");
+            setError(data.error || "Failed to submit changes");
         }
     };
 
@@ -107,7 +109,7 @@ export default function DoctorProfilePage() {
     }
 
     if (!profile) {
-        return <div style={{ color: "rgba(255,255,255,0.5)", padding: "2rem" }}>Loading…</div>;
+        return <p className="staff-loading" role="status">Loading…</p>;
     }
 
     return (
@@ -121,7 +123,8 @@ export default function DoctorProfilePage() {
                 </div>
             )}
 
-            {message && <div className="message">{message}</div>}
+            {message && <div className="message" role="status">{message}</div>}
+            {error && <div className="staff-form-error" role="alert">{error}</div>}
 
             <div className="form-layout">
                 <div className="photo-col">
@@ -131,25 +134,25 @@ export default function DoctorProfilePage() {
                     <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePhotoChange} />
                 </div>
                 <div className="fields-col">
-                    <div className="field">
-                        <label>Name</label>
-                        <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                    <div className="staff-field">
+                        <label htmlFor="profile-name">Name</label>
+                        <input id="profile-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                     </div>
-                    <div className="field">
-                        <label>Title</label>
-                        <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                    <div className="staff-field">
+                        <label htmlFor="profile-title">Title</label>
+                        <input id="profile-title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
                     </div>
-                    <div className="field">
-                        <label>Specialty</label>
-                        <input value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} />
+                    <div className="staff-field">
+                        <label htmlFor="profile-specialty">Specialty</label>
+                        <input id="profile-specialty" value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} />
                     </div>
-                    <div className="field">
-                        <label>Bio</label>
-                        <textarea rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
+                    <div className="staff-field">
+                        <label htmlFor="profile-bio">Bio</label>
+                        <textarea id="profile-bio" rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
                     </div>
-                    <div className="field">
-                        <label>Contact</label>
-                        <input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} />
+                    <div className="staff-field">
+                        <label htmlFor="profile-contact">Contact</label>
+                        <input id="profile-contact" value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} />
                     </div>
                     <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>
                         {saving ? "Submitting…" : "Submit for Approval"}
@@ -169,6 +172,7 @@ export default function DoctorProfilePage() {
                     background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7;
                     padding: 0.6rem 0.9rem; border-radius: 8px; font-size: var(--staff-size-base); margin-bottom: 1rem;
                 }
+                .page > .staff-form-error { margin-bottom: 1rem; }
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
                 .photo-col { width: 140px; flex-shrink: 0; }
                 .photo-drop {
@@ -178,18 +182,11 @@ export default function DoctorProfilePage() {
                 }
                 .photo-img { width: 100%; height: 100%; object-fit: cover; }
                 .fields-col { flex: 1; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
-                .field { display: flex; flex-direction: column; gap: 0.3rem; }
-                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
-                .field input, .field textarea {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px; padding: 0.6rem 0.8rem; color: #fff; font-size: var(--staff-size-base);
-                    outline: none; font-family: inherit; resize: vertical;
-                }
-                .field input:focus, .field textarea:focus { border-color: var(--primary, #4CAF93); }
                 .staff-btn { align-self: flex-start; }
 
                 @media (max-width: 560px) {
-                    .form-layout { flex-direction: column; align-items: center; }
+                    .form-layout { flex-direction: column; align-items: stretch; }
+                    .photo-col { align-self: center; }
                 }
             `}</style>
         </div>

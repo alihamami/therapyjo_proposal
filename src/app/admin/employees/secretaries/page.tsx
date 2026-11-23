@@ -508,7 +508,7 @@ export default function SecretariesPage() {
 
                     <div className="staff-form-section">
                         <p className="staff-form-section-title">Content management</p>
-                        <label className="grant-row">
+                        <label className="staff-check">
                             <input
                                 type="checkbox"
                                 checked={form.canManageContent}
@@ -672,13 +672,6 @@ export default function SecretariesPage() {
         a.doc-name:hover { text-decoration: underline; }
         .doc-row.uploading .doc-name { color: rgba(255,255,255,0.5); }
         .doc-empty { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); padding: 0.25rem 0; }
-        .grant-row { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
-        .grant-row input[type="checkbox"] {
-          width: 16px; height: 16px; flex-shrink: 0;
-          margin: 0; padding: 0; border: none; background: none;
-          border-radius: 0; accent-color: #10b981; cursor: pointer;
-        }
-        .grant-row span { font-size: var(--staff-size-base); color: rgba(255,255,255,0.85); font-weight: 400; }
 
         @media (max-width: 560px) {
           .form-grid { grid-template-columns: minmax(0, 1fr); }

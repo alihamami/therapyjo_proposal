@@ -115,24 +115,24 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
             <button className="back-btn" onClick={() => router.push("/admin/blog")}>← Back to Blog</button>
             <h1>{isEdit ? "Edit Post" : "New Post"}</h1>
 
-            {error && <div className="error-banner">{error}</div>}
+            {error && <div className="staff-form-error" role="alert">{error}</div>}
 
             <div className="editor-layout">
                 {/* Left column */}
                 <div className="left-col">
-                    <div className="card">
-                        <div className="field">
-                            <label>Title</label>
-                            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title…" autoFocus />
+                    <div className="staff-form-card">
+                        <div className="staff-field">
+                            <label htmlFor="post-title">Title</label>
+                            <input id="post-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title…" autoFocus />
                         </div>
-                        <div className="field-row">
-                            <div className="field">
-                                <label>Category</label>
-                                <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <div className="staff-field-row">
+                            <div className="staff-field">
+                                <label htmlFor="post-category">Category</label>
+                                <select id="post-category" value={category} onChange={(e) => setCategory(e.target.value)}>
                                     {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                                 </select>
                             </div>
-                            <div className="field">
+                            <div className="staff-field">
                                 <label>Language</label>
                                 <div className="toggle-group">
                                     <button
@@ -156,8 +156,8 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                         </div>
                     </div>
 
-                    <div className="card">
-                        <label className="section-label">Publishing</label>
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Publishing</h2>
                         <div className="status-buttons">
                             {(["DRAFT", "SCHEDULED", "PUBLISHED"] as const).map((s) => (
                                 <button
@@ -172,9 +172,9 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                         </div>
 
                         {status === "SCHEDULED" && (
-                            <div className="status-panel panel-scheduled">
-                                <label>Goes live on</label>
-                                <input type="datetime-local" value={publishAt} onChange={(e) => setPublishAt(e.target.value)} />
+                            <div className="status-panel panel-scheduled staff-field">
+                                <label htmlFor="post-publish-at">Goes live on</label>
+                                <input id="post-publish-at" type="datetime-local" value={publishAt} onChange={(e) => setPublishAt(e.target.value)} />
                             </div>
                         )}
 
@@ -186,24 +186,27 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                         )}
                     </div>
 
-                    <div className="card">
-                        <label className="section-label">Body</label>
-                        <div className="toolbar">
-                            <span>B</span><span><em>I</em></span><span><LinkIcon size={13} aria-hidden="true" /></span><span>≡</span>
+                    <div className="staff-form-card">
+                        <label htmlFor="post-body" className="staff-form-card-title">Body</label>
+                        <div>
+                            <div className="toolbar">
+                                <span>B</span><span><em>I</em></span><span><LinkIcon size={13} aria-hidden="true" /></span><span>≡</span>
+                            </div>
+                            <textarea
+                                id="post-body"
+                                className="body-textarea"
+                                rows={10}
+                                dir={lang === "AR" ? "rtl" : "ltr"}
+                                value={body}
+                                onChange={(e) => setBody(e.target.value)}
+                                placeholder="Write the post…"
+                            />
                         </div>
-                        <textarea
-                            className="body-textarea"
-                            rows={10}
-                            dir={lang === "AR" ? "rtl" : "ltr"}
-                            value={body}
-                            onChange={(e) => setBody(e.target.value)}
-                            placeholder="Write the post…"
-                        />
                     </div>
 
                     <div className="footer-row">
                         <span className="saved-hint">{lastSaved ? `Last saved ${lastSaved}` : ""}</span>
-                        <div className="footer-actions">
+                        <div className="staff-form-actions">
                             <button className="staff-btn staff-btn-secondary" onClick={() => router.push("/admin/blog")}>Cancel</button>
                             <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSave} disabled={saving}>
                                 {saving ? "Saving…" : "Save Post"}
@@ -214,8 +217,8 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
 
                 {/* Right column */}
                 <div className="right-col">
-                    <div className="card">
-                        <label className="section-label">Cover Image</label>
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Cover Image</h2>
                         <div className="drop-zone" onClick={() => fileInputRef.current?.click()}>
                             {coverImage ? (
                                 <img src={coverImage} alt="Cover" className="cover-preview" />
@@ -232,8 +235,8 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                         />
                     </div>
 
-                    <div className="card">
-                        <label className="section-label">Translation</label>
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Translation</h2>
                         {!isEdit ? (
                             <p className="translation-note">Save this post first to create a linked translation.</p>
                         ) : linked ? (
@@ -262,25 +265,10 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                 .back-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); cursor: pointer; padding: 0; margin-bottom: 1rem; font-family: inherit; }
                 .back-btn:hover { color: #fff; }
                 h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 1.25rem; }
-                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: 6px; font-size: var(--staff-size-base); margin-bottom: 1.25rem; }
+                .editor-page > .staff-form-error { margin-bottom: 1.25rem; }
 
                 .editor-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start; }
                 .left-col, .right-col { display: flex; flex-direction: column; gap: 1rem; }
-
-                .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 1.25rem; }
-                .section-label { display: block; font-size: var(--staff-size-sm); font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
-
-                .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
-                .field:last-child { margin-bottom: 0; }
-                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
-                .field input, .field select {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px; padding: 0.65rem 0.85rem; color: #fff; font-size: var(--staff-size-base);
-                    outline: none; font-family: inherit;
-                }
-                .field input:focus, .field select:focus { border-color: var(--primary, #4CAF93); }
-                .field select option { background: #1a2e35; }
-                .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
                 .toggle-group { display: flex; gap: 0.4rem; }
                 .toggle-btn {
@@ -291,7 +279,7 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                 .toggle-btn.active { background: rgba(76,175,147,0.18); border-color: var(--primary, #4CAF93); color: var(--primary, #4CAF93); font-weight: 600; }
                 .toggle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-                .status-buttons { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+                .status-buttons { display: flex; gap: 0.5rem; }
                 .status-btn {
                     flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
                     color: rgba(255,255,255,0.6); padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base);
@@ -304,10 +292,6 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                 .status-panel { border-radius: 8px; padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem; }
                 .panel-scheduled { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); }
                 .panel-scheduled label { font-size: var(--staff-size-sm); color: #93c5fd; }
-                .panel-scheduled input {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 6px; padding: 0.5rem 0.7rem; color: #fff; font-family: inherit;
-                }
                 .panel-published { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); }
                 .panel-published p { margin: 0; font-size: var(--staff-size-base); color: #6ee7b7; }
                 .unpublish-btn {
@@ -330,7 +314,6 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
 
                 .footer-row { display: flex; align-items: center; justify-content: space-between; }
                 .saved-hint { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); }
-                .footer-actions { display: flex; gap: 0.75rem; }
 
                 .drop-zone {
                     aspect-ratio: 16/9; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.12);
@@ -341,7 +324,7 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
                 .drop-hint { color: rgba(255,255,255,0.3); font-size: var(--staff-size-base); }
                 .cover-preview { width: 100%; height: 100%; object-fit: cover; }
 
-                .translation-note { font-size: var(--staff-size-base); color: rgba(255,255,255,0.5); margin: 0 0 0.75rem; }
+                .translation-note { font-size: var(--staff-size-base); color: rgba(255,255,255,0.5); margin: 0; }
                 .translate-btn {
                     width: 100%; background: rgba(76,175,147,0.12); color: var(--primary, #4CAF93); border: none;
                     padding: 0.6rem; border-radius: 8px; font-size: var(--staff-size-base); font-weight: 600; cursor: pointer; font-family: inherit;
@@ -355,13 +338,10 @@ export default function BlogEditor({ initial }: { initial?: PostData }) {
 
                 @media (max-width: 560px) {
                     .editor-page { padding-bottom: 1rem; }
-                    .field-row { grid-template-columns: 1fr; gap: 0.75rem; }
                     .status-buttons { flex-wrap: wrap; }
                     .status-btn { flex: 1 1 45%; }
                     .toolbar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
                     .footer-row { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-                    .footer-actions { justify-content: stretch; }
-                    .footer-actions .staff-btn { flex: 1; }
                 }
             `}</style>
         </div>
