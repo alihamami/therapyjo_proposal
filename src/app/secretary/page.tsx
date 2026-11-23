@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
-import DatePickerPopover from "@/app/components/DatePickerPopover";
+import DayHeader, { todayISO } from "@/app/components/DayHeader";
 import { CalendarPlus, Plus } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
@@ -27,12 +27,10 @@ interface Reservation {
     doctorColorSnapshot: string | null;
 }
 
-const today = () => new Date().toISOString().split("T")[0];
-
 export default function SecretaryDashboard() {
     const confirm = useConfirm();
     const router = useRouter();
-    const [selectedDate, setSelectedDate] = useState(today());
+    const [selectedDate, setSelectedDate] = useState(todayISO());
     const [doctorFilter, setDoctorFilter] = useState("all");
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -152,17 +150,6 @@ export default function SecretaryDashboard() {
         fetchReservations();
     };
 
-    const goDay = (offset: number) => {
-        const d = new Date(selectedDate);
-        d.setDate(d.getDate() + offset);
-        setSelectedDate(d.toISOString().split("T")[0]);
-    };
-
-    const formatDate = () =>
-        new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", {
-            weekday: "long", month: "long", day: "numeric", year: "numeric",
-        });
-
     const dupReservation = dupId !== null ? reservations.find((r) => r.id === dupId) : undefined;
 
     return (
@@ -173,37 +160,22 @@ export default function SecretaryDashboard() {
                     <button className="dismiss-error" onClick={() => setStatusError("")}>Dismiss</button>
                 </div>
             )}
-            <div className="controls">
-                <div className="controls-left">
-                    <h1>Dashboard</h1>
-                    <div className="date-nav">
-                        <button className="btn-nav" onClick={() => goDay(-1)}>← Yesterday</button>
-                        <button className="btn-nav btn-today" onClick={() => setSelectedDate(today())}>Today</button>
-                        <button className="btn-nav" onClick={() => goDay(1)}>Tomorrow →</button>
-                    </div>
-                </div>
-                <div className="controls-right">
-                    <select className="doctor-select" value={doctorFilter} onChange={(e) => setDoctorFilter(e.target.value)}>
-                        <option value="all">All Doctors</option>
-                        {doctors.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
-                    </select>
-                    <button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = `/secretary/reservations/new?date=${selectedDate}`; }}><Plus size={15} aria-hidden="true" />Add Reservation</button>
-                </div>
-            </div>
-
-            <div className="date-trigger-row">
-                <DatePickerPopover
-                    selectedDate={selectedDate}
-                    onDateSelect={setSelectedDate}
-                    doctorId={doctorFilter}
-                    label={formatDate()}
-                />
-            </div>
+            <DayHeader
+                title="Dashboard"
+                date={selectedDate}
+                onDateChange={setSelectedDate}
+                doctorFilter={doctorFilter}
+                onDoctorFilterChange={setDoctorFilter}
+                doctorOptions={doctors.map((d) => ({ value: d.id, label: d.name }))}
+                action={<button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = `/secretary/reservations/new?date=${selectedDate}`; }}><Plus size={15} aria-hidden="true" />Add Reservation</button>}
+                statuses={reservations.map((r) => r.status)}
+                doctors={doctors}
+            />
 
             <div className="main-layout">
                 <div className="calendar-col">
                     {loading ? (
-                        <div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem", textAlign: "center" }}>Loading…</div>
+                        <p className="staff-loading" role="status">Loading…</p>
                     ) : (
                         <Calendar
                             reservations={reservations}
@@ -254,17 +226,6 @@ export default function SecretaryDashboard() {
             )}
 
             <style jsx>{`
-                .controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem; }
-                .controls-left { display: flex; align-items: center; gap: 1.25rem; }
-                .controls-left h1 { font-size: var(--staff-size-xl); font-weight: 600; }
-                .date-nav { display: flex; gap: 0.35rem; }
-                .btn-nav { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
-                .btn-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
-                .btn-today { font-weight: 600; color: var(--primary, #4CAF93); border-color: var(--primary, #4CAF93); }
-                .controls-right { display: flex; align-items: center; gap: 0.5rem; }
-                .doctor-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); font-family: inherit; }
-                .doctor-select option { background: #1a2e35; }
-                .date-trigger-row { margin-bottom: 1rem; }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }
                 .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2); color: #fca5a5; padding: 0.5rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 0.75rem; }
@@ -277,7 +238,6 @@ export default function SecretaryDashboard() {
                     font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; flex-shrink: 0;
                 }
                 .dismiss-error:hover { color: #fff; }
-                @media (max-width: 768px) { .controls { flex-direction: column; align-items: flex-start; } }
             `}</style>
         </div>
     );

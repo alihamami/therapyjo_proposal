@@ -2870,3 +2870,170 @@ button.staff-row-name {
     padding: 1rem;
   }
 }
+/* The dashboards' day header (TJ-071, components/DayHeader.tsx): the
+   admin dashboard's header, shared by all three dashboards. */
+.staff-day-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.staff-day-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.staff-day-title {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.staff-day-title h1 {
+  margin: 0;
+  font-size: var(--staff-size-xl);
+  font-weight: 600;
+}
+.staff-day-steps {
+  display: flex;
+  gap: 0.35rem;
+}
+.staff-day-step {
+  padding: 0.35rem 0.75rem;
+  background: var(--staff-surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--staff-radius-sm);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: var(--staff-size-sm);
+  cursor: pointer;
+}
+.staff-day-step:hover {
+  background: var(--staff-surface-hover);
+  color: var(--staff-text);
+}
+.staff-day-step.staff-day-today {
+  border-color: var(--staff-accent);
+  color: var(--staff-accent);
+  font-weight: 600;
+}
+.staff-day-step:focus-visible,
+.staff-day-select:focus-visible {
+  outline: 2px solid var(--staff-focus);
+  outline-offset: 2px;
+}
+.staff-day-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.staff-day-select {
+  padding: 0.4rem 0.75rem;
+  background: var(--staff-surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--staff-radius-sm);
+  color: var(--staff-text);
+  color-scheme: dark;
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+}
+.staff-day-select option {
+  background: var(--staff-bg);
+}
+.staff-day-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.staff-day-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.staff-day-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.staff-day-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-sm);
+  color: var(--staff-muted);
+  font-size: var(--staff-size-xs);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.staff-day-chip b {
+  color: var(--staff-text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.staff-day-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.staff-day-chip.staff-day-chip-warn {
+  background: var(--staff-warn-soft);
+  border-color: rgba(251, 191, 36, 0.2);
+  color: var(--staff-warn);
+}
+.staff-day-chip-warn b {
+  color: var(--staff-warn);
+}
+.staff-day-chip.staff-day-chip-warn:hover {
+  background: rgba(251, 191, 36, 0.18);
+}
+.staff-day-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+}
+.staff-day-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--staff-muted);
+  font-size: var(--staff-size-sm);
+}
+.staff-day-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+@media (max-width: 768px) {
+  .staff-day-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media (max-width: 640px) {
+  .staff-day-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    width: 100%;
+  }
+  .staff-day-steps {
+    width: 100%;
+  }
+  .staff-day-step {
+    flex: 1;
+    text-align: center;
+  }
+  .staff-day-tools {
+    width: 100%;
+  }
+  .staff-day-select {
+    flex: 1;
+  }
+}

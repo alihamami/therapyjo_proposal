@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
-import DatePickerPopover from "@/app/components/DatePickerPopover";
+import DayHeader, { todayISO } from "@/app/components/DayHeader";
 import { isMissingPhone } from "@/lib/phone";
 import { Plus } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
@@ -43,12 +43,10 @@ type ReservationDetail = Reservation & {
     } | null;
 };
 
-const today = () => new Date().toISOString().split("T")[0];
-
 export default function AdminDashboard() {
     const confirm = useConfirm();
     const router = useRouter();
-    const [selectedDate, setSelectedDate] = useState(today());
+    const [selectedDate, setSelectedDate] = useState(todayISO());
     const [doctorFilter, setDoctorFilter] = useState("all");
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -164,20 +162,6 @@ export default function AdminDashboard() {
         setDetailId(id);
     };
 
-    const goDay = (offset: number) => {
-        const d = new Date(selectedDate);
-        d.setDate(d.getDate() + offset);
-        setSelectedDate(d.toISOString().split("T")[0]);
-    };
-
-    const formatSelectedDate = () =>
-        new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-        });
-
     return (
         <div className="dashboard">
             {statusError && (
@@ -186,69 +170,28 @@ export default function AdminDashboard() {
                     <button className="dismiss-error" onClick={() => setStatusError("")}>Dismiss</button>
                 </div>
             )}
-            {/* Controls */}
-            <div className="controls">
-                <div className="controls-left">
-                    <h1>Dashboard</h1>
-                    <div className="date-nav">
-                        <button className="btn-nav" onClick={() => goDay(-1)}>← Yesterday</button>
-                        <button className="btn-nav btn-today" onClick={() => setSelectedDate(today())}>Today</button>
-                        <button className="btn-nav" onClick={() => goDay(1)}>Tomorrow →</button>
-                    </div>
-                </div>
-                <div className="controls-right">
-                    <select
-                        className="doctor-select"
-                        value={doctorFilter}
-                        onChange={(e) => setDoctorFilter(e.target.value)}
-                    >
-                        <option value="all">All Doctors</option>
-                        {doctors.map((d) => (
-                            <option key={d.id} value={d.id}>{d.name}</option>
-                        ))}
-                    </select>
-                    <button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = `/admin/reservations/new?date=${selectedDate}`; }}><Plus size={15} aria-hidden="true" />Add Reservation</button>
-                </div>
-            </div>
-
-            {/* Date & Legend */}
-            <div className="sub-header">
-                <div className="sub-header-start">
-                    <DatePickerPopover
-                        selectedDate={selectedDate}
-                        onDateSelect={setSelectedDate}
-                        doctorId={doctorFilter}
-                        label={formatSelectedDate()}
-                    />
-                    <div className="summary-chips">
-                        <span className="chip"><span className="chip-val">{reservations.length}</span> Total</span>
-                        <span className="chip"><span className="chip-val">{reservations.filter((r) => r.status === "SCHEDULED").length}</span> Scheduled</span>
-                        <span className="chip"><span className="chip-val">{reservations.filter((r) => r.status === "WAITING").length}</span> Waiting</span>
-                        <span className="chip"><span className="chip-val">{reservations.filter((r) => r.status === "CHECKED_IN").length}</span> Checked In</span>
-                        <span className="chip"><span className="chip-val">{reservations.filter((r) => r.status === "WITH_DOCTOR").length}</span> With Doctor</span>
-                        <span className="chip"><span className="chip-val">{reservations.filter((r) => r.status === "CHECKED_OUT").length}</span> Checked Out</span>
-                        {dupCount > 0 && (
-                            <Link href="/admin/patients/duplicates" className="chip chip-warn">
-                                <span className="chip-val">{dupCount}</span> Possible duplicate{dupCount === 1 ? "" : "s"} →
-                            </Link>
-                        )}
-                    </div>
-                </div>
-                <div className="legend">
-                    {doctors.map((d) => (
-                        <span key={d.id} className="legend-item">
-                            <span className="legend-dot" style={{ background: d.color || "#666" }} />
-                            {d.name}
-                        </span>
-                    ))}
-                </div>
-            </div>
+            <DayHeader
+                title="Dashboard"
+                date={selectedDate}
+                onDateChange={setSelectedDate}
+                doctorFilter={doctorFilter}
+                onDoctorFilterChange={setDoctorFilter}
+                doctorOptions={doctors.map((d) => ({ value: d.id, label: d.name }))}
+                action={<button className="staff-btn staff-btn-primary" onClick={() => { window.location.href = `/admin/reservations/new?date=${selectedDate}`; }}><Plus size={15} aria-hidden="true" />Add Reservation</button>}
+                statuses={reservations.map((r) => r.status)}
+                extra={dupCount > 0 && (
+                    <Link href="/admin/patients/duplicates" className="staff-day-chip staff-day-chip-warn">
+                        <b>{dupCount}</b> Possible duplicate{dupCount === 1 ? "" : "s"} →
+                    </Link>
+                )}
+                doctors={doctors}
+            />
 
             {/* Main layout */}
             <div className="main-layout">
                 <div className="calendar-col">
                     {loading ? (
-                        <div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem", textAlign: "center" }}>Loading…</div>
+                        <p className="staff-loading" role="status">Loading…</p>
                     ) : (
                         <Calendar
                             reservations={reservations}
@@ -333,53 +276,8 @@ export default function AdminDashboard() {
             )}
 
             <style jsx>{`
-                .dashboard { display: flex; flex-direction: column; gap: 1rem; }
-                .controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
-                .controls-left { display: flex; align-items: center; gap: 1.25rem; }
-                .controls-left h1 { font-size: var(--staff-size-xl); font-weight: 600; }
-                .date-nav { display: flex; gap: 0.35rem; }
-                .btn-nav {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit;
-                }
-                .btn-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
-                .btn-today { font-weight: 600; color: var(--primary, #4CAF93); border-color: var(--primary, #4CAF93); }
-                .controls-right { display: flex; align-items: center; gap: 0.5rem; }
-                .doctor-select {
-                    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-                    color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: var(--staff-size-base); font-family: inherit;
-                }
-                .doctor-select option { background: #1a2e35; }
-                .sub-header {
-                    display: flex; align-items: center; justify-content: space-between;
-                    flex-wrap: wrap; gap: 0.5rem;
-                }
-                .current-date { font-size: var(--staff-size-md); font-weight: 500; color: rgba(255,255,255,0.7); }
-                .legend { display: flex; gap: 1rem; flex-wrap: wrap; }
-                .legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: var(--staff-size-sm); color: rgba(255,255,255,0.5); }
-                .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }
-                .sub-header-start { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-                .summary-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-                .summary-chips :global(.chip) {
-                    display: inline-flex; align-items: center; gap: 0.3rem;
-                    background: rgba(255,255,255,0.04);
-                    border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px);
-                    padding: 0.2rem 0.5rem;
-                    font-size: var(--staff-size-xs); color: rgba(255,255,255,0.55);
-                    white-space: nowrap;
-                }
-                .chip-val { font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
-                .summary-chips :global(.chip-warn) {
-                    background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.2);
-                    color: #fbbf24; text-decoration: none;
-                }
-                .summary-chips :global(.chip-warn) .chip-val { color: #fbbf24; }
-                .summary-chips :global(.chip-warn:hover) { background: rgba(251,191,36,0.14); }
                 .error-msg {
                     background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
                     color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
@@ -406,16 +304,9 @@ export default function AdminDashboard() {
 
                 @media (max-width: 768px) {
                     .calendar-col { width: 100%; }
-                    .sub-header-start { align-items: flex-start; }
-                    .controls { flex-direction: column; align-items: flex-start; }
                 }
 
                 @media (max-width: 640px) {
-                    .controls-left { flex-direction: column; align-items: flex-start; gap: 0.6rem; width: 100%; }
-                    .date-nav { width: 100%; }
-                    .btn-nav { flex: 1; text-align: center; }
-                    .controls-right { width: 100%; }
-                    .doctor-select { flex: 1; }
                     .detail-grid { grid-template-columns: 1fr; }
                 }
             `}</style>
