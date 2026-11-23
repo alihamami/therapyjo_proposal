@@ -55,17 +55,17 @@ export default function NewNotePage() {
             <h1>New Note</h1>
             <p className="subtitle">Create a clinical or administrative note.</p>
 
-            {error && <div className="error-banner">{error}</div>}
+            {error && <div className="staff-form-error" role="alert">{error}</div>}
 
             <div className="form-layout">
                 <div className="main-column">
-                    <div className="card">
-                        <h2>Note Details</h2>
-                        <div className="field">
-                            <label htmlFor="name">Title <span className="req">*</span></label>
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Note Details</h2>
+                        <div className="staff-field">
+                            <label htmlFor="name">Title <span className="staff-field-req">*</span></label>
                             <input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Patient follow-up, Session summary…" autoFocus />
                         </div>
-                        <div className="field">
+                        <div className="staff-field">
                             <label htmlFor="details">Details</label>
                             <textarea id="details" rows={6} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Write the note details here…" />
                         </div>
@@ -73,29 +73,27 @@ export default function NewNotePage() {
                 </div>
 
                 <div className="side-column">
-                    <div className="card">
-                        <h2>Metadata</h2>
-                        <div className="field">
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Metadata</h2>
+                        <div className="staff-field">
                             <label htmlFor="date">Date</label>
                             <input id="date" type="date" value={form.noteDate} onChange={(e) => setForm({ ...form, noteDate: e.target.value })} />
                         </div>
-                        <div className="field">
-                            <label htmlFor="doctor">Doctor <span className="req">*</span></label>
+                        <div className="staff-field">
+                            <label htmlFor="doctor">Doctor <span className="staff-field-req">*</span></label>
                             <select id="doctor" value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>
                                 {doctors.map((d) => (
                                     <option key={d.id} value={d.id}>{d.name}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className="checkbox-field">
-                            <label className="checkbox-label">
-                                <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
-                                Doctor check note
-                            </label>
-                        </div>
+                        <label className="staff-check">
+                            <input type="checkbox" checked={form.doctorCheckNote} onChange={(e) => setForm({ ...form, doctorCheckNote: e.target.checked })} />
+                            Doctor check note
+                        </label>
                     </div>
 
-                    <div className="form-actions">
+                    <div className="staff-form-actions">
                         <button className="staff-btn staff-btn-secondary" onClick={() => router.push("/admin/notes")}>Cancel</button>
                         <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>
                             {saving ? "Creating…" : "Create Note"}
@@ -110,43 +108,14 @@ export default function NewNotePage() {
                 .back-btn:hover { color: #fff; }
                 h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
                 .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
-                .error-banner { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 1.25rem; }
+                .page > .staff-form-error { margin-bottom: 1.25rem; }
 
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
                 .main-column { flex: 1.4; min-width: 0; }
                 .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
 
-                .card {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); padding: 1.5rem;
-                }
-                .card h2 { font-size: var(--staff-size-md); font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
-
-                .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
-                .field:last-child { margin-bottom: 0; }
-                .field label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500; }
-                .req { color: var(--primary, #4CAF93); }
-                .field input, .field textarea, .field select {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: var(--radius-sm, 2px); padding: 0.65rem 0.85rem; color: #fff;
-                    font-size: var(--staff-size-base); outline: none; font-family: inherit; transition: border-color 0.15s;
-                }
-                .field textarea { resize: vertical; }
-                .field select option { background: #1a2e35; }
-                .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--primary, #4CAF93); }
-                .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.2); }
-
-                .checkbox-field { margin-top: 0.5rem; }
-                .checkbox-label {
-                    display: flex; align-items: center; gap: 0.4rem;
-                    font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); cursor: pointer;
-                }
-                .checkbox-label input[type="checkbox"] { width: auto; accent-color: var(--primary, #4CAF93); }
-
-                .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
-
                 @media (max-width: 640px) {
-                    .form-layout { flex-direction: column; }
+                    .form-layout { flex-direction: column; align-items: stretch; }
                 }
             `}</style>
         </div>

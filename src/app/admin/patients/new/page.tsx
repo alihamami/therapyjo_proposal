@@ -65,12 +65,12 @@ export default function NewPatientPage() {
             <h1>New Patient</h1>
             <p className="subtitle">Fill in the patient&apos;s details to create their profile.</p>
 
-            {error && <div className="error-banner">{error}</div>}
+            {error && <div className="staff-form-error" role="alert">{error}</div>}
 
             <div className="form-layout">
                 {/* Left: Avatar area */}
                 <div className="avatar-column">
-                    <div className="avatar-card">
+                    <div className="staff-form-card avatar-card">
                         <div className="avatar-circle" onClick={() => fileInputRef.current?.click()}>
                             {previewUrl ? (
                                 <img src={previewUrl} alt="Preview" className="avatar-img" />
@@ -102,10 +102,10 @@ export default function NewPatientPage() {
 
                 {/* Right: Form fields */}
                 <div className="fields-column">
-                    <div className="fields-card">
-                        <h2>Patient Information</h2>
-                        <div className="field">
-                            <label htmlFor="name">Full Name <span className="req">*</span></label>
+                    <div className="staff-form-card">
+                        <h2 className="staff-form-card-title">Patient Information</h2>
+                        <div className="staff-field">
+                            <label htmlFor="name">Full Name <span className="staff-field-req">*</span></label>
                             <input
                                 id="name"
                                 type="text"
@@ -115,9 +115,9 @@ export default function NewPatientPage() {
                                 autoFocus
                             />
                         </div>
-                        <div className="field-row">
-                            <div className="field">
-                                <label htmlFor="phone1">Phone 1 <span className="req">*</span></label>
+                        <div className="staff-field-row">
+                            <div className="staff-field">
+                                <label htmlFor="phone1">Phone 1 <span className="staff-field-req">*</span></label>
                                 <input
                                     id="phone1"
                                     type="tel"
@@ -126,7 +126,7 @@ export default function NewPatientPage() {
                                     placeholder="e.g. 0791234567"
                                 />
                             </div>
-                            <div className="field">
+                            <div className="staff-field">
                                 <label htmlFor="phone2">Phone 2</label>
                                 <input
                                     id="phone2"
@@ -140,7 +140,7 @@ export default function NewPatientPage() {
                     </div>
 
                     {/* Action buttons */}
-                    <div className="form-actions">
+                    <div className="staff-form-actions">
                         <button className="staff-btn staff-btn-secondary" onClick={() => router.push("/admin/patients")}>Cancel</button>
                         <button className="staff-btn staff-btn-primary" aria-busy={saving} onClick={handleSubmit} disabled={saving}>
                             {saving ? "Creating…" : "Create Patient"}
@@ -156,21 +156,13 @@ export default function NewPatientPage() {
                 h1 { font-size: var(--staff-size-xl); font-weight: 700; margin: 0 0 0.25rem; }
                 .subtitle { color: rgba(255,255,255,0.4); font-size: var(--staff-size-base); margin-bottom: 1.5rem; }
 
-                .error-banner {
-                    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25);
-                    color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm, 2px);
-                    font-size: var(--staff-size-base); margin-bottom: 1.25rem;
-                }
+                .page > .staff-form-error { margin-bottom: 1.25rem; }
 
                 .form-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
 
                 /* Avatar column */
                 .avatar-column { width: 220px; flex-shrink: 0; }
-                .avatar-card {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); padding: 1.5rem;
-                    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
-                }
+                .avatar-card { align-items: center; gap: 0.75rem; }
                 .avatar-circle {
                     width: 140px; height: 140px; border-radius: 50%;
                     border: 2px dashed rgba(255,255,255,0.12);
@@ -195,41 +187,14 @@ export default function NewPatientPage() {
                 .upload-hint { color: rgba(255,255,255,0.25); font-size: var(--staff-size-xs); text-align: center; margin: 0; }
 
                 /* Fields column */
-                .fields-column { flex: 1; min-width: 0; }
-                .fields-card {
-                    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-                    border-radius: var(--radius-md, 4px); padding: 1.5rem;
-                }
-                .fields-card h2 { font-size: var(--staff-size-md); font-weight: 600; margin: 0 0 1.25rem; color: rgba(255,255,255,0.85); }
-                .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
-                .field label {
-                    font-size: var(--staff-size-sm); color: rgba(255,255,255,0.55); font-weight: 500;
-                }
-                .req { color: var(--primary, #4CAF93); }
-                .field input {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: var(--radius-sm, 2px); padding: 0.65rem 0.85rem; color: #fff;
-                    font-size: var(--staff-size-base); outline: none; font-family: inherit;
-                    transition: border-color 0.15s;
-                }
-                .field input:focus { border-color: var(--primary, #4CAF93); }
-                .field input::placeholder { color: rgba(255,255,255,0.2); }
-                .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-                .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem; }
+                .fields-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
 
                 @media (max-width: 640px) {
-                    .form-layout { flex-direction: column; }
+                    .form-layout { flex-direction: column; align-items: stretch; }
                     .avatar-column { width: 100%; }
                     .avatar-card { flex-direction: row; flex-wrap: wrap; gap: 0.6rem 1rem; padding: 1rem; }
                     .avatar-circle { width: 80px; height: 80px; flex-shrink: 0; }
                     .upload-hint { flex: 1 1 100%; text-align: left; }
-                    .field-row { grid-template-columns: 1fr; }
-                }
-
-                @media (max-width: 480px) {
-                    .form-actions { flex-direction: column-reverse; align-items: stretch; }
-                    .form-actions button { width: 100%; }
                 }
             `}</style>
         </div>
