@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Calendar from "@/app/components/Calendar";
-import DatePickerPopover from "@/app/components/DatePickerPopover";
+import DayHeader, { formatDay, todayISO } from "@/app/components/DayHeader";
 import { sessionsHiddenFrom } from "@/lib/permissions";
 import { SCHEDULE_OPEN_LABEL } from "@/lib/clinicHours";
 import { useConfirm } from "@/app/components/ConfirmDialog";
@@ -28,13 +28,11 @@ interface Reservation {
     doctorColorSnapshot: string | null;
 }
 
-const today = () => new Date().toISOString().split("T")[0];
-
 export default function DoctorDashboard() {
     const confirm = useConfirm();
     const { data: session } = useSession();
     const router = useRouter();
-    const [selectedDate, setSelectedDate] = useState(today());
+    const [selectedDate, setSelectedDate] = useState(todayISO());
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [loading, setLoading] = useState(true);
     const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -101,54 +99,30 @@ export default function DoctorDashboard() {
         fetchReservations();
     };
 
-    const goDay = (offset: number) => {
-        const d = new Date(selectedDate);
-        d.setDate(d.getDate() + offset);
-        setSelectedDate(d.toISOString().split("T")[0]);
-    };
-
-    const formatDate = () =>
-        new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", {
-            weekday: "long", month: "long", day: "numeric", year: "numeric",
-        });
-
     return (
         <div>
-            <div className="controls">
-                <h1>My Schedule</h1>
-                <div className="date-nav">
-                    <button className="btn-nav" onClick={() => goDay(-1)}>← Yesterday</button>
-                    <button className="btn-nav btn-today" onClick={() => setSelectedDate(today())}>Today</button>
-                    <button className="btn-nav" onClick={() => goDay(1)}>Tomorrow →</button>
-                </div>
-                <select className="doctor-select" value={doctorFilter} onChange={(e) => setDoctorFilter(e.target.value)}>
-                    <option value="all">All Doctors</option>
-                    {doctorId && <option value={doctorId}>My Schedule</option>}
-                    {doctors.filter((d) => d.id !== doctorId).map((d) => (
-                        <option key={d.id} value={d.id}>{d.name}</option>
-                    ))}
-                </select>
-            </div>
-            <div className="date-trigger-row">
-                <DatePickerPopover
-                    selectedDate={selectedDate}
-                    onDateSelect={setSelectedDate}
-                    doctorId={doctorFilter}
-                    label={formatDate()}
-                />
-                {!dayLocked && (
-                    <span className="session-count">{reservations.length} session{reservations.length !== 1 ? "s" : ""}</span>
-                )}
-            </div>
+            <DayHeader
+                title="My Schedule"
+                date={selectedDate}
+                onDateChange={setSelectedDate}
+                doctorFilter={doctorFilter}
+                onDoctorFilterChange={setDoctorFilter}
+                doctorOptions={[
+                    ...(doctorId ? [{ value: doctorId, label: "My Schedule" }] : []),
+                    ...doctors.filter((d) => d.id !== doctorId).map((d) => ({ value: d.id, label: d.name })),
+                ]}
+                statuses={dayLocked ? null : reservations.map((r) => r.status)}
+                doctors={doctors}
+            />
 
             <div className="main-layout">
                 <div className="calendar-col">
                     {dayLocked ? (
                         <div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem", textAlign: "center" }}>
-                            {`This day's schedule opens at ${SCHEDULE_OPEN_LABEL} on ${formatDate()}.`}
+                            {`This day's schedule opens at ${SCHEDULE_OPEN_LABEL} on ${formatDay(selectedDate)}.`}
                         </div>
                     ) : loading ? (
-                        <div style={{ color: "rgba(255,255,255,0.4)", padding: "2rem", textAlign: "center" }}>Loading…</div>
+                        <p className="staff-loading" role="status">Loading…</p>
                     ) : (
                         <Calendar
                             reservations={reservations}
@@ -162,16 +136,6 @@ export default function DoctorDashboard() {
             </div>
 
             <style jsx>{`
-                .controls { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 0.5rem; }
-                .controls h1 { font-size: var(--staff-size-xl); font-weight: 600; }
-                .date-nav { display: flex; gap: 0.35rem; }
-                .btn-nav { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
-                .btn-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
-                .btn-today { font-weight: 600; color: var(--primary, #4CAF93); border-color: var(--primary, #4CAF93); }
-                .doctor-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); font-family: inherit; margin-left: auto; }
-                .doctor-select option { background: #1a2e35; }
-                .date-trigger-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-                .session-count { color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); }
                 .main-layout { display: block; }
                 .calendar-col { min-width: 0; }
             `}</style>
