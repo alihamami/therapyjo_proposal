@@ -149,7 +149,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review; batches 3–4 pushed and deployed 2026-11-23 ~05:22 (Amman) as `369d9fe`, Vercel `success`**; **batch 5 = d4a, d4b, d4c, merged 2026-11-24 after the user's review; pushed and deployed 2026-11-24 ~00:58 (Amman) as `4590c4f`, Vercel `success`** | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review; batches 3–4 pushed and deployed 2026-11-23 ~05:22 (Amman) as `369d9fe`, Vercel `success`**; **batch 5 = d4a, d4b, d4c, merged 2026-11-24 after the user's review; pushed and deployed 2026-11-24 ~00:58 (Amman) as `4590c4f`, Vercel `success`**; **batch 6 = k with TJ-070, planned 2026-11-24 (READY)** | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
@@ -173,8 +173,8 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069h | Searches wait for typing to pause | DONE — task commit `621581c`, merged to `master` as `8ec1c53` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `bugfix/search-waits-for-typing` |
 | TJ-069i | Keep the small-button rule on its own page | DONE — task commit `1f189ca`, merged to `master` as `1618684` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `bugfix/page-scoped-button-rules` |
 | TJ-069j | Approve and Reject on the shared buttons | DONE — task commit `a67157b`, merged to `master` as `19033ff` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/approvals-buttons` |
-| TJ-069k | One Back link for every staff page | BACKLOG — found 2026-11-23 during the TJ-069d4 pass | — |
-| TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
+| TJ-069k | One Back link for every staff page | READY — passed 2026-11-24; batch 6, step 1 of 2 | `feat/staff-back-link` |
+| TJ-070 | Staff portal refresh, phase 2: one layout for every role | READY — passed 2026-11-24; batch 6, step 2 of 2 | `feat/staff-shell` |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
 
@@ -15680,9 +15680,13 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 4 — verified" and "Batch 4 — planned" below). **Batch 5 = TJ-069d4a, d4b, d4c (the full-page forms), merged 2026-11-24 as `5f4c256`, `a233db4`, `472c5c7`, pushed and deployed 2026-11-24 in `4590c4f`** (see "Batch 5 — deployed", "Batch 5 — verified" and "Batch 5 — planned" below).
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 4 — verified" and "Batch 4 — planned" below). **Batch 5 = TJ-069d4a, d4b, d4c (the full-page forms), merged 2026-11-24 as `5f4c256`, `a233db4`, `472c5c7`, pushed and deployed 2026-11-24 in `4590c4f`** (see "Batch 5 — deployed", "Batch 5 — verified" and "Batch 5 — planned" below). **Batch 6 = TJ-069k with TJ-070 (phase 2), passed 2026-11-24, READY** (see "Batch 6 — planned" below).
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
+
+**Batch 6 — planned (2026-11-24):** at the user's request ("plan 69k and the phase 2 then dispatch an executor"), two steps: TJ-069k (one Back link on 19 pages) and TJ-070 (phase 2: one menu bar and page frame for every role, in a new `StaffShell` component). 25 file changes, two `globals.css` appends, one new component.
+- **How the specs were made:** as batches 3–5: edits generated by script on a throwaway worktree of `master` at `dbb03a4`, instructions rendered from the recorded edits; the three layouts are given whole. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `5e202ef`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 24 file versions came out byte-identical, same tree (20 and 5 files per step), and each step's Verification commands pass on the result.
+- **Mocked preview:** see each task's pass. The expected results are in the planner's scratchpad (`b6/expected_blobs.txt`); the executor's tip must reproduce `src/` tree `5e202ef`.
 
 **Batch 5 — deployed (2026-11-24):** pushed at the user's request ("Push it") by SHA (`git push origin 4590c4f:master`, fast-forward from `369d9fe`, 9 commits, all from this planning session; no unmerged branch on `origin`). The `src/` tree is `f5845cc`, the tree verified under batch 5. Deployed ~00:58 (Amman), Vercel `success` (deployment `8ejWNewyWscLhP1k4nevXAFJ1AiC`). The batches 3–4 deploy record (`f777722`) went out with it.
 - **Live check, read-only, without signing in:** the live stylesheet carries the batch 5 pieces (`.staff-form-card`, `.staff-form-card-title`, `.staff-field-req`, `.staff-form-actions`, `.staff-check`) alongside those of batches 3–4; `/`, `/blog` and `/login` answer 200.
@@ -19734,8 +19738,153 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069k — One Back link for every staff page
 
-- **Status:** BACKLOG — found during the TJ-069d4 pass, 2026-11-23.
-- **Why:** the "← Back to …" link has its own copy (`.back-btn` or `.btn-back`, grey at 0.45–0.5 opacity, sizes and margins varying) on 19 staff pages: the 13 forms of TJ-069d4, the three patient files, the archived lists and the duplicates page. It belongs with the shared page header.
+- **Status:** READY — passed 2026-11-24. Batch 6, step 1 of 2.
+- **Branch:** `feat/staff-back-link`, cut from `master` at the commit that adds this spec.
+- **Why:** the "← Back to …" link has its own copy (`.back-btn` or `.btn-back`, grey at 0.45–0.5 opacity, sizes and margins varying) on 19 staff pages: the 13 forms of TJ-069d4, the three patient files, the archived lists and the duplicates page. It belongs with the shared page pieces.
+
+**Planning pass:** 2026-11-24, on `master` at `dbb03a4`. Read every Back link and its rules (`grep -rn 'back-btn\|btn-back' src/app`): twelve forms and the doctor's session page use a `.back-btn` button (1rem below), the three patient files a `.btn-back` button (0.75rem below), and the two archived patient lists, the archived website doctors and the duplicates page a `.btn-back` `<Link>` at the end of the page header, styled through `:global()` since TJ-069i. One global `.staff-back` covers all three: the faint grey, base size, white on hover, a focus ring, 1rem below, and no margin inside a page header. The elements, wording, links and click handlers stay as they are (the patient files and the session page keep their unsaved-changes check). No page has a generic `button` or `a` rule that would override it (checked). Mocked preview at 1280px on a form, two patient files, the session page, an archived list and the duplicates page: the same colour, size and spacing everywhere; no old class left.
+
+**Scope — touch only these (20):** `src/app/globals.css`, `src/app/admin/blog/BlogEditor.tsx`, `src/app/admin/employees/doctors/new/page.tsx`, `src/app/admin/employees/secretaries/new/page.tsx`, `src/app/admin/notes/new/page.tsx`, `src/app/admin/patients/new/page.tsx`, `src/app/admin/reservations/new/page.tsx`, `src/app/admin/reservations/[id]/edit/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, `src/app/secretary/notes/new/page.tsx`, `src/app/secretary/patients/new/page.tsx`, `src/app/secretary/reservations/new/page.tsx`, `src/app/secretary/reservations/[id]/edit/page.tsx`, `src/app/admin/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/admin/patients/archived/page.tsx`, `src/app/secretary/patients/archived/page.tsx`, `src/app/admin/patients/duplicates/page.tsx`, `src/app/admin/doctors/archived/page.tsx`.
+
+**Do not touch:** any other file; the Back elements' wording, links and click handlers.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace the whole file with exactly" means the file's new content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* The "← Back to …" link above a page title, or at the end of a list's
+      header (TJ-069k). A link or a button; both look the same. */
+   .staff-back {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.35rem;
+     margin: 0 0 1rem;
+     padding: 0;
+     background: none;
+     border: none;
+     color: var(--staff-faint);
+     font-family: inherit;
+     font-size: var(--staff-size-base);
+     text-decoration: none;
+     cursor: pointer;
+     transition: color 0.15s;
+   }
+   .staff-back:hover {
+     color: var(--staff-text);
+   }
+   .staff-back:focus-visible {
+     outline: 2px solid var(--staff-focus);
+     outline-offset: 2px;
+     border-radius: var(--staff-radius-sm);
+   }
+   .staff-page-header .staff-back {
+     margin: 0;
+   }
+   ```
+
+**2. `src/app/admin/blog/BlogEditor.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**3. `src/app/admin/employees/doctors/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**4. `src/app/admin/employees/secretaries/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**5. `src/app/admin/notes/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**6. `src/app/admin/patients/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**7. `src/app/admin/reservations/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**8. `src/app/admin/reservations/[id]/edit/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**9. `src/app/doctor/session/[id]/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**10. `src/app/secretary/notes/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**11. `src/app/secretary/patients/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**12. `src/app/secretary/reservations/new/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**13. `src/app/secretary/reservations/[id]/edit/page.tsx`**
+
+1. Replace `className="back-btn"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.back-btn {…}`, `.back-btn:hover {…}`. Nothing else.
+
+**14. `src/app/admin/patients/[id]/page.tsx`**
+
+1. Replace `className="btn-back"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.btn-back {…}`, `.btn-back:hover {…}`. Nothing else.
+
+**15. `src/app/doctor/patients/[id]/page.tsx`**
+
+1. Replace `className="btn-back"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.btn-back {…}`, `.btn-back:hover {…}`. Nothing else.
+
+**16. `src/app/secretary/patients/[id]/page.tsx`**
+
+1. Replace `className="btn-back"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.btn-back {…}`, `.btn-back:hover {…}`. Nothing else.
+
+**17. `src/app/admin/patients/archived/page.tsx`**
+
+1. Replace `className="btn-back"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.staff-page-header :global(.btn-back) {…}`, `.staff-page-header :global(.btn-back:hover) {…}`. Nothing else.
+
+**18. `src/app/secretary/patients/archived/page.tsx`**
+
+1. Replace `className="btn-back"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.staff-page-header :global(.btn-back) {…}`, `.staff-page-header :global(.btn-back:hover) {…}`. Nothing else.
+
+**19. `src/app/admin/patients/duplicates/page.tsx`**
+
+1. Replace `className="btn-back"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.staff-page-header :global(.btn-back) {…}`, `.staff-page-header :global(.btn-back:hover) {…}`. Nothing else.
+
+**20. `src/app/admin/doctors/archived/page.tsx`**
+
+1. Replace `className="btn-back"` with `className="staff-back"`.
+2. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.staff-page-header :global(.btn-back) {…}`, `.staff-page-header :global(.btn-back:hover) {…}`. Nothing else.
+
+**Verification:**
+- `grep -rn 'back-btn\|btn-back' src/app` prints nothing.
+- `grep -rln 'className="staff-back"' src/app | wc -l` prints `19`.
+- `git diff --stat` against the parent lists exactly the 20 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] All 19 Back links use `.staff-back` and no page keeps its own copy; `tsc` and the build exit 0; the planner's re-application is byte-identical.
 
 ---
 
@@ -21742,9 +21891,713 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-070 — Staff portal refresh, phase 2: one layout for every role
 
-- **Status:** BACKLOG, no planning pass.
+- **Status:** READY — passed 2026-11-24. Batch 6, step 2 of 2.
+- **Branch:** `feat/staff-shell`, cut from the tip of `feat/staff-back-link`.
 - **Why:** Admin, secretary and doctor each have their own nav, built differently. The secretary dropdown opens on hover only, and the secretary and doctor bars have no phone menu (doctor's layout has no media query at all). One shared staff shell where the role decides the links. Group Blog, website Doctors and Approvals under a "Website" menu, since "Doctors" currently appears twice (Employees → Doctors are staff accounts; top-level Doctors are public profiles).
 - **Measured 2026-11-22 (after phase 0), deferred here by the user:** phase 0 reworked only the admin bar. The secretary and doctor bars, measured in the mocked preview: at 375px they are too wide (secretary needs 468px, doctor 537px, in a 360px space), so the whole page scrolls sideways on phones; they are not sticky (admin's is); their logo sits 12px left of the page content at 1440px. On desktop both are already one row. The shared shell should carry over the admin bar's TJ-068b/TJ-068g behaviour: solid, sticky, lined up with the 1400px content column, a phone menu below 861px, and the 861–1040px tightening. Everything else from phase 0 already reaches both portals (buttons, row menus, link styles, "No phone").
+
+**Planning pass:** 2026-11-24, on the TJ-069k result. Read in full: `src/app/admin/layout.tsx`, `src/app/secretary/layout.tsx`, `src/app/doctor/layout.tsx`; the route checks in `src/lib/auth.config.ts`; `TJ-005b2b`. Checked: no page relies on the layouts' page-wide classes (`.nav-link`, `.badge`, `.chevron`, `.dropdown-*`), and no page sizes itself from the bar's height.
+
+**Design.** The user asked for this phase to be planned and dispatched; the choices below follow this entry's own proposal and phase 0's approved admin bar, and are for the user's look in the preview before merge.
+- One component, `src/app/components/StaffShell.tsx`, draws the bar and the page frame for all three roles; each layout only lists its links. The styles move to the `globals.css` staff section (`.staff-shell`, `.staff-nav*`, `.staff-content`), so no layout keeps page-wide `:global()` rules (the TJ-069i problem).
+- Look and behaviour are the admin bar's (TJ-068b/g) for every role: solid and sticky, the wordmark lined up with the content column, the phone menu below 861px with menus opening in place, the 861–1180px tightening. Menus open on click (the secretary's opened on hover only); Escape or a click outside closes them; menu buttons carry `aria-expanded`; links, items, Sign Out and the menu button get a focus ring.
+- **Admin:** Dashboard, Employees ▾, Patients ▾, Notes, then **Website ▾** (Blog, Doctor profiles, Archived profiles, Approvals). Notes was a menu with one item and becomes a plain link. The pending-approvals badge sits on Website and on Approvals.
+- **Secretary:** Dashboard, Patients ▾ (View Patients, Archived), Notes. **Doctor:** My Schedule, Patients, Notes, My Profile.
+- Top-level links are text only, as on the admin bar since phase 0; the icons TJ-069f1 put on the secretary's and doctor's top-level links go, and menu items keep theirs. The user area is the admin one for everyone: initial, name and a Sign Out button (the secretary and doctor had "Name ▾" with Sign Out inside).
+- A link is also active on the pages under it: Dashboard on the booking pages, My Schedule on a session page, Notes on New Note, Patients on a patient file.
+- The page frame is the admin one for everyone: a 1400px column with 2rem padding, 1rem on phones (the secretary and doctor had 1.5rem).
+- **Not changed:** what each role may open (the server's checks are untouched); a content-only holder still gets the admin bar on the content pages (TJ-005b2b stays open; with the shell it becomes a change to the admin layout's link list); the session-expiry notice; `ConfirmProvider` still wraps every page.
+
+**Measured in the mocked preview:** every role's bar is one row (61px) at 1040, 1180 and 1440px; at 375px the secretary and doctor pages no longer scroll sideways, the menu button opens the links and Patients opens in place; the wordmark lines up with the page content; Website lists its four items with a two-digit badge, and Escape closes it.
+
+**Scope — touch only these (5):** `src/app/globals.css`, `src/app/components/StaffShell.tsx` (new), `src/app/admin/layout.tsx`, `src/app/secretary/layout.tsx`, `src/app/doctor/layout.tsx`.
+
+**Do not touch:** any other file; `src/app/components/ConfirmDialog.tsx`, `src/app/SessionExpiryNotice.tsx`, `src/lib/auth.config.ts`.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace the whole file with exactly" means the file's new content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* Menu bar and page frame, one for every role (TJ-070,
+      components/StaffShell.tsx). Phase 0's admin bar, shared: solid and
+      sticky; its side padding lines the wordmark up with the 1400px content
+      column; below 861px the links fold into a menu behind a button. */
+   .staff-shell {
+     min-height: 100vh;
+     background: var(--staff-bg);
+     color: var(--staff-text);
+   }
+   .staff-nav {
+     position: sticky;
+     top: 0;
+     z-index: 100;
+     display: flex;
+     align-items: center;
+     gap: 2rem;
+     padding: 0.5rem max(2rem, calc((100% - 1400px) / 2 + 2rem));
+     background: var(--staff-bg);
+     border-bottom: 1px solid var(--staff-border);
+   }
+   .staff-nav-top {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     min-height: 44px;
+   }
+   .staff-nav-brand {
+     color: var(--staff-accent);
+     font-family: var(--font-outfit, 'Outfit', sans-serif);
+     font-size: var(--staff-size-md);
+     font-weight: 700;
+     letter-spacing: -0.02em;
+     text-decoration: none;
+   }
+   .staff-nav-toggle {
+     display: none;
+     margin: -0.5rem;
+     padding: 0.5rem;
+     background: none;
+     border: none;
+     cursor: pointer;
+   }
+   .staff-nav-toggle-icon,
+   .staff-nav-toggle-icon::before,
+   .staff-nav-toggle-icon::after {
+     display: block;
+     width: 20px;
+     height: 2px;
+     background: var(--staff-text);
+     border-radius: 2px;
+     transition: transform 0.2s ease, opacity 0.2s ease;
+   }
+   .staff-nav-toggle-icon {
+     position: relative;
+   }
+   .staff-nav-toggle-icon::before,
+   .staff-nav-toggle-icon::after {
+     content: "";
+     position: absolute;
+     left: 0;
+   }
+   .staff-nav-toggle-icon::before {
+     top: -6px;
+   }
+   .staff-nav-toggle-icon::after {
+     top: 6px;
+   }
+   .staff-nav-toggle-icon.open {
+     background: transparent;
+   }
+   .staff-nav-toggle-icon.open::before {
+     top: 0;
+     transform: rotate(45deg);
+   }
+   .staff-nav-toggle-icon.open::after {
+     top: 0;
+     transform: rotate(-45deg);
+   }
+   .staff-nav-body {
+     display: flex;
+     flex: 1;
+     flex-wrap: wrap;
+     align-items: center;
+     gap: 1.5rem;
+     min-width: 0;
+     min-height: 44px;
+   }
+   .staff-nav-links {
+     display: flex;
+     flex: 1;
+     flex-wrap: wrap;
+     align-items: center;
+     gap: 0.1rem;
+   }
+   .staff-nav-link {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.3rem;
+     padding: 0.4rem 0.85rem;
+     background: none;
+     border: none;
+     border-radius: var(--staff-radius-sm);
+     color: var(--staff-text);
+     font-family: inherit;
+     font-size: var(--staff-size-base);
+     font-weight: 500;
+     text-decoration: none;
+     cursor: pointer;
+     transition: background 0.2s, color 0.2s;
+   }
+   .staff-nav-link:hover {
+     background: var(--staff-surface-2);
+   }
+   .staff-nav-link.active {
+     color: var(--staff-accent);
+   }
+   .staff-nav-link:focus-visible,
+   .staff-nav-item:focus-visible,
+   .staff-nav-toggle:focus-visible,
+   .staff-nav-signout:focus-visible {
+     outline: 2px solid var(--staff-focus);
+     outline-offset: 2px;
+   }
+   .staff-nav-divider {
+     flex-shrink: 0;
+     width: 1px;
+     height: 20px;
+     margin: 0 0.35rem;
+     background: rgba(255, 255, 255, 0.1);
+   }
+   .staff-nav-badge {
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     min-width: 17px;
+     height: 17px;
+     margin-inline-start: 0.35rem;
+     padding: 0 0.3rem;
+     background: #f59e0b;
+     color: #3a2606;
+     border-radius: 999px;
+     font-size: var(--staff-size-xs);
+     font-weight: 700;
+   }
+   .staff-nav-chevron {
+     opacity: 0.5;
+     transition: transform 0.25s ease;
+   }
+   .staff-nav-chevron.open {
+     opacity: 0.8;
+     transform: rotate(180deg);
+   }
+   .staff-nav-menu {
+     position: relative;
+   }
+   .staff-nav-panel {
+     position: absolute;
+     top: 100%;
+     left: 50%;
+     z-index: 300;
+     padding-top: 4px;
+     opacity: 0;
+     visibility: hidden;
+     pointer-events: none;
+     transform: translateX(-50%) translateY(4px);
+     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+   }
+   .staff-nav-panel.visible {
+     opacity: 1;
+     visibility: visible;
+     pointer-events: all;
+     transform: translateX(-50%) translateY(0);
+   }
+   .staff-nav-panel-inner {
+     min-width: 180px;
+     padding: 0.35rem;
+     background: var(--staff-raised);
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-md);
+     box-shadow: var(--staff-shadow-pop);
+   }
+   .staff-nav-item {
+     display: flex;
+     align-items: center;
+     gap: 0.55rem;
+     padding: 0.5rem 0.75rem;
+     border-radius: var(--staff-radius-sm);
+     color: var(--staff-text);
+     font-size: var(--staff-size-base);
+     text-decoration: none;
+     transition: background 0.15s, color 0.15s;
+   }
+   .staff-nav-item:hover {
+     background: rgba(76, 175, 147, 0.1);
+   }
+   .staff-nav-item.current {
+     background: rgba(76, 175, 147, 0.08);
+     color: var(--staff-accent);
+   }
+   .staff-nav-item-icon {
+     display: inline-flex;
+     flex-shrink: 0;
+     justify-content: center;
+     width: 20px;
+   }
+   .staff-nav-user {
+     display: flex;
+     align-items: center;
+     gap: 0.6rem;
+   }
+   .staff-nav-avatar {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 28px;
+     height: 28px;
+     background: var(--staff-accent-soft);
+     border: 1px solid rgba(76, 175, 147, 0.25);
+     border-radius: var(--staff-radius-sm);
+     color: var(--staff-accent);
+     font-size: var(--staff-size-sm);
+     font-weight: 700;
+   }
+   .staff-nav-name {
+     color: var(--staff-faint);
+     font-size: var(--staff-size-base);
+   }
+   .staff-nav-signout {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.35rem;
+     padding: 0.32rem 0.75rem;
+     background: rgba(220, 38, 38, 0.08);
+     border: 1px solid rgba(220, 38, 38, 0.15);
+     border-radius: var(--staff-radius-sm);
+     color: rgba(252, 165, 165, 0.8);
+     font-family: inherit;
+     font-size: var(--staff-size-sm);
+     cursor: pointer;
+     transition: background 0.2s, border-color 0.2s, color 0.2s;
+   }
+   .staff-nav-signout:hover {
+     background: rgba(220, 38, 38, 0.18);
+     border-color: rgba(220, 38, 38, 0.3);
+     color: var(--staff-bad);
+   }
+   .staff-content {
+     max-width: 1400px;
+     margin: 0 auto;
+     padding: 2rem;
+   }
+   /* The phase 0 breakpoints, measured on the longer admin bar of TJ-068b/g:
+      below 1180px the name goes (it stays in the avatar's tooltip); from
+      861px to 1040px tighter spacing and an icon-only Sign Out. */
+   @media (min-width: 861px) and (max-width: 1180px) {
+     .staff-nav-name {
+       display: none;
+     }
+   }
+   @media (min-width: 861px) and (max-width: 1040px) {
+     .staff-nav {
+       gap: 1rem;
+     }
+     .staff-nav-body {
+       gap: 0.75rem;
+     }
+     .staff-nav-link {
+       padding: 0.4rem 0.5rem;
+     }
+     .staff-nav-signout-label {
+       display: none;
+     }
+   }
+   /* Phones and small tablets: the links fold into a menu, and each link
+      menu opens in place instead of floating. */
+   @media (max-width: 860px) {
+     .staff-nav {
+       flex-direction: column;
+       align-items: stretch;
+       gap: 0;
+       padding: 0.5rem 1rem;
+     }
+     .staff-nav-toggle {
+       display: block;
+     }
+     .staff-nav-body {
+       display: none;
+       flex-direction: column;
+       align-items: stretch;
+       gap: 0;
+       min-height: 0;
+     }
+     .staff-nav-body.open {
+       display: flex;
+       margin-top: 0.5rem;
+       padding: 0.75rem 0 1rem;
+       border-top: 1px solid var(--staff-border);
+     }
+     .staff-nav-links {
+       flex-direction: column;
+       align-items: stretch;
+       gap: 0.15rem;
+     }
+     .staff-nav-link {
+       justify-content: space-between;
+       width: 100%;
+       padding: 0.7rem 0.5rem;
+     }
+     .staff-nav-divider {
+       display: none;
+     }
+     .staff-nav-menu {
+       width: 100%;
+     }
+     .staff-nav-panel,
+     .staff-nav-panel.visible {
+       position: static;
+       left: auto;
+       padding-top: 0;
+       transform: none;
+     }
+     .staff-nav-panel {
+       display: none;
+     }
+     .staff-nav-panel.visible {
+       display: block;
+     }
+     .staff-nav-panel-inner {
+       min-width: 0;
+       margin: 0.15rem 0 0.35rem;
+       background: var(--staff-surface);
+       box-shadow: none;
+     }
+     .staff-nav-user {
+       justify-content: space-between;
+       width: 100%;
+       margin-top: 0.5rem;
+       padding-top: 0.75rem;
+       border-top: 1px solid var(--staff-border);
+     }
+     .staff-nav-name {
+       flex: 1;
+     }
+   }
+   @media (max-width: 640px) {
+     .staff-content {
+       padding: 1rem;
+     }
+   }
+   ```
+
+**2. `src/app/components/StaffShell.tsx`** — new file, exactly:
+   ```tsx
+   "use client";
+
+   // One menu bar and page frame for the admin, secretary and doctor portals
+   // (TJ-070). Each portal's layout passes its own links; this component owns
+   // the look and the behaviour phase 0 built for the admin bar (TJ-068b,
+   // TJ-068g): solid and sticky, lined up with the 1400px content column, a
+   // phone menu below 861px, and tighter spacing from 861px to 1040px. Its
+   // styles are the .staff-nav* rules in the globals.css staff section.
+
+   import Link from "next/link";
+   import { usePathname } from "next/navigation";
+   import { signOut, useSession } from "next-auth/react";
+   import { useEffect, useRef, useState } from "react";
+   import { LogOut } from "lucide-react";
+   import type { LucideIcon } from "lucide-react";
+   import { ConfirmProvider } from "@/app/components/ConfirmDialog";
+
+   export type StaffMenuItem = { href: string; label: string; icon: LucideIcon; badge?: number };
+
+   /** A link, a menu of links, or a divider. A link is active on its own path
+       and on paths under any prefix in `match`; a menu is active on paths under
+       any prefix in `match`. */
+   export type StaffNavEntry =
+       | { label: string; href: string; match?: string[]; badge?: number }
+       | { label: string; items: StaffMenuItem[]; match: string[]; badge?: number }
+       | "divider";
+
+   function under(pathname: string, prefix: string) {
+       return pathname === prefix || pathname.startsWith(prefix + "/");
+   }
+
+   function Badge({ count }: { count?: number }) {
+       return count ? <span className="staff-nav-badge">{count}</span> : null;
+   }
+
+   function NavMenu({
+       label,
+       items,
+       badge,
+       active,
+       onNavigate,
+   }: {
+       label: string;
+       items: StaffMenuItem[];
+       badge?: number;
+       active: boolean;
+       onNavigate: () => void;
+   }) {
+       const [open, setOpen] = useState(false);
+       const wrapRef = useRef<HTMLDivElement>(null);
+       const pathname = usePathname();
+
+       // Open on click, not on hover, so it works by touch and by keyboard.
+       // A click outside or Escape closes it.
+       useEffect(() => {
+           if (!open) return;
+           const onDown = (e: MouseEvent) => {
+               if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+           };
+           const onKey = (e: KeyboardEvent) => {
+               if (e.key === "Escape") setOpen(false);
+           };
+           document.addEventListener("mousedown", onDown);
+           document.addEventListener("keydown", onKey);
+           return () => {
+               document.removeEventListener("mousedown", onDown);
+               document.removeEventListener("keydown", onKey);
+           };
+       }, [open]);
+
+       return (
+           <div className="staff-nav-menu" ref={wrapRef}>
+               <button
+                   type="button"
+                   className={`staff-nav-link ${active ? "active" : ""}`}
+                   aria-expanded={open}
+                   onClick={() => setOpen((o) => !o)}
+               >
+                   <span>{label}<Badge count={badge} /></span>
+                   <svg
+                       className={`staff-nav-chevron ${open ? "open" : ""}`}
+                       width="10"
+                       height="10"
+                       viewBox="0 0 10 10"
+                       fill="none"
+                       stroke="currentColor"
+                       strokeWidth="1.5"
+                       strokeLinecap="round"
+                       strokeLinejoin="round"
+                       aria-hidden="true"
+                   >
+                       <path d="M2 3.5L5 6.5L8 3.5" />
+                   </svg>
+               </button>
+
+               <div className={`staff-nav-panel ${open ? "visible" : ""}`}>
+                   <div className="staff-nav-panel-inner">
+                       {items.map((item) => (
+                           <Link
+                               key={item.href}
+                               href={item.href}
+                               className={`staff-nav-item ${pathname === item.href ? "current" : ""}`}
+                               onClick={() => { setOpen(false); onNavigate(); }}
+                           >
+                               <span className="staff-nav-item-icon"><item.icon size={15} aria-hidden="true" /></span>
+                               <span>{item.label}</span>
+                               <Badge count={item.badge} />
+                           </Link>
+                       ))}
+                   </div>
+               </div>
+           </div>
+       );
+   }
+
+   export default function StaffShell({
+       home,
+       nav,
+       fallbackName,
+       children,
+   }: {
+       home: string;
+       nav: StaffNavEntry[];
+       fallbackName: string;
+       children: React.ReactNode;
+   }) {
+       const pathname = usePathname();
+       const { data: session } = useSession();
+       const [mobileOpen, setMobileOpen] = useState(false);
+
+       // Close the phone menu whenever the route changes.
+       useEffect(() => { setMobileOpen(false); }, [pathname]);
+
+       const closeMenu = () => setMobileOpen(false);
+       const name = session?.user?.name || fallbackName;
+
+       return (
+           <div className="staff-shell">
+               <nav className="staff-nav" aria-label="Main">
+                   <div className="staff-nav-top">
+                       <Link href={home} className="staff-nav-brand">Therapy Jo</Link>
+                       <button
+                           type="button"
+                           className="staff-nav-toggle"
+                           aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                           aria-expanded={mobileOpen}
+                           onClick={() => setMobileOpen((o) => !o)}
+                       >
+                           <span className={`staff-nav-toggle-icon ${mobileOpen ? "open" : ""}`} />
+                       </button>
+                   </div>
+
+                   <div className={`staff-nav-body ${mobileOpen ? "open" : ""}`}>
+                       <div className="staff-nav-links">
+                           {nav.map((entry, i) => {
+                               if (entry === "divider") return <span key={`divider-${i}`} className="staff-nav-divider" />;
+                               if ("items" in entry) {
+                                   return (
+                                       <NavMenu
+                                           key={entry.label}
+                                           label={entry.label}
+                                           items={entry.items}
+                                           badge={entry.badge}
+                                           active={entry.match.some((p) => under(pathname, p))}
+                                           onNavigate={closeMenu}
+                                       />
+                                   );
+                               }
+                               const active = pathname === entry.href || (entry.match ?? []).some((p) => under(pathname, p));
+                               return (
+                                   <Link
+                                       key={entry.href}
+                                       href={entry.href}
+                                       className={`staff-nav-link ${active ? "active" : ""}`}
+                                       onClick={closeMenu}
+                                   >
+                                       <span>{entry.label}<Badge count={entry.badge} /></span>
+                                   </Link>
+                               );
+                           })}
+                       </div>
+
+                       <div className="staff-nav-user">
+                           <div className="staff-nav-avatar" title={name}>{name[0].toUpperCase()}</div>
+                           <span className="staff-nav-name">{name}</span>
+                           <button
+                               type="button"
+                               className="staff-nav-signout"
+                               onClick={() => signOut({ callbackUrl: "/login" })}
+                               aria-label="Sign out"
+                               title="Sign out"
+                           >
+                               <LogOut size={14} aria-hidden="true" />
+                               <span className="staff-nav-signout-label">Sign Out</span>
+                           </button>
+                       </div>
+                   </div>
+               </nav>
+
+               <main className="staff-content"><ConfirmProvider>{children}</ConfirmProvider></main>
+           </div>
+       );
+   }
+   ```
+
+**3. `src/app/admin/layout.tsx`** — replace the whole file with exactly:
+   ```tsx
+   "use client";
+
+   import { usePathname } from "next/navigation";
+   import { useEffect, useState } from "react";
+   import { Archive, ClipboardCheck, Contact, Copy, Newspaper, Stethoscope, Users } from "lucide-react";
+   import StaffShell, { type StaffNavEntry } from "@/app/components/StaffShell";
+
+   export default function AdminLayout({
+       children,
+   }: {
+       children: React.ReactNode;
+   }) {
+       const pathname = usePathname();
+       const [pendingCount, setPendingCount] = useState(0);
+
+       useEffect(() => {
+           fetch("/api/pending-changes")
+               .then((res) => (res.ok ? res.json() : []))
+               .then((data) => setPendingCount(Array.isArray(data) ? data.length : 0))
+               .catch(() => {});
+       }, [pathname]);
+
+       // An ended session used to be handled here with a hard redirect to
+       // /login on visibilitychange and on status === "unauthenticated" — both
+       // removed. That bounced the user away with no explanation, and now fights
+       // the shared SessionExpiryNotice (src/app/SessionExpiryNotice.tsx, mounted
+       // in providers.tsx) which shows a modal instead. That component is the
+       // single place that reacts to a session ending, for every staff area.
+
+       const nav: StaffNavEntry[] = [
+           { label: "Dashboard", href: "/admin", match: ["/admin/reservations"] },
+           {
+               label: "Employees",
+               match: ["/admin/employees"],
+               items: [
+                   { href: "/admin/employees/doctors", label: "Doctors", icon: Stethoscope },
+                   { href: "/admin/employees/secretaries", label: "Secretaries", icon: Contact },
+               ],
+           },
+           {
+               label: "Patients",
+               match: ["/admin/patients"],
+               items: [
+                   { href: "/admin/patients", label: "View Patients", icon: Users },
+                   { href: "/admin/patients/archived", label: "Archived", icon: Archive },
+                   { href: "/admin/patients/duplicates", label: "Duplicates", icon: Copy },
+               ],
+           },
+           { label: "Notes", href: "/admin/notes", match: ["/admin/notes"] },
+           "divider",
+           // Blog, the public doctor profiles and Approvals are all about the
+           // public website. Grouped, "Doctors" no longer appears twice in the
+           // bar (Employees > Doctors are the staff accounts). (TJ-070)
+           {
+               label: "Website",
+               match: ["/admin/blog", "/admin/doctors", "/admin/approvals"],
+               badge: pendingCount,
+               items: [
+                   { href: "/admin/blog", label: "Blog", icon: Newspaper },
+                   { href: "/admin/doctors", label: "Doctor profiles", icon: Stethoscope },
+                   { href: "/admin/doctors/archived", label: "Archived profiles", icon: Archive },
+                   { href: "/admin/approvals", label: "Approvals", icon: ClipboardCheck, badge: pendingCount },
+               ],
+           },
+       ];
+
+       return <StaffShell home="/admin" nav={nav} fallbackName="Admin">{children}</StaffShell>;
+   }
+   ```
+
+**4. `src/app/secretary/layout.tsx`** — replace the whole file with exactly:
+   ```tsx
+   "use client";
+
+   import { Archive, Users } from "lucide-react";
+   import StaffShell, { type StaffNavEntry } from "@/app/components/StaffShell";
+
+   const nav: StaffNavEntry[] = [
+       { label: "Dashboard", href: "/secretary", match: ["/secretary/reservations"] },
+       {
+           label: "Patients",
+           match: ["/secretary/patients"],
+           items: [
+               { href: "/secretary/patients", label: "View Patients", icon: Users },
+               { href: "/secretary/patients/archived", label: "Archived", icon: Archive },
+           ],
+       },
+       { label: "Notes", href: "/secretary/notes", match: ["/secretary/notes"] },
+   ];
+
+   export default function SecretaryLayout({ children }: { children: React.ReactNode }) {
+       return <StaffShell home="/secretary" nav={nav} fallbackName="Secretary">{children}</StaffShell>;
+   }
+   ```
+
+**5. `src/app/doctor/layout.tsx`** — replace the whole file with exactly:
+   ```tsx
+   "use client";
+
+   import StaffShell, { type StaffNavEntry } from "@/app/components/StaffShell";
+
+   const nav: StaffNavEntry[] = [
+       { label: "My Schedule", href: "/doctor", match: ["/doctor/session"] },
+       { label: "Patients", href: "/doctor/patients", match: ["/doctor/patients"] },
+       { label: "Notes", href: "/doctor/notes", match: ["/doctor/notes"] },
+       { label: "My Profile", href: "/doctor/profile", match: ["/doctor/profile"] },
+   ];
+
+   export default function DoctorLayout({ children }: { children: React.ReactNode }) {
+       return <StaffShell home="/doctor" nav={nav} fallbackName="Doctor">{children}</StaffShell>;
+   }
+   ```
+
+**Verification:**
+- `grep -rn "admin-nav\|nav-dropdown\|dropdown-panel\|dropdown-inner\|user-menu\|admin-content\|secretary-layout\|doctor-layout" src/app` prints nothing.
+- `git diff --stat` against the TJ-069k commit lists exactly the 5 files, `StaffShell.tsx` as new.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server.
+
+**Done when:**
+- [ ] All three portals use `StaffShell`; `tsc` and the build exit 0; the planner's re-application is byte-identical.
 
 ### TJ-071 — Staff portal refresh, phase 3: the dashboard
 
