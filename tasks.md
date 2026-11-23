@@ -149,30 +149,30 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review, not pushed**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review, not pushed**; **batch 5 = d4a, d4b, d4c, planned 2026-11-23 (READY)** | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review; batches 3–4 pushed and deployed 2026-11-23 ~05:22 (Amman) as `369d9fe`, Vercel `success`**; **batch 5 = d4a, d4b, d4c, planned 2026-11-23 (READY)** | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
 | TJ-069c | Secretary Duplicate gets a date-and-time popup; shared popup and field styles | DONE — task commit `67b6563`, merged to `master` as `b9a6a3a` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/secretary-duplicate-popup` |
 | TJ-069d1 | Popups on one shared component: dashboards, patient files, notes, booking | DONE — task commit `9e30040`, merged to `master` as `1c95795` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal` |
 | TJ-069d2 | Delete popups and the website-doctor editor on the shared component | DONE — task commit `53a873c`, merged to `master` as `73ea998` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-content` |
-| TJ-069d3 | The two employee editors on the shared component | DONE — task commit `431a923`, merged to `master` as `6a22642` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-employees` |
+| TJ-069d3 | The two employee editors on the shared component | DONE — task commit `431a923`, merged to `master` as `6a22642` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-modal-employees` |
 | TJ-069d4 | Full-page forms on the shared field styles | SPLIT — passed 2026-11-23; see TJ-069d4a, d4b, d4c | — |
 | TJ-069d4a | Full-page forms: the shared pieces, new patient, new note | READY — passed 2026-11-23; batch 5, step 1 of 3 | `feat/staff-forms-patients-notes` |
 | TJ-069d4b | Full-page forms: new doctor and secretary, the profile, the session page, the blog editor | READY — passed 2026-11-23; batch 5, step 2 of 3 | `feat/staff-forms-employees-content` |
 | TJ-069d4c | Full-page forms: booking, new and edit | READY — passed 2026-11-23; batch 5, step 3 of 3 | `feat/staff-forms-booking` |
-| TJ-069e | One table, page header, search, pagination, loading and empty state | SPLIT — **complete**: TJ-069e1–e4 merged 2026-11-23, not pushed | — |
-| TJ-069e1 | Lists: the shared pieces, and the five patient lists | DONE — task commit `15ec254`, merged to `master` as `9bd3840` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-patients` |
-| TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | DONE — task commit `32335ce`, merged to `master` as `0873558` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-notes` |
-| TJ-069e3 | Lists: blog, website doctors, employees | DONE — task commit `a251af9`, merged to `master` as `35588e9` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-content-team` |
-| TJ-069e4 | Lists: tables, loading and empty states inside a record | DONE — task commit `737f737`, merged to `master` as `fd44f2e` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-lists-records` |
-| TJ-069f | Emoji become line icons | SPLIT — **complete**: TJ-069f1, f2 merged 2026-11-23, not pushed | — |
-| TJ-069f1 | Icons in the menus: the three layouts and the schedule card | DONE — task commit `b1b5b88`, merged to `master` as `18b2470` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-icons-menus` |
-| TJ-069f2 | Icons on the pages: patient files, notes, employee editors, duplicates, session page, blog editor | DONE — task commit `78842d6`, merged to `master` as `398d5c3` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-icons-pages` |
-| TJ-069g | Every text size snaps to the six steps | DONE — task commit `dc01ed0`, merged to `master` as `d818af2` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-type-scale` |
-| TJ-069h | Searches wait for typing to pause | DONE — task commit `621581c`, merged to `master` as `8ec1c53` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/search-waits-for-typing` |
-| TJ-069i | Keep the small-button rule on its own page | DONE — task commit `1f189ca`, merged to `master` as `1618684` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/page-scoped-button-rules` |
-| TJ-069j | Approve and Reject on the shared buttons | DONE — task commit `a67157b`, merged to `master` as `19033ff` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **not pushed** | `feat/approvals-buttons` |
+| TJ-069e | One table, page header, search, pagination, loading and empty state | SPLIT — **complete**: TJ-069e1–e4 merged 2026-11-23, pushed and deployed 2026-11-23 in `369d9fe` | — |
+| TJ-069e1 | Lists: the shared pieces, and the five patient lists | DONE — task commit `15ec254`, merged to `master` as `9bd3840` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-lists-patients` |
+| TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | DONE — task commit `32335ce`, merged to `master` as `0873558` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-lists-notes` |
+| TJ-069e3 | Lists: blog, website doctors, employees | DONE — task commit `a251af9`, merged to `master` as `35588e9` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-lists-content-team` |
+| TJ-069e4 | Lists: tables, loading and empty states inside a record | DONE — task commit `737f737`, merged to `master` as `fd44f2e` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-lists-records` |
+| TJ-069f | Emoji become line icons | SPLIT — **complete**: TJ-069f1, f2 merged 2026-11-23, pushed and deployed 2026-11-23 in `369d9fe` | — |
+| TJ-069f1 | Icons in the menus: the three layouts and the schedule card | DONE — task commit `b1b5b88`, merged to `master` as `18b2470` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-icons-menus` |
+| TJ-069f2 | Icons on the pages: patient files, notes, employee editors, duplicates, session page, blog editor | DONE — task commit `78842d6`, merged to `master` as `398d5c3` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-icons-pages` |
+| TJ-069g | Every text size snaps to the six steps | DONE — task commit `dc01ed0`, merged to `master` as `d818af2` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-type-scale` |
+| TJ-069h | Searches wait for typing to pause | DONE — task commit `621581c`, merged to `master` as `8ec1c53` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `bugfix/search-waits-for-typing` |
+| TJ-069i | Keep the small-button rule on its own page | DONE — task commit `1f189ca`, merged to `master` as `1618684` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `bugfix/page-scoped-button-rules` |
+| TJ-069j | Approve and Reject on the shared buttons | DONE — task commit `a67157b`, merged to `master` as `19033ff` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/approvals-buttons` |
 | TJ-069k | One Back link for every staff page | BACKLOG — found 2026-11-23 during the TJ-069d4 pass | — |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | BACKLOG — no planning pass | — |
 | TJ-071 | Staff portal refresh, phase 3: the dashboard | BACKLOG — no planning pass | — |
@@ -15680,9 +15680,14 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, not pushed** (see "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, not pushed** (see "Batch 4 — verified" and "Batch 4 — planned" below). **Batch 5 = TJ-069d4a, d4b, d4c (the full-page forms), passed 2026-11-23, READY** (see "Batch 5 — planned" below).
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 4 — verified" and "Batch 4 — planned" below). **Batch 5 = TJ-069d4a, d4b, d4c (the full-page forms), passed 2026-11-23, READY** (see "Batch 5 — planned" below).
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
+
+**Batches 3–4 — deployed (2026-11-23):** pushed at the user's request ("Push first") by SHA (`git push origin 369d9fe:master`, fast-forward from `f424e64`, 31 commits, all from this planning session, none from another agent; no unmerged branch on `origin`). The `src/` tree is `aeabca4`, the tree verified with `tsc` and `next build --webpack` under batch 4. Deployed ~05:22 (Amman), Vercel `success` (deployment `HLxtWTAjNskhGL9RPMg3QMYm19Po`). The batch 5 plan rode along; it changes no code.
+- **Live check, read-only, without signing in:** the live stylesheet carries the batch 3–4 shared pieces (`.staff-page-header`, `.staff-table-wrap`, `.staff-empty`, `.staff-inline-icon`) and all six text-size tokens, and not yet batch 5's `.staff-form-card`; `/`, `/blog` and `/login` answer 200.
+- **Not checked live:** the staff screens. The user's Chrome was signed out of the staff portal, and the planner does not sign in. Most worth a look, in order: a patient or notes search (it should wait until typing pauses, then show the newest result), the menu and schedule-card icons, Approvals' buttons, an empty list (Blog).
+- **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at `f424e64`'s deployment.
 
 **Batches 1–2 — deployed (2026-11-22):** pushed at the user's request by SHA (`git push origin f424e64:master`, fast-forward from `733e884`, 20 commits; code identical to the verified tips) and deployed ~14:59 (Amman), Vercel `success` (deployment `Dm55KRs1xv1VAGPgPvREY8ycTyqp`). **Live check by the planner in the user's signed-in Chrome, read-only** (writes and browser `confirm` counted: 0 writes, 0 browser boxes):
 - Tokens are live (`--staff-accent` `#4caf93`, `--staff-raised` `#243b44`, `--staff-size-base` `.85rem`); the 4A button is unchanged (`rgb(76,175,147)` on `rgb(13,42,34)`, 34px).
@@ -15698,7 +15703,7 @@ button.staff-row-name {
 - **Found, not in this batch:** the Back link's 19 copies (added as TJ-069k); the booking search dropdown's stray slate background (`#1e293b`), left for the colour pass in phases 3–4.
 
 **Batch 4 — verified and merged (2026-11-23):**
-- **Merged** after the user's review of the preview ("merge, push later"), in order with `--no-ff`: `19033ff` (j), `1618684` (i), `8ec1c53` (h), `18b2470` (f1), `398d5c3` (f2), `d818af2` (g). The merged `src/` tree is identical to the verified tip `dc01ed0` (`aeabca4`); only `tasks.md` differs. **Not pushed.** Pushing is the user's call; push by SHA (`git push origin <sha>:master`), as master is shared.
+- **Merged** after the user's review of the preview ("merge, push later"), in order with `--no-ff`: `19033ff` (j), `1618684` (i), `8ec1c53` (h), `18b2470` (f1), `398d5c3` (f2), `d818af2` (g). The merged `src/` tree is identical to the verified tip `dc01ed0` (`aeabca4`); only `tasks.md` differs. Pushed later in `369d9fe` (see "Batches 3–4 — deployed").
 - **Executed** by the Sonnet executor on stacked branches from `84677f4`: `a67157b` (j), `1f189ca` (i), `621581c` (h), `b1b5b88` (f1), `78842d6` (f2), `dc01ed0` (g). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean. The TJ-069g script printed `total 286` across 35 files; the four widgets were untouched.
 - **Scope:** each commit changes exactly its task's files (1, 4, 5, 5, 11, 35).
 - **Re-application:** all 61 changed file versions are byte-identical to the planner's expected blobs; the tip's `src/` tree equals the planned tree (`aeabca4`).
@@ -15712,7 +15717,7 @@ button.staff-row-name {
 - **Expected results** for the byte-identity check are in the planner's scratchpad (`expected_blobs.txt`); the executor's tip must reproduce `src/` tree `aeabca4`.
 
 **Batch 3 — verified and merged (2026-11-23):**
-- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `6a22642` (d3), `9bd3840` (e1), `0873558` (e2), `35588e9` (e3), `fd44f2e` (e4). The merged `src/` tree is identical to the verified tip `737f737` (`b8ce840`); only `tasks.md` differs. **Not pushed.** Pushing is the user's call; push by SHA (`git push origin <sha>:master`), as master is shared.
+- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `6a22642` (d3), `9bd3840` (e1), `0873558` (e2), `35588e9` (e3), `fd44f2e` (e4). The merged `src/` tree is identical to the verified tip `737f737` (`b8ce840`); only `tasks.md` differs. Pushed later in `369d9fe` (see "Batches 3–4 — deployed").
 - **Executed** by the Sonnet executor on stacked branches from `fd79b61`: `431a923` (d3), `15ec254` (e1), `32335ce` (e2), `a251af9` (e3), `737f737` (e4). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
 - **Scope:** each commit changes exactly its task's files (3, 7, 5, 5, 4).
 - **Re-application:** all 24 changed file versions are byte-identical to the planner's expected blobs (listed under "Batch 3 — planned"); the tip's `src/` tree equals the planner's verified tree (`b8ce840`).
@@ -17835,7 +17840,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d3 — The two employee editors on the shared component
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `431a923` on `feat/staff-modal-employees`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `6a22642` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `431a923` on `feat/staff-modal-employees`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `6a22642` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-modal-employees`, cut from `master` at the commit that adds this spec.
 - **Why:** decision P1-2 = **2B**. The doctor and secretary Edit popups are the last two staff popups on their own copy of the old shape (`#1e293b` card, 16px corners, title without a bar, their own scroll layout), so they look and behave unlike the 13 popups TJ-069d1/d2 moved. This step puts both on `StaffModal` (`wide`, 560px, the same width as today): header bar with ✕, body that scrolls, footer bar with Cancel and Save. Escape now closes them too, and while Save is working the ✕, Escape, backdrop and Cancel are off.
 
@@ -19722,7 +19727,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069j — Approve and Reject on the shared buttons
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `a67157b` on `feat/approvals-buttons`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `19033ff` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `a67157b` on `feat/approvals-buttons`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `19033ff` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/approvals-buttons`, cut from `master` at the commit that adds this spec.
 - **Why:** on `src/app/admin/approvals/page.tsx` the Approve button still uses the CMS handoff's `linear-gradient(135deg, #059669, #10b981)` with white text, which design 4A replaced everywhere else, and Reject is a local red pill. Approve becomes the 4A primary button and Reject its quiet secondary companion.
 
@@ -19760,7 +19765,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069i — Keep the small-button rule on its own page
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `1f189ca` on `bugfix/page-scoped-button-rules`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `1618684` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `1f189ca` on `bugfix/page-scoped-button-rules`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `1618684` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `bugfix/page-scoped-button-rules`, cut from the tip of `feat/approvals-buttons`.
 - **Why:** the archived-patient pages (admin and secretary) and the Duplicate Check declare `:global(.btn-sm)`, and the duplicates page also `:global(.btn-view)`. While one of these pages is open, these rules apply to every element with that class anywhere on screen, not only on the page. The same pattern holds for the Back link (`:global(.btn-back)`) on those three pages and on the archived website Doctors page. **Measured:** today the Restore buttons and the duplicates' View links are the only such elements on screen, so nothing else is visibly restyled yet; the rules would catch any `.btn-sm` or `.btn-back` added later, for example in the menu bar. This step keeps each rule on its own page.
 
@@ -19809,7 +19814,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069h — Searches wait for typing to pause
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `621581c` on `bugfix/search-waits-for-typing`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `8ec1c53` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `621581c` on `bugfix/search-waits-for-typing`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `8ec1c53` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `bugfix/search-waits-for-typing`, cut from the tip of `bugfix/page-scoped-button-rules`.
 - **Why:** **confirmed in the pass:** the secretary and doctor patient searches and both notes searches set the query on every keystroke, so each letter typed sent its own request, and nothing dropped an older answer, so a slow early answer could land after a newer one and show the wrong list. Admin's patient list already waits 300ms but has the same race. Now the four searches wait 300ms after the last keystroke, as admin's does, and all five lists accept only the newest answer.
 
@@ -20083,7 +20088,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069f — Emoji become line icons
 
-- **Status:** SPLIT — **complete**: TJ-069f1 (menus) and TJ-069f2 (pages) merged 2026-11-23 after the user's review, not pushed. Batch 4, steps 4–5.
+- **Status:** SPLIT — **complete**: TJ-069f1 (menus) and TJ-069f2 (pages) merged 2026-11-23 after the user's review, pushed and deployed 2026-11-23 in `369d9fe`. Batch 4, steps 4–5.
 - **Why:** decision P1-4. Emoji render differently on Windows, Mac and phones and clash with the line icons phase 0 brought in. 55 emoji on 49 lines in 15 staff files become `lucide-react` icons (already a dependency).
 
 **Mapping (approved in the P1-4 mockup; three additions marked \*):**
@@ -20112,7 +20117,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069f1 — Icons in the menus: the three layouts and the schedule card
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `b1b5b88` on `feat/staff-icons-menus`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `18b2470` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `b1b5b88` on `feat/staff-icons-menus`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `18b2470` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-icons-menus`, cut from the tip of `bugfix/search-waits-for-typing`.
 - **Why:** the menu bars of all three portals and the schedule card's action menu carry most of the emoji (30 of 55).
 
@@ -20247,7 +20252,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069f2 — Icons on the pages: patient files, notes, employee editors, duplicates, session page, blog editor
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `78842d6` on `feat/staff-icons-pages`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `398d5c3` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `78842d6` on `feat/staff-icons-pages`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `398d5c3` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-icons-pages`, cut from the tip of `feat/staff-icons-menus`.
 - **Why:** the remaining 25 emoji, on 11 pages.
 
@@ -20436,7 +20441,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069g — Every text size snaps to the six steps
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `dc01ed0` on `feat/staff-type-scale`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `d818af2` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `dc01ed0` on `feat/staff-type-scale`. Planner-verified 2026-11-23 (see "Batch 4 — verified" under TJ-069). Merged to `master` with `--no-ff` as `d818af2` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-type-scale`, cut from the tip of `feat/staff-icons-pages`.
 - **Why:** decision P1-5. After batch 3, the staff files still name 23 different text sizes. Every remaining size in rem becomes one of the six tokens from TJ-069a, so a page cannot invent a new size.
 
@@ -20522,7 +20527,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e — Lists: one page header, search, table, pagination, loading line and empty state
 
-- **Status:** SPLIT — **complete**: TJ-069e1 … e4 merged 2026-11-23 after the user's review, not pushed. Batch 3, steps 2–5.
+- **Status:** SPLIT — **complete**: TJ-069e1 … e4 merged 2026-11-23 after the user's review, pushed and deployed 2026-11-23 in `369d9fe`. Batch 3, steps 2–5.
 - **Why:** decision P1-3 = **3B**. 17 staff files draw a table, each with its own copy of the header, table, search box and pagination rules (7 table variants, 9 header variants, 3 search variants), and "loading" and "empty" read 20 different ways. The shared pieces are defined once in the `globals.css` staff section (TJ-069e1) and every list moves onto them; empty lists get the 3B empty state (icon, title, one-sentence hint, and the Add button where that role can add).
 
 **Shared design (all four steps):**
@@ -20563,7 +20568,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e1 — Lists: the shared pieces, and the five patient lists
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `15ec254` on `feat/staff-lists-patients`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `9bd3840` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `15ec254` on `feat/staff-lists-patients`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `9bd3840` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-lists-patients`, cut from the tip of `feat/staff-modal-employees`.
 - **Why:** defines the list pieces and the `StaffEmpty` component once, and moves the patient lists of all three roles (admin and secretary active and archived, doctor) onto them.
 
@@ -21126,7 +21131,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e2 — Lists: notes (all three roles), duplicates, approvals
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `32335ce` on `feat/staff-lists-notes`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `0873558` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `32335ce` on `feat/staff-lists-notes`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `0873558` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-lists-notes`, cut from the tip of `feat/staff-lists-patients`.
 - **Why:** the three notes lists, the Duplicate Check and Approvals move onto the TJ-069e1 pieces. The doctor's "My Notes" title, today an inline-styled `h1`, gets the shared header; the duplicates' green "✓ No duplicate patients found" card and Approvals' grey box become the 3B empty state in a `.staff-panel`.
 
@@ -21461,7 +21466,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e3 — Lists: blog, website doctors, employees
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `a251af9` on `feat/staff-lists-content-team`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `35588e9` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `a251af9` on `feat/staff-lists-content-team`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `35588e9` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-lists-content-team`, cut from the tip of `feat/staff-lists-notes`.
 - **Why:** the content lists (Blog, website Doctors and their archive) and the two employee lists move onto the TJ-069e1 pieces. These are the lists that are empty on the live site today (Blog, website Doctors, Notes), so their empty state is what staff actually see.
 
@@ -21656,7 +21661,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069e4 — Lists: tables, loading and empty states inside a record
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `737f737` on `feat/staff-lists-records`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `fd44f2e` on 2026-11-23, after the user saw the preview. Not pushed (the user chose "merge, push later").
+- **Status:** DONE. Executed by the Sonnet executor: task commit `737f737` on `feat/staff-lists-records`. Planner-verified 2026-11-23 (see "Batch 3 — verified" under TJ-069). Merged to `master` with `--no-ff` as `fd44f2e` on 2026-11-23, after the user saw the preview. Pushed and deployed 2026-11-23 in `369d9fe`, at the user's request.
 - **Branch:** `feat/staff-lists-records`, cut from the tip of `feat/staff-lists-content-team`.
 - **Why:** the patient file's Sessions, Files and History tabs (all three roles) and the doctor's session History tab use the compact shared table and the 3B empty state, and their page-level "Loading…" becomes the shared loading line. After this step no staff file draws `.data-table` any more.
 
