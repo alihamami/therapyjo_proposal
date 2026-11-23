@@ -175,9 +175,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069j | Approve and Reject on the shared buttons | DONE — task commit `a67157b`, merged to `master` as `19033ff` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/approvals-buttons` |
 | TJ-069k | One Back link for every staff page | DONE — task commit `65d920f`, merged to `master` as `159bc3d` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `ba22783`** | `feat/staff-back-link` |
 | TJ-070 | Staff portal refresh, phase 2: one layout for every role | DONE — task commit `463681e`, merged to `master` as `f80353f` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `ba22783`** | `feat/staff-shell` |
-| TJ-071 | Staff portal refresh, phase 3: the dashboard | SPLIT — passed 2026-11-24; see TJ-071a, b (batch 7) and c (held) | — |
-| TJ-071a | One day header for the three dashboards | VISUAL REVIEW — task commit `79dfd1b`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-day-header` |
-| TJ-071b | Name the status on every schedule card | VISUAL REVIEW — task commit `d1d4ab1`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-card-status` |
+| TJ-071 | Staff portal refresh, phase 3: the dashboard | SPLIT — TJ-071a, b merged 2026-11-24, not pushed; TJ-071c held | — |
+| TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-day-header` |
+| TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
 | TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — no planning pass | — |
 
@@ -22617,10 +22617,11 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-071 — Staff portal refresh, phase 3: the dashboard
 
-- **Status:** SPLIT — passed 2026-11-24; TJ-071a and TJ-071b executed and planner-verified 2026-11-24, merge held for the user's look (see "Batch 7 — verified"); TJ-071c BLOCKED, needs the user.
+- **Status:** SPLIT — TJ-071a and TJ-071b merged 2026-11-24 as `48e647b`, `6711d09` after the user's review, not pushed (see "Batch 7 — verified"); TJ-071c BLOCKED, needs the user.
 - **Why:** Six status counters, mostly zeros, crowd the date. Doctor colours are too close: two near-identical greens, and a pink beside a red. Status shows only as a small dot for three statuses. Proposed: a summary that shows only non-zero statuses, a curated set of eight clearly distinct doctor colours, and clearer card states.
 
-**Batch 7 — verified (2026-11-24), merge held for the user's look:**
+**Batch 7 — verified and merged (2026-11-24):**
+- **Merged** after the user's review of the preview ("Yes" to merging; read as "merge, push later", since a push needs a clear go-ahead), in order with `--no-ff`: `48e647b` (TJ-071a), `6711d09` (TJ-071b). The merged `src/` tree is identical to the verified tip `d1d4ab1` (`6595c44`); only `tasks.md` differs. **Not pushed.** Pushing is the user's call; push by SHA (`git push origin <sha>:master`), as master is shared. The batch 6 deploy record (`2d45c4d`) is also still local.
 - **Executed** by the Sonnet executor on stacked branches from `5bbd5b8`: `79dfd1b` (TJ-071a), `d1d4ab1` (TJ-071b). Commit messages and trailers as specified; `tasks.md` untouched on both branches; TJ-071c not touched; checkout left on `master`, clean.
 - **Scope:** each commit changes exactly its task's files (6, two of them new; 1).
 - **Re-application:** all 7 changed file versions are byte-identical to the planner's expected blobs (`b7/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`6595c44`).
@@ -22635,7 +22636,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-071a — One day header for the three dashboards
 
-- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `79dfd1b` on `feat/staff-day-header`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071); merge held for the user's look.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `79dfd1b` on `feat/staff-day-header`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071). Merged to `master` with `--no-ff` as `48e647b` on 2026-11-24, after the user saw the preview. Not pushed (the user answered "Yes" to "merge and push later, or merge and push now?"; read as the first).
 - **Branch:** `feat/staff-day-header`, cut from `master` at the commit that adds this spec.
 - **Why:** the admin dashboard shows six status counters beside the date, mostly zeros on any given morning; the secretary's dashboard has no summary and no doctor colour key; the doctor's shows only a count. The three headers are separate copies of the same controls.
 
@@ -23389,7 +23390,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-071b — Name the status on every schedule card
 
-- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `d1d4ab1` on `feat/staff-card-status`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071); merge held for the user's look.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `d1d4ab1` on `feat/staff-card-status`. Planner-verified 2026-11-24 (see "Batch 7 — verified" under TJ-071). Merged to `master` with `--no-ff` as `6711d09` on 2026-11-24, after the user saw the preview. Not pushed (the user answered "Yes" to "merge and push later, or merge and push now?"; read as the first).
 - **Branch:** `feat/staff-card-status`, cut from the tip of `feat/staff-day-header`.
 - **Why:** a schedule card shows its status only as a 7px dot in a corner, and only for Waiting, Checked In and With Doctor; Checked Out (faded), Cancelled and No Show (striped) say it by look alone.
 
