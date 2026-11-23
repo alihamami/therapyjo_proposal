@@ -149,7 +149,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-068f2 | Row actions (design 5B): Employees | DONE — task commit `fb950ba`, merged to `master` as `9621f3e` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/employee-row-actions` |
 | TJ-068f3 | Row actions (design 5B): Blog, website Doctors, Notes | DONE — task commit `1653d84`, merged to `master` as `d44262c` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/content-row-actions` |
 | TJ-068f4 | Fix: row-menu items unstyled (planner's spec bug) | DONE — task commit `fd2aa5d`, merged to `master` as `38a43f5` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `bugfix/row-menu-item-styles` |
-| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review; batches 3–4 pushed and deployed 2026-11-23 ~05:22 (Amman) as `369d9fe`, Vercel `success`**; **batch 5 = d4a, d4b, d4c, planned 2026-11-23 (READY)** | — |
+| TJ-069 | Staff portal refresh, phase 1: shared foundations | SPLIT — decided 2026-11-22 (**1A, 2B, 3B**, P1-4–6 approved); batch 1 = TJ-069a, b1, b2, c **merged 2026-11-22, not pushed**; batch 2 = d1, d2 merged; **batches 1–2 pushed and deployed 2026-11-22 ~14:59 (Amman) as `f424e64`, Vercel `success`, live-checked read-only**; **batch 3 = d3, e1–e4, merged 2026-11-23 after the user's review**; **batch 4 = j, i, h, f1, f2, g, merged 2026-11-23 after the user's review; batches 3–4 pushed and deployed 2026-11-23 ~05:22 (Amman) as `369d9fe`, Vercel `success`**; **batch 5 = d4a, d4b, d4c, executed and planner-verified 2026-11-24; merge held for the user's look** | — |
 | TJ-069a | Tokens: named colours, six sizes, three radii | DONE — task commit `ca5313a`, merged to `master` as `6d31b35` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-tokens` |
 | TJ-069b1 | The confirmation dialog, and unsaved-changes prompts on it | DONE — task commit `87379b7`, merged to `master` as `a1c28ca` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog` |
 | TJ-069b2 | Archive, Restore, Resign, Delete and Remove ask in the dialog | DONE — task commit `35bd5f3`, merged to `master` as `a9208bd` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/confirm-dialog-everywhere` |
@@ -158,9 +158,9 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-069d2 | Delete popups and the website-doctor editor on the shared component | DONE — task commit `53a873c`, merged to `master` as `73ea998` with `--no-ff` on 2026-11-22 after the user's review; planner-verified and previewed; **not pushed** | `feat/staff-modal-content` |
 | TJ-069d3 | The two employee editors on the shared component | DONE — task commit `431a923`, merged to `master` as `6a22642` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-modal-employees` |
 | TJ-069d4 | Full-page forms on the shared field styles | SPLIT — passed 2026-11-23; see TJ-069d4a, d4b, d4c | — |
-| TJ-069d4a | Full-page forms: the shared pieces, new patient, new note | READY — passed 2026-11-23; batch 5, step 1 of 3 | `feat/staff-forms-patients-notes` |
-| TJ-069d4b | Full-page forms: new doctor and secretary, the profile, the session page, the blog editor | READY — passed 2026-11-23; batch 5, step 2 of 3 | `feat/staff-forms-employees-content` |
-| TJ-069d4c | Full-page forms: booking, new and edit | READY — passed 2026-11-23; batch 5, step 3 of 3 | `feat/staff-forms-booking` |
+| TJ-069d4a | Full-page forms: the shared pieces, new patient, new note | VISUAL REVIEW — task commit `6ed8434`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-forms-patients-notes` |
+| TJ-069d4b | Full-page forms: new doctor and secretary, the profile, the session page, the blog editor | VISUAL REVIEW — task commit `770c04f`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-forms-employees-content` |
+| TJ-069d4c | Full-page forms: booking, new and edit | VISUAL REVIEW — task commit `bf4dbb2`; planner-verified (byte-identical, gates green); **merge held for the user's look** | `feat/staff-forms-booking` |
 | TJ-069e | One table, page header, search, pagination, loading and empty state | SPLIT — **complete**: TJ-069e1–e4 merged 2026-11-23, pushed and deployed 2026-11-23 in `369d9fe` | — |
 | TJ-069e1 | Lists: the shared pieces, and the five patient lists | DONE — task commit `15ec254`, merged to `master` as `9bd3840` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-lists-patients` |
 | TJ-069e2 | Lists: notes (all three roles), duplicates, approvals | DONE — task commit `32335ce`, merged to `master` as `0873558` with `--no-ff` on 2026-11-23 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-23 in `369d9fe`** | `feat/staff-lists-notes` |
@@ -15680,7 +15680,7 @@ button.staff-row-name {
 
 ### TJ-069 — Staff portal refresh, phase 1: shared foundations
 
-- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 4 — verified" and "Batch 4 — planned" below). **Batch 5 = TJ-069d4a, d4b, d4c (the full-page forms), passed 2026-11-23, READY** (see "Batch 5 — planned" below).
+- **Status:** SPLIT. Design decided by the user on 2026-11-22 against the planner's mockup (private artifact `https://claude.ai/artifact/KtSTgprg91u8SWsAANN1vj`): **P1-1 = 1A** (centred dialog), **P1-2 = 2B** (header bar with ✕, footer bar), **P1-3 = 3B** (icon, title, hint, Add button), **P1-4, P1-5, P1-6 approved as shown**. Batch 1 = TJ-069a, b1, b2, c: **merged 2026-11-22 as `6d31b35`, `a1c28ca`, `a9208bd`, `b9a6a3a`, not pushed** (merged code identical to the verified tip `67b6563`). Batch 2 (d1, d2) merged and deployed with batch 1. **Batch 3 = TJ-069d3 + TJ-069e1–e4, merged 2026-11-23 as `6a22642`, `9bd3840`, `0873558`, `35588e9`, `fd44f2e`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 3 — verified" and "Batch 3 — planned" below). **Batch 4 = TJ-069j, i, h, f1, f2, g, merged 2026-11-23 as `19033ff`, `1618684`, `8ec1c53`, `18b2470`, `398d5c3`, `d818af2`, pushed and deployed 2026-11-23 in `369d9fe`** (see "Batches 3–4 — deployed", "Batch 4 — verified" and "Batch 4 — planned" below). **Batch 5 = TJ-069d4a, d4b, d4c (the full-page forms), executed and planner-verified 2026-11-24, merge held for the user's look** (see "Batch 5 — verified" and "Batch 5 — planned" below).
 - **Why:** The root cause of the drift. Every staff page carries its own copy of the same pieces, so sizes, colours and shapes wander from screen to screen. Phase 1 defines each piece once in the `globals.css` staff section (started by TJ-068) and moves every page onto it.
 - **Execution:** as TJ-068: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -15695,6 +15695,14 @@ button.staff-row-name {
 - Patient file `/admin/patients/562`: Edit Info opens the shared popup (440px, focus on Name); Escape closes it. With test text typed (never saved) into the Clinical Assessment, Back asks "Leave without saving?" with a red "Discard changes" and focus on Cancel; Cancel keeps the page and the text; Back then "Discard changes" leaves for the list with no request sent; on reload the stored field is unchanged (35 characters, no test text).
 - Not seen live: Archive/Resign/Delete confirmations were not clicked on real records; Blog, website Doctors and Notes have no live data. The secretary and doctor portals cannot be opened as admin.
 - **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at the phase 0 deployment.
+
+**Batch 5 — verified (2026-11-24), merge held for the user's look:**
+- **Executed** by the Sonnet executor at the user's request ("Yes, run batch 5") on stacked branches from `369d9fe`: `6ed8434` (d4a), `770c04f` (d4b), `bf4dbb2` (d4c). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
+- **Scope:** each commit changes exactly its task's files (6, 7, 4).
+- **Re-application:** all 17 changed file versions are byte-identical to the planner's expected blobs (`b5/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`f5845cc`).
+- **Gates, re-run by the planner on `bf4dbb2` in a clean worktree:** `next build --webpack` 0; `tsc` 0 (a first run failed only on `.next/types` left by an earlier build of the planner's preview harness, which was set aside; after the build regenerated them, `tsc` exited 0, no source error).
+- **Mocked preview of the same commit:** all 13 forms at 375px: every column full width, no old field classes, every `htmlFor` finds its field, checkboxes 16px and outside the fields; desktop screenshots of new note, booking edit and the blog editor. The notes popup's and the doctor editor's checkbox lines use `.staff-check` (16px, teal, outside the fields).
+- **Executor's notes, checked:** it applied the steps with Python reading the code blocks from `tasks.md` (CRLF kept); its first d4a run stopped on a bug in its own script before writing any file. It asked whether `globals.css` should end with a line break after the appended block: it does, and the blob matches.
 
 **Batch 5 — planned (2026-11-23):** TJ-069d4 split three ways: d4a (the shared pieces, new patient ×2, new note ×2, the notes popup's checkbox), d4b (new doctor, new secretary, both employee editors' checkbox, the doctor's profile and session page, the blog editor), d4c (booking new and edit ×2). 17 file changes; one `globals.css` append (`.staff-form-card`, `.staff-form-card-title`, `.staff-field-req`, `.staff-form-actions`, `.staff-check`); no new component.
 - **How the specs were made:** as batches 3–4: edits generated by script on a throwaway worktree of `master` at `873951f`, every anchor asserted to occur once, instructions rendered from the recorded edits. A page whose style block mostly changes gets its new style block in full. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `f5845cc`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 17 file versions came out byte-identical, same tree (6, 7 and 4 files per step), and each step's Verification commands pass on the result.
@@ -18344,7 +18352,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d4a — Full-page forms: the shared pieces, new patient, new note
 
-- **Status:** READY — passed 2026-11-23. Batch 5, step 1 of 3.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `6ed8434` on `feat/staff-forms-patients-notes`. Planner-verified 2026-11-24 (see "Batch 5 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-forms-patients-notes`, cut from `master` at the commit that adds this spec.
 - **Why:** defines the new shared pieces (see TJ-069d4) and moves the four simplest forms onto them, with the notes popup's checkbox line.
 
@@ -18616,7 +18624,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d4b — Full-page forms: new doctor and secretary, the profile, the session page, the blog editor
 
-- **Status:** READY — passed 2026-11-23. Batch 5, step 2 of 3.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `770c04f` on `feat/staff-forms-employees-content`. Planner-verified 2026-11-24 (see "Batch 5 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-forms-employees-content`, cut from the tip of `feat/staff-forms-patients-notes`.
 - **Why:** the new-employee forms, the doctor's own forms and the blog editor move onto the TJ-069d4a pieces; the two employee editors' checkbox lines follow.
 
@@ -19144,7 +19152,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-069d4c — Full-page forms: booking, new and edit
 
-- **Status:** READY — passed 2026-11-23. Batch 5, step 3 of 3.
+- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `bf4dbb2` on `feat/staff-forms-booking`. Planner-verified 2026-11-24 (see "Batch 5 — verified" under TJ-069); merge held for the user's look.
 - **Branch:** `feat/staff-forms-booking`, cut from the tip of `feat/staff-forms-employees-content`.
 - **Why:** the four booking forms (admin and secretary, new and edit), the largest of the set. Their new-patient popup was already on the shared fields (TJ-069d1).
 
