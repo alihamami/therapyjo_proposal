@@ -5,27 +5,29 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import { ConfirmProvider } from "@/app/components/ConfirmDialog";
+import { Archive, Contact, Copy, Stethoscope, StickyNote, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-type DropdownItem = { href: string; label: string; icon: string };
+type DropdownItem = { href: string; label: string; icon: LucideIcon };
 
 const employeeItems: DropdownItem[] = [
-    { href: "/admin/employees/doctors", label: "Doctors", icon: "🩺" },
-    { href: "/admin/employees/secretaries", label: "Secretaries", icon: "📋" },
+    { href: "/admin/employees/doctors", label: "Doctors", icon: Stethoscope },
+    { href: "/admin/employees/secretaries", label: "Secretaries", icon: Contact },
 ];
 
 const patientItems: DropdownItem[] = [
-    { href: "/admin/patients", label: "View Patients", icon: "👥" },
-    { href: "/admin/patients/archived", label: "Archived", icon: "🗄️" },
-    { href: "/admin/patients/duplicates", label: "Duplicates", icon: "🔍" },
+    { href: "/admin/patients", label: "View Patients", icon: Users },
+    { href: "/admin/patients/archived", label: "Archived", icon: Archive },
+    { href: "/admin/patients/duplicates", label: "Duplicates", icon: Copy },
 ];
 
 const noteItems: DropdownItem[] = [
-    { href: "/admin/notes", label: "View Notes", icon: "📝" },
+    { href: "/admin/notes", label: "View Notes", icon: StickyNote },
 ];
 
 const doctorItems: DropdownItem[] = [
-    { href: "/admin/doctors", label: "View Doctors", icon: "🩺" },
-    { href: "/admin/doctors/archived", label: "Archived", icon: "🗄️" },
+    { href: "/admin/doctors", label: "View Doctors", icon: Stethoscope },
+    { href: "/admin/doctors/archived", label: "Archived", icon: Archive },
 ];
 
 function NavDropdown({
@@ -84,7 +86,7 @@ function NavDropdown({
                             className={`dropdown-item ${pathname === item.href ? "current" : ""}`}
                             onClick={() => { setOpen(false); onNavigate?.(); }}
                         >
-                            <span className="dropdown-icon">{item.icon}</span>
+                            <span className="dropdown-icon"><item.icon size={15} aria-hidden="true" /></span>
                             <span>{item.label}</span>
                         </Link>
                     ))}
@@ -411,9 +413,9 @@ export default function AdminLayout({
                     background: rgba(76, 175, 147, 0.08);
                 }
                 :global(.dropdown-icon) {
-                    font-size: 0.9rem;
+                    display: inline-flex;
+                    justify-content: center;
                     width: 20px;
-                    text-align: center;
                     flex-shrink: 0;
                 }
 
