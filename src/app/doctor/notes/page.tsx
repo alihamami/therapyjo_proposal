@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Circle, CircleCheck, StickyNote } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Note {
     id: number;
@@ -61,7 +62,7 @@ export default function DoctorNotesPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr className="staff-table-state"><td colSpan={4}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                            <StaffSkeletonRows columns={4} label="Loading notes…" />
                         ) : notes.length === 0 ? (
                             <tr className="staff-table-state"><td colSpan={4}>
                                 <StaffEmpty icon={StickyNote} title="No notes yet" hint="Notes the clinic leaves for you appear here." />

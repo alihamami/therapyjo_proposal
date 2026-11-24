@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, Search, Users } from "lucide-react";
 import { shouldOpenRow } from "@/lib/rowLink";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Patient {
     id: number;
@@ -79,7 +80,7 @@ export default function DoctorPatientsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr className="staff-table-state"><td colSpan={4}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                            <StaffSkeletonRows columns={4} label="Loading patients…" />
                         ) : patients.length === 0 ? (
                             <tr className="staff-table-state"><td colSpan={4}>
                                 {search ? (

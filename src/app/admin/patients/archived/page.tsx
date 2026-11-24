@@ -8,6 +8,7 @@ import { Archive, ChevronRight } from "lucide-react";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Patient {
     id: number;
@@ -79,7 +80,7 @@ export default function ArchivedPatientsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                            <StaffSkeletonRows columns={5} label="Loading archived patients…" />
                         ) : patients.length === 0 ? (
                             <tr className="staff-table-state"><td colSpan={5}>
                                 <StaffEmpty icon={Archive} title="No archived patients" hint="Patients you archive move here. You can restore them any time." />

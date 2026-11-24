@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { CircleCheck, Plus, Search, StickyNote } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Doctor {
     id: string;
@@ -88,7 +89,7 @@ export default function SecretaryNotesPage() {
                     <thead><tr><th>Date</th><th>Name</th><th>Doctor</th><th>Checked</th><th>Details</th></tr></thead>
                     <tbody>
                         {loading ? (
-                            <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                            <StaffSkeletonRows columns={5} label="Loading notes…" />
                         ) : notes.length === 0 ? (
                             <tr className="staff-table-state"><td colSpan={5}>
                                 {search || doctorFilter !== "all" ? (

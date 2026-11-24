@@ -7,6 +7,7 @@ import { isMissingPhone } from "@/lib/phone";
 import { ChevronRight, Plus, Search, Users } from "lucide-react";
 import { shouldOpenRow } from "@/lib/rowLink";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Patient {
     id: number;
@@ -83,7 +84,7 @@ export default function SecretaryPatientsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                            <StaffSkeletonRows columns={5} label="Loading patients…" />
                         ) : patients.length === 0 ? (
                             <tr className="staff-table-state"><td colSpan={5}>
                                 {search ? (
