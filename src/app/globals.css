@@ -3037,3 +3037,215 @@ button.staff-row-name {
     flex: 1;
   }
 }
+/* A patient's record (TJ-072a): the header, tabs, panels, status and doctor
+   labels, and the Files tab, shared by the admin, secretary and doctor
+   patient files and the doctor's session page. */
+.staff-record-head {
+  margin-bottom: 1.5rem;
+}
+.staff-record-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.staff-record-info {
+  min-width: 0;
+}
+.staff-record-info h1 {
+  margin: 0 0 0.35rem;
+  font-size: var(--staff-size-xl);
+  font-weight: 600;
+}
+.staff-record-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  color: var(--staff-muted);
+  font-size: var(--staff-size-base);
+}
+.staff-record-meta a {
+  color: var(--staff-accent);
+  text-decoration: none;
+}
+.staff-record-meta a:hover {
+  text-decoration: underline;
+}
+.staff-record-updated {
+  margin: 0.4rem 0 0;
+  color: var(--staff-faint);
+  font-size: var(--staff-size-sm);
+}
+.staff-record-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.staff-record-actions:empty {
+  display: none;
+}
+.staff-badge-archived {
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--staff-radius-sm);
+  background: var(--staff-bad-soft);
+  color: var(--staff-bad);
+  font-size: var(--staff-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.staff-tabs {
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--staff-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.staff-tab {
+  flex-shrink: 0;
+  padding: 0.7rem 1.2rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--staff-muted);
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.staff-tab:hover {
+  color: var(--staff-text-2);
+}
+.staff-tab.active {
+  color: var(--staff-accent);
+  border-bottom-color: var(--staff-accent);
+}
+.staff-tab:focus-visible {
+  outline: 2px solid var(--staff-focus);
+  outline-offset: -2px;
+}
+/* A tab's content. No overflow of its own: tables scroll in
+   .staff-table-wrap, and the assessment's Save bar (TJ-072b) can only stick
+   inside a box that does not scroll. */
+.staff-record-panel {
+  padding: 1.5rem;
+  background: var(--staff-surface);
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-lg);
+}
+.staff-record-panel > .staff-form-error {
+  margin-bottom: 1rem;
+}
+/* A record's table keeps its columns readable on a phone and scrolls
+   sideways in its box instead of widening the page. */
+.staff-table-wide {
+  min-width: 600px;
+}
+/* A session's status: the name, with a dot, in the status colour
+   (lib/reservationStatus.ts; the colour is set inline on .staff-status). */
+.staff-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.staff-status-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+/* A doctor's name with their calendar colour (set inline on the dot). */
+.staff-doctor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+.staff-doctor-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--staff-faint);
+}
+.staff-files-upload {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--staff-border);
+}
+.staff-files-upload input[type="file"] {
+  max-width: 100%;
+  color: var(--staff-muted);
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+}
+.staff-files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+.staff-file-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-md);
+  transition: background 0.15s;
+}
+.staff-file-card:hover {
+  background: var(--staff-surface-2);
+}
+.staff-file-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  min-width: 0;
+  color: var(--staff-text);
+  text-decoration: none;
+}
+.staff-file-icon {
+  display: flex;
+  color: var(--staff-muted);
+}
+.staff-file-name {
+  font-size: var(--staff-size-sm);
+  text-align: center;
+  word-break: break-all;
+}
+.staff-file-date {
+  color: var(--staff-faint);
+  font-size: var(--staff-size-xs);
+}
+.staff-btn.staff-file-remove {
+  color: var(--staff-bad);
+}
+@media (max-width: 640px) {
+  .staff-record-panel {
+    padding: 1rem;
+  }
+}
+@media (max-width: 560px) {
+  .staff-record-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .staff-record-actions {
+    justify-content: flex-start;
+  }
+}

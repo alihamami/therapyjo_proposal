@@ -7,6 +7,7 @@ import { use } from "react";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import { History, Phone } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
 
@@ -168,10 +169,6 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
     const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     const formatTime = (t: string) => new Date(t).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 
-    const statusColors: Record<string, string> = {
-        SCHEDULED: "#64748b", CHECKED_IN: "#3b82f6", WITH_DOCTOR: "#4CAF93", CHECKED_OUT: "#16a34a", WAITING: "#f59e0b",
-    };
-
     if (loading) return <p className="staff-loading" role="status">Loading session…</p>;
     if (!reservation) return <div style={{ color: "rgba(255,255,255,0.4)", padding: "3rem", textAlign: "center" }}>Session not found</div>;
 
@@ -191,7 +188,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 <div className="header-left">
                     <h1>
                         {reservation.patient.name}
-                        {reservation.patient.archived && <span className="badge-archived">ARCHIVED</span>}
+                        {reservation.patient.archived && <span className="staff-badge-archived">ARCHIVED</span>}
                     </h1>
                     {typeof reservation.patient.phone1 === "string" && (
                         <div className="header-meta">
@@ -201,16 +198,16 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                     )}
                 </div>
                 <div className="header-right">
-                    <span className="status-badge" style={{ background: `${statusColors[reservation.status]}22`, color: statusColors[reservation.status], border: `1px solid ${statusColors[reservation.status]}44` }}>
-                        {reservation.status.replace("_", " ")}
+                    <span className="status-badge" style={{ background: `${STATUS_COLORS[reservation.status]}22`, color: STATUS_COLORS[reservation.status], border: `1px solid ${STATUS_COLORS[reservation.status]}44` }}>
+                        {STATUS_LABELS[reservation.status] ?? reservation.status}
                     </span>
                     {!readOnly && reservation.status !== "CHECKED_OUT" && (
                         <div className="status-actions">
-                            {reservation.status === "SCHEDULED" && <button className="action-btn" onClick={() => handleStatusChange("CHECKED_IN")}>Check In</button>}
-                            {reservation.status === "CHECKED_IN" && <button className="action-btn" onClick={() => handleStatusChange("WITH_DOCTOR")}>Start Session</button>}
-                            {reservation.status === "WITH_DOCTOR" && <button className="action-btn checkout" onClick={() => handleStatusChange("CHECKED_OUT")}>Checkout</button>}
-                            {["SCHEDULED", "CHECKED_IN"].includes(reservation.status) && <button className="action-btn waiting" onClick={() => handleStatusChange("WAITING")}>Waiting</button>}
-                            {reservation.status === "WAITING" && <button className="action-btn" onClick={() => handleStatusChange("CHECKED_IN")}>Check In</button>}
+                            {reservation.status === "SCHEDULED" && <button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => handleStatusChange("CHECKED_IN")}>Check In</button>}
+                            {reservation.status === "CHECKED_IN" && <button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => handleStatusChange("WITH_DOCTOR")}>Start Session</button>}
+                            {reservation.status === "WITH_DOCTOR" && <button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => handleStatusChange("CHECKED_OUT")}>Checkout</button>}
+                            {["SCHEDULED", "CHECKED_IN"].includes(reservation.status) && <button className="staff-btn staff-btn-secondary staff-btn-sm" onClick={() => handleStatusChange("WAITING")}>Waiting</button>}
+                            {reservation.status === "WAITING" && <button className="staff-btn staff-btn-primary staff-btn-sm" onClick={() => handleStatusChange("CHECKED_IN")}>Check In</button>}
                         </div>
                     )}
                 </div>
@@ -234,9 +231,9 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
             )}
 
             {/* Tabs */}
-            <div className="tabs">
+            <div className="staff-tabs">
                 {(["details", "soap", "intake", "history"] as const).map((tab) => (
-                    <button key={tab} className={`tab ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>
+                    <button key={tab} className={`staff-tab ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>
                         {tab === "details" ? "Session Details" : tab === "soap" ? "SOAP Note" : tab === "intake" ? "Clinical Assessment" : `History (${pastSessions.length})`}
                     </button>
                 ))}
@@ -244,7 +241,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
 
             {/* Details Tab */}
             {activeTab === "details" && (
-                <div className="card">
+                <div className="staff-record-panel">
                     <div className="form-grid">
                         <div className="staff-field">
                             <label>Session Date</label>
@@ -274,7 +271,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
 
             {/* SOAP Tab */}
             {activeTab === "soap" && (
-                <div className="card">
+                <div className="staff-record-panel">
                     <div className="soap-grid">
                         {(["subjective", "objective", "assessment", "plan"] as const).map((field) => (
                             <div className="staff-field" key={field}>
@@ -305,56 +302,47 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
 
             {/* Clinical Assessment Tab. Hidden rather than unmounted while another
                 tab is open, so switching tabs keeps unsaved edits. (TJ-067b) */}
-            <div className="card" hidden={activeTab !== "intake"}>
+            <div className="staff-record-panel" hidden={activeTab !== "intake"}>
                 <ClinicalAssessment patientId={reservation.patient.id} onDirtyChange={setIntakeDirty} />
             </div>
 
             {/* History Tab */}
             {activeTab === "history" && (
-                <div className="card">
-                    {pastSessions.length === 0 ? (
+                pastSessions.length === 0 ? (
+                    <div className="staff-panel">
                         <StaffEmpty icon={History} title="No previous sessions" hint="Earlier sessions with this patient appear here." />
-                    ) : (
-                        <div className="table-container">
-                            <table className="staff-table staff-table-compact">
-                                <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th><th>Injury</th><th>Payment</th><th></th></tr></thead>
-                                <tbody>
-                                    {pastSessions.map((s) => (
-                                        <tr key={s.id}>
-                                            <td>{formatDate(s.sessionDate)}</td>
-                                            <td>{formatTime(s.sessionTime)}</td>
-                                            <td><span style={{ borderLeft: `3px solid ${s.doctor?.color ?? s.doctorColorSnapshot ?? "#666"}`, paddingLeft: "0.5rem" }}>{s.doctor?.name ?? s.doctorNameSnapshot ?? "—"}</span></td>
-                                            <td><span className="mini-status" style={{ color: statusColors[s.status] || "#fff" }}>{s.status.replace("_", " ")}</span></td>
-                                            <td>{s.injuryPlace || "—"}</td>
-                                            <td>{s.paymentType || "—"}</td>
-                                            <td><button className="view-btn" onClick={() => router.push(`/doctor/session/${s.id}`)}>View</button></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <div className="staff-table-wrap">
+                        <table className="staff-table staff-table-compact staff-table-wide">
+                            <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th><th>Injury</th><th>Payment</th><th></th></tr></thead>
+                            <tbody>
+                                {pastSessions.map((s) => (
+                                    <tr key={s.id}>
+                                        <td>{formatDate(s.sessionDate)}</td>
+                                        <td>{formatTime(s.sessionTime)}</td>
+                                        <td><span className="staff-doctor"><span className="staff-doctor-dot" aria-hidden="true" style={{ background: s.doctor?.color ?? s.doctorColorSnapshot ?? undefined }} />{s.doctor?.name ?? s.doctorNameSnapshot ?? "—"}</span></td>
+                                        <td><span className="staff-status" style={{ color: STATUS_COLORS[s.status] }}><span className="staff-status-dot" aria-hidden="true" />{STATUS_LABELS[s.status] ?? s.status}</span></td>
+                                        <td>{s.injuryPlace || "—"}</td>
+                                        <td>{s.paymentType || "—"}</td>
+                                        <td><button type="button" className="staff-btn staff-btn-secondary staff-btn-sm" onClick={() => router.push(`/doctor/session/${s.id}`)}>View</button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )
             )}
 
             <style jsx>{`
                 .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
                 .header h1 { font-size: var(--staff-size-xl); font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
-                .badge-archived { background: rgba(239,68,68,0.12); color: #fca5a5; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em; }
                 .header-meta { color: rgba(255,255,255,0.5); font-size: var(--staff-size-base); margin-top: 0.2rem; display: flex; gap: 0.5rem; }
                 .header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
                 .status-badge { padding: 0.3rem 0.8rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
                 .status-actions { display: flex; gap: 0.35rem; }
-                .action-btn { background: var(--primary, #4CAF93); color: #fff; border: none; padding: 0.35rem 0.85rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); font-weight: 600; cursor: pointer; font-family: inherit; }
-                .action-btn.checkout { background: #16a34a; }
-                .action-btn.waiting { background: transparent; border: 1px solid #f59e0b; color: #f59e0b; }
                 .prev-note-banner { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(76,175,147,0.4); border-radius: var(--radius-sm, 2px); padding: 0.65rem 1rem; margin-bottom: 1rem; font-size: var(--staff-size-base); display: flex; flex-direction: column; gap: 0.15rem; }
                 .prev-label { font-size: var(--staff-size-xs); text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.4); font-weight: 600; }
-                .tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
-                .tab { background: none; border: none; border-bottom: 2px solid transparent; color: rgba(255,255,255,0.5); padding: 0.65rem 1.1rem; font-size: var(--staff-size-base); cursor: pointer; font-family: inherit; transition: all 0.15s; }
-                .tab:hover { color: rgba(255,255,255,0.8); }
-                .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); font-weight: 600; }
-                .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
                 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
                 .soap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
                 .soap-grid label { display: flex; align-items: center; gap: 0.35rem; }
@@ -362,10 +350,6 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
                 .readonly-value { margin: 0; padding: 0.5rem 0.7rem; color: rgba(255,255,255,0.7); font-size: var(--staff-size-base); }
                 .field-hint { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.35); margin: 0.75rem 0 0; }
                 .card-actions { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
-                .table-container { overflow-x: auto; }
-                .mini-status { font-size: var(--staff-size-xs); font-weight: 600; text-transform: uppercase; }
-                .view-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); cursor: pointer; font-family: inherit; }
-                .view-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
                 @media (max-width: 640px) { .form-grid, .soap-grid { grid-template-columns: 1fr; } }
             `}</style>
         </div>

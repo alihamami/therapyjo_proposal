@@ -9,6 +9,7 @@ import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
 
 interface PatientData {
     id: number;
@@ -156,41 +157,36 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
         return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     };
 
-    const statusColors: Record<string, string> = {
-        SCHEDULED: "#60a5fa", WAITING: "#fbbf24", CHECKED_IN: "#34d399",
-        WITH_DOCTOR: "#a78bfa", CHECKED_OUT: "rgba(255,255,255,0.35)",
-    };
-
     if (loading) return <p className="staff-loading" role="status">Loading…</p>;
     if (!patient) return null;
 
     return (
         <div>
             {/* Header */}
-            <div className="profile-header">
+            <div className="staff-record-head">
                 <button className="staff-back" onClick={() => router.push("/secretary/patients")}>← Back</button>
-                <div className="header-main">
-                    <div className="header-info">
+                <div className="staff-record-top">
+                    <div className="staff-record-info">
                         <h1>{patient.name}</h1>
-                        <div className="header-meta">
+                        <div className="staff-record-meta">
                             <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1) ? <span className="no-phone">No phone</span> : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>
                             {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>{patient.phone2}</a></span>}
                             <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
                             <span>Patient #{patient.id}</span>
                         </div>
                         {patient.updatedBy && (
-                            <p className="updated-by">
+                            <p className="staff-record-updated">
                                 Last updated by {patient.updatedBy.name} ({patient.updatedBy.role}) on {formatDate(patient.updatedAt)}
                             </p>
                         )}
                     </div>
-                    <div className="header-actions">
-                        {patient.archived && <span className="badge-archived">ARCHIVED</span>}
+                    <div className="staff-record-actions">
+                        {patient.archived && <span className="staff-badge-archived">ARCHIVED</span>}
                         <button className="staff-btn staff-btn-secondary staff-btn-sm" onClick={() => setEditingInfo(true)}>
                             <Pencil size={14} aria-hidden="true" />Edit Info
                         </button>
                         {patient.archived ? (
-                            <button className="staff-btn staff-btn-sm btn-restore" onClick={handleArchiveToggle}>Restore</button>
+                            <button className="staff-btn staff-btn-secondary staff-btn-sm" onClick={handleArchiveToggle}>Restore</button>
                         ) : (
                             <RowMenu
                                 label="More actions for this patient"
@@ -232,49 +228,68 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
             )}
 
             {/* Tabs — NO clinical intake tab for secretary */}
-            <div className="tabs">
-                <button className={`tab ${activeTab === "sessions" ? "active" : ""}`} onClick={() => setActiveTab("sessions")}>Sessions ({patient.reservations.length})</button>
-                <button className={`tab ${activeTab === "files" ? "active" : ""}`} onClick={() => setActiveTab("files")}>Files ({patient.files.length})</button>
+            <div className="staff-tabs">
+                <button className={`staff-tab ${activeTab === "sessions" ? "active" : ""}`} onClick={() => setActiveTab("sessions")}>Sessions ({patient.reservations.length})</button>
+                <button className={`staff-tab ${activeTab === "files" ? "active" : ""}`} onClick={() => setActiveTab("files")}>Files ({patient.files.length})</button>
             </div>
 
             {/* Sessions Tab */}
             {activeTab === "sessions" && (
-                <div className="section-card">
-                    {patient.reservations.length === 0 ? (
+                patient.reservations.length === 0 ? (
+                    <div className="staff-panel">
                         <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />
-                    ) : (
-                        <table className="staff-table staff-table-compact">
-                            <thead><tr><th>Date</th><th>Doctor</th><th>Status</th><th>Payment</th><th>Injury</th></tr></thead>
+                    </div>
+                ) : (
+                    <div className="staff-table-wrap">
+                        <table className="staff-table staff-table-compact staff-table-wide">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Doctor</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                    <th>Injury</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 {patient.reservations.map((r) => (
                                     <tr key={r.id}>
                                         <td>{formatDate(r.sessionDate)}</td>
-                                        <td><span className="doctor-tag" style={{ borderColor: r.doctor?.color || "#666" }}>{r.doctor?.name ?? r.doctorNameSnapshot ?? "—"}</span></td>
-                                        <td><span className="status-dot" style={{ background: statusColors[r.status] || "#666" }} />{r.status.replace("_", " ")}</td>
+                                        <td>
+                                            <span className="staff-doctor">
+                                                <span className="staff-doctor-dot" aria-hidden="true" style={{ background: r.doctor?.color ?? r.doctorColorSnapshot ?? undefined }} />
+                                                {r.doctor?.name ?? r.doctorNameSnapshot ?? "—"}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className="staff-status" style={{ color: STATUS_COLORS[r.status] }}>
+                                                <span className="staff-status-dot" aria-hidden="true" />
+                                                {STATUS_LABELS[r.status] ?? r.status}
+                                            </span>
+                                        </td>
                                         <td>{r.paymentType || "—"}</td>
                                         <td>{r.injuryPlace || "—"}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                    )}
-                </div>
+                    </div>
+                )
             )}
 
             {/* Files Tab */}
             {activeTab === "files" && (
-                <div className="section-card">
-                    {fileError && <div className="error-msg" role="alert">{fileError}</div>}
+                <div className="staff-record-panel">
+                    {fileError && <div className="staff-form-error" role="alert">{fileError}</div>}
 
-                    <div className="file-upload-row">
+                    <div className="staff-files-upload">
                         <input
                             type="file"
-                            className="file-input"
                             aria-label="Upload a document"
                             disabled={!!uploadingName}
                             onChange={handleUpload}
                         />
-                        <span className="field-hint">
+                        <span className="staff-field-hint">
                             {uploadingName ? `Uploading ${uploadingName}…` : "Saved immediately — no separate Save step."}
                         </span>
                     </div>
@@ -282,17 +297,22 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                     {patient.files.length === 0 && !uploadingName ? (
                         <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />
                     ) : (
-                        <div className="files-grid">
+                        <div className="staff-files-grid">
                             {patient.files.map((f) => (
-                                <div key={f.id} className="file-card">
-                                    <a href={clinicalFileUrl(f.filePath)} target="_blank" rel="noreferrer" className="file-open">
-                                        <span className="file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
-                                        <span className="file-name">{f.fileName}</span>
-                                        <span className="file-date">{formatDate(f.uploadedAt)}</span>
+                                <div key={f.id} className="staff-file-card">
+                                    <a
+                                        href={clinicalFileUrl(f.filePath)}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="staff-file-open"
+                                    >
+                                        <span className="staff-file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
+                                        <span className="staff-file-name">{f.fileName}</span>
+                                        <span className="staff-file-date">{formatDate(f.uploadedAt)}</span>
                                     </a>
                                     <button
                                         type="button"
-                                        className="btn-sm btn-remove"
+                                        className="staff-btn staff-btn-secondary staff-btn-sm staff-file-remove"
                                         disabled={removingId === f.id}
                                         onClick={() => handleRemoveFile(f.id)}
                                     >
@@ -304,44 +324,6 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                     )}
                 </div>
             )}
-
-            <style jsx>{`
-                .profile-header { margin-bottom: 1.5rem; }
-                .header-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-                .header-info h1 { font-size: var(--staff-size-xl); font-weight: 600; margin-bottom: 0.35rem; }
-                .header-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); }
-                .header-meta a { color: var(--primary, #4CAF93); text-decoration: none; }
-                .header-meta a:hover { text-decoration: underline; }
-                .updated-by { margin-top: 0.4rem; color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); }
-                .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
-                .badge-archived { background: rgba(239,68,68,0.12); color: #fca5a5; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em; }
-                .btn-sm { padding: 0.3rem 0.7rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
-                .btn-edit { background: rgba(96,165,250,0.12); color: #93c5fd; }
-                .btn-edit:hover { background: rgba(96,165,250,0.22); }
-                .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; border: 1px solid transparent; }
-                .btn-restore:hover { background: rgba(96,165,250,0.22); }
-                .tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
-                .tab { background: none; border: none; color: rgba(255,255,255,0.4); padding: 0.7rem 1.2rem; font-size: var(--staff-size-base); font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit; }
-                .tab:hover { color: rgba(255,255,255,0.7); }
-                .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); }
-                .section-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
-                .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
-                .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 0.4rem; vertical-align: middle; }
-                .file-upload-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
-                .file-input { font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); max-width: 100%; }
-                .field-hint { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); }
-                .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; }
-                .file-card { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; padding: 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm, 2px); color: #fff; transition: background 0.15s; }
-                .file-card:hover { background: rgba(255,255,255,0.08); }
-                .file-open { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; text-decoration: none; color: #fff; width: 100%; min-width: 0; }
-                .btn-remove { background: rgba(239,68,68,0.15); color: #fca5a5; margin-top: 0.5rem; }
-                .btn-remove:hover:not(:disabled) { background: rgba(239,68,68,0.25); }
-                .btn-remove:disabled { opacity: 0.5; cursor: not-allowed; }
-                .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2); color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 1rem; }
-                .file-icon { display: flex; color: var(--staff-muted); }
-                .file-name { font-size: var(--staff-size-sm); text-align: center; word-break: break-all; }
-                .file-date { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.3); }
-            `}</style>
         </div>
     );
 }
