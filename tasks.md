@@ -179,7 +179,13 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-day-header` |
 | TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
-| TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — reviewed 2026-11-24, split proposed (TJ-072a–f); decisions P4-1 to P4-5 open for the user, mockup drawn; no planning pass yet | — |
+| TJ-072 | Staff portal refresh, phase 4: patient file and lists | SPLIT — decided 2026-11-24 (P4-1 to P4-5 as recommended); batch 8 = TJ-072a, b, c READY; batch 9 = d, e, f BACKLOG | — |
+| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | READY — passed 2026-11-24; batch 8, step 1 of 3 | `feat/patient-file-tidy` |
+| TJ-072b | The assessment in sections, with a Save bar that stays visible | READY — passed 2026-11-24; batch 8, step 2 of 3 | `feat/assessment-sections` |
+| TJ-072c | A summary line on the patient file | READY — passed 2026-11-24; batch 8, step 3 of 3 | `feat/patient-summary-line` |
+| TJ-072d | Skeletons: the shared piece and the 9 lists | BACKLOG — batch 9, no planning pass | — |
+| TJ-072e | Skeletons: every page-level loading line | BACKLOG — batch 9, no planning pass | — |
+| TJ-072f | Leftovers: booking dropdown on tokens; Phone 2 overflow | BACKLOG — batch 9, no planning pass | — |
 
 ---
 
@@ -23536,8 +23542,21 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072 — Staff portal refresh, phase 4: patient file and lists
 
-- **Status:** BACKLOG. Reviewed 2026-11-24 and a split proposed (below); **five design decisions open for the user (P4-1 to P4-5)**, shown in the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`, 2026-11-24). No sub-task has had a planning pass, so nothing here is `READY`.
+- **Status:** SPLIT — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: READY** (planned 2026-11-24, see "Batch 8 — planned"). TJ-072d, e, f are batch 9, `BACKLOG`, no planning pass.
 - **Why:** The clinical assessment is about 13 identical full-width text boxes with Save only at the bottom. Group them into sections (History, Examination, Diagnosis & plan, Exercises) with a Save bar that stays visible. Add a summary line on the patient file (next appointment, doctor, sessions done out of recommended). Empty pages get an icon, a one-line explanation and the create button, instead of three different one-liners. Loading states become skeletons instead of "Loading…" text in 27 places.
+- **Execution:** as phases 1–3: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
+
+**Decisions (2026-11-24), as drawn in the mockup:**
+- **P4-1** Four sections: *History* (Injury Place, Patient Since, Medical History); *Examination* (Assessment, Pain Aggravators, Pain Relievers); *Diagnosis & plan* (Diagnosis, Treatment Plan, Recommended Sessions, Next Session Treatment); *Exercises* (Clinic Exercises, Home Exercises). Pairs side by side on wide screens, one column on phones.
+- **P4-2 = 2A** A Save bar pinned to the bottom of the screen while the form is open: the state on the left, Save on the right; messages move into it. As drawn: Save is off until something changes.
+- **P4-3** Next session (day, time, doctor), last visit, sessions done. "Done" counts Checked Out sessions from the day the latest assessment was written, out of its Recommended Sessions; over plan shows amber. A doctor's line names today's session or none (TJ-064).
+- **P4-4 = 4A** Skeletons with a soft pulse, still under reduced motion (batch 9).
+- **P4-5** No Recommended Sessions for the secretary: their line counts every Checked Out session, with no "of".
+
+**Batch 8 — planned (2026-11-24):** at the user's request ("Yes, all five", then "dispatch when done"), three steps on the patient file: TJ-072a (the shared record pieces), TJ-072b (the assessment in sections with the Save bar), TJ-072c (the summary line). 13 file changes across 8 files; three `globals.css` appends; one new component (`PatientSummary.tsx`); no API change.
+- **How the specs were made:** as batches 3–7: edits generated by script on a throwaway worktree of `master` at `ed8acaa`, every anchor asserted to occur once, instructions rendered from the recorded edits; new or mostly rewritten files are given whole. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `0cdc8b0`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 13 file versions came out byte-identical, same tree (5, 2 and 6 files per step), and each step's Verification commands pass on the result.
+- **Mocked preview:** the admin, secretary and doctor patient files and the doctor's session page, at 1280px and 375px, filled, empty and over plan (measurements in each task's pass). The expected results are in the planner's scratchpad (`b8/expected_blobs.txt`); the executor's tip must reproduce `src/` tree `0cdc8b0`.
+- **Found, not in this batch:** the admin patient file's file Remove deletes without asking (the secretary's asks, TJ-069b2); the doctor's session page keeps its own header, banners and Details/SOAP styles (batch 9 or later).
 
 **Review, 2026-11-24, on `master` at `3b6ea07`** (read in full: `ClinicalAssessment.tsx`, the admin patient file, `StaffEmpty.tsx`, `lib/reservationStatus.ts`, `api/patients/[id]/route.ts`; outlined: the secretary and doctor patient files, the doctor's session page; counted by grep across `src/app/{admin,secretary,doctor}` and the staff components):
 - **Empty states are already done.** Phase 1 delivered design 3B (TJ-069e1–e4): 19 files use `StaffEmpty`, and no other empty wording is left. That part of the *Why* drops out.
@@ -23548,23 +23567,1950 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **Loading:** 29 "Loading…" lines: 9 table rows in lists, 3 dashboards, 15 page-level (patient files ×3, session, profile, approvals, blog, blog editor with an inline style, website doctors, employees ×2, booking edit ×2, booking new ×2 in `Suspense`), the History tab, and `ClinicalAssessment` (old `.empty-text`). (First recorded as 28 with 14 page-level; recounted when the mockup was drawn.) The two "Loading documents…" field hints stay text.
 - **Left for this phase by earlier passes:** the patient files' Sessions tables use a local 5-colour map, so Cancelled and No Show get grey and raw words ("NO SHOW"); phase 3's `reservationStatus.ts` has all seven. Four copies of `.tabs`/`.tab` (3 patient files, session page). Record tables are not in `.staff-table-wrap`: the secretary's file is 468px wide at 375px (TJ-069 batch 3 note). Small buttons not on 4A: `.btn-edit` (SOAP View / Edit, Add), `.btn-remove`, `.btn-restore`. About 170 colour literals in the five phase-4 files (25 + 40 + 40 + 31 + 36). The booking search dropdown's slate `#1e293b` (admin and secretary new booking). The New Patient form's Phone 2 overflow near 800px (TJ-068 note; `.staff-field-row` is `1fr 1fr`, so the inputs' minimum width can still push it; re-measure).
 
-**Open decisions for the user:**
-- **P4-1 Assessment sections.** Recommended grouping: *History* (Injury Place, Patient Since, Medical History); *Examination* (Assessment, Pain Aggravators, Pain Relievers); *Diagnosis & plan* (Diagnosis, Treatment Plan, Recommended Sessions, Next Session Treatment); *Exercises* (Clinic Exercises, Home Exercises). Pairs side by side on wide screens (Injury Place | Patient Since, Aggravators | Relievers, Clinic | Home exercises), one column on phones. Next Session Treatment moves up from last into *Diagnosis & plan*. Approve or amend.
-- **P4-2 Save bar.** 2A (recommended): a bar pinned to the bottom of the screen while the assessment is open, with the state on the left ("Unsaved changes" / "Saved") and Save on the right; the success and error messages move into it. 2B: Save at the top and the bottom of the form, nothing pinned.
-- **P4-3 Summary line.** Under the patient's name: next session (date, time, doctor), last visit, and "sessions done of recommended". Recommended: **"done" counts Checked Out sessions since the latest assessment was created**, because Recommended Sessions belongs to that assessment; all-time is the alternative. With no upcoming session: "No session booked". The doctor's line shows today's session at most (TJ-064).
-- **P4-4 Skeletons.** Grey blocks in the shape of what is loading (table rows under the real header, the patient-file header and card, the form's fields, the calendar's columns), 4A (recommended): a soft pulse, still under `prefers-reduced-motion`; 4B: a shimmer sweep; 4C: static. Screen readers keep a hidden "Loading…" in `role="status"`.
-- **P4-5 Secretary and Recommended Sessions.** Recommended: no; the secretary's line shows "N sessions done" without "of M", keeping the clinical boundary (TJ-023). Showing it would widen what the patient API returns to a secretary.
+**The split** (renumbered at the batch 8 pass, so the shared pieces land first and the Save bar has a panel to stick in):
 
-**Proposed split** (specs follow the decisions; each gets its own planning pass):
-
-| ID | Title | Files (about) |
+| ID | Title | Batch |
 |---|---|---|
-| TJ-072a | The assessment in sections, with a Save bar that stays visible (P4-1, P4-2) | `ClinicalAssessment.tsx`, `globals.css`, admin patient file (drop the card's `overflow-x`) |
-| TJ-072b | Patient file tidy: shared tabs, status names and colours, tables in `.staff-table-wrap`, 4A small buttons, shared messages, colour tokens | 3 patient files, session page, `globals.css` |
-| TJ-072c | The summary line on the patient file (P4-3, P4-5) | `api/patients/[id]/route.ts` (latest assessment's `recommendedSessions` and `createdAt`, clinical roles only), new `PatientSummary.tsx`, 3 patient files, `globals.css` |
-| TJ-072d | Skeletons: the shared piece and the 9 lists (P4-4) | new `StaffSkeleton.tsx`, `globals.css`, 9 list pages |
-| TJ-072e | Skeletons: every page-level loading line | about 20 files |
-| TJ-072f | Leftovers: booking search dropdown on tokens; Phone 2 overflow if it re-measures | 2–4 files |
+| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | 8 — READY |
+| TJ-072b | The assessment in sections, with a Save bar that stays visible | 8 — READY |
+| TJ-072c | A summary line on the patient file | 8 — READY |
+| TJ-072d | Skeletons: the shared piece and the 9 lists (P4-4) | 9 — BACKLOG |
+| TJ-072e | Skeletons: every page-level loading line (about 20 files) | 9 — BACKLOG |
+| TJ-072f | Leftovers: booking search dropdown on tokens; Phone 2 overflow if it re-measures | 9 — BACKLOG |
 
-- **Batches:** 8 = a, b, c (the patient file, one review); 9 = d, e, f. Stacked branches, one Sonnet executor at a time, specs generated by script and re-applied byte-identically, mocked preview, nothing merges or pushes until the user has seen it, as phases 1–3.
-- **Not in phase 4:** TJ-071c (doctor colours) stays `BLOCKED` on its own decision.
+---
+
+### TJ-072a — Patient file: shared tabs, panels, status names and 4A buttons
+
+- **Status:** READY — passed 2026-11-24. Batch 8, step 1 of 3.
+- **Branch:** `feat/patient-file-tidy`, cut from `master` at the commit that adds this spec.
+- **Why:** the three patient files are copies of the same header, tabs, Sessions table and Files tab, each with its own style block; their Sessions tables show No Show and Cancelled as grey dots with raw capitals; several buttons predate design 4A; the admin file's card scrolls sideways, which would stop TJ-072b's Save bar from sticking; the secretary's file is 468px wide on a 375px phone.
+
+**Planning pass:** 2026-11-24, on `master` at `ed8acaa`. Read in full: `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, `src/lib/reservationStatus.ts`; in `globals.css` the staff tokens, `.staff-btn*`, `.staff-table*`, `.staff-panel`, `.staff-form-error`, `.staff-field-hint`.
+- **Shared pieces** in one `globals.css` append: `.staff-record-*` (header, info, meta, updated line, actions, panel), `.staff-badge-archived`, `.staff-tabs`/`.staff-tab`, `.staff-table-wide` (600px minimum), `.staff-status` (dot and name in the status colour), `.staff-doctor` (calendar colour dot), `.staff-files-*`/`.staff-file-*`. All on the staff tokens. The three patient files' style blocks go entirely; the session page drops 13 rules and keeps the rest of its block.
+- **Tables** leave the padded card for `.staff-table-wrap` (scrolls in its own box); empty states and the History loading line sit in `.staff-panel`. No panel scrolls any more.
+- **Status and doctor:** names and colours from `reservationStatus.ts` (phase 3) in the Sessions tables and the session page's History and status badge. The doctor's dot falls back to `doctorColorSnapshot` (stored on every booking, unread until now) when the doctor's record is gone.
+- **Buttons on 4A:** Restore, SOAP "View / Edit" and "Add", the file "Remove" (red text), the session page's "View" (secondary, small); Check In, Start Session and Checkout (primary, small) and Waiting (secondary, small).
+- **Measured in the mocked preview:** Sessions rows read "Scheduled" blue, "Checked Out" `#cbd5e1`, "No Show" and "Cancelled" `#f87171`, each with its doctor's dot; SOAP and View buttons 30px; at 375px every screen is 375px wide (the secretary's was 468px) and the tables scroll inside a 343px box; the session page's badge reads "Checked In" in `#34d399` and its actions are 4A.
+
+**Scope — touch only these (5):** `src/app/globals.css`, `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`.
+
+**Do not touch:** any other file; `ClinicalAssessment.tsx` (TJ-072b); the pages' handlers, fetches and popups; the session page's header layout, banners, Details and SOAP tabs beyond the steps named.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace the block that starts with the line …" swaps that line, everything after it, and the named end line for exactly the lines shown. "New file, exactly" and "replace the whole file with exactly" mean the file's whole content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* A patient's record (TJ-072a): the header, tabs, panels, status and doctor
+      labels, and the Files tab, shared by the admin, secretary and doctor
+      patient files and the doctor's session page. */
+   .staff-record-head {
+     margin-bottom: 1.5rem;
+   }
+   .staff-record-top {
+     display: flex;
+     flex-wrap: wrap;
+     align-items: flex-start;
+     justify-content: space-between;
+     gap: 1rem;
+   }
+   .staff-record-info {
+     min-width: 0;
+   }
+   .staff-record-info h1 {
+     margin: 0 0 0.35rem;
+     font-size: var(--staff-size-xl);
+     font-weight: 600;
+   }
+   .staff-record-meta {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 0.35rem 1.25rem;
+     color: var(--staff-muted);
+     font-size: var(--staff-size-base);
+   }
+   .staff-record-meta a {
+     color: var(--staff-accent);
+     text-decoration: none;
+   }
+   .staff-record-meta a:hover {
+     text-decoration: underline;
+   }
+   .staff-record-updated {
+     margin: 0.4rem 0 0;
+     color: var(--staff-faint);
+     font-size: var(--staff-size-sm);
+   }
+   .staff-record-actions {
+     display: flex;
+     flex-wrap: wrap;
+     align-items: center;
+     gap: 0.5rem;
+     flex-shrink: 0;
+   }
+   .staff-record-actions:empty {
+     display: none;
+   }
+   .staff-badge-archived {
+     padding: 0.2rem 0.6rem;
+     border-radius: var(--staff-radius-sm);
+     background: var(--staff-bad-soft);
+     color: var(--staff-bad);
+     font-size: var(--staff-size-xs);
+     font-weight: 700;
+     letter-spacing: 0.04em;
+   }
+   .staff-tabs {
+     display: flex;
+     margin-bottom: 1rem;
+     border-bottom: 1px solid var(--staff-border);
+     overflow-x: auto;
+     -webkit-overflow-scrolling: touch;
+   }
+   .staff-tab {
+     flex-shrink: 0;
+     padding: 0.7rem 1.2rem;
+     background: none;
+     border: none;
+     border-bottom: 2px solid transparent;
+     color: var(--staff-muted);
+     font-family: inherit;
+     font-size: var(--staff-size-base);
+     font-weight: 500;
+     white-space: nowrap;
+     cursor: pointer;
+     transition: color 0.15s, border-color 0.15s;
+   }
+   .staff-tab:hover {
+     color: var(--staff-text-2);
+   }
+   .staff-tab.active {
+     color: var(--staff-accent);
+     border-bottom-color: var(--staff-accent);
+   }
+   .staff-tab:focus-visible {
+     outline: 2px solid var(--staff-focus);
+     outline-offset: -2px;
+   }
+   /* A tab's content. No overflow of its own: tables scroll in
+      .staff-table-wrap, and the assessment's Save bar (TJ-072b) can only stick
+      inside a box that does not scroll. */
+   .staff-record-panel {
+     padding: 1.5rem;
+     background: var(--staff-surface);
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-lg);
+   }
+   .staff-record-panel > .staff-form-error {
+     margin-bottom: 1rem;
+   }
+   /* A record's table keeps its columns readable on a phone and scrolls
+      sideways in its box instead of widening the page. */
+   .staff-table-wide {
+     min-width: 600px;
+   }
+   /* A session's status: the name, with a dot, in the status colour
+      (lib/reservationStatus.ts; the colour is set inline on .staff-status). */
+   .staff-status {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.45rem;
+     font-weight: 500;
+     white-space: nowrap;
+   }
+   .staff-status-dot {
+     flex-shrink: 0;
+     width: 8px;
+     height: 8px;
+     border-radius: 50%;
+     background: currentColor;
+   }
+   /* A doctor's name with their calendar colour (set inline on the dot). */
+   .staff-doctor {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.45rem;
+     white-space: nowrap;
+   }
+   .staff-doctor-dot {
+     flex-shrink: 0;
+     width: 8px;
+     height: 8px;
+     border-radius: 50%;
+     background: var(--staff-faint);
+   }
+   .staff-files-upload {
+     display: flex;
+     flex-wrap: wrap;
+     align-items: center;
+     gap: 0.75rem;
+     margin-bottom: 1rem;
+     padding-bottom: 1rem;
+     border-bottom: 1px solid var(--staff-border);
+   }
+   .staff-files-upload input[type="file"] {
+     max-width: 100%;
+     color: var(--staff-muted);
+     font-family: inherit;
+     font-size: var(--staff-size-base);
+   }
+   .staff-files-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+     gap: 0.75rem;
+   }
+   .staff-file-card {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     gap: 0.5rem;
+     padding: 1rem;
+     background: rgba(255, 255, 255, 0.04);
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-md);
+     transition: background 0.15s;
+   }
+   .staff-file-card:hover {
+     background: var(--staff-surface-2);
+   }
+   .staff-file-open {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     gap: 0.35rem;
+     width: 100%;
+     min-width: 0;
+     color: var(--staff-text);
+     text-decoration: none;
+   }
+   .staff-file-icon {
+     display: flex;
+     color: var(--staff-muted);
+   }
+   .staff-file-name {
+     font-size: var(--staff-size-sm);
+     text-align: center;
+     word-break: break-all;
+   }
+   .staff-file-date {
+     color: var(--staff-faint);
+     font-size: var(--staff-size-xs);
+   }
+   .staff-btn.staff-file-remove {
+     color: var(--staff-bad);
+   }
+   @media (max-width: 640px) {
+     .staff-record-panel {
+       padding: 1rem;
+     }
+   }
+   @media (max-width: 560px) {
+     .staff-record-top {
+       flex-direction: column;
+       align-items: stretch;
+     }
+     .staff-record-actions {
+       justify-content: flex-start;
+     }
+   }
+   ```
+
+**2. `src/app/admin/patients/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";`.
+2. Replace
+   ```tsx
+       const statusColors: Record<string, string> = {
+           SCHEDULED: "#60a5fa",
+           WAITING: "#fbbf24",
+           CHECKED_IN: "#34d399",
+           WITH_DOCTOR: "#a78bfa",
+           CHECKED_OUT: "rgba(255,255,255,0.35)",
+       };
+
+       if (loading)
+   ```
+   with
+   ```tsx
+       if (loading)
+   ```
+3. Replace
+   ```tsx
+               <div className="profile-header">
+
+   ```
+   with
+   ```tsx
+               <div className="staff-record-head">
+
+   ```
+4. Replace
+   ```tsx
+                   <div className="header-main">
+
+   ```
+   with
+   ```tsx
+                   <div className="staff-record-top">
+
+   ```
+5. Replace
+   ```tsx
+                       <div className="header-info">
+
+   ```
+   with
+   ```tsx
+                       <div className="staff-record-info">
+
+   ```
+6. Replace `<div className="header-meta">` with `<div className="staff-record-meta">`.
+7. Replace `<p className="updated-by">` with `<p className="staff-record-updated">`.
+8. Replace `<div className="header-actions">` with `<div className="staff-record-actions">`.
+9. Replace `<span className="badge-archived">ARCHIVED</span>` with `<span className="staff-badge-archived">ARCHIVED</span>`.
+10. Replace `className="staff-btn staff-btn-sm btn-restore"` with `className="staff-btn staff-btn-secondary staff-btn-sm"`.
+11. Replace `<div className="tabs">` with `<div className="staff-tabs">`.
+12. Replace (it occurs exactly 4 times; replace all 4)
+   ```tsx
+   className={`tab 
+   ```
+   with
+   ```tsx
+   className={`staff-tab 
+   ```
+13. Replace `<div className="section-card" hidden={activeTab !== "intake"}>` with `<div className="staff-record-panel" hidden={activeTab !== "intake"}>`.
+14. Replace the block that starts with the line `{/* Sessions Tab */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Sessions Tab */}
+               {activeTab === "sessions" && (
+                   patient.reservations.length === 0 ? (
+                       <div className="staff-panel">
+                           <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />
+                       </div>
+                   ) : (
+                       <div className="staff-table-wrap">
+                           <table className="staff-table staff-table-compact staff-table-wide">
+                               <thead>
+                                   <tr>
+                                       <th>Date</th>
+                                       <th>Doctor</th>
+                                       <th>Status</th>
+                                       <th>Payment</th>
+                                       <th>Injury</th>
+                                       <th>SOAP Note</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   {patient.reservations.map((r) => (
+                                       <tr key={r.id}>
+                                           <td>{formatDate(r.sessionDate)}</td>
+                                           <td>
+                                               <span className="staff-doctor">
+                                                   <span className="staff-doctor-dot" aria-hidden="true" style={{ background: r.doctor?.color ?? r.doctorColorSnapshot ?? undefined }} />
+                                                   {r.doctor?.name ?? r.doctorNameSnapshot ?? "—"}
+                                               </span>
+                                           </td>
+                                           <td>
+                                               <span className="staff-status" style={{ color: STATUS_COLORS[r.status] }}>
+                                                   <span className="staff-status-dot" aria-hidden="true" />
+                                                   {STATUS_LABELS[r.status] ?? r.status}
+                                               </span>
+                                           </td>
+                                           <td>{r.paymentType || "—"}</td>
+                                           <td>{r.injuryPlace || "—"}</td>
+                                           <td>
+                                               <button type="button" className="staff-btn staff-btn-secondary staff-btn-sm" onClick={() => openSoap(r)}>
+                                                   {hasSoap(r.soapNote) ? "View / Edit" : "Add"}
+                                               </button>
+                                           </td>
+                                       </tr>
+                                   ))}
+                               </tbody>
+                           </table>
+                       </div>
+                   )
+               )}
+   ```
+15. Replace the block that starts with the line `{/* Files Tab */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Files Tab */}
+               {activeTab === "files" && (
+                   <div className="staff-record-panel">
+                       {fileError && <div className="staff-form-error" role="alert">{fileError}</div>}
+
+                       <div className="staff-files-upload">
+                           <input
+                               type="file"
+                               aria-label="Upload a document"
+                               disabled={!!uploadingName}
+                               onChange={handleUpload}
+                           />
+                           <span className="staff-field-hint">
+                               {uploadingName ? `Uploading ${uploadingName}…` : "Saved immediately — no separate Save step."}
+                           </span>
+                       </div>
+
+                       {patient.files.length === 0 && !uploadingName ? (
+                           <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />
+                       ) : (
+                           <div className="staff-files-grid">
+                               {patient.files.map((f) => (
+                                   <div key={f.id} className="staff-file-card">
+                                       <a
+                                           href={clinicalFileUrl(f.filePath)}
+                                           target="_blank"
+                                           rel="noreferrer"
+                                           className="staff-file-open"
+                                       >
+                                           <span className="staff-file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
+                                           <span className="staff-file-name">{f.fileName}</span>
+                                           <span className="staff-file-date">{formatDate(f.uploadedAt)}</span>
+                                       </a>
+                                       <button
+                                           type="button"
+                                           className="staff-btn staff-btn-secondary staff-btn-sm staff-file-remove"
+                                           disabled={removingId === f.id}
+                                           onClick={() => handleRemoveFile(f.id)}
+                                       >
+                                           {removingId === f.id ? "Removing…" : "Remove"}
+                                       </button>
+                                   </div>
+                               ))}
+                           </div>
+                       )}
+                   </div>
+               )}
+   ```
+16. Replace the block that starts with the line `{/* History Tab — admin-only */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* History Tab — admin-only */}
+               {activeTab === "history" && (
+                   auditLoading ? (
+                       <div className="staff-panel">
+                           <p className="staff-loading" role="status">Loading…</p>
+                       </div>
+                   ) : auditLog.length === 0 ? (
+                       <div className="staff-panel">
+                           <StaffEmpty icon={History} title="No recorded activity yet" hint="Changes to this patient's file are recorded here." />
+                       </div>
+                   ) : (
+                       <div className="staff-table-wrap">
+                           <table className="staff-table staff-table-compact staff-table-wide">
+                               <thead>
+                                   <tr>
+                                       <th>When</th>
+                                       <th>By</th>
+                                       <th>Action</th>
+                                       <th>Detail</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   {auditLog.map((e) => (
+                                       <tr key={e.id}>
+                                           <td>{new Date(e.createdAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</td>
+                                           <td>{e.user ? `${e.user.name} (${e.user.role})` : "—"}</td>
+                                           <td>{ACTION_LABELS[e.action] || e.action}</td>
+                                           <td>{e.summary || "—"}</td>
+                                       </tr>
+                                   ))}
+                               </tbody>
+                           </table>
+                       </div>
+                   )
+               )}
+   ```
+17. Replace
+   ```tsx
+               )}
+
+               <style jsx>{`
+                   .profile-header { margin-bottom: 1.5rem; }
+                   .header-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+                   .header-info h1 { font-size: var(--staff-size-xl); font-weight: 600; margin-bottom: 0.35rem; }
+                   .header-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); }
+                   .header-meta a { color: var(--primary, #4CAF93); text-decoration: none; }
+                   .header-meta a:hover { text-decoration: underline; }
+                   .updated-by { margin-top: 0.4rem; color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); }
+                   .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; flex-wrap: wrap; }
+                   .badge-archived {
+                       background: rgba(239,68,68,0.12); color: #fca5a5;
+                       padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px);
+                       font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em;
+                   }
+                   .btn-sm {
+                       padding: 0.3rem 0.7rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm);
+                       border: none; cursor: pointer; font-weight: 500; font-family: inherit;
+                   }
+                   .btn-edit { background: rgba(96,165,250,0.12); color: #93c5fd; }
+                   .btn-edit:hover { background: rgba(96,165,250,0.22); }
+                   .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; border: 1px solid transparent; }
+                   .btn-restore:hover { background: rgba(96,165,250,0.22); }
+                   .tabs {
+                       display: flex; gap: 0; margin-bottom: 1rem;
+                       border-bottom: 1px solid rgba(255,255,255,0.06);
+                       overflow-x: auto; -webkit-overflow-scrolling: touch;
+                   }
+                   .tab {
+                       background: none; border: none; color: rgba(255,255,255,0.4);
+                       padding: 0.7rem 1.2rem; font-size: var(--staff-size-base); font-weight: 500;
+                       cursor: pointer; border-bottom: 2px solid transparent;
+                       transition: all 0.15s; font-family: inherit; white-space: nowrap; flex-shrink: 0;
+                   }
+                   .tab:hover { color: rgba(255,255,255,0.7); }
+                   .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); }
+                   .section-card {
+                       background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+                       border-radius: var(--radius-md, 4px); padding: 1.5rem;
+                       overflow-x: auto; -webkit-overflow-scrolling: touch;
+                   }
+                   .staff-table { min-width: 600px; }
+                   .doctor-tag {
+                       border-left: 3px solid; padding-left: 0.5rem;
+                   }
+                   .status-dot {
+                       display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+                       margin-right: 0.4rem; vertical-align: middle;
+                   }
+                   .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; }
+                   .file-card {
+                       display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+                       padding: 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+                       border-radius: var(--radius-sm, 2px); color: #fff;
+                       transition: background 0.15s;
+                   }
+                   .file-card:hover { background: rgba(255,255,255,0.08); }
+                   .file-open {
+                       display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+                       text-decoration: none; color: #fff; width: 100%; min-width: 0;
+                   }
+                   .file-upload-row {
+                       display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+                       margin-bottom: 1rem; padding-bottom: 1rem;
+                       border-bottom: 1px solid rgba(255,255,255,0.06);
+                   }
+                   .file-input { font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); max-width: 100%; }
+                   .field-hint { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); }
+                   .btn-remove {
+                       background: rgba(239,68,68,0.15); color: #fca5a5; margin-top: 0.5rem;
+                   }
+                   .btn-remove:hover:not(:disabled) { background: rgba(239,68,68,0.25); }
+                   .btn-remove:disabled { opacity: 0.5; cursor: not-allowed; }
+                   .error-msg {
+                       background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
+                       color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
+                       font-size: var(--staff-size-base); margin-bottom: 1rem;
+                   }
+                   .file-icon { display: flex; color: var(--staff-muted); }
+                   .file-name { font-size: var(--staff-size-sm); text-align: center; word-break: break-all; }
+                   .file-date { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.3); }
+
+                   @media (max-width: 640px) {
+                       .section-card { padding: 1rem; }
+                       .btn-sm { padding: 0.42rem 0.75rem; }
+                   }
+
+                   @media (max-width: 560px) {
+                       .header-main { flex-direction: column; align-items: stretch; }
+                       .header-actions { justify-content: flex-start; }
+                   }
+               `}</style>
+
+   ```
+   with
+   ```tsx
+               )}
+
+   ```
+
+**3. `src/app/secretary/patients/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";`.
+2. Replace
+   ```tsx
+       const statusColors: Record<string, string> = {
+           SCHEDULED: "#60a5fa", WAITING: "#fbbf24", CHECKED_IN: "#34d399",
+           WITH_DOCTOR: "#a78bfa", CHECKED_OUT: "rgba(255,255,255,0.35)",
+       };
+
+       if (loading)
+   ```
+   with
+   ```tsx
+       if (loading)
+   ```
+3. Replace
+   ```tsx
+               <div className="profile-header">
+
+   ```
+   with
+   ```tsx
+               <div className="staff-record-head">
+
+   ```
+4. Replace
+   ```tsx
+                   <div className="header-main">
+
+   ```
+   with
+   ```tsx
+                   <div className="staff-record-top">
+
+   ```
+5. Replace
+   ```tsx
+                       <div className="header-info">
+
+   ```
+   with
+   ```tsx
+                       <div className="staff-record-info">
+
+   ```
+6. Replace `<div className="header-meta">` with `<div className="staff-record-meta">`.
+7. Replace `<p className="updated-by">` with `<p className="staff-record-updated">`.
+8. Replace `<div className="header-actions">` with `<div className="staff-record-actions">`.
+9. Replace `<span className="badge-archived">ARCHIVED</span>` with `<span className="staff-badge-archived">ARCHIVED</span>`.
+10. Replace `className="staff-btn staff-btn-sm btn-restore"` with `className="staff-btn staff-btn-secondary staff-btn-sm"`.
+11. Replace `<div className="tabs">` with `<div className="staff-tabs">`.
+12. Replace (it occurs exactly twice; replace both)
+   ```tsx
+   className={`tab 
+   ```
+   with
+   ```tsx
+   className={`staff-tab 
+   ```
+13. Replace the block that starts with the line `{/* Sessions Tab */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Sessions Tab */}
+               {activeTab === "sessions" && (
+                   patient.reservations.length === 0 ? (
+                       <div className="staff-panel">
+                           <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />
+                       </div>
+                   ) : (
+                       <div className="staff-table-wrap">
+                           <table className="staff-table staff-table-compact staff-table-wide">
+                               <thead>
+                                   <tr>
+                                       <th>Date</th>
+                                       <th>Doctor</th>
+                                       <th>Status</th>
+                                       <th>Payment</th>
+                                       <th>Injury</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   {patient.reservations.map((r) => (
+                                       <tr key={r.id}>
+                                           <td>{formatDate(r.sessionDate)}</td>
+                                           <td>
+                                               <span className="staff-doctor">
+                                                   <span className="staff-doctor-dot" aria-hidden="true" style={{ background: r.doctor?.color ?? r.doctorColorSnapshot ?? undefined }} />
+                                                   {r.doctor?.name ?? r.doctorNameSnapshot ?? "—"}
+                                               </span>
+                                           </td>
+                                           <td>
+                                               <span className="staff-status" style={{ color: STATUS_COLORS[r.status] }}>
+                                                   <span className="staff-status-dot" aria-hidden="true" />
+                                                   {STATUS_LABELS[r.status] ?? r.status}
+                                               </span>
+                                           </td>
+                                           <td>{r.paymentType || "—"}</td>
+                                           <td>{r.injuryPlace || "—"}</td>
+                                       </tr>
+                                   ))}
+                               </tbody>
+                           </table>
+                       </div>
+                   )
+               )}
+   ```
+14. Replace the block that starts with the line `{/* Files Tab */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Files Tab */}
+               {activeTab === "files" && (
+                   <div className="staff-record-panel">
+                       {fileError && <div className="staff-form-error" role="alert">{fileError}</div>}
+
+                       <div className="staff-files-upload">
+                           <input
+                               type="file"
+                               aria-label="Upload a document"
+                               disabled={!!uploadingName}
+                               onChange={handleUpload}
+                           />
+                           <span className="staff-field-hint">
+                               {uploadingName ? `Uploading ${uploadingName}…` : "Saved immediately — no separate Save step."}
+                           </span>
+                       </div>
+
+                       {patient.files.length === 0 && !uploadingName ? (
+                           <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />
+                       ) : (
+                           <div className="staff-files-grid">
+                               {patient.files.map((f) => (
+                                   <div key={f.id} className="staff-file-card">
+                                       <a
+                                           href={clinicalFileUrl(f.filePath)}
+                                           target="_blank"
+                                           rel="noreferrer"
+                                           className="staff-file-open"
+                                       >
+                                           <span className="staff-file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
+                                           <span className="staff-file-name">{f.fileName}</span>
+                                           <span className="staff-file-date">{formatDate(f.uploadedAt)}</span>
+                                       </a>
+                                       <button
+                                           type="button"
+                                           className="staff-btn staff-btn-secondary staff-btn-sm staff-file-remove"
+                                           disabled={removingId === f.id}
+                                           onClick={() => handleRemoveFile(f.id)}
+                                       >
+                                           {removingId === f.id ? "Removing…" : "Remove"}
+                                       </button>
+                                   </div>
+                               ))}
+                           </div>
+                       )}
+                   </div>
+               )}
+   ```
+15. Replace
+   ```tsx
+               )}
+
+               <style jsx>{`
+                   .profile-header { margin-bottom: 1.5rem; }
+                   .header-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+                   .header-info h1 { font-size: var(--staff-size-xl); font-weight: 600; margin-bottom: 0.35rem; }
+                   .header-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); }
+                   .header-meta a { color: var(--primary, #4CAF93); text-decoration: none; }
+                   .header-meta a:hover { text-decoration: underline; }
+                   .updated-by { margin-top: 0.4rem; color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); }
+                   .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+                   .badge-archived { background: rgba(239,68,68,0.12); color: #fca5a5; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em; }
+                   .btn-sm { padding: 0.3rem 0.7rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-sm); border: none; cursor: pointer; font-weight: 500; font-family: inherit; }
+                   .btn-edit { background: rgba(96,165,250,0.12); color: #93c5fd; }
+                   .btn-edit:hover { background: rgba(96,165,250,0.22); }
+                   .btn-restore { background: rgba(96,165,250,0.12); color: #93c5fd; border: 1px solid transparent; }
+                   .btn-restore:hover { background: rgba(96,165,250,0.22); }
+                   .tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+                   .tab { background: none; border: none; color: rgba(255,255,255,0.4); padding: 0.7rem 1.2rem; font-size: var(--staff-size-base); font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit; }
+                   .tab:hover { color: rgba(255,255,255,0.7); }
+                   .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); }
+                   .section-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md, 4px); padding: 1.5rem; }
+                   .doctor-tag { border-left: 3px solid; padding-left: 0.5rem; }
+                   .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 0.4rem; vertical-align: middle; }
+                   .file-upload-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+                   .file-input { font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); max-width: 100%; }
+                   .field-hint { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); }
+                   .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; }
+                   .file-card { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; padding: 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm, 2px); color: #fff; transition: background 0.15s; }
+                   .file-card:hover { background: rgba(255,255,255,0.08); }
+                   .file-open { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; text-decoration: none; color: #fff; width: 100%; min-width: 0; }
+                   .btn-remove { background: rgba(239,68,68,0.15); color: #fca5a5; margin-top: 0.5rem; }
+                   .btn-remove:hover:not(:disabled) { background: rgba(239,68,68,0.25); }
+                   .btn-remove:disabled { opacity: 0.5; cursor: not-allowed; }
+                   .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2); color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px); font-size: var(--staff-size-base); margin-bottom: 1rem; }
+                   .file-icon { display: flex; color: var(--staff-muted); }
+                   .file-name { font-size: var(--staff-size-sm); text-align: center; word-break: break-all; }
+                   .file-date { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.3); }
+               `}</style>
+
+   ```
+   with
+   ```tsx
+               )}
+
+   ```
+
+**4. `src/app/doctor/patients/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";`.
+2. Replace
+   ```tsx
+       const statusColors: Record<string, string> = {
+           SCHEDULED: "#60a5fa",
+           WAITING: "#fbbf24",
+           CHECKED_IN: "#34d399",
+           WITH_DOCTOR: "#a78bfa",
+           CHECKED_OUT: "rgba(255,255,255,0.35)",
+       };
+
+       if (loading)
+   ```
+   with
+   ```tsx
+       if (loading)
+   ```
+3. Replace
+   ```tsx
+               <div className="profile-header">
+
+   ```
+   with
+   ```tsx
+               <div className="staff-record-head">
+
+   ```
+4. Replace
+   ```tsx
+                   <div className="header-main">
+
+   ```
+   with
+   ```tsx
+                   <div className="staff-record-top">
+
+   ```
+5. Replace
+   ```tsx
+                       <div className="header-info">
+
+   ```
+   with
+   ```tsx
+                       <div className="staff-record-info">
+
+   ```
+6. Replace `<div className="header-meta">` with `<div className="staff-record-meta">`.
+7. Replace `<p className="updated-by">` with `<p className="staff-record-updated">`.
+8. Replace `<div className="header-actions">` with `<div className="staff-record-actions">`.
+9. Replace `<span className="badge-archived">ARCHIVED</span>` with `<span className="staff-badge-archived">ARCHIVED</span>`.
+10. Replace `<div className="tabs">` with `<div className="staff-tabs">`.
+11. Replace (it occurs exactly 3 times; replace all 3)
+   ```tsx
+   className={`tab 
+   ```
+   with
+   ```tsx
+   className={`staff-tab 
+   ```
+12. Replace `<div className="section-card" hidden={activeTab !== "intake"}>` with `<div className="staff-record-panel" hidden={activeTab !== "intake"}>`.
+13. Replace the block that starts with the line `{/* Sessions Tab */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Sessions Tab */}
+               {activeTab === "sessions" && (
+                   patient.reservations.length === 0 ? (
+                       <div className="staff-panel">
+                           <StaffEmpty icon={CalendarDays} title="No sessions yet" hint="Sessions booked for this patient appear here." />
+                       </div>
+                   ) : (
+                       <div className="staff-table-wrap">
+                           <table className="staff-table staff-table-compact staff-table-wide">
+                               <thead>
+                                   <tr>
+                                       <th>Date</th>
+                                       <th>Doctor</th>
+                                       <th>Status</th>
+                                       <th>Payment</th>
+                                       <th>Injury</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   {patient.reservations.map((r) => (
+                                       <tr key={r.id}>
+                                           <td>{formatDate(r.sessionDate)}</td>
+                                           <td>
+                                               <span className="staff-doctor">
+                                                   <span className="staff-doctor-dot" aria-hidden="true" style={{ background: r.doctor?.color ?? r.doctorColorSnapshot ?? undefined }} />
+                                                   {r.doctor?.name ?? r.doctorNameSnapshot ?? "—"}
+                                               </span>
+                                           </td>
+                                           <td>
+                                               <span className="staff-status" style={{ color: STATUS_COLORS[r.status] }}>
+                                                   <span className="staff-status-dot" aria-hidden="true" />
+                                                   {STATUS_LABELS[r.status] ?? r.status}
+                                               </span>
+                                           </td>
+                                           <td>{r.paymentType || "—"}</td>
+                                           <td>{r.injuryPlace || "—"}</td>
+                                       </tr>
+                                   ))}
+                               </tbody>
+                           </table>
+                       </div>
+                   )
+               )}
+   ```
+14. Replace the block that starts with the line `{/* Files Tab */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* Files Tab */}
+               {activeTab === "files" && (
+                   <div className="staff-record-panel">
+                       {fileError && <div className="staff-form-error" role="alert">{fileError}</div>}
+
+                       <div className="staff-files-upload">
+                           <input
+                               type="file"
+                               aria-label="Upload a document"
+                               disabled={!!uploadingName}
+                               onChange={handleUpload}
+                           />
+                           <span className="staff-field-hint">
+                               {uploadingName ? `Uploading ${uploadingName}…` : "Saved immediately — no separate Save step."}
+                           </span>
+                       </div>
+
+                       {patient.files.length === 0 && !uploadingName ? (
+                           <StaffEmpty icon={FileText} title="No files yet" hint="Files you upload above appear here." />
+                       ) : (
+                           <div className="staff-files-grid">
+                               {patient.files.map((f) => (
+                                   <div key={f.id} className="staff-file-card">
+                                       {/* Attach only: removing a file is an admin or
+                                           secretary action. (TJ-054) */}
+                                       <a
+                                           href={clinicalFileUrl(f.filePath)}
+                                           target="_blank"
+                                           rel="noreferrer"
+                                           className="staff-file-open"
+                                       >
+                                           <span className="staff-file-icon">{f.fileType.includes("image") ? <ImageIcon size={24} aria-hidden="true" /> : <FileText size={24} aria-hidden="true" />}</span>
+                                           <span className="staff-file-name">{f.fileName}</span>
+                                           <span className="staff-file-date">{formatDate(f.uploadedAt)}</span>
+                                       </a>
+                                   </div>
+                               ))}
+                           </div>
+                       )}
+                   </div>
+               )}
+   ```
+15. Replace
+   ```tsx
+               )}
+
+               <style jsx>{`
+                   .profile-header { margin-bottom: 1.5rem; }
+                   .header-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+                   .header-info h1 { font-size: var(--staff-size-xl); font-weight: 600; margin-bottom: 0.35rem; }
+                   .header-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: rgba(255,255,255,0.45); font-size: var(--staff-size-base); }
+                   .header-meta a { color: var(--primary, #4CAF93); text-decoration: none; }
+                   .header-meta a:hover { text-decoration: underline; }
+                   .updated-by { margin-top: 0.4rem; color: rgba(255,255,255,0.3); font-size: var(--staff-size-sm); }
+                   .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+                   .badge-archived {
+                       background: rgba(239,68,68,0.12); color: #fca5a5;
+                       padding: 0.2rem 0.6rem; border-radius: var(--radius-sm, 2px);
+                       font-size: var(--staff-size-xs); font-weight: 700; letter-spacing: 0.04em;
+                   }
+                   .tabs {
+                       display: flex; gap: 0; margin-bottom: 1rem;
+                       border-bottom: 1px solid rgba(255,255,255,0.06);
+                   }
+                   .tab {
+                       background: none; border: none; color: rgba(255,255,255,0.4);
+                       padding: 0.7rem 1.2rem; font-size: var(--staff-size-base); font-weight: 500;
+                       cursor: pointer; border-bottom: 2px solid transparent;
+                       transition: all 0.15s; font-family: inherit;
+                   }
+                   .tab:hover { color: rgba(255,255,255,0.7); }
+                   .tab.active { color: var(--primary, #4CAF93); border-bottom-color: var(--primary, #4CAF93); }
+                   .section-card {
+                       background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+                       border-radius: var(--radius-md, 4px); padding: 1.5rem;
+                   }
+                   .doctor-tag {
+                       border-left: 3px solid; padding-left: 0.5rem;
+                   }
+                   .status-dot {
+                       display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+                       margin-right: 0.4rem; vertical-align: middle;
+                   }
+                   .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; }
+                   .file-card {
+                       display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+                       padding: 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+                       border-radius: var(--radius-sm, 2px); color: #fff;
+                       transition: background 0.15s;
+                   }
+                   .file-card:hover { background: rgba(255,255,255,0.08); }
+                   .file-open {
+                       display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+                       text-decoration: none; color: #fff; width: 100%; min-width: 0;
+                   }
+                   .file-upload-row {
+                       display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+                       margin-bottom: 1rem; padding-bottom: 1rem;
+                       border-bottom: 1px solid rgba(255,255,255,0.06);
+                   }
+                   .file-input { font-size: var(--staff-size-base); color: rgba(255,255,255,0.6); max-width: 100%; }
+                   .field-hint { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.35); }
+                   .error-msg {
+                       background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
+                       color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
+                       font-size: var(--staff-size-base); margin-bottom: 1rem;
+                   }
+                   .file-icon { display: flex; color: var(--staff-muted); }
+                   .file-name { font-size: var(--staff-size-sm); text-align: center; word-break: break-all; }
+                   .file-date { font-size: var(--staff-size-xs); color: rgba(255,255,255,0.3); }
+               `}</style>
+
+   ```
+   with
+   ```tsx
+               )}
+
+   ```
+
+**5. `src/app/doctor/session/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";`.
+2. Replace
+   ```tsx
+       const statusColors: Record<string, string> = {
+           SCHEDULED: "#64748b", CHECKED_IN: "#3b82f6", WITH_DOCTOR: "#4CAF93", CHECKED_OUT: "#16a34a", WAITING: "#f59e0b",
+       };
+
+       if (loading)
+   ```
+   with
+   ```tsx
+       if (loading)
+   ```
+3. Replace `<span className="badge-archived">ARCHIVED</span>` with `<span className="staff-badge-archived">ARCHIVED</span>`.
+4. Replace
+   ```tsx
+   style={{ background: `${statusColors[reservation.status]}22`, color: statusColors[reservation.status], border: `1px solid ${statusColors[reservation.status]}44` }}
+   ```
+   with
+   ```tsx
+   style={{ background: `${STATUS_COLORS[reservation.status]}22`, color: STATUS_COLORS[reservation.status], border: `1px solid ${STATUS_COLORS[reservation.status]}44` }}
+   ```
+5. Replace `{reservation.status.replace("_", " ")}` with `{STATUS_LABELS[reservation.status] ?? reservation.status}`.
+6. Replace `className="action-btn"` with `className="staff-btn staff-btn-primary staff-btn-sm"` (it occurs exactly 3 times; replace all 3).
+7. Replace `className="action-btn checkout"` with `className="staff-btn staff-btn-primary staff-btn-sm"`.
+8. Replace `className="action-btn waiting"` with `className="staff-btn staff-btn-secondary staff-btn-sm"`.
+9. Replace `<div className="tabs">` with `<div className="staff-tabs">`.
+10. Replace
+   ```tsx
+   className={`tab 
+   ```
+   with
+   ```tsx
+   className={`staff-tab 
+   ```
+11. Replace the block that starts with the line `{/* History Tab */}` (at its own indentation) and ends at the first following line that is exactly `            )}` (12 spaces then `)}`), with:
+   ```tsx
+               {/* History Tab */}
+               {activeTab === "history" && (
+                   pastSessions.length === 0 ? (
+                       <div className="staff-panel">
+                           <StaffEmpty icon={History} title="No previous sessions" hint="Earlier sessions with this patient appear here." />
+                       </div>
+                   ) : (
+                       <div className="staff-table-wrap">
+                           <table className="staff-table staff-table-compact staff-table-wide">
+                               <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th><th>Injury</th><th>Payment</th><th></th></tr></thead>
+                               <tbody>
+                                   {pastSessions.map((s) => (
+                                       <tr key={s.id}>
+                                           <td>{formatDate(s.sessionDate)}</td>
+                                           <td>{formatTime(s.sessionTime)}</td>
+                                           <td><span className="staff-doctor"><span className="staff-doctor-dot" aria-hidden="true" style={{ background: s.doctor?.color ?? s.doctorColorSnapshot ?? undefined }} />{s.doctor?.name ?? s.doctorNameSnapshot ?? "—"}</span></td>
+                                           <td><span className="staff-status" style={{ color: STATUS_COLORS[s.status] }}><span className="staff-status-dot" aria-hidden="true" />{STATUS_LABELS[s.status] ?? s.status}</span></td>
+                                           <td>{s.injuryPlace || "—"}</td>
+                                           <td>{s.paymentType || "—"}</td>
+                                           <td><button type="button" className="staff-btn staff-btn-secondary staff-btn-sm" onClick={() => router.push(`/doctor/session/${s.id}`)}>View</button></td>
+                                       </tr>
+                                   ))}
+                               </tbody>
+                           </table>
+                       </div>
+                   )
+               )}
+   ```
+12. Replace `<div className="card">` with `<div className="staff-record-panel">` (it occurs exactly twice; replace both).
+13. Replace `<div className="card" hidden={activeTab !== "intake"}>` with `<div className="staff-record-panel" hidden={activeTab !== "intake"}>`.
+14. In the `<style jsx>` block delete these whole rules (one-line or multi-line, through the closing `}`): `.badge-archived {…}`, `.action-btn {…}`, `.action-btn.checkout {…}`, `.action-btn.waiting {…}`, `.tabs {…}`, `.tab {…}`, `.tab:hover {…}`, `.tab.active {…}`, `.card {…}`, `.table-container {…}`, `.mini-status {…}`, `.view-btn {…}`, `.view-btn:hover {…}`. Nothing else.
+
+**Verification:**
+- `grep -nE 'section-card|statusColors|header-main|"badge-archived|btn-restore|btn-remove|btn-edit|className="tabs"|<style jsx' src/app/admin/patients/[id]/page.tsx src/app/secretary/patients/[id]/page.tsx src/app/doctor/patients/[id]/page.tsx` prints nothing.
+- `grep -nE 'statusColors|"badge-archived|action-btn|view-btn|mini-status|className="tabs"|className="card"' "src/app/doctor/session/[id]/page.tsx"` prints nothing.
+- `git diff --stat` against the parent lists exactly the 5 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only.
+
+**Done when:**
+- [ ] The four pages use the shared record pieces; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-072b — The assessment in sections, with a Save bar that stays visible
+
+- **Status:** READY — passed 2026-11-24. Batch 8, step 2 of 3.
+- **Branch:** `feat/assessment-sections`, cut from the tip of `feat/patient-file-tidy`.
+- **Why:** the Clinical Assessment is 12 fields in one undivided grid, with Save, success and error only at the bottom of a long form (decisions P4-1, P4-2).
+
+**Planning pass:** 2026-11-24, on the TJ-072a result. Read in full: `src/app/components/ClinicalAssessment.tsx`; where it is mounted (the admin and doctor patient files and the doctor's session page, each inside a `.staff-record-panel` after TJ-072a, none scrolling).
+- **Sections** as P4-1, from a `SECTIONS` list; each row holds one field or a pair (`.staff-assess-row.two`), and Treatment Plan sits beside a 12rem Recommended Sessions (`.with-number`), whose hint reads "Counted at the top of the patient file." Text areas keep 2 or 3 rows by field. Fields use the shared `.staff-field`.
+- **Save bar** (`.staff-save-bar`, sticky at the bottom): "Unsaved changes" (amber dot), "Saving…", the error text (red), "New assessment, not saved yet", or "All changes saved" (green tick), in one `role="status"`; on the right "Assessment N · injury place" (hidden on phones) and Save, which is off until something changes. Inside a record panel it runs to the panel's edges.
+- **Unchanged behaviour:** loading, pages, carried-over fields, the unsaved-changes reports and confirmations, the save requests. The success message and its timer go (the bar says "All changes saved"); typing clears an error.
+- **Whole file:** most lines change. The component's `<style jsx>` block goes; every style is global (`.staff-assess-*`, `.staff-save-*`), which also avoids styled-jsx's gap on helper-rendered JSX.
+- **Measured in the mocked preview:** on a 622px-tall window the bar's bottom is the window's bottom at every scroll position; at the end of the form it sits at the panel's bottom, 1px inside its border on each side; typing makes it "Unsaved changes" with Save on; a refused save shows the server's message in red with Save still on; a patient with no assessment shows "New assessment, not saved yet" with "Save Assessment" off and no rule above the first section. At 375px: one column, the page name hidden, the bar 59px tall and pinned. Same on the doctor's file and session page.
+
+**Scope — touch only these (2):** `src/app/components/ClinicalAssessment.tsx`, `src/app/globals.css`.
+
+**Do not touch:** any other file; the intake API.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace the block that starts with the line …" swaps that line, everything after it, and the named end line for exactly the lines shown. "New file, exactly" and "replace the whole file with exactly" mean the file's whole content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/components/ClinicalAssessment.tsx`** — replace the whole file with exactly:
+   ```tsx
+   "use client";
+
+   import { useState, useEffect, useCallback } from "react";
+   import type { LucideIcon } from "lucide-react";
+   import { Check, ClipboardCheck, ClipboardList, Dumbbell, Plus, Stethoscope } from "lucide-react";
+   import { useConfirm } from "@/app/components/ConfirmDialog";
+
+   // A patient's clinical assessments, one page each. A patient who comes back
+   // with a new injury gets a new page, and the earlier ones stay as written.
+   // Every screen that shows the Clinical Assessment mounts this one component
+   // (the admin and doctor patient pages, and the doctor's session page), so a
+   // change here reaches all of them. (TJ-067b)
+   //
+   // The form is in four sections, and its Save bar stays at the bottom of the
+   // screen while the form is open. The styles are global (.staff-assess-* and
+   // .staff-save-* in globals.css). (TJ-072b, decisions P4-1 and P4-2)
+
+   interface Intake {
+       id: number;
+       createdAt: string;
+       injuryPlace: string | null;
+       patientSince: string | null;
+       medicalHistory: string | null;
+       assessment: string | null;
+       aggravators: string | null;
+       relievers: string | null;
+       diagnosis: string | null;
+       treatmentPlan: string | null;
+       recommendedSessions: number | null;
+       clinicExercises: string | null;
+       homeExercises: string | null;
+       nextSessionTreatment: string | null;
+   }
+
+   type FieldKey = Exclude<keyof Intake, "id" | "createdAt">;
+
+   interface Field {
+       key: FieldKey;
+       label: string;
+       type: "text" | "number" | "textarea";
+       placeholder?: string;
+       rows?: number;
+       hint?: string;
+   }
+
+   const INTAKE_FIELDS: Field[] = [
+       { key: "injuryPlace", label: "Injury Place", type: "text" },
+       { key: "patientSince", label: "Patient Since", type: "text", placeholder: "e.g. March 2024" },
+       { key: "medicalHistory", label: "Medical History", type: "textarea", rows: 2 },
+       { key: "assessment", label: "Assessment", type: "textarea", rows: 3 },
+       { key: "aggravators", label: "Pain Aggravators", type: "textarea", rows: 2 },
+       { key: "relievers", label: "Pain Relievers", type: "textarea", rows: 2 },
+       { key: "diagnosis", label: "Diagnosis", type: "textarea", rows: 2 },
+       { key: "treatmentPlan", label: "Treatment Plan", type: "textarea", rows: 3 },
+       { key: "recommendedSessions", label: "Recommended Sessions", type: "number", hint: "Counted at the top of the patient file." },
+       { key: "clinicExercises", label: "Clinic Exercises", type: "textarea", rows: 3 },
+       { key: "homeExercises", label: "Home Exercises", type: "textarea", rows: 3 },
+       { key: "nextSessionTreatment", label: "Next Session Treatment", type: "textarea", rows: 2 },
+   ];
+
+   const FIELD = Object.fromEntries(INTAKE_FIELDS.map((f) => [f.key, f])) as Record<FieldKey, Field>;
+
+   // Each row holds one field, or two side by side on wider screens.
+   const SECTIONS: { title: string; icon: LucideIcon; rows: FieldKey[][] }[] = [
+       { title: "History", icon: ClipboardList, rows: [["injuryPlace", "patientSince"], ["medicalHistory"]] },
+       { title: "Examination", icon: Stethoscope, rows: [["assessment"], ["aggravators", "relievers"]] },
+       { title: "Diagnosis & plan", icon: ClipboardCheck, rows: [["diagnosis"], ["treatmentPlan", "recommendedSessions"], ["nextSessionTreatment"]] },
+       { title: "Exercises", icon: Dumbbell, rows: [["clinicExercises", "homeExercises"]] },
+   ];
+
+   const rowClass = (row: FieldKey[]) =>
+       row.length < 2 ? "staff-assess-row" : row.some((k) => FIELD[k].type === "number") ? "staff-assess-row with-number" : "staff-assess-row two";
+
+   // Copied from the latest page into a new one: they describe the patient,
+   // not the injury. Every other field starts blank.
+   const CARRIED_OVER: FieldKey[] = ["patientSince", "medicalHistory"];
+
+   type Form = Record<FieldKey, string>;
+
+   function formFrom(intake: Intake | null): Form {
+       const form = {} as Form;
+       for (const f of INTAKE_FIELDS) {
+           const val = intake?.[f.key];
+           form[f.key] = val != null ? String(val) : "";
+       }
+       return form;
+   }
+
+   const formatDate = (d: string) =>
+       new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+   interface ClinicalAssessmentProps {
+       patientId: number;
+       // Told whenever the form gains or loses unsaved edits, so the page can
+       // guard its Back button and the browser's close (TJ-022). Pass a state
+       // setter, which is stable, not a new arrow function on every render.
+       onDirtyChange?: (dirty: boolean) => void;
+       // Called after a save lands.
+       onSaved?: () => void;
+   }
+
+   export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }: ClinicalAssessmentProps) {
+       const confirm = useConfirm();
+       const [intakes, setIntakes] = useState<Intake[]>([]);
+       const [loading, setLoading] = useState(true);
+       const [loadError, setLoadError] = useState("");
+       // The page on screen: a saved assessment's id, or "new" for one not saved yet.
+       const [selected, setSelected] = useState<number | "new">("new");
+       const [form, setForm] = useState<Form>(() => formFrom(null));
+       // The form as last loaded or saved. Anything typed since makes it dirty.
+       const [baseline, setBaseline] = useState(() => JSON.stringify(formFrom(null)));
+       const [saving, setSaving] = useState(false);
+       const [error, setError] = useState("");
+
+       const dirty = JSON.stringify(form) !== baseline;
+
+       // The cleanup reports clean when this unmounts. The session page drops it
+       // while it reloads, and must not go on guarding edits that are gone.
+       useEffect(() => {
+           onDirtyChange?.(dirty);
+           return () => onDirtyChange?.(false);
+       }, [dirty, onDirtyChange]);
+
+       const show = useCallback((page: number | "new", f: Form) => {
+           setSelected(page);
+           setForm(f);
+           setBaseline(JSON.stringify(f));
+           setError("");
+       }, []);
+
+       // Loads every page, then shows `focus`, or the latest when focus is not
+       // given or not found.
+       const load = useCallback(async (focus?: number) => {
+           const res = await fetch(`/api/patients/${patientId}/intake`);
+           if (!res.ok) {
+               setLoadError("Could not load the clinical assessment. Reload the page to try again.");
+               setLoading(false);
+               return;
+           }
+           const data = await res.json();
+           const list: Intake[] = Array.isArray(data) ? data : [];
+           const shown = list.find((i) => i.id === focus) ?? list[list.length - 1] ?? null;
+           setIntakes(list);
+           show(shown ? shown.id : "new", formFrom(shown));
+           setLoadError("");
+           setLoading(false);
+       }, [patientId, show]);
+
+       useEffect(() => { load(); }, [load]);
+
+       const update = (key: FieldKey, value: string) => {
+           setForm((f) => ({ ...f, [key]: value }));
+           setError("");
+       };
+
+       const openPage = async (intake: Intake) => {
+           if (intake.id === selected) return;
+           if (dirty && !(await confirm({ title: "Switch pages without saving?", message: "Your unsaved Clinical Assessment edits will be lost.", confirmLabel: "Discard changes", tone: "danger" }))) return;
+           show(intake.id, formFrom(intake));
+       };
+
+       const startNew = async () => {
+           if (dirty && !(await confirm({ title: "Start a new assessment without saving?", message: "Your unsaved Clinical Assessment edits will be lost.", confirmLabel: "Discard changes", tone: "danger" }))) return;
+           const latest = intakes[intakes.length - 1] ?? null;
+           const f = formFrom(null);
+           for (const key of CARRIED_OVER) {
+               const val = latest?.[key];
+               f[key] = val != null ? String(val) : "";
+           }
+           // Clean until something is typed: the carried-over fields alone are
+           // not work to lose.
+           show("new", f);
+       };
+
+       const save = async () => {
+           const isNew = selected === "new";
+           setSaving(true);
+           setError("");
+           const res = await fetch(`/api/patients/${patientId}/intake`, {
+               method: isNew ? "POST" : "PUT",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify(isNew ? form : { ...form, intakeId: selected }),
+           });
+           if (!res.ok) {
+               const data = await res.json().catch(() => ({}));
+               setSaving(false);
+               setError(data.error || "Could not save the assessment. Your text is still here; try again.");
+               return;
+           }
+           const saved: Intake = await res.json();
+           await load(saved.id);
+           setSaving(false);
+           onSaved?.();
+       };
+
+       const saveLabel =
+           selected !== "new" ? "Update Assessment" : intakes.length > 0 ? "Save New Assessment" : "Save Assessment";
+       const pageNumber = selected === "new" ? intakes.length + 1 : intakes.findIndex((i) => i.id === selected) + 1;
+       const pageInjury = form.injuryPlace.trim();
+
+       const renderField = (f: Field) => (
+           <div key={f.key} className="staff-field">
+               <label htmlFor={`intake-${f.key}`}>{f.label}</label>
+               {f.type === "textarea" ? (
+                   <textarea
+                       id={`intake-${f.key}`}
+                       rows={f.rows ?? 3}
+                       value={form[f.key]}
+                       onChange={(e) => update(f.key, e.target.value)}
+                   />
+               ) : (
+                   <input
+                       id={`intake-${f.key}`}
+                       type={f.type}
+                       placeholder={f.placeholder}
+                       value={form[f.key]}
+                       onChange={(e) => update(f.key, e.target.value)}
+                   />
+               )}
+               {f.hint && <span className="staff-field-hint">{f.hint}</span>}
+           </div>
+       );
+
+       if (loading) return <p className="staff-loading" role="status">Loading…</p>;
+       if (loadError) return <div className="staff-form-error" role="alert">{loadError}</div>;
+
+       return (
+           <div>
+               {intakes.length > 0 && (
+                   <div className="staff-assess-pages" role="group" aria-label="Assessments">
+                       {intakes.map((it, i) => (
+                           <button
+                               key={it.id}
+                               type="button"
+                               className={`staff-assess-pill${selected === it.id ? " active" : ""}`}
+                               aria-pressed={selected === it.id}
+                               onClick={() => openPage(it)}
+                           >
+                               <span className="staff-assess-pill-title">Assessment {i + 1}</span>
+                               <span className="staff-assess-pill-meta" dir="auto">{it.injuryPlace?.trim() || "No injury place"}</span>
+                               <span className="staff-assess-pill-meta">{formatDate(it.createdAt)}</span>
+                           </button>
+                       ))}
+                       {selected === "new" ? (
+                           <span className="staff-assess-pill active draft" aria-current="true">
+                               <span className="staff-assess-pill-title">Assessment {intakes.length + 1}</span>
+                               <span className="staff-assess-pill-meta">New, not saved yet</span>
+                           </span>
+                       ) : (
+                           <button type="button" className="staff-assess-new" onClick={startNew}>
+                               <Plus size={14} aria-hidden="true" />New Assessment
+                           </button>
+                       )}
+                   </div>
+               )}
+
+               {SECTIONS.map(({ title, icon: Icon, rows }) => (
+                   <section key={title} className="staff-assess-section">
+                       <h2 className="staff-assess-title">
+                           <span className="staff-assess-icon"><Icon size={16} aria-hidden="true" /></span>
+                           {title}
+                       </h2>
+                       {rows.map((row) => (
+                           <div key={row.join("-")} className={rowClass(row)}>
+                               {row.map((key) => renderField(FIELD[key]))}
+                           </div>
+                       ))}
+                   </section>
+               ))}
+
+               <div className="staff-save-bar">
+                   <div className="staff-save-state" role="status">
+                       {saving ? (
+                           <span className="staff-save-muted">Saving…</span>
+                       ) : error ? (
+                           <span className="staff-save-error">{error}</span>
+                       ) : dirty ? (
+                           <span className="staff-save-dirty"><span className="staff-save-dot" aria-hidden="true" />Unsaved changes</span>
+                       ) : selected === "new" ? (
+                           <span className="staff-save-muted">New assessment, not saved yet</span>
+                       ) : (
+                           <span className="staff-save-ok"><Check size={15} aria-hidden="true" />All changes saved</span>
+                       )}
+                   </div>
+                   <div className="staff-save-end">
+                       <span className="staff-save-page" dir="auto">
+                           Assessment {pageNumber}{pageInjury ? ` · ${pageInjury}` : ""}
+                       </span>
+                       <button
+                           type="button"
+                           className="staff-btn staff-btn-primary"
+                           aria-busy={saving}
+                           onClick={save}
+                           disabled={saving || !dirty}
+                       >
+                           {saving ? "Saving…" : saveLabel}
+                       </button>
+                   </div>
+               </div>
+           </div>
+       );
+   }
+   ```
+
+**2. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* The Clinical Assessment (TJ-072b, decisions P4-1 and P4-2;
+      components/ClinicalAssessment.tsx): its pages, four sections, and a Save
+      bar that stays at the bottom of the screen while the form is open. */
+   .staff-assess-pages {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 0.5rem;
+   }
+   .staff-assess-pill {
+     display: flex;
+     flex-direction: column;
+     align-items: flex-start;
+     gap: 0.1rem;
+     min-width: 0;
+     max-width: 220px;
+     padding: 0.45rem 0.8rem;
+     background: rgba(255, 255, 255, 0.04);
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-md);
+     color: var(--staff-text-2);
+     font-family: inherit;
+     text-align: start;
+     cursor: pointer;
+     transition: background 0.15s, border-color 0.15s;
+   }
+   .staff-assess-pill:hover {
+     background: var(--staff-surface-2);
+   }
+   .staff-assess-pill.active {
+     background: var(--staff-accent-soft);
+     border-color: var(--staff-accent);
+     color: var(--staff-accent-text);
+   }
+   .staff-assess-pill.draft {
+     cursor: default;
+   }
+   .staff-assess-pill-title {
+     font-size: var(--staff-size-base);
+     font-weight: 600;
+   }
+   .staff-assess-pill-meta {
+     max-width: 100%;
+     overflow: hidden;
+     color: var(--staff-muted);
+     font-size: var(--staff-size-xs);
+     text-overflow: ellipsis;
+     white-space: nowrap;
+   }
+   .staff-assess-new {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.35rem;
+     padding: 0.45rem 0.9rem;
+     background: none;
+     border: 1px dashed var(--staff-border-strong);
+     border-radius: var(--staff-radius-md);
+     color: var(--staff-text-2);
+     font-family: inherit;
+     font-size: var(--staff-size-base);
+     font-weight: 500;
+     cursor: pointer;
+   }
+   .staff-assess-new:hover {
+     border-color: var(--staff-accent);
+     color: var(--staff-text);
+   }
+   .staff-assess-section {
+     display: flex;
+     flex-direction: column;
+     gap: 0.9rem;
+     margin-top: 1.25rem;
+     padding-top: 1.25rem;
+     border-top: 1px solid var(--staff-border);
+   }
+   .staff-assess-section:first-child {
+     margin-top: 0;
+     padding-top: 0;
+     border-top: none;
+   }
+   .staff-assess-title {
+     display: flex;
+     align-items: center;
+     gap: 0.6rem;
+     margin: 0;
+     font-size: var(--staff-size-md);
+     font-weight: 600;
+   }
+   .staff-assess-icon {
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     width: 28px;
+     height: 28px;
+     border-radius: var(--staff-radius-md);
+     background: var(--staff-accent-soft);
+     color: var(--staff-accent-text);
+   }
+   .staff-assess-row {
+     display: grid;
+     gap: 0.9rem 1rem;
+   }
+   .staff-assess-row.two {
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+   }
+   .staff-assess-row.with-number {
+     grid-template-columns: minmax(0, 1fr) 12rem;
+     align-items: start;
+   }
+   /* Pinned to the bottom of the screen while any of the form is in view. In a
+      record panel it runs to the panel's edges (.staff-record-panel's padding,
+      TJ-072a). */
+   .staff-save-bar {
+     position: sticky;
+     bottom: 0;
+     z-index: 5;
+     display: flex;
+     flex-wrap: wrap;
+     align-items: center;
+     justify-content: space-between;
+     gap: 0.6rem 1rem;
+     margin-top: 1.5rem;
+     padding: 0.75rem 1.5rem;
+     background: var(--staff-raised);
+     border-top: 1px solid var(--staff-border-strong);
+     box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.28);
+   }
+   .staff-record-panel .staff-save-bar {
+     margin: 1.5rem -1.5rem -1.5rem;
+     border-radius: 0 0 var(--staff-radius-lg) var(--staff-radius-lg);
+   }
+   .staff-save-state {
+     display: flex;
+     align-items: center;
+     min-width: 0;
+     min-height: 34px;
+     font-size: var(--staff-size-base);
+     font-weight: 500;
+   }
+   .staff-save-dirty,
+   .staff-save-ok {
+     display: inline-flex;
+     align-items: center;
+     gap: 0.45rem;
+   }
+   .staff-save-dirty {
+     color: var(--staff-warn);
+   }
+   .staff-save-dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 50%;
+     background: currentColor;
+   }
+   .staff-save-ok {
+     color: var(--staff-ok);
+   }
+   .staff-save-muted {
+     color: var(--staff-muted);
+   }
+   .staff-save-error {
+     color: var(--staff-bad);
+   }
+   .staff-save-end {
+     display: flex;
+     align-items: center;
+     gap: 0.9rem;
+     margin-inline-start: auto;
+     min-width: 0;
+   }
+   .staff-save-page {
+     max-width: 16rem;
+     overflow: hidden;
+     color: var(--staff-muted);
+     font-size: var(--staff-size-sm);
+     text-overflow: ellipsis;
+     white-space: nowrap;
+   }
+   @media (max-width: 640px) {
+     .staff-assess-row.two,
+     .staff-assess-row.with-number {
+       grid-template-columns: 1fr;
+     }
+     .staff-assess-pill {
+       max-width: 100%;
+     }
+     .staff-record-panel .staff-save-bar {
+       margin: 1.25rem -1rem -1rem;
+       padding: 0.75rem 1rem;
+     }
+     .staff-save-page {
+       display: none;
+     }
+   }
+   ```
+
+**Verification:**
+- `grep -nE 'form-group|success-msg|error-msg|empty-text|<style jsx' src/app/components/ClinicalAssessment.tsx` prints nothing.
+- `git diff --stat` against the TJ-072a commit lists exactly the 2 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only.
+
+**Done when:**
+- [ ] The assessment shows four sections and the Save bar; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-072c — A summary line on the patient file
+
+- **Status:** READY — passed 2026-11-24. Batch 8, step 3 of 3.
+- **Branch:** `feat/patient-summary-line`, cut from the tip of `feat/assessment-sections`.
+- **Why:** the patient file shows only "Last visit"; staff look through the Sessions tab for the next appointment and count sessions by hand (decisions P4-3, P4-5).
+
+**Planning pass:** 2026-11-24, on the TJ-072b result. Read in full: `src/app/api/patients/[id]/route.ts` (reservations newest first; a doctor's stop at today, TJ-064; no clinical data for a secretary) and the `/intake` route (assessments in id order, the last is the latest).
+- **No API change.** `ClinicalAssessment` already loads the assessments; a new `onLatestChange` prop reports the latest one's date and Recommended Sessions after each load, so the line also updates after a save. The secretary's file has no assessment and counts all Checked Out sessions.
+- **One component**, `src/app/components/PatientSummary.tsx`: next session (the earliest Scheduled, Waiting, Checked In or With Doctor session from today on: "Today" or "Thu, Nov 26", time, doctor with colour dot; else "No session booked"), last visit ("No visits yet" when none), and sessions ("6 of 10 done" with a bar, amber over plan; "6 done" without a recommended number). Days compare in Amman time; `sessionDate`'s first ten characters are its day.
+- **Roles:** admin `clinical seesFuture`; doctor `clinical seesFuture={false}` (shows "Today" only when there is a session today); secretary `clinical={false}`. While the assessment loads, the sessions fact waits rather than show an all-time count.
+- "Last visit:" leaves the header's meta row.
+- **Measured in the mocked preview:** admin "Thu, Nov 26 · 5:30 PM · Rana Haddad", "Nov 23, 2026", "6 of 10 done" (6 Checked Out since Nov 3; the March sessions, the No Show and the Cancelled one not counted); secretary "9 done"; doctor no next session, and with a session today "Today 11:00 AM · Omar Zaid"; a patient with nothing "No session booked", "No visits yet", "0 done"; over plan "6 of 5 done", amber, full bar.
+
+**Scope — touch only these (6):** `src/app/components/PatientSummary.tsx` (new), `src/app/globals.css`, `src/app/components/ClinicalAssessment.tsx`, `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`.
+
+**Do not touch:** any other file; every API route; the session page.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace the block that starts with the line …" swaps that line, everything after it, and the named end line for exactly the lines shown. "New file, exactly" and "replace the whole file with exactly" mean the file's whole content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/components/PatientSummary.tsx`** — new file, exactly:
+   ```tsx
+   // The patient file's summary line (TJ-072c, decisions P4-3 and P4-5): the
+   // next session, the last visit, and how many sessions are done. The styles
+   // are global (.staff-summary-* in globals.css).
+   //
+   // "Done" counts Checked Out sessions from the day the latest assessment was
+   // written, out of that assessment's Recommended Sessions. A secretary never
+   // sees the assessment, so their line counts every Checked Out session and
+   // gives no "of". A doctor sees no day after today (TJ-064), so their line
+   // names today's session or none.
+
+   import { CalendarClock, CircleCheck, History } from "lucide-react";
+
+   export interface LatestAssessment {
+       createdAt: string;
+       recommendedSessions: number | null;
+   }
+
+   interface SummaryReservation {
+       sessionDate: string;
+       sessionTime: string;
+       status: string;
+       doctor: { name: string; color: string | null } | null;
+       doctorNameSnapshot: string | null;
+       doctorColorSnapshot: string | null;
+   }
+
+   interface PatientSummaryProps {
+       reservations: SummaryReservation[];
+       lastVisitDate: string | null;
+       /** True for the roles that see the Clinical Assessment. */
+       clinical: boolean;
+       /** The latest assessment: undefined while it loads, null when there is none. */
+       latest?: LatestAssessment | null;
+       /** False for a doctor, who sees no day after today. */
+       seesFuture: boolean;
+   }
+
+   const OPEN_STATUSES = new Set(["SCHEDULED", "WAITING", "CHECKED_IN", "WITH_DOCTOR"]);
+
+   // A moment's calendar day in Amman, as YYYY-MM-DD. sessionDate is stored as
+   // UTC midnight of its day, so its first ten characters are already that day.
+   const ammanDay = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "Asia/Amman" });
+
+   const formatDay = (sessionDate: string) =>
+       new Date(sessionDate).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
+   const formatTime = (sessionTime: string) =>
+       new Date(sessionTime).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+   const formatDate = (d: string) =>
+       new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+   export default function PatientSummary({ reservations, lastVisitDate, clinical, latest, seesFuture }: PatientSummaryProps) {
+       const today = ammanDay(new Date());
+       const next = reservations
+           .filter((r) => OPEN_STATUSES.has(r.status) && r.sessionDate.slice(0, 10) >= today)
+           .sort((a, b) => a.sessionDate.localeCompare(b.sessionDate) || a.sessionTime.localeCompare(b.sessionTime))[0];
+       const nextIsToday = !!next && next.sessionDate.slice(0, 10) === today;
+
+       const checkedOut = reservations.filter((r) => r.status === "CHECKED_OUT");
+       const since = clinical && latest ? ammanDay(new Date(latest.createdAt)) : null;
+       const done = since ? checkedOut.filter((r) => r.sessionDate.slice(0, 10) >= since).length : checkedOut.length;
+       const of = clinical && latest ? latest.recommendedSessions : null;
+       const showSessions = !clinical || latest !== undefined;
+
+       return (
+           <div className="staff-summary">
+               {(seesFuture || nextIsToday) && (
+                   <div className="staff-summary-fact">
+                       <CalendarClock size={16} aria-hidden="true" className="staff-summary-icon" />
+                       <div>
+                           <div className="staff-summary-label">{seesFuture ? "Next session" : "Today"}</div>
+                           {next ? (
+                               <div className="staff-summary-value">
+                                   {seesFuture && <>{nextIsToday ? "Today" : formatDay(next.sessionDate)} · </>}
+                                   {formatTime(next.sessionTime)} ·
+                                   <span className="staff-summary-dot" aria-hidden="true" style={{ background: next.doctor?.color ?? next.doctorColorSnapshot ?? undefined }} />
+                                   {next.doctor?.name ?? next.doctorNameSnapshot ?? "—"}
+                               </div>
+                           ) : (
+                               <div className="staff-summary-value staff-summary-none">No session booked</div>
+                           )}
+                       </div>
+                   </div>
+               )}
+               <div className="staff-summary-fact">
+                   <History size={16} aria-hidden="true" className="staff-summary-icon" />
+                   <div>
+                       <div className="staff-summary-label">Last visit</div>
+                       <div className={`staff-summary-value${lastVisitDate ? "" : " staff-summary-none"}`}>
+                           {lastVisitDate ? formatDate(lastVisitDate) : "No visits yet"}
+                       </div>
+                   </div>
+               </div>
+               {showSessions && (
+                   <div className="staff-summary-fact">
+                       <CircleCheck size={16} aria-hidden="true" className="staff-summary-icon" />
+                       <div>
+                           <div className="staff-summary-label">{since ? "Sessions, this assessment" : "Sessions"}</div>
+                           <div className="staff-summary-value">
+                               {of ? `${done} of ${of} done` : `${done} done`}
+                               {!!of && (
+                                   <span className="staff-summary-bar" aria-hidden="true">
+                                       <span
+                                           className={`staff-summary-fill${done > of ? " over" : ""}`}
+                                           style={{ width: `${Math.min(100, Math.round((done / of) * 100))}%` }}
+                                       />
+                                   </span>
+                               )}
+                           </div>
+                       </div>
+                   </div>
+               )}
+           </div>
+       );
+   }
+   ```
+
+**2. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* The patient file's summary line (TJ-072c, decisions P4-3 and P4-5;
+      components/PatientSummary.tsx). */
+   .staff-summary {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 0.75rem 2.25rem;
+     margin-top: 1rem;
+     padding-top: 0.9rem;
+     border-top: 1px solid var(--staff-border);
+   }
+   .staff-summary-fact {
+     display: flex;
+     align-items: flex-start;
+     gap: 0.6rem;
+     min-width: 0;
+   }
+   .staff-summary-icon {
+     flex-shrink: 0;
+     margin-top: 0.15rem;
+     color: var(--staff-muted);
+   }
+   .staff-summary-label {
+     color: var(--staff-muted);
+     font-size: var(--staff-size-xs);
+   }
+   .staff-summary-value {
+     display: flex;
+     flex-wrap: wrap;
+     align-items: center;
+     gap: 0.3rem 0.4rem;
+     color: var(--staff-text-2);
+     font-size: var(--staff-size-base);
+     font-weight: 500;
+   }
+   .staff-summary-none {
+     color: var(--staff-muted);
+     font-weight: 400;
+   }
+   .staff-summary-dot {
+     flex-shrink: 0;
+     width: 8px;
+     height: 8px;
+     border-radius: 50%;
+     background: var(--staff-faint);
+   }
+   .staff-summary-bar {
+     display: block;
+     width: 96px;
+     height: 6px;
+     margin-inline-start: 0.3rem;
+     overflow: hidden;
+     border-radius: 999px;
+     background: rgba(255, 255, 255, 0.1);
+   }
+   .staff-summary-fill {
+     display: block;
+     height: 100%;
+     border-radius: 999px;
+     background: var(--staff-accent);
+   }
+   .staff-summary-fill.over {
+     background: var(--staff-warn);
+   }
+   ```
+
+**3. `src/app/components/ClinicalAssessment.tsx`**
+
+1. After the line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert the line `import type { LatestAssessment } from "@/app/components/PatientSummary";`.
+2. Replace
+   ```tsx
+       // Called after a save lands.
+       onSaved?: () => void;
+
+   ```
+   with
+   ```tsx
+       // Called after a save lands.
+       onSaved?: () => void;
+       // Told the latest assessment's date and Recommended Sessions after each
+       // load (null when there is none), for the patient file's summary line
+       // (TJ-072c). Pass a state setter.
+       onLatestChange?: (latest: LatestAssessment | null) => void;
+
+   ```
+3. Replace `export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }: ClinicalAssessmentProps) {` with `export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved, onLatestChange }: ClinicalAssessmentProps) {`.
+4. After the line `setIntakes(list);` insert these lines, in order: `        const latest = list[list.length - 1];`, `        onLatestChange?.(latest ? { createdAt: latest.createdAt, recommendedSessions: latest.recommendedSessions } : null);`.
+5. Replace `    }, [patientId, show]);` with `    }, [patientId, show, onLatestChange]);`.
+
+**4. `src/app/admin/patients/[id]/page.tsx`**
+
+1. After the line `import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";` insert the line `import PatientSummary, { type LatestAssessment } from "@/app/components/PatientSummary";`.
+2. Replace
+   ```tsx
+       const [intakeDirty, setIntakeDirty] = useState(false);
+       const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+
+   ```
+   with
+   ```tsx
+       const [intakeDirty, setIntakeDirty] = useState(false);
+       const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+
+       // The latest assessment, for the summary line. ClinicalAssessment reports
+       // it after each load; undefined until then. (TJ-072c)
+       const [latest, setLatest] = useState<LatestAssessment | null | undefined>(undefined);
+
+   ```
+3. Delete these lines:
+   ```tsx
+                               <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
+   ```
+4. Replace
+   ```tsx
+                   </div>
+               </div>
+
+               {/* Edit Info Modal (design 2B, TJ-069d1) */}
+
+   ```
+   with
+   ```tsx
+                   </div>
+                   <PatientSummary reservations={patient.reservations} lastVisitDate={patient.lastVisitDate} clinical latest={latest} seesFuture />
+               </div>
+
+               {/* Edit Info Modal (design 2B, TJ-069d1) */}
+
+   ```
+5. After the line `onSaved={() => setAuditLog([])}` insert the line `                    onLatestChange={setLatest}`.
+
+**5. `src/app/secretary/patients/[id]/page.tsx`**
+
+1. After the line `import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";` insert the line `import PatientSummary from "@/app/components/PatientSummary";`.
+2. Delete these lines:
+   ```tsx
+                               <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
+   ```
+3. Replace
+   ```tsx
+                   </div>
+               </div>
+
+               {/* Edit Info Modal — name + phones only (design 2B, TJ-069d1) */}
+
+   ```
+   with
+   ```tsx
+                   </div>
+                   <PatientSummary reservations={patient.reservations} lastVisitDate={patient.lastVisitDate} clinical={false} seesFuture />
+               </div>
+
+               {/* Edit Info Modal — name + phones only (design 2B, TJ-069d1) */}
+
+   ```
+
+**6. `src/app/doctor/patients/[id]/page.tsx`**
+
+1. After the line `import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";` insert the line `import PatientSummary, { type LatestAssessment } from "@/app/components/PatientSummary";`.
+2. Replace
+   ```tsx
+       const [intakeDirty, setIntakeDirty] = useState(false);
+       const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+
+   ```
+   with
+   ```tsx
+       const [intakeDirty, setIntakeDirty] = useState(false);
+       const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+
+       // The latest assessment, for the summary line. ClinicalAssessment reports
+       // it after each load; undefined until then. (TJ-072c)
+       const [latest, setLatest] = useState<LatestAssessment | null | undefined>(undefined);
+
+   ```
+3. Delete these lines:
+   ```tsx
+                               <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
+   ```
+4. Replace
+   ```tsx
+                   </div>
+               </div>
+
+               {/* Tabs */}
+
+   ```
+   with
+   ```tsx
+                   </div>
+                   <PatientSummary reservations={patient.reservations} lastVisitDate={patient.lastVisitDate} clinical latest={latest} seesFuture={false} />
+               </div>
+
+               {/* Tabs */}
+
+   ```
+5. Replace `<ClinicalAssessment patientId={patient.id} onDirtyChange={setIntakeDirty} />` with `<ClinicalAssessment patientId={patient.id} onDirtyChange={setIntakeDirty} onLatestChange={setLatest} />`.
+
+**Verification:**
+- `grep -n "Last visit:" src/app/admin/patients/[id]/page.tsx src/app/secretary/patients/[id]/page.tsx src/app/doctor/patients/[id]/page.tsx` prints nothing; `grep -c "<PatientSummary" src/app/admin/patients/[id]/page.tsx src/app/secretary/patients/[id]/page.tsx src/app/doctor/patients/[id]/page.tsx` prints 1 for each file.
+- `git diff --stat` against the TJ-072b commit lists exactly the 6 files, one of them new.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only.
+
+**Done when:**
+- [ ] The three patient files show the summary line; `tsc` and the build exit 0; the planner's re-application is byte-identical.
