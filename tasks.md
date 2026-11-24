@@ -179,13 +179,13 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-day-header` |
 | TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
-| TJ-072 | Staff portal refresh, phase 4: patient file and lists | SPLIT — decided 2026-11-24 (P4-1 to P4-5 as recommended); batch 8 = TJ-072a, b, c merged 2026-11-25 after the user's review, **not pushed**; batch 9 = d, e, f BACKLOG | — |
+| TJ-072 | Staff portal refresh, phase 4: patient file and lists | SPLIT — decided 2026-11-24 (P4-1 to P4-5 as recommended); batch 8 = TJ-072a, b, c merged 2026-11-25 after the user's review, **not pushed**; batch 9 = TJ-072d, e, f READY (planned 2026-11-25) | — |
 | TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | DONE — task commit `68eedb7`, merged to `master` as `fe1d81d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-file-tidy` |
 | TJ-072b | The assessment in sections, with a Save bar that stays visible | DONE — task commit `4ab9954`, merged to `master` as `fc0c2ee` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/assessment-sections` |
 | TJ-072c | A summary line on the patient file | DONE — task commit `8b1f3fb`, merged to `master` as `8171bc6` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-summary-line` |
-| TJ-072d | Skeletons: the shared piece and the 9 lists | BACKLOG — batch 9, no planning pass | — |
-| TJ-072e | Skeletons: every page-level loading line | BACKLOG — batch 9, no planning pass | — |
-| TJ-072f | Leftovers: booking dropdown on tokens; Phone 2 overflow | BACKLOG — batch 9, no planning pass | — |
+| TJ-072d | Skeletons: the shared piece and every table | READY — passed 2026-11-25; batch 9, step 1 of 3 | `feat/skeleton-tables` |
+| TJ-072e | Skeletons on the remaining loading screens | READY — passed 2026-11-25; batch 9, step 2 of 3 | `feat/skeleton-pages` |
+| TJ-072f | Booking search dropdown on the staff tokens | READY — passed 2026-11-25; batch 9, step 3 of 3 | `feat/booking-dropdown-tokens` |
 
 ---
 
@@ -23542,7 +23542,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072 — Staff portal refresh, phase 4: patient file and lists
 
-- **Status:** SPLIT — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: merged 2026-11-25 as `fe1d81d`, `fc0c2ee`, `8171bc6` after the user's review, not pushed** (see "Batch 8 — verified and merged" and "Batch 8 — planned"). TJ-072d, e, f are batch 9, `BACKLOG`, no planning pass.
+- **Status:** SPLIT — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: merged 2026-11-25 as `fe1d81d`, `fc0c2ee`, `8171bc6` after the user's review, not pushed** (see "Batch 8 — verified and merged" and "Batch 8 — planned"). **Batch 9 = TJ-072d, e, f: READY** (planned 2026-11-25, see "Batch 9 — planned").
 - **Why:** The clinical assessment is about 13 identical full-width text boxes with Save only at the bottom. Group them into sections (History, Examination, Diagnosis & plan, Exercises) with a Save bar that stays visible. Add a summary line on the patient file (next appointment, doctor, sessions done out of recommended). Empty pages get an icon, a one-line explanation and the create button, instead of three different one-liners. Loading states become skeletons instead of "Loading…" text in 27 places.
 - **Execution:** as phases 1–3: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -23552,6 +23552,13 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **P4-3** Next session (day, time, doctor), last visit, sessions done. "Done" counts Checked Out sessions from the day the latest assessment was written, out of its Recommended Sessions; over plan shows amber. A doctor's line names today's session or none (TJ-064).
 - **P4-4 = 4A** Skeletons with a soft pulse, still under reduced motion (batch 9).
 - **P4-5** No Recommended Sessions for the secretary: their line counts every Checked Out session, with no "of".
+
+**Batch 9 — planned (2026-11-25):** at the user's request ("Plan batch 9"), three steps: TJ-072d (the skeleton component, and skeleton rows in every table that loads), TJ-072e (skeletons on the other 16 loading screens), TJ-072f (the booking search dropdown on the staff tokens). 32 file changes across 30 files; one `globals.css` append; one new component (`StaffSkeleton.tsx`). The 29 "Loading…" lines become 0.
+- **How the specs were made:** as batch 8: edits generated by script on a throwaway worktree of `master` at `18cd765`, every anchor asserted to occur once, instructions rendered from the recorded edits; the new component and the stylesheet append are given whole. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `0304292`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 32 file versions came out byte-identical, same tree (14, 16 and 2 files per step), and each step's Verification commands pass on the result.
+- **Mocked preview:** skeletons last only as long as a request, so the preview's mock gained a switch that holds data requests open (`?slow`, and `?hold=<route>` for one request). Measured on all 30 screens at 1280px and on seven at 375px (no sideways scroll on any); details in each task's pass. Expected results in the planner's scratchpad (`b9/expected_blobs.txt`); the executor's tip must reproduce `src/` tree `0304292`.
+- **Phone 2, re-measured and closed without a change:** on the New Patient form, Phone 2 ends inside its card at every width from 640px to 1100px (TJ-069d4a's `.staff-field` `min-width: 0` fixed it). TJ-072f is the dropdown only.
+- **Found, not in this batch:** `.staff-loading` (and `.staff-table-state .staff-loading`) in `globals.css` are now unused; `SessionExpiryNotice.tsx` keeps a slate `#1e293b` (not a staff page); the admin patient file's file Remove still deletes without asking (from batch 8).
+- **Dispatch:** not yet. The executor runs when the user says so.
 
 **Batch 8 — verified and merged (2026-11-25):**
 - **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `fe1d81d` (TJ-072a), `fc0c2ee` (TJ-072b), `8171bc6` (TJ-072c). The merged `src/` tree is identical to the verified tip `8b1f3fb` (`0cdc8b0`); only `tasks.md` differs. **Not pushed.**
@@ -23584,9 +23591,9 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 | TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | 8 — READY |
 | TJ-072b | The assessment in sections, with a Save bar that stays visible | 8 — READY |
 | TJ-072c | A summary line on the patient file | 8 — READY |
-| TJ-072d | Skeletons: the shared piece and the 9 lists (P4-4) | 9 — BACKLOG |
-| TJ-072e | Skeletons: every page-level loading line (about 20 files) | 9 — BACKLOG |
-| TJ-072f | Leftovers: booking search dropdown on tokens; Phone 2 overflow if it re-measures | 9 — BACKLOG |
+| TJ-072d | Skeletons: the shared piece and every table | 9 — READY |
+| TJ-072e | Skeletons on the remaining loading screens | 9 — READY |
+| TJ-072f | Booking search dropdown on the staff tokens (Phone 2 re-measured: no overflow) | 9 — READY |
 
 ---
 
@@ -25524,3 +25531,852 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 **Done when:**
 - [ ] The three patient files show the summary line; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-072d — Skeletons: the shared piece and every table
+
+- **Status:** READY — passed 2026-11-25. Batch 9, step 1 of 3.
+- **Branch:** `feat/skeleton-tables`, cut from `master` at the commit that adds this spec.
+- **Why:** nine lists show a one-line "Loading…" row while they load, and Blog and both Employees pages replace the whole page with that line, header included (decision P4-4).
+
+**Planning pass:** 2026-11-25, on `master` at `18cd765`. Read: the loading branch, table header and imports of the nine lists (admin, secretary and doctor patients; admin and secretary archived patients; notes for all three roles; archived doctor profiles) and of `admin/blog/page.tsx`, `admin/employees/doctors/page.tsx`, `admin/employees/secretaries/page.tsx` (only the first load sets `loading` there); `globals.css` `.staff-table*`.
+- **One component,** `src/app/components/StaffSkeleton.tsx`: `StaffSkeletonRows` (table rows of pulsing bars, one per column, widths varied) and the default `StaffSkeleton` (the page shapes TJ-072e uses: record, form, calendar, fields, cards, tiles). Screen readers hear one visually hidden `role="status"` label; the blocks are `aria-hidden`. Styles in one `globals.css` append (`.staff-skel-*`), with the pulse off under `prefers-reduced-motion`.
+- **Lists:** the loading row becomes six skeleton rows with the list's own column count, under the real header and search box.
+- **Blog and Employees:** the early "Loading…" return goes, so the title, Add button and filter chips show at once; the table body shows skeleton rows until the data arrives. The chips read 0 until then, as the lists' counts already do.
+- **Measured in the mocked preview:** six rows of 6, 5 or 4 cells under the real header; rows 54px tall against real rows of 55px at 1280px; the label reads "Loading patients…" (1×1px, `role="status"`); the bars pulse (`staff-skel-pulse 1.6s`), and the reduced-motion rule is in the stylesheet; Blog and Employees keep their title and chips, with 6 and 7 cells.
+
+**Scope — touch only these (14):** `src/app/components/StaffSkeleton.tsx` (new), `src/app/globals.css`, and the 12 pages: `src/app/admin/patients/page.tsx`, `src/app/admin/patients/archived/page.tsx`, `src/app/admin/notes/page.tsx`, `src/app/admin/doctors/archived/page.tsx`, `src/app/secretary/patients/page.tsx`, `src/app/secretary/patients/archived/page.tsx`, `src/app/secretary/notes/page.tsx`, `src/app/doctor/patients/page.tsx`, `src/app/doctor/notes/page.tsx`, `src/app/admin/blog/page.tsx`, `src/app/admin/employees/doctors/page.tsx`, `src/app/admin/employees/secretaries/page.tsx`.
+
+**Do not touch:** any other file; the lists' fetches, search and pagination.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "New file, exactly" means the file's whole content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/components/StaffSkeleton.tsx`** — new file, exactly:
+   ```tsx
+   // Skeletons, decision P4-4 = 4A (TJ-072d): grey blocks in the shape of what
+   // is loading, pulsing softly together, and still for anyone who has reduced
+   // motion turned on. Screen readers hear the label once, from a visually
+   // hidden role="status"; the blocks are hidden from them. The styles are
+   // global (.staff-skel-* in globals.css).
+   //
+   // StaffSkeletonRows fills a table body while a list loads, under the list's
+   // real header. StaffSkeleton draws a whole loading area: a record (patient
+   // file, session), a form, the dashboard calendar, the assessment's fields,
+   // stacked cards (Approvals) or tiles (Doctor profiles).
+
+   import type { ReactNode } from "react";
+
+   // Varied so the rows do not read as a grid of identical blocks.
+   const WIDTHS = ["78%", "56%", "86%", "64%", "72%", "50%", "82%"];
+
+   const Bar = ({ w, h }: { w?: string; h?: number }) => (
+       <span className="staff-skel" style={{ width: w, height: h }} aria-hidden="true" />
+   );
+
+   const Field = ({ label = "30%", box }: { label?: string; box?: number }) => (
+       <div className="staff-skel-field" aria-hidden="true">
+           <Bar w={label} h={8} />
+           <span className="staff-skel-box" style={{ height: box }} />
+       </div>
+   );
+
+   const Label = ({ text }: { text: string }) => (
+       <span className="staff-skel-label" role="status">{text}</span>
+   );
+
+   interface RowsProps {
+       columns: number;
+       rows?: number;
+       label?: string;
+   }
+
+   export function StaffSkeletonRows({ columns, rows = 6, label = "Loading…" }: RowsProps) {
+       return (
+           <>
+               {Array.from({ length: rows }, (_, r) => (
+                   <tr key={r} className="staff-skel-row">
+                       {Array.from({ length: columns }, (_, c) => (
+                           <td key={c}>
+                               {r === 0 && c === 0 && <Label text={label} />}
+                               <Bar w={WIDTHS[(r * 3 + c) % WIDTHS.length]} />
+                           </td>
+                       ))}
+                   </tr>
+               ))}
+           </>
+       );
+   }
+
+   interface StaffSkeletonProps {
+       kind: "record" | "form" | "calendar" | "fields" | "cards" | "tiles";
+       label?: string;
+       /** A form's real page title, shown in place of a title block. */
+       title?: string;
+       /** The page's real Back button, usable while the rest loads. */
+       back?: ReactNode;
+   }
+
+   export default function StaffSkeleton({ kind, label = "Loading…", title, back }: StaffSkeletonProps) {
+       if (kind === "tiles") {
+           return (
+               <>
+                   <Label text={label} />
+                   {[0, 1, 2, 3].map((i) => (
+                       <div key={i} className="staff-skel-tile" aria-hidden="true">
+                           <span className="staff-skel-photo" />
+                           <div className="staff-skel-tile-body">
+                               <Bar w="70%" />
+                               <Bar w="45%" h={8} />
+                           </div>
+                       </div>
+                   ))}
+               </>
+           );
+       }
+
+       if (kind === "cards") {
+           return (
+               <div className="staff-skel-stack">
+                   <Label text={label} />
+                   {[0, 1].map((i) => (
+                       <div key={i} className="staff-panel staff-skel-card" aria-hidden="true">
+                           <div className="staff-skel-line"><Bar w="140px" /><Bar w="60px" h={8} /></div>
+                           <div className="staff-skel-grid">
+                               <span className="staff-skel-box" style={{ height: 64 }} />
+                               <span className="staff-skel-box" style={{ height: 64 }} />
+                           </div>
+                       </div>
+                   ))}
+               </div>
+           );
+       }
+
+       if (kind === "calendar") {
+           return (
+               <div className="staff-panel staff-skel-calendar">
+                   <Label text={label} />
+                   <div className="staff-skel-times" aria-hidden="true">
+                       {[0, 1, 2, 3, 4, 5].map((i) => <Bar key={i} w="28px" h={8} />)}
+                   </div>
+                   {[[0, 22, 0], [58, 0], [0, 0, 22]].map((gaps, c) => (
+                       <div key={c} className="staff-skel-col" aria-hidden="true">
+                           <Bar w={WIDTHS[c]} />
+                           {gaps.map((g, i) => <span key={i} className="staff-skel-box" style={{ height: 48, marginTop: g }} />)}
+                       </div>
+                   ))}
+               </div>
+           );
+       }
+
+       if (kind === "fields") {
+           return (
+               <div className="staff-skel-fields">
+                   <Label text={label} />
+                   <Bar w="120px" h={14} />
+                   <div className="staff-skel-grid"><Field /><Field /></div>
+                   <Field label="20%" box={60} />
+                   <Bar w="140px" h={14} />
+                   <Field label="18%" box={78} />
+                   <div className="staff-skel-grid"><Field /><Field /></div>
+               </div>
+           );
+       }
+
+       if (kind === "form") {
+           return (
+               <div className="staff-skel-page staff-skel-form">
+                   <Label text={label} />
+                   {back}
+                   {title ? <h1 className="staff-skel-heading">{title}</h1> : <Bar w="200px" h={20} />}
+                   <div className="staff-record-panel staff-skel-fields" aria-hidden="true">
+                       <Field label="15%" />
+                       <div className="staff-skel-grid"><Field label="25%" /><Field label="25%" /></div>
+                       <Field label="20%" box={72} />
+                       <div className="staff-skel-end"><span className="staff-skel-box" style={{ width: 120, height: 34 }} /></div>
+                   </div>
+               </div>
+           );
+       }
+
+       // A record: the patient file and the doctor's session page.
+       return (
+           <div className="staff-skel-page">
+               <Label text={label} />
+               {back}
+               <div className="staff-skel-record" aria-hidden="true">
+                   <Bar w="220px" h={20} />
+                   <div className="staff-skel-line"><Bar w="110px" /><Bar w="80px" /></div>
+                   <div className="staff-skel-summary">
+                       <div className="staff-skel-field"><Bar w="70px" h={8} /><Bar w="180px" /></div>
+                       <div className="staff-skel-field"><Bar w="56px" h={8} /><Bar w="90px" /></div>
+                       <div className="staff-skel-field"><Bar w="90px" h={8} /><Bar w="120px" /></div>
+                   </div>
+                   <div className="staff-skel-tabs"><Bar w="120px" /><Bar w="80px" /><Bar w="60px" /></div>
+                   <div className="staff-record-panel staff-skel-grid"><Field /><Field /></div>
+               </div>
+           </div>
+       );
+   }
+   ```
+
+**2. `src/app/globals.css`** — append at the end of the file (after the last `}`), exactly:
+   ```css
+   /* Skeletons, decision P4-4 = 4A (TJ-072d; components/StaffSkeleton.tsx):
+      grey blocks in the shape of what is loading, pulsing together every 1.6s,
+      and still under reduced motion. */
+   @keyframes staff-skel-pulse {
+     0%,
+     100% {
+       opacity: 1;
+     }
+     50% {
+       opacity: 0.4;
+     }
+   }
+   .staff-skel,
+   .staff-skel-box,
+   .staff-skel-photo {
+     display: block;
+     animation: staff-skel-pulse 1.6s ease-in-out infinite;
+   }
+   .staff-skel {
+     max-width: 100%;
+     height: 10px;
+     border-radius: var(--staff-radius-sm);
+     background: rgba(255, 255, 255, 0.09);
+   }
+   .staff-skel-box,
+   .staff-skel-photo {
+     height: 36px;
+     border-radius: var(--staff-radius-md);
+     background: rgba(255, 255, 255, 0.06);
+   }
+   @media (prefers-reduced-motion: reduce) {
+     .staff-skel,
+     .staff-skel-box,
+     .staff-skel-photo {
+       animation: none;
+     }
+   }
+   /* What screen readers hear; nobody sees it. */
+   .staff-skel-label {
+     position: absolute;
+     width: 1px;
+     height: 1px;
+     margin: -1px;
+     padding: 0;
+     overflow: hidden;
+     clip: rect(0 0 0 0);
+     white-space: nowrap;
+     border: 0;
+   }
+   /* A loading row is as tall as a real list row (55px), so the list does not
+      jump when the data arrives. */
+   .staff-skel-row td {
+     padding-top: 1.35rem;
+     padding-bottom: 1.35rem;
+   }
+   .staff-table tbody tr.staff-skel-row:hover {
+     background: none;
+   }
+   .staff-skel-page {
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+   }
+   .staff-skel-page > .staff-back {
+     align-self: flex-start;
+     margin: 0;
+   }
+   .staff-skel-form {
+     max-width: 900px;
+   }
+   .staff-skel-heading {
+     margin: 0;
+     font-size: var(--staff-size-xl);
+     font-weight: 600;
+   }
+   .staff-skel-record,
+   .staff-skel-fields,
+   .staff-skel-stack {
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+   }
+   .staff-skel-line {
+     display: flex;
+     flex-wrap: wrap;
+     align-items: center;
+     gap: 0.75rem 1.25rem;
+   }
+   .staff-skel-field {
+     display: flex;
+     flex-direction: column;
+     gap: 0.45rem;
+     min-width: 0;
+   }
+   .staff-skel-summary {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 0.75rem 2.25rem;
+     padding-top: 0.9rem;
+     border-top: 1px solid var(--staff-border);
+   }
+   .staff-skel-tabs {
+     display: flex;
+     gap: 1.5rem;
+     padding: 0.6rem 0 0.9rem;
+     border-bottom: 1px solid var(--staff-border);
+   }
+   .staff-skel-grid {
+     display: grid;
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+     gap: 0.9rem 1rem;
+   }
+   .staff-skel-end {
+     display: flex;
+     justify-content: flex-end;
+   }
+   .staff-skel-card {
+     display: flex;
+     flex-direction: column;
+     gap: 0.9rem;
+     padding: 1.1rem 1.25rem;
+   }
+   .staff-skel-calendar {
+     display: grid;
+     grid-template-columns: 48px repeat(3, minmax(0, 1fr));
+     min-height: 320px;
+     overflow: hidden;
+   }
+   .staff-skel-times {
+     display: flex;
+     flex-direction: column;
+     gap: 2.6rem;
+     padding: 2.6rem 0.6rem 0;
+     border-inline-end: 1px solid var(--staff-border);
+   }
+   .staff-skel-col {
+     display: flex;
+     flex-direction: column;
+     gap: 0.6rem;
+     padding: 0.75rem 0.5rem;
+     border-inline-end: 1px solid var(--staff-border);
+   }
+   .staff-skel-col:last-child {
+     border-inline-end: none;
+   }
+   .staff-skel-col > .staff-skel:first-child {
+     margin-bottom: 0.5rem;
+   }
+   .staff-skel-tile {
+     overflow: hidden;
+     border: 1px solid var(--staff-border);
+     border-radius: var(--staff-radius-lg);
+     background: var(--staff-surface);
+   }
+   .staff-skel-photo {
+     height: auto;
+     aspect-ratio: 1;
+     border-radius: 0;
+   }
+   .staff-skel-tile-body {
+     display: flex;
+     flex-direction: column;
+     gap: 0.6rem;
+     padding: 0.9rem 1rem 1rem;
+   }
+   @media (max-width: 640px) {
+     .staff-skel-grid {
+       grid-template-columns: 1fr;
+     }
+   }
+   ```
+
+**3. `src/app/admin/patients/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={6}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={6} label="Loading patients…" />`.
+
+**4. `src/app/admin/patients/archived/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={5} label="Loading archived patients…" />`.
+
+**5. `src/app/admin/notes/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={6}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={6} label="Loading notes…" />`.
+
+**6. `src/app/admin/doctors/archived/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={5} label="Loading archived profiles…" />`.
+
+**7. `src/app/secretary/patients/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={5} label="Loading patients…" />`.
+
+**8. `src/app/secretary/patients/archived/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={5} label="Loading archived patients…" />`.
+
+**9. `src/app/secretary/notes/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={5} label="Loading notes…" />`.
+
+**10. `src/app/doctor/patients/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={4}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={4} label="Loading patients…" />`.
+
+**11. `src/app/doctor/notes/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace `<tr className="staff-table-state"><td colSpan={4}><p className="staff-loading" role="status">Loading…</p></td></tr>` with `<StaffSkeletonRows columns={4} label="Loading notes…" />`.
+
+**12. `src/app/admin/blog/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) {
+           return <p className="staff-loading" role="status">Loading…</p>;
+       }
+
+       return (
+   ```
+   with
+   ```tsx
+       return (
+   ```
+3. Replace
+   ```tsx
+                           {visible.length === 0 && (
+
+   ```
+   with
+   ```tsx
+                           {loading ? <StaffSkeletonRows columns={6} label="Loading posts…" /> : visible.length === 0 && (
+
+   ```
+
+**13. `src/app/admin/employees/doctors/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) {
+           return <p className="staff-loading" role="status">Loading…</p>;
+       }
+
+       return (
+   ```
+   with
+   ```tsx
+       return (
+   ```
+3. Replace
+   ```tsx
+                           {visible.length === 0 && (
+
+   ```
+   with
+   ```tsx
+                           {loading ? <StaffSkeletonRows columns={7} label="Loading doctors…" /> : visible.length === 0 && (
+
+   ```
+
+**14. `src/app/admin/employees/secretaries/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) {
+           return <p className="staff-loading" role="status">Loading…</p>;
+       }
+
+       return (
+   ```
+   with
+   ```tsx
+       return (
+   ```
+3. Replace
+   ```tsx
+                           {visible.length === 0 && (
+
+   ```
+   with
+   ```tsx
+                           {loading ? <StaffSkeletonRows columns={6} label="Loading secretaries…" /> : visible.length === 0 && (
+
+   ```
+
+**Verification:**
+- `grep -n 'className="staff-loading"' src/app/admin/patients/page.tsx src/app/admin/patients/archived/page.tsx src/app/admin/notes/page.tsx src/app/admin/doctors/archived/page.tsx src/app/secretary/patients/page.tsx src/app/secretary/patients/archived/page.tsx src/app/secretary/notes/page.tsx src/app/doctor/patients/page.tsx src/app/doctor/notes/page.tsx src/app/admin/blog/page.tsx src/app/admin/employees/doctors/page.tsx src/app/admin/employees/secretaries/page.tsx` prints nothing.
+- `git diff --stat` against the parent lists exactly the 14 files, one of them new.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only.
+
+**Done when:**
+- [ ] Every table shows skeleton rows while it loads; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-072e — Skeletons on the remaining loading screens
+
+- **Status:** READY — passed 2026-11-25. Batch 9, step 2 of 3.
+- **Branch:** `feat/skeleton-pages`, cut from the tip of `feat/skeleton-tables`.
+- **Why:** the other 16 screens still show "Loading…" text while they load (decision P4-4).
+
+**Planning pass:** 2026-11-25, on the TJ-072d result. Read the loading branch, imports and Back link of each: Approvals and Doctor profiles (first load only); the admin, secretary and doctor patient files and the admin file's History tab; the doctor's session page; `ClinicalAssessment.tsx`; booking edit and new (admin, secretary; new uses a `Suspense` fallback); the doctor's profile; the blog edit page; the three dashboards (the loading line sits inside the calendar column, under `DayHeader`).
+- **Shapes:** *record* (patient files, session page: the page's real Back button, then the name, meta, summary, tabs and a panel); *form* (booking edit and new, profile, blog edit: the real title, and the real Back button where the page has one; 900px wide); *calendar* (dashboards: a time column and three doctor columns of card blocks, under the real day header); *fields* (the assessment's panel while its pages load); *cards* (Approvals: two change cards under the real header); *tiles* (Doctor profiles: four photo tiles in the real grid, under the real header and Add button). The History tab shows four skeleton rows under its real columns.
+- Approvals and Doctor profiles lose their early return, as Blog did in TJ-072d.
+- **Measured in the mocked preview:** every screen shows its shape with its label ("Loading patient…", "Loading session…", "Loading the schedule…", "Loading the clinical assessment…", "Loading history…", "Loading approvals…", "Loading doctor profiles…"); Back reads "← Back", "← Back to Schedule", "← Back to Dashboard", "← Back to Blog"; form titles are 24px; the calendar is 320px tall in a 48px + three equal columns grid; tiles are 227px wide with square photos; no sideways scroll at 375px.
+
+**Scope — touch only these (16):** `src/app/admin/approvals/page.tsx`, `src/app/admin/doctors/page.tsx`, `src/app/admin/patients/[id]/page.tsx`, `src/app/secretary/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`, `src/app/components/ClinicalAssessment.tsx`, `src/app/admin/reservations/[id]/edit/page.tsx`, `src/app/secretary/reservations/[id]/edit/page.tsx`, `src/app/admin/reservations/new/page.tsx`, `src/app/secretary/reservations/new/page.tsx`, `src/app/doctor/profile/page.tsx`, `src/app/admin/blog/[id]/page.tsx`, `src/app/admin/page.tsx`, `src/app/secretary/page.tsx`, `src/app/doctor/page.tsx`.
+
+**Do not touch:** any other file; `StaffSkeleton.tsx` and `globals.css` (TJ-072d); the pages' fetches and handlers.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "New file, exactly" means the file's whole content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/admin/approvals/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) {
+           return <p className="staff-loading" role="status">Loading…</p>;
+       }
+
+       return (
+   ```
+   with
+   ```tsx
+       return (
+   ```
+3. Replace
+   ```tsx
+               {changes.length === 0 ? (
+
+   ```
+   with
+   ```tsx
+               {loading ? (
+                   <StaffSkeleton kind="cards" label="Loading approvals…" />
+               ) : changes.length === 0 ? (
+
+   ```
+
+**2. `src/app/admin/doctors/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) {
+           return <p className="staff-loading" role="status">Loading…</p>;
+       }
+
+       return (
+   ```
+   with
+   ```tsx
+       return (
+   ```
+3. Replace
+   ```tsx
+                   {doctors.map((doc) => (
+
+   ```
+   with
+   ```tsx
+                   {loading && <StaffSkeleton kind="tiles" label="Loading doctor profiles…" />}
+                   {doctors.map((doc) => (
+
+   ```
+4. Replace
+   ```tsx
+                   {doctors.length === 0 && (
+
+   ```
+   with
+   ```tsx
+                   {!loading && doctors.length === 0 && (
+
+   ```
+
+**3. `src/app/admin/patients/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import StaffSkeleton, { StaffSkeletonRows } from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+           return <p className="staff-loading" role="status">Loading…</p>;
+
+   ```
+   with
+   ```tsx
+           return <StaffSkeleton kind="record" label="Loading patient…" back={<button className="staff-back" onClick={() => router.push("/admin/patients")}>← Back</button>} />;
+
+   ```
+3. Replace
+   ```tsx
+                   auditLoading ? (
+                       <div className="staff-panel">
+                           <p className="staff-loading" role="status">Loading…</p>
+                       </div>
+                   ) : auditLog.length === 0 ? (
+
+   ```
+   with
+   ```tsx
+                   !auditLoading && auditLog.length === 0 ? (
+
+   ```
+4. Replace
+   ```tsx
+                               <tbody>
+                                   {auditLog.map((e) => (
+
+   ```
+   with
+   ```tsx
+                               <tbody>
+                                   {auditLoading && <StaffSkeletonRows columns={4} rows={4} label="Loading history…" />}
+                                   {auditLog.map((e) => (
+
+   ```
+
+**4. `src/app/secretary/patients/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) return <p className="staff-loading" role="status">Loading…</p>;
+
+   ```
+   with
+   ```tsx
+       if (loading) return <StaffSkeleton kind="record" label="Loading patient…" back={<button className="staff-back" onClick={() => router.push("/secretary/patients")}>← Back</button>} />;
+
+   ```
+
+**5. `src/app/doctor/patients/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+           return <p className="staff-loading" role="status">Loading…</p>;
+
+   ```
+   with
+   ```tsx
+           return <StaffSkeleton kind="record" label="Loading patient…" back={<button className="staff-back" onClick={() => router.push("/doctor/patients")}>← Back</button>} />;
+
+   ```
+
+**6. `src/app/doctor/session/[id]/page.tsx`**
+
+1. After the line `import StaffEmpty from "@/app/components/StaffEmpty";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) return <p className="staff-loading" role="status">Loading session…</p>;
+
+   ```
+   with
+   ```tsx
+       if (loading) return <StaffSkeleton kind="record" label="Loading session…" back={<button className="staff-back" onClick={() => router.push("/doctor")}>← Back to Schedule</button>} />;
+
+   ```
+
+**7. `src/app/components/ClinicalAssessment.tsx`**
+
+1. After the line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+       if (loading) return <p className="staff-loading" role="status">Loading…</p>;
+
+   ```
+   with
+   ```tsx
+       if (loading) return <StaffSkeleton kind="fields" label="Loading the clinical assessment…" />;
+
+   ```
+
+**8. `src/app/admin/reservations/[id]/edit/page.tsx`**
+
+1. After the line `import { isMissingPhone } from "@/lib/phone";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+               <div className="page">
+                   <p className="staff-loading" role="status">Loading…</p>
+               </div>
+
+   ```
+   with
+   ```tsx
+               <div className="page">
+                   <StaffSkeleton kind="form" title="Edit Reservation" label="Loading the booking…" back={<button className="staff-back" onClick={() => router.push("/admin")}>← Back to Dashboard</button>} />
+               </div>
+
+   ```
+
+**9. `src/app/secretary/reservations/[id]/edit/page.tsx`**
+
+1. After the line `import { isMissingPhone } from "@/lib/phone";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+               <div className="page">
+                   <p className="staff-loading" role="status">Loading…</p>
+               </div>
+
+   ```
+   with
+   ```tsx
+               <div className="page">
+                   <StaffSkeleton kind="form" title="Edit Reservation" label="Loading the booking…" back={<button className="staff-back" onClick={() => router.push("/secretary")}>← Back to Dashboard</button>} />
+               </div>
+
+   ```
+
+**10. `src/app/admin/reservations/new/page.tsx`**
+
+1. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace `<Suspense fallback={<p className="staff-loading" role="status">Loading…</p>}>` with `<Suspense fallback={<StaffSkeleton kind="form" title="New Reservation" />}>`.
+
+**11. `src/app/secretary/reservations/new/page.tsx`**
+
+1. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace `<Suspense fallback={<p className="staff-loading" role="status">Loading…</p>}>` with `<Suspense fallback={<StaffSkeleton kind="form" title="New Reservation" />}>`.
+
+**12. `src/app/doctor/profile/page.tsx`**
+
+1. After the line `import { useState, useEffect, useCallback, useRef } from "react";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+           return <p className="staff-loading" role="status">Loading…</p>;
+
+   ```
+   with
+   ```tsx
+           return <StaffSkeleton kind="form" title="My Public Profile" label="Loading your profile…" />;
+
+   ```
+
+**13. `src/app/admin/blog/[id]/page.tsx`**
+
+1. After the line `import BlogEditor from "../BlogEditor";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+           return <div style={{ padding: "2rem", color: "rgba(255,255,255,0.5)" }}>Loading…</div>;
+
+   ```
+   with
+   ```tsx
+           return <StaffSkeleton kind="form" title="Edit Post" label="Loading the post…" back={<button className="staff-back" onClick={() => router.push("/admin/blog")}>← Back to Blog</button>} />;
+
+   ```
+
+**14. `src/app/admin/page.tsx`**
+
+1. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+                           <p className="staff-loading" role="status">Loading…</p>
+
+   ```
+   with
+   ```tsx
+                           <StaffSkeleton kind="calendar" label="Loading the schedule…" />
+
+   ```
+
+**15. `src/app/secretary/page.tsx`**
+
+1. After the line `import StaffModal from "@/app/components/StaffModal";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+                           <p className="staff-loading" role="status">Loading…</p>
+
+   ```
+   with
+   ```tsx
+                           <StaffSkeleton kind="calendar" label="Loading the schedule…" />
+
+   ```
+
+**16. `src/app/doctor/page.tsx`**
+
+1. After the line `import { useConfirm } from "@/app/components/ConfirmDialog";` insert the line `import StaffSkeleton from "@/app/components/StaffSkeleton";`.
+2. Replace
+   ```tsx
+                           <p className="staff-loading" role="status">Loading…</p>
+
+   ```
+   with
+   ```tsx
+                           <StaffSkeleton kind="calendar" label="Loading the schedule…" />
+
+   ```
+
+**Verification:**
+- `grep -rn 'className="staff-loading"' src/app` prints nothing; `grep -rn '>Loading…</div>' src/app` prints nothing.
+- `git diff --stat` against the TJ-072d commit lists exactly the 16 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only.
+
+**Done when:**
+- [ ] No staff screen shows "Loading…" text; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-072f — Booking search dropdown on the staff tokens
+
+- **Status:** READY — passed 2026-11-25. Batch 9, step 3 of 3.
+- **Branch:** `feat/booking-dropdown-tokens`, cut from the tip of `feat/skeleton-pages`.
+- **Why:** the patient search dropdown on New Booking (admin and secretary) still uses the CMS handoff's slate `#1e293b` and 2px corners (TJ-069 batch 5 note).
+
+**Planning pass:** 2026-11-25, on the TJ-072e result. Read the `.search-dropdown` rules in `admin/reservations/new/page.tsx` and `secretary/reservations/new/page.tsx`. The dropdown takes the popup surface: `--staff-raised`, the strong border, 8px corners, 4px below the field, and the popup shadow. The New Patient Phone 2 overflow named in the split was re-measured and is gone (see "Batch 9 — planned").
+
+**Scope — touch only these (2):** `src/app/admin/reservations/new/page.tsx`, `src/app/secretary/reservations/new/page.tsx`.
+
+**Do not touch:** any other file; the search behaviour.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "New file, exactly" means the file's whole content is the code block, ending with one line break. Do the steps in order.
+
+**1. `src/app/admin/reservations/new/page.tsx`**
+
+1. Replace
+   ```tsx
+                       background: #1e293b; border: 1px solid rgba(255,255,255,0.12);
+                       border-radius: var(--radius-sm, 2px); overflow: hidden; margin-top: 2px;
+
+   ```
+   with
+   ```tsx
+                       background: var(--staff-raised); border: 1px solid var(--staff-border-strong);
+                       border-radius: var(--staff-radius-md); overflow: hidden; margin-top: 4px;
+                       box-shadow: var(--staff-shadow-pop);
+
+   ```
+
+**2. `src/app/secretary/reservations/new/page.tsx`**
+
+1. Replace
+   ```tsx
+   background: #1e293b; border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-sm, 2px); overflow: hidden; margin-top: 2px; }
+   ```
+   with
+   ```tsx
+   background: var(--staff-raised); border: 1px solid var(--staff-border-strong); border-radius: var(--staff-radius-md); overflow: hidden; margin-top: 4px; box-shadow: var(--staff-shadow-pop); }
+   ```
+
+**Verification:**
+- `grep -rn "1e293b" src/app/admin src/app/secretary` prints nothing.
+- `git diff --stat` against the TJ-072e commit lists exactly the 2 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only.
+
+**Done when:**
+- [ ] The dropdown uses the staff tokens; `tsc` and the build exit 0; the planner's re-application is byte-identical.
