@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import type { LucideIcon } from "lucide-react";
+import { Check, ClipboardCheck, ClipboardList, Dumbbell, Plus, Stethoscope } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 
 // A patient's clinical assessments, one page each. A patient who comes back
@@ -8,6 +10,10 @@ import { useConfirm } from "@/app/components/ConfirmDialog";
 // Every screen that shows the Clinical Assessment mounts this one component
 // (the admin and doctor patient pages, and the doctor's session page), so a
 // change here reaches all of them. (TJ-067b)
+//
+// The form is in four sections, and its Save bar stays at the bottom of the
+// screen while the form is open. The styles are global (.staff-assess-* and
+// .staff-save-* in globals.css). (TJ-072b, decisions P4-1 and P4-2)
 
 interface Intake {
     id: number;
@@ -33,22 +39,37 @@ interface Field {
     label: string;
     type: "text" | "number" | "textarea";
     placeholder?: string;
+    rows?: number;
+    hint?: string;
 }
 
 const INTAKE_FIELDS: Field[] = [
     { key: "injuryPlace", label: "Injury Place", type: "text" },
     { key: "patientSince", label: "Patient Since", type: "text", placeholder: "e.g. March 2024" },
-    { key: "medicalHistory", label: "Medical History", type: "textarea" },
-    { key: "assessment", label: "Assessment", type: "textarea" },
-    { key: "aggravators", label: "Pain Aggravators", type: "textarea" },
-    { key: "relievers", label: "Pain Relievers", type: "textarea" },
-    { key: "diagnosis", label: "Diagnosis", type: "textarea" },
-    { key: "treatmentPlan", label: "Treatment Plan", type: "textarea" },
-    { key: "recommendedSessions", label: "Recommended Sessions", type: "number" },
-    { key: "clinicExercises", label: "Clinic Exercises", type: "textarea" },
-    { key: "homeExercises", label: "Home Exercises", type: "textarea" },
-    { key: "nextSessionTreatment", label: "Next Session Treatment", type: "textarea" },
+    { key: "medicalHistory", label: "Medical History", type: "textarea", rows: 2 },
+    { key: "assessment", label: "Assessment", type: "textarea", rows: 3 },
+    { key: "aggravators", label: "Pain Aggravators", type: "textarea", rows: 2 },
+    { key: "relievers", label: "Pain Relievers", type: "textarea", rows: 2 },
+    { key: "diagnosis", label: "Diagnosis", type: "textarea", rows: 2 },
+    { key: "treatmentPlan", label: "Treatment Plan", type: "textarea", rows: 3 },
+    { key: "recommendedSessions", label: "Recommended Sessions", type: "number", hint: "Counted at the top of the patient file." },
+    { key: "clinicExercises", label: "Clinic Exercises", type: "textarea", rows: 3 },
+    { key: "homeExercises", label: "Home Exercises", type: "textarea", rows: 3 },
+    { key: "nextSessionTreatment", label: "Next Session Treatment", type: "textarea", rows: 2 },
 ];
+
+const FIELD = Object.fromEntries(INTAKE_FIELDS.map((f) => [f.key, f])) as Record<FieldKey, Field>;
+
+// Each row holds one field, or two side by side on wider screens.
+const SECTIONS: { title: string; icon: LucideIcon; rows: FieldKey[][] }[] = [
+    { title: "History", icon: ClipboardList, rows: [["injuryPlace", "patientSince"], ["medicalHistory"]] },
+    { title: "Examination", icon: Stethoscope, rows: [["assessment"], ["aggravators", "relievers"]] },
+    { title: "Diagnosis & plan", icon: ClipboardCheck, rows: [["diagnosis"], ["treatmentPlan", "recommendedSessions"], ["nextSessionTreatment"]] },
+    { title: "Exercises", icon: Dumbbell, rows: [["clinicExercises", "homeExercises"]] },
+];
+
+const rowClass = (row: FieldKey[]) =>
+    row.length < 2 ? "staff-assess-row" : row.some((k) => FIELD[k].type === "number") ? "staff-assess-row with-number" : "staff-assess-row two";
 
 // Copied from the latest page into a new one: they describe the patient,
 // not the injury. Every other field starts blank.
@@ -89,7 +110,6 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
     // The form as last loaded or saved. Anything typed since makes it dirty.
     const [baseline, setBaseline] = useState(() => JSON.stringify(formFrom(null)));
     const [saving, setSaving] = useState(false);
-    const [msg, setMsg] = useState("");
     const [error, setError] = useState("");
 
     const dirty = JSON.stringify(form) !== baseline;
@@ -105,7 +125,6 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
         setSelected(page);
         setForm(f);
         setBaseline(JSON.stringify(f));
-        setMsg("");
         setError("");
     }, []);
 
@@ -129,6 +148,11 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
 
     useEffect(() => { load(); }, [load]);
 
+    const update = (key: FieldKey, value: string) => {
+        setForm((f) => ({ ...f, [key]: value }));
+        setError("");
+    };
+
     const openPage = async (intake: Intake) => {
         if (intake.id === selected) return;
         if (dirty && !(await confirm({ title: "Switch pages without saving?", message: "Your unsaved Clinical Assessment edits will be lost.", confirmLabel: "Discard changes", tone: "danger" }))) return;
@@ -151,7 +175,6 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
     const save = async () => {
         const isNew = selected === "new";
         setSaving(true);
-        setMsg("");
         setError("");
         const res = await fetch(`/api/patients/${patientId}/intake`, {
             method: isNew ? "POST" : "PUT",
@@ -167,143 +190,113 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
         const saved: Intake = await res.json();
         await load(saved.id);
         setSaving(false);
-        setMsg(isNew ? "New assessment saved!" : "Assessment saved!");
-        setTimeout(() => setMsg(""), 2500);
         onSaved?.();
     };
 
     const saveLabel =
         selected !== "new" ? "Update Assessment" : intakes.length > 0 ? "Save New Assessment" : "Save Assessment";
+    const pageNumber = selected === "new" ? intakes.length + 1 : intakes.findIndex((i) => i.id === selected) + 1;
+    const pageInjury = form.injuryPlace.trim();
+
+    const renderField = (f: Field) => (
+        <div key={f.key} className="staff-field">
+            <label htmlFor={`intake-${f.key}`}>{f.label}</label>
+            {f.type === "textarea" ? (
+                <textarea
+                    id={`intake-${f.key}`}
+                    rows={f.rows ?? 3}
+                    value={form[f.key]}
+                    onChange={(e) => update(f.key, e.target.value)}
+                />
+            ) : (
+                <input
+                    id={`intake-${f.key}`}
+                    type={f.type}
+                    placeholder={f.placeholder}
+                    value={form[f.key]}
+                    onChange={(e) => update(f.key, e.target.value)}
+                />
+            )}
+            {f.hint && <span className="staff-field-hint">{f.hint}</span>}
+        </div>
+    );
+
+    if (loading) return <p className="staff-loading" role="status">Loading…</p>;
+    if (loadError) return <div className="staff-form-error" role="alert">{loadError}</div>;
 
     return (
         <div>
-            {loading ? (
-                <p className="empty-text">Loading…</p>
-            ) : loadError ? (
-                <div className="error-msg" role="alert">{loadError}</div>
-            ) : (
-                <>
-                    {intakes.length > 0 && (
-                        <div className="assessment-pages" role="group" aria-label="Assessments">
-                            {intakes.map((it, i) => (
-                                <button
-                                    key={it.id}
-                                    type="button"
-                                    className={`page-pill ${selected === it.id ? "active" : ""}`}
-                                    aria-pressed={selected === it.id}
-                                    onClick={() => openPage(it)}
-                                >
-                                    <span className="pill-title">Assessment {i + 1}</span>
-                                    <span className="pill-meta" dir="auto">{it.injuryPlace?.trim() || "No injury place"}</span>
-                                    <span className="pill-meta">{formatDate(it.createdAt)}</span>
-                                </button>
-                            ))}
-                            {selected === "new" ? (
-                                <span className="page-pill active draft" aria-current="true">
-                                    <span className="pill-title">Assessment {intakes.length + 1}</span>
-                                    <span className="pill-meta">New, not saved yet</span>
-                                </span>
-                            ) : (
-                                <button type="button" className="btn-new" onClick={startNew}>+ New Assessment</button>
-                            )}
-                        </div>
-                    )}
-
-                    {msg && <div className="success-msg">{msg}</div>}
-                    {error && <div className="error-msg" role="alert">{error}</div>}
-
-                    <div className="intake-grid">
-                        {INTAKE_FIELDS.map((f) => (
-                            <div key={f.key} className={`form-group ${f.type === "textarea" ? "full-width" : ""}`}>
-                                <label htmlFor={`intake-${f.key}`}>{f.label}</label>
-                                {f.type === "textarea" ? (
-                                    <textarea
-                                        id={`intake-${f.key}`}
-                                        rows={3}
-                                        value={form[f.key]}
-                                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                                    />
-                                ) : (
-                                    <input
-                                        id={`intake-${f.key}`}
-                                        type={f.type}
-                                        placeholder={f.placeholder}
-                                        value={form[f.key]}
-                                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                                    />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="section-actions">
-                        <button type="button" className="staff-btn staff-btn-primary" aria-busy={saving} onClick={save} disabled={saving}>
-                            {saving ? "Saving…" : saveLabel}
+            {intakes.length > 0 && (
+                <div className="staff-assess-pages" role="group" aria-label="Assessments">
+                    {intakes.map((it, i) => (
+                        <button
+                            key={it.id}
+                            type="button"
+                            className={`staff-assess-pill${selected === it.id ? " active" : ""}`}
+                            aria-pressed={selected === it.id}
+                            onClick={() => openPage(it)}
+                        >
+                            <span className="staff-assess-pill-title">Assessment {i + 1}</span>
+                            <span className="staff-assess-pill-meta" dir="auto">{it.injuryPlace?.trim() || "No injury place"}</span>
+                            <span className="staff-assess-pill-meta">{formatDate(it.createdAt)}</span>
                         </button>
-                    </div>
-                </>
+                    ))}
+                    {selected === "new" ? (
+                        <span className="staff-assess-pill active draft" aria-current="true">
+                            <span className="staff-assess-pill-title">Assessment {intakes.length + 1}</span>
+                            <span className="staff-assess-pill-meta">New, not saved yet</span>
+                        </span>
+                    ) : (
+                        <button type="button" className="staff-assess-new" onClick={startNew}>
+                            <Plus size={14} aria-hidden="true" />New Assessment
+                        </button>
+                    )}
+                </div>
             )}
 
-            <style jsx>{`
-                .assessment-pages {
-                    display: flex; flex-wrap: wrap; gap: 0.5rem;
-                    margin-bottom: 1.25rem; padding-bottom: 1rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.06);
-                }
-                .page-pill {
-                    display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem;
-                    min-width: 0; max-width: 220px; padding: 0.45rem 0.8rem;
-                    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px); color: rgba(255,255,255,0.6);
-                    font-family: inherit; text-align: start; cursor: pointer;
-                    transition: background 0.15s, border-color 0.15s;
-                }
-                .page-pill:hover { background: rgba(255,255,255,0.07); }
-                .page-pill.active {
-                    background: rgba(76,175,147,0.1); border-color: var(--primary, #4CAF93);
-                    color: var(--primary, #4CAF93);
-                }
-                .page-pill.draft { cursor: default; }
-                .pill-title { font-size: var(--staff-size-base); font-weight: 600; }
-                .pill-meta {
-                    max-width: 100%; font-size: var(--staff-size-xs); color: rgba(255,255,255,0.4);
-                    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-                }
-                .btn-new {
-                    padding: 0.45rem 0.9rem;
-                    background: none; border: 1px dashed rgba(255,255,255,0.18);
-                    border-radius: var(--radius-sm, 2px); color: rgba(255,255,255,0.6);
-                    font-size: var(--staff-size-base); font-weight: 500; font-family: inherit; cursor: pointer;
-                }
-                .btn-new:hover { color: #fff; border-color: var(--primary, #4CAF93); }
-                .success-msg {
-                    background: rgba(76,175,147,0.1); border: 1px solid rgba(76,175,147,0.2);
-                    color: #6ee7b7; padding: 0.5rem 0.85rem; border-radius: var(--radius-sm, 2px);
-                    font-size: var(--staff-size-base); margin-bottom: 1rem;
-                }
-                .error-msg {
-                    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.2);
-                    color: #fca5a5; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm, 2px);
-                    font-size: var(--staff-size-base); margin-bottom: 1rem;
-                }
-                .intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
-                .full-width { grid-column: 1 / -1; }
-                .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
-                .form-group label { font-size: var(--staff-size-sm); color: rgba(255,255,255,0.5); font-weight: 500; }
-                .form-group input, .form-group textarea {
-                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: var(--radius-sm, 2px); padding: 0.55rem 0.75rem; color: #fff;
-                    font-size: var(--staff-size-base); outline: none; font-family: inherit; resize: vertical;
-                }
-                .form-group input:focus, .form-group textarea:focus { border-color: var(--primary, #4CAF93); }
-                .section-actions { margin-top: 1.25rem; display: flex; justify-content: flex-end; }
-                .empty-text { color: rgba(255,255,255,0.35); text-align: center; padding: 2rem 0; }
+            {SECTIONS.map(({ title, icon: Icon, rows }) => (
+                <section key={title} className="staff-assess-section">
+                    <h2 className="staff-assess-title">
+                        <span className="staff-assess-icon"><Icon size={16} aria-hidden="true" /></span>
+                        {title}
+                    </h2>
+                    {rows.map((row) => (
+                        <div key={row.join("-")} className={rowClass(row)}>
+                            {row.map((key) => renderField(FIELD[key]))}
+                        </div>
+                    ))}
+                </section>
+            ))}
 
-                @media (max-width: 640px) {
-                    .intake-grid { grid-template-columns: 1fr; }
-                    .page-pill { max-width: 100%; }
-                }
-            `}</style>
+            <div className="staff-save-bar">
+                <div className="staff-save-state" role="status">
+                    {saving ? (
+                        <span className="staff-save-muted">Saving…</span>
+                    ) : error ? (
+                        <span className="staff-save-error">{error}</span>
+                    ) : dirty ? (
+                        <span className="staff-save-dirty"><span className="staff-save-dot" aria-hidden="true" />Unsaved changes</span>
+                    ) : selected === "new" ? (
+                        <span className="staff-save-muted">New assessment, not saved yet</span>
+                    ) : (
+                        <span className="staff-save-ok"><Check size={15} aria-hidden="true" />All changes saved</span>
+                    )}
+                </div>
+                <div className="staff-save-end">
+                    <span className="staff-save-page" dir="auto">
+                        Assessment {pageNumber}{pageInjury ? ` · ${pageInjury}` : ""}
+                    </span>
+                    <button
+                        type="button"
+                        className="staff-btn staff-btn-primary"
+                        aria-busy={saving}
+                        onClick={save}
+                        disabled={saving || !dirty}
+                    >
+                        {saving ? "Saving…" : saveLabel}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

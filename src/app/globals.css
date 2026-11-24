@@ -3249,3 +3249,196 @@ button.staff-row-name {
     justify-content: flex-start;
   }
 }
+/* The Clinical Assessment (TJ-072b, decisions P4-1 and P4-2;
+   components/ClinicalAssessment.tsx): its pages, four sections, and a Save
+   bar that stays at the bottom of the screen while the form is open. */
+.staff-assess-pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.staff-assess-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-width: 0;
+  max-width: 220px;
+  padding: 0.45rem 0.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-md);
+  color: var(--staff-text-2);
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.staff-assess-pill:hover {
+  background: var(--staff-surface-2);
+}
+.staff-assess-pill.active {
+  background: var(--staff-accent-soft);
+  border-color: var(--staff-accent);
+  color: var(--staff-accent-text);
+}
+.staff-assess-pill.draft {
+  cursor: default;
+}
+.staff-assess-pill-title {
+  font-size: var(--staff-size-base);
+  font-weight: 600;
+}
+.staff-assess-pill-meta {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--staff-muted);
+  font-size: var(--staff-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.staff-assess-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  background: none;
+  border: 1px dashed var(--staff-border-strong);
+  border-radius: var(--staff-radius-md);
+  color: var(--staff-text-2);
+  font-family: inherit;
+  font-size: var(--staff-size-base);
+  font-weight: 500;
+  cursor: pointer;
+}
+.staff-assess-new:hover {
+  border-color: var(--staff-accent);
+  color: var(--staff-text);
+}
+.staff-assess-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--staff-border);
+}
+.staff-assess-section:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.staff-assess-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: var(--staff-size-md);
+  font-weight: 600;
+}
+.staff-assess-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--staff-radius-md);
+  background: var(--staff-accent-soft);
+  color: var(--staff-accent-text);
+}
+.staff-assess-row {
+  display: grid;
+  gap: 0.9rem 1rem;
+}
+.staff-assess-row.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.staff-assess-row.with-number {
+  grid-template-columns: minmax(0, 1fr) 12rem;
+  align-items: start;
+}
+/* Pinned to the bottom of the screen while any of the form is in view. In a
+   record panel it runs to the panel's edges (.staff-record-panel's padding,
+   TJ-072a). */
+.staff-save-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--staff-raised);
+  border-top: 1px solid var(--staff-border-strong);
+  box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.28);
+}
+.staff-record-panel .staff-save-bar {
+  margin: 1.5rem -1.5rem -1.5rem;
+  border-radius: 0 0 var(--staff-radius-lg) var(--staff-radius-lg);
+}
+.staff-save-state {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 34px;
+  font-size: var(--staff-size-base);
+  font-weight: 500;
+}
+.staff-save-dirty,
+.staff-save-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.staff-save-dirty {
+  color: var(--staff-warn);
+}
+.staff-save-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.staff-save-ok {
+  color: var(--staff-ok);
+}
+.staff-save-muted {
+  color: var(--staff-muted);
+}
+.staff-save-error {
+  color: var(--staff-bad);
+}
+.staff-save-end {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-inline-start: auto;
+  min-width: 0;
+}
+.staff-save-page {
+  max-width: 16rem;
+  overflow: hidden;
+  color: var(--staff-muted);
+  font-size: var(--staff-size-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .staff-assess-row.two,
+  .staff-assess-row.with-number {
+    grid-template-columns: 1fr;
+  }
+  .staff-assess-pill {
+    max-width: 100%;
+  }
+  .staff-record-panel .staff-save-bar {
+    margin: 1.25rem -1rem -1rem;
+    padding: 0.75rem 1rem;
+  }
+  .staff-save-page {
+    display: none;
+  }
+}
