@@ -179,7 +179,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-day-header` |
 | TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
-| TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — reviewed 2026-11-24, split proposed (TJ-072a–f); decisions P4-1 to P4-5 open for the user; no planning pass yet | — |
+| TJ-072 | Staff portal refresh, phase 4: patient file and lists | BACKLOG — reviewed 2026-11-24, split proposed (TJ-072a–f); decisions P4-1 to P4-5 open for the user, mockup drawn; no planning pass yet | — |
 
 ---
 
@@ -23536,7 +23536,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072 — Staff portal refresh, phase 4: patient file and lists
 
-- **Status:** BACKLOG. Reviewed 2026-11-24 and a split proposed (below); **five design decisions open for the user (P4-1 to P4-5)**. No sub-task has had a planning pass, so nothing here is `READY`.
+- **Status:** BACKLOG. Reviewed 2026-11-24 and a split proposed (below); **five design decisions open for the user (P4-1 to P4-5)**, shown in the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`, 2026-11-24). No sub-task has had a planning pass, so nothing here is `READY`.
 - **Why:** The clinical assessment is about 13 identical full-width text boxes with Save only at the bottom. Group them into sections (History, Examination, Diagnosis & plan, Exercises) with a Save bar that stays visible. Add a summary line on the patient file (next appointment, doctor, sessions done out of recommended). Empty pages get an icon, a one-line explanation and the create button, instead of three different one-liners. Loading states become skeletons instead of "Loading…" text in 27 places.
 
 **Review, 2026-11-24, on `master` at `3b6ea07`** (read in full: `ClinicalAssessment.tsx`, the admin patient file, `StaffEmpty.tsx`, `lib/reservationStatus.ts`, `api/patients/[id]/route.ts`; outlined: the secretary and doctor patient files, the doctor's session page; counted by grep across `src/app/{admin,secretary,doctor}` and the staff components):
@@ -23545,7 +23545,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **The same component is mounted three times:** the admin and doctor patient files and the doctor's session page. A change reaches all three.
 - **Sticky trap:** the admin file's `.section-card` has `overflow-x: auto`, which makes it a scroll box, so a `position: sticky` Save bar inside it would never stick. The doctor's `.section-card` and the session page's `.card` have no overflow.
 - **Summary data:** the reservations already come with the patient (newest first); `recommendedSessions` lives on each assessment and comes only from `/intake`, which a secretary may not call (clinical). A doctor sees no day after today (TJ-064, `sessionsHiddenFrom`), so a doctor never sees a future appointment.
-- **Loading:** 28 "Loading…" lines: 9 table rows in lists, 3 dashboards, 14 page-level (patient files ×3, session, profile, approvals, blog, blog editor with an inline style, website doctors, employees ×2, booking edit ×2, booking new ×2 in `Suspense`), the History tab, and `ClinicalAssessment` (old `.empty-text`). The two "Loading documents…" field hints stay text.
+- **Loading:** 29 "Loading…" lines: 9 table rows in lists, 3 dashboards, 15 page-level (patient files ×3, session, profile, approvals, blog, blog editor with an inline style, website doctors, employees ×2, booking edit ×2, booking new ×2 in `Suspense`), the History tab, and `ClinicalAssessment` (old `.empty-text`). (First recorded as 28 with 14 page-level; recounted when the mockup was drawn.) The two "Loading documents…" field hints stay text.
 - **Left for this phase by earlier passes:** the patient files' Sessions tables use a local 5-colour map, so Cancelled and No Show get grey and raw words ("NO SHOW"); phase 3's `reservationStatus.ts` has all seven. Four copies of `.tabs`/`.tab` (3 patient files, session page). Record tables are not in `.staff-table-wrap`: the secretary's file is 468px wide at 375px (TJ-069 batch 3 note). Small buttons not on 4A: `.btn-edit` (SOAP View / Edit, Add), `.btn-remove`, `.btn-restore`. About 170 colour literals in the five phase-4 files (25 + 40 + 40 + 31 + 36). The booking search dropdown's slate `#1e293b` (admin and secretary new booking). The New Patient form's Phone 2 overflow near 800px (TJ-068 note; `.staff-field-row` is `1fr 1fr`, so the inputs' minimum width can still push it; re-measure).
 
 **Open decisions for the user:**
@@ -23563,7 +23563,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 | TJ-072b | Patient file tidy: shared tabs, status names and colours, tables in `.staff-table-wrap`, 4A small buttons, shared messages, colour tokens | 3 patient files, session page, `globals.css` |
 | TJ-072c | The summary line on the patient file (P4-3, P4-5) | `api/patients/[id]/route.ts` (latest assessment's `recommendedSessions` and `createdAt`, clinical roles only), new `PatientSummary.tsx`, 3 patient files, `globals.css` |
 | TJ-072d | Skeletons: the shared piece and the 9 lists (P4-4) | new `StaffSkeleton.tsx`, `globals.css`, 9 list pages |
-| TJ-072e | Skeletons: every page-level loading line | about 19 files |
+| TJ-072e | Skeletons: every page-level loading line | about 20 files |
 | TJ-072f | Leftovers: booking search dropdown on tokens; Phone 2 overflow if it re-measures | 2–4 files |
 
 - **Batches:** 8 = a, b, c (the patient file, one review); 9 = d, e, f. Stacked branches, one Sonnet executor at a time, specs generated by script and re-applied byte-identically, mocked preview, nothing merges or pushes until the user has seen it, as phases 1–3.
