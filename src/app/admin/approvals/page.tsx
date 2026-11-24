@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Inbox } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface PendingChange {
     id: string;
@@ -63,10 +64,6 @@ export default function ApprovalsPage() {
         showToast(decision === "approve" ? "Change approved and published" : "Change rejected");
     };
 
-    if (loading) {
-        return <p className="staff-loading" role="status">Loading…</p>;
-    }
-
     return (
         <div>
             <div className="staff-page-header">
@@ -76,7 +73,9 @@ export default function ApprovalsPage() {
                 </div>
             </div>
 
-            {changes.length === 0 ? (
+            {loading ? (
+                <StaffSkeleton kind="cards" label="Loading approvals…" />
+            ) : changes.length === 0 ? (
                 <div className="staff-panel">
                     <StaffEmpty icon={Inbox} title="Nothing waiting for review" hint="Profile edits and photos that doctors send appear here." />
                 </div>

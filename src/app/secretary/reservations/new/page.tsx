@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isMissingPhone } from "@/lib/phone";
 import StaffModal from "@/app/components/StaffModal";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface Doctor { id: string; name: string; color: string | null; }
 interface PatientResult { id: number; name: string; phone1: string; }
@@ -326,7 +327,7 @@ function SecretaryNewReservationForm() {
 
 export default function SecretaryNewReservationPage() {
     return (
-        <Suspense fallback={<p className="staff-loading" role="status">Loading…</p>}>
+        <Suspense fallback={<StaffSkeleton kind="form" title="New Reservation" />}>
             <SecretaryNewReservationForm />
         </Suspense>
     );

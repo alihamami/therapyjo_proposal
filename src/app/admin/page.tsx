@@ -9,6 +9,7 @@ import { isMissingPhone } from "@/lib/phone";
 import { Plus } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface Doctor {
     id: string;
@@ -191,7 +192,7 @@ export default function AdminDashboard() {
             <div className="main-layout">
                 <div className="calendar-col">
                     {loading ? (
-                        <p className="staff-loading" role="status">Loading…</p>
+                        <StaffSkeleton kind="calendar" label="Loading the schedule…" />
                     ) : (
                         <Calendar
                             reservations={reservations}

@@ -9,6 +9,7 @@ import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
 import PatientSummary from "@/app/components/PatientSummary";
 
@@ -158,7 +159,7 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
         return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     };
 
-    if (loading) return <p className="staff-loading" role="status">Loading…</p>;
+    if (loading) return <StaffSkeleton kind="record" label="Loading patient…" back={<button className="staff-back" onClick={() => router.push("/secretary/patients")}>← Back</button>} />;
     if (!patient) return null;
 
     return (

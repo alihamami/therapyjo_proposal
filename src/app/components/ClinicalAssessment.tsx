@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Check, ClipboardCheck, ClipboardList, Dumbbell, Plus, Stethoscope } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 import type { LatestAssessment } from "@/app/components/PatientSummary";
 
 // A patient's clinical assessments, one page each. A patient who comes back
@@ -228,7 +229,7 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved, 
         </div>
     );
 
-    if (loading) return <p className="staff-loading" role="status">Loading…</p>;
+    if (loading) return <StaffSkeleton kind="fields" label="Loading the clinical assessment…" />;
     if (loadError) return <div className="staff-form-error" role="alert">{loadError}</div>;
 
     return (

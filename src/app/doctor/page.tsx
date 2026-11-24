@@ -8,6 +8,7 @@ import DayHeader, { formatDay, todayISO } from "@/app/components/DayHeader";
 import { sessionsHiddenFrom } from "@/lib/permissions";
 import { SCHEDULE_OPEN_LABEL } from "@/lib/clinicHours";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface Doctor {
     id: string;
@@ -122,7 +123,7 @@ export default function DoctorDashboard() {
                             {`This day's schedule opens at ${SCHEDULE_OPEN_LABEL} on ${formatDay(selectedDate)}.`}
                         </div>
                     ) : loading ? (
-                        <p className="staff-loading" role="status">Loading…</p>
+                        <StaffSkeleton kind="calendar" label="Loading the schedule…" />
                     ) : (
                         <Calendar
                             reservations={reservations}

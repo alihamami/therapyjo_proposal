@@ -6,6 +6,7 @@ import { clinicalFileUrl } from "@/lib/storageUrl";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import { CalendarDays, FileText, ImageIcon, Phone } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
 import PatientSummary, { type LatestAssessment } from "@/app/components/PatientSummary";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
@@ -118,7 +119,7 @@ export default function DoctorPatientProfilePage({ params }: { params: Promise<{
     };
 
     if (loading) {
-        return <p className="staff-loading" role="status">Loading…</p>;
+        return <StaffSkeleton kind="record" label="Loading patient…" back={<button className="staff-back" onClick={() => router.push("/doctor/patients")}>← Back</button>} />;
     }
     if (!patient) return null;
 
