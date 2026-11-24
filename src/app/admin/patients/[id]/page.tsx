@@ -12,6 +12,7 @@ import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
+import PatientSummary, { type LatestAssessment } from "@/app/components/PatientSummary";
 
 interface PatientData {
     id: number;
@@ -119,6 +120,10 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     // (TJ-067b)
     const [intakeDirty, setIntakeDirty] = useState(false);
     const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+
+    // The latest assessment, for the summary line. ClinicalAssessment reports
+    // it after each load; undefined until then. (TJ-072c)
+    const [latest, setLatest] = useState<LatestAssessment | null | undefined>(undefined);
 
     // One session's SOAP note at a time, in a modal. Opened from the Sessions
     // tab, or from the dashboard's Session Details via ?soap=<reservationId>.
@@ -328,7 +333,6 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                         <div className="staff-record-meta">
                             <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1) ? <span className="no-phone">No phone</span> : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>
                             {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>{patient.phone2}</a></span>}
-                            <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
                             <span>Patient #{patient.id}</span>
                         </div>
                         {patient.updatedBy && (
@@ -352,6 +356,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                         )}
                     </div>
                 </div>
+                <PatientSummary reservations={patient.reservations} lastVisitDate={patient.lastVisitDate} clinical latest={latest} seesFuture />
             </div>
 
             {/* Edit Info Modal (design 2B, TJ-069d1) */}
@@ -431,6 +436,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                     patientId={patient.id}
                     onDirtyChange={setIntakeDirty}
                     onSaved={() => setAuditLog([])}
+                    onLatestChange={setLatest}
                 />
             </div>
 

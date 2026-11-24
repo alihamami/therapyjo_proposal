@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Check, ClipboardCheck, ClipboardList, Dumbbell, Plus, Stethoscope } from "lucide-react";
 import { useConfirm } from "@/app/components/ConfirmDialog";
+import type { LatestAssessment } from "@/app/components/PatientSummary";
 
 // A patient's clinical assessments, one page each. A patient who comes back
 // with a new injury gets a new page, and the earlier ones stay as written.
@@ -97,9 +98,13 @@ interface ClinicalAssessmentProps {
     onDirtyChange?: (dirty: boolean) => void;
     // Called after a save lands.
     onSaved?: () => void;
+    // Told the latest assessment's date and Recommended Sessions after each
+    // load (null when there is none), for the patient file's summary line
+    // (TJ-072c). Pass a state setter.
+    onLatestChange?: (latest: LatestAssessment | null) => void;
 }
 
-export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }: ClinicalAssessmentProps) {
+export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved, onLatestChange }: ClinicalAssessmentProps) {
     const confirm = useConfirm();
     const [intakes, setIntakes] = useState<Intake[]>([]);
     const [loading, setLoading] = useState(true);
@@ -141,10 +146,12 @@ export default function ClinicalAssessment({ patientId, onDirtyChange, onSaved }
         const list: Intake[] = Array.isArray(data) ? data : [];
         const shown = list.find((i) => i.id === focus) ?? list[list.length - 1] ?? null;
         setIntakes(list);
+        const latest = list[list.length - 1];
+        onLatestChange?.(latest ? { createdAt: latest.createdAt, recommendedSessions: latest.recommendedSessions } : null);
         show(shown ? shown.id : "new", formFrom(shown));
         setLoadError("");
         setLoading(false);
-    }, [patientId, show]);
+    }, [patientId, show, onLatestChange]);
 
     useEffect(() => { load(); }, [load]);
 
