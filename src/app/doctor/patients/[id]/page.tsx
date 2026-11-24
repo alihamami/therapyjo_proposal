@@ -7,6 +7,7 @@ import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import { CalendarDays, FileText, ImageIcon, Phone } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
+import PatientSummary, { type LatestAssessment } from "@/app/components/PatientSummary";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
 
@@ -60,6 +61,10 @@ export default function DoctorPatientProfilePage({ params }: { params: Promise<{
     // (TJ-067b)
     const [intakeDirty, setIntakeDirty] = useState(false);
     const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+
+    // The latest assessment, for the summary line. ClinicalAssessment reports
+    // it after each load; undefined until then. (TJ-072c)
+    const [latest, setLatest] = useState<LatestAssessment | null | undefined>(undefined);
 
     const fetchPatient = useCallback(async () => {
         const res = await fetch(`/api/patients/${id}`);
@@ -135,7 +140,6 @@ export default function DoctorPatientProfilePage({ params }: { params: Promise<{
                         <div className="staff-record-meta">
                             {typeof patient.phone1 === "string" && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1) ? <span className="no-phone">No phone</span> : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>}
                             {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>{patient.phone2}</a></span>}
-                            <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
                             <span>Patient #{patient.id}</span>
                         </div>
                         {patient.updatedBy && (
@@ -151,6 +155,7 @@ export default function DoctorPatientProfilePage({ params }: { params: Promise<{
                         {patient.archived && <span className="staff-badge-archived">ARCHIVED</span>}
                     </div>
                 </div>
+                <PatientSummary reservations={patient.reservations} lastVisitDate={patient.lastVisitDate} clinical latest={latest} seesFuture={false} />
             </div>
 
             {/* Tabs */}
@@ -163,7 +168,7 @@ export default function DoctorPatientProfilePage({ params }: { params: Promise<{
             {/* Clinical Assessment Tab. Hidden rather than unmounted while another
                 tab is open, so switching tabs keeps unsaved edits. (TJ-067b) */}
             <div className="staff-record-panel" hidden={activeTab !== "intake"}>
-                <ClinicalAssessment patientId={patient.id} onDirtyChange={setIntakeDirty} />
+                <ClinicalAssessment patientId={patient.id} onDirtyChange={setIntakeDirty} onLatestChange={setLatest} />
             </div>
 
             {/* Sessions Tab */}

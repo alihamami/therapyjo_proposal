@@ -3442,3 +3442,66 @@ button.staff-row-name {
     display: none;
   }
 }
+/* The patient file's summary line (TJ-072c, decisions P4-3 and P4-5;
+   components/PatientSummary.tsx). */
+.staff-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2.25rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--staff-border);
+}
+.staff-summary-fact {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.staff-summary-icon {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--staff-muted);
+}
+.staff-summary-label {
+  color: var(--staff-muted);
+  font-size: var(--staff-size-xs);
+}
+.staff-summary-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.4rem;
+  color: var(--staff-text-2);
+  font-size: var(--staff-size-base);
+  font-weight: 500;
+}
+.staff-summary-none {
+  color: var(--staff-muted);
+  font-weight: 400;
+}
+.staff-summary-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--staff-faint);
+}
+.staff-summary-bar {
+  display: block;
+  width: 96px;
+  height: 6px;
+  margin-inline-start: 0.3rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.staff-summary-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--staff-accent);
+}
+.staff-summary-fill.over {
+  background: var(--staff-warn);
+}

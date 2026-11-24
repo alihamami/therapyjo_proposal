@@ -10,6 +10,7 @@ import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
+import PatientSummary from "@/app/components/PatientSummary";
 
 interface PatientData {
     id: number;
@@ -171,7 +172,6 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                         <div className="staff-record-meta">
                             <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" />{isMissingPhone(patient.phone1) ? <span className="no-phone">No phone</span> : <a href={`tel:${patient.phone1}`}>{patient.phone1}</a>}</span>
                             {patient.phone2 && <span className="staff-inline-icon"><Phone size={13} aria-hidden="true" /><a href={`tel:${patient.phone2}`}>{patient.phone2}</a></span>}
-                            <span>Last visit: {formatDate(patient.lastVisitDate)}</span>
                             <span>Patient #{patient.id}</span>
                         </div>
                         {patient.updatedBy && (
@@ -195,6 +195,7 @@ export default function SecretaryPatientProfile({ params }: { params: Promise<{ 
                         )}
                     </div>
                 </div>
+                <PatientSummary reservations={patient.reservations} lastVisitDate={patient.lastVisitDate} clinical={false} seesFuture />
             </div>
 
             {/* Edit Info Modal — name + phones only (design 2B, TJ-069d1) */}
