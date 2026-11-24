@@ -179,10 +179,10 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-day-header` |
 | TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
-| TJ-072 | Staff portal refresh, phase 4: patient file and lists | SPLIT — decided 2026-11-24 (P4-1 to P4-5 as recommended); batch 8 = TJ-072a, b, c executed and verified 2026-11-25, merge held for the user's look; batch 9 = d, e, f BACKLOG | — |
-| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | VISUAL REVIEW — task commit `68eedb7` planner-verified 2026-11-25, byte-identical; merge held for the user's look | `feat/patient-file-tidy` |
-| TJ-072b | The assessment in sections, with a Save bar that stays visible | VISUAL REVIEW — task commit `4ab9954` planner-verified 2026-11-25, byte-identical; merge held for the user's look | `feat/assessment-sections` |
-| TJ-072c | A summary line on the patient file | VISUAL REVIEW — task commit `8b1f3fb` planner-verified 2026-11-25, byte-identical; merge held for the user's look | `feat/patient-summary-line` |
+| TJ-072 | Staff portal refresh, phase 4: patient file and lists | SPLIT — decided 2026-11-24 (P4-1 to P4-5 as recommended); batch 8 = TJ-072a, b, c merged 2026-11-25 after the user's review, **not pushed**; batch 9 = d, e, f BACKLOG | — |
+| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | DONE — task commit `68eedb7`, merged to `master` as `fe1d81d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-file-tidy` |
+| TJ-072b | The assessment in sections, with a Save bar that stays visible | DONE — task commit `4ab9954`, merged to `master` as `fc0c2ee` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/assessment-sections` |
+| TJ-072c | A summary line on the patient file | DONE — task commit `8b1f3fb`, merged to `master` as `8171bc6` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-summary-line` |
 | TJ-072d | Skeletons: the shared piece and the 9 lists | BACKLOG — batch 9, no planning pass | — |
 | TJ-072e | Skeletons: every page-level loading line | BACKLOG — batch 9, no planning pass | — |
 | TJ-072f | Leftovers: booking dropdown on tokens; Phone 2 overflow | BACKLOG — batch 9, no planning pass | — |
@@ -23542,7 +23542,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072 — Staff portal refresh, phase 4: patient file and lists
 
-- **Status:** SPLIT — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: executed and planner-verified 2026-11-25, merge held for the user's look** (see "Batch 8 — verified" and "Batch 8 — planned"). TJ-072d, e, f are batch 9, `BACKLOG`, no planning pass.
+- **Status:** SPLIT — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: merged 2026-11-25 as `fe1d81d`, `fc0c2ee`, `8171bc6` after the user's review, not pushed** (see "Batch 8 — verified and merged" and "Batch 8 — planned"). TJ-072d, e, f are batch 9, `BACKLOG`, no planning pass.
 - **Why:** The clinical assessment is about 13 identical full-width text boxes with Save only at the bottom. Group them into sections (History, Examination, Diagnosis & plan, Exercises) with a Save bar that stays visible. Add a summary line on the patient file (next appointment, doctor, sessions done out of recommended). Empty pages get an icon, a one-line explanation and the create button, instead of three different one-liners. Loading states become skeletons instead of "Loading…" text in 27 places.
 - **Execution:** as phases 1–3: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -23553,7 +23553,8 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **P4-4 = 4A** Skeletons with a soft pulse, still under reduced motion (batch 9).
 - **P4-5** No Recommended Sessions for the secretary: their line counts every Checked Out session, with no "of".
 
-**Batch 8 — verified (2026-11-25), merge held for the user's look:**
+**Batch 8 — verified and merged (2026-11-25):**
+- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `fe1d81d` (TJ-072a), `fc0c2ee` (TJ-072b), `8171bc6` (TJ-072c). The merged `src/` tree is identical to the verified tip `8b1f3fb` (`0cdc8b0`); only `tasks.md` differs. **Not pushed.**
 - **Executed** by the Sonnet executor at the user's request ("dispatch when done") on stacked branches from `4366795`: `68eedb7` (TJ-072a), `4ab9954` (TJ-072b), `8b1f3fb` (TJ-072c). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
 - **Scope:** each commit changes exactly its task's files (5, 2, 6).
 - **Re-application:** all 13 changed file versions are byte-identical to the planner's expected blobs (`b8/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`0cdc8b0`).
@@ -23591,7 +23592,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072a — Patient file: shared tabs, panels, status names and 4A buttons
 
-- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `68eedb7` on `feat/patient-file-tidy`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072); merge held for the user's look. Batch 8, step 1 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `68eedb7` on `feat/patient-file-tidy`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `fe1d81d` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/patient-file-tidy`, cut from `master` at the commit that adds this spec.
 - **Why:** the three patient files are copies of the same header, tabs, Sessions table and Files tab, each with its own style block; their Sessions tables show No Show and Cancelled as grey dots with raw capitals; several buttons predate design 4A; the admin file's card scrolls sideways, which would stop TJ-072b's Save bar from sticking; the secretary's file is 468px wide on a 375px phone.
 
@@ -24650,7 +24651,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072b — The assessment in sections, with a Save bar that stays visible
 
-- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `4ab9954` on `feat/assessment-sections`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072); merge held for the user's look. Batch 8, step 2 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `4ab9954` on `feat/assessment-sections`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `fc0c2ee` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/assessment-sections`, cut from the tip of `feat/patient-file-tidy`.
 - **Why:** the Clinical Assessment is 12 fields in one undivided grid, with Save, success and error only at the bottom of a long form (decisions P4-1, P4-2).
 
@@ -25182,7 +25183,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072c — A summary line on the patient file
 
-- **Status:** VISUAL REVIEW. Executed by the Sonnet executor: task commit `8b1f3fb` on `feat/patient-summary-line`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072); merge held for the user's look. Batch 8, step 3 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `8b1f3fb` on `feat/patient-summary-line`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `8171bc6` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/patient-summary-line`, cut from the tip of `feat/assessment-sections`.
 - **Why:** the patient file shows only "Last visit"; staff look through the Sessions tab for the next appointment and count sessions by hand (decisions P4-3, P4-5).
 
