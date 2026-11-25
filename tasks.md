@@ -179,13 +179,13 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-day-header` |
 | TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
-| TJ-072 | Staff portal refresh, phase 4: patient file and lists | SPLIT — decided 2026-11-24 (P4-1 to P4-5 as recommended); batch 8 = TJ-072a, b, c merged 2026-11-25 after the user's review, **not pushed**; batch 9 = TJ-072d, e, f READY (planned 2026-11-25) | — |
+| TJ-072 | Staff portal refresh, phase 4: patient file and lists | DONE — decided 2026-11-24 (P4-1 to P4-5 as recommended); all six steps merged 2026-11-25 after the user's review (batch 8 = TJ-072a, b, c; batch 9 = TJ-072d, e, f), **not pushed** | — |
 | TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | DONE — task commit `68eedb7`, merged to `master` as `fe1d81d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-file-tidy` |
 | TJ-072b | The assessment in sections, with a Save bar that stays visible | DONE — task commit `4ab9954`, merged to `master` as `fc0c2ee` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/assessment-sections` |
 | TJ-072c | A summary line on the patient file | DONE — task commit `8b1f3fb`, merged to `master` as `8171bc6` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-summary-line` |
-| TJ-072d | Skeletons: the shared piece and every table | READY — passed 2026-11-25; batch 9, step 1 of 3 | `feat/skeleton-tables` |
-| TJ-072e | Skeletons on the remaining loading screens | READY — passed 2026-11-25; batch 9, step 2 of 3 | `feat/skeleton-pages` |
-| TJ-072f | Booking search dropdown on the staff tokens | READY — passed 2026-11-25; batch 9, step 3 of 3 | `feat/booking-dropdown-tokens` |
+| TJ-072d | Skeletons: the shared piece and every table | DONE — task commit `19f7b33`, merged to `master` as `aac7f9d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/skeleton-tables` |
+| TJ-072e | Skeletons on the remaining loading screens | DONE — task commit `827ba80`, merged to `master` as `330055e` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/skeleton-pages` |
+| TJ-072f | Booking search dropdown on the staff tokens | DONE — task commit `f4c8092`, merged to `master` as `d6a22bf` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/booking-dropdown-tokens` |
 
 ---
 
@@ -23542,7 +23542,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072 — Staff portal refresh, phase 4: patient file and lists
 
-- **Status:** SPLIT — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: merged 2026-11-25 as `fe1d81d`, `fc0c2ee`, `8171bc6` after the user's review, not pushed** (see "Batch 8 — verified and merged" and "Batch 8 — planned"). **Batch 9 = TJ-072d, e, f: READY** (planned 2026-11-25, see "Batch 9 — planned").
+- **Status:** DONE — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: merged 2026-11-25 as `fe1d81d`, `fc0c2ee`, `8171bc6` after the user's review, not pushed** (see "Batch 8 — verified and merged" and "Batch 8 — planned"). **Batch 9 = TJ-072d, e, f: merged 2026-11-25 as `aac7f9d`, `330055e`, `d6a22bf` after the user's review, not pushed** (see "Batch 9 — verified and merged" and "Batch 9 — planned"). **TJ-072 is DONE:** all six steps are on `master`, waiting for a push.
 - **Why:** The clinical assessment is about 13 identical full-width text boxes with Save only at the bottom. Group them into sections (History, Examination, Diagnosis & plan, Exercises) with a Save bar that stays visible. Add a summary line on the patient file (next appointment, doctor, sessions done out of recommended). Empty pages get an icon, a one-line explanation and the create button, instead of three different one-liners. Loading states become skeletons instead of "Loading…" text in 27 places.
 - **Execution:** as phases 1–3: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -23553,12 +23553,22 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **P4-4 = 4A** Skeletons with a soft pulse, still under reduced motion (batch 9).
 - **P4-5** No Recommended Sessions for the secretary: their line counts every Checked Out session, with no "of".
 
+**Batch 9 — verified and merged (2026-11-25):**
+- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `aac7f9d` (TJ-072d), `330055e` (TJ-072e), `d6a22bf` (TJ-072f). The merged tree is identical to the verified tip `f4c8092` (`89bae3e`; `src/` `0304292`). **Not pushed.**
+- **Executed** by the Sonnet executor at the user's request ("Dispatch it") on stacked branches from `7ede720`: `19f7b33` (TJ-072d), `827ba80` (TJ-072e), `f4c8092` (TJ-072f). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
+- **Scope:** each commit changes exactly its task's files (14, 16, 2).
+- **Re-application:** all 32 changed file versions are byte-identical to the planner's expected blobs (`b9/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`0304292`).
+- **Gates, re-run by the planner on `f4c8092` in a clean worktree:** `next build --webpack` 0, `tsc` 0 (with the generated Prisma client copied in; it is not committed).
+- **Executor's notes, checked:** one Python script outside the repo; its first run stopped before writing anything (its parser missed "new file, exactly" on the step's heading line), fixed and re-run from clean. CRLF throughout, `.claude/` left out of every commit. It noted no blank line between the old last rule of `globals.css` and the appended block: that is what the spec says and what the expected blob has.
+- **Mocked preview of the same files** opened for the user (port 3072), with `?slow` holding data requests open: the admin patients list, patient file, dashboard, booking edit, Approvals (`?slowall`) and Website Doctors all showed their skeletons. The booking search dropdown on admin and secretary New Reservation measured `--staff-raised`, the strong border, 8px corners, 4px gap and the popup shadow (the preview's mock gained a patient search to open it).
+- **Not checkable here, worth a look live after a push:** the skeletons on a real, slow connection (how long each shows), and the dropdown with real patient results.
+
 **Batch 9 — planned (2026-11-25):** at the user's request ("Plan batch 9"), three steps: TJ-072d (the skeleton component, and skeleton rows in every table that loads), TJ-072e (skeletons on the other 16 loading screens), TJ-072f (the booking search dropdown on the staff tokens). 32 file changes across 30 files; one `globals.css` append; one new component (`StaffSkeleton.tsx`). The 29 "Loading…" lines become 0.
 - **How the specs were made:** as batch 8: edits generated by script on a throwaway worktree of `master` at `18cd765`, every anchor asserted to occur once, instructions rendered from the recorded edits; the new component and the stylesheet append are given whole. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `0304292`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 32 file versions came out byte-identical, same tree (14, 16 and 2 files per step), and each step's Verification commands pass on the result.
 - **Mocked preview:** skeletons last only as long as a request, so the preview's mock gained a switch that holds data requests open (`?slow`, and `?hold=<route>` for one request). Measured on all 30 screens at 1280px and on seven at 375px (no sideways scroll on any); details in each task's pass. Expected results in the planner's scratchpad (`b9/expected_blobs.txt`); the executor's tip must reproduce `src/` tree `0304292`.
 - **Phone 2, re-measured and closed without a change:** on the New Patient form, Phone 2 ends inside its card at every width from 640px to 1100px (TJ-069d4a's `.staff-field` `min-width: 0` fixed it). TJ-072f is the dropdown only.
 - **Found, not in this batch:** `.staff-loading` (and `.staff-table-state .staff-loading`) in `globals.css` are now unused; `SessionExpiryNotice.tsx` keeps a slate `#1e293b` (not a staff page); the admin patient file's file Remove still deletes without asking (from batch 8).
-- **Dispatch:** not yet. The executor runs when the user says so.
+- **Dispatch:** at the user's request ("Dispatch it"); see "Batch 9 — verified and merged".
 
 **Batch 8 — verified and merged (2026-11-25):**
 - **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `fe1d81d` (TJ-072a), `fc0c2ee` (TJ-072b), `8171bc6` (TJ-072c). The merged `src/` tree is identical to the verified tip `8b1f3fb` (`0cdc8b0`); only `tasks.md` differs. **Not pushed.**
@@ -23588,12 +23598,12 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 | ID | Title | Batch |
 |---|---|---|
-| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | 8 — READY |
-| TJ-072b | The assessment in sections, with a Save bar that stays visible | 8 — READY |
-| TJ-072c | A summary line on the patient file | 8 — READY |
-| TJ-072d | Skeletons: the shared piece and every table | 9 — READY |
-| TJ-072e | Skeletons on the remaining loading screens | 9 — READY |
-| TJ-072f | Booking search dropdown on the staff tokens (Phone 2 re-measured: no overflow) | 9 — READY |
+| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | 8 — DONE |
+| TJ-072b | The assessment in sections, with a Save bar that stays visible | 8 — DONE |
+| TJ-072c | A summary line on the patient file | 8 — DONE |
+| TJ-072d | Skeletons: the shared piece and every table | 9 — DONE |
+| TJ-072e | Skeletons on the remaining loading screens | 9 — DONE |
+| TJ-072f | Booking search dropdown on the staff tokens (Phone 2 re-measured: no overflow) | 9 — DONE |
 
 ---
 
@@ -25536,7 +25546,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072d — Skeletons: the shared piece and every table
 
-- **Status:** READY — passed 2026-11-25. Batch 9, step 1 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `19f7b33` on `feat/skeleton-tables`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `aac7f9d` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/skeleton-tables`, cut from `master` at the commit that adds this spec.
 - **Why:** nine lists show a one-line "Loading…" row while they load, and Blog and both Employees pages replace the whole page with that line, header included (decision P4-4).
 
@@ -26029,7 +26039,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072e — Skeletons on the remaining loading screens
 
-- **Status:** READY — passed 2026-11-25. Batch 9, step 2 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `827ba80` on `feat/skeleton-pages`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `330055e` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/skeleton-pages`, cut from the tip of `feat/skeleton-tables`.
 - **Why:** the other 16 screens still show "Loading…" text while they load (decision P4-4).
 
@@ -26334,7 +26344,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072f — Booking search dropdown on the staff tokens
 
-- **Status:** READY — passed 2026-11-25. Batch 9, step 3 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `f4c8092` on `feat/booking-dropdown-tokens`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `d6a22bf` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/booking-dropdown-tokens`, cut from the tip of `feat/skeleton-pages`.
 - **Why:** the patient search dropdown on New Booking (admin and secretary) still uses the CMS handoff's slate `#1e293b` and 2px corners (TJ-069 batch 5 note).
 
