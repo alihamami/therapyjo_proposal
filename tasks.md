@@ -26779,7 +26779,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 - **Status:** BLOCKED — needs the user. Found by TJ-074 (PUB-2) on 2026-11-25.
 - **Cause, read by the planner:**
-  - The build log of `0425c8c`'s deployment (Vercel, success, 2026-11-25 ~15:15 UTC) reads `[reviews] Places API returned 403`.
+  - The build log of `0425c8c`'s deployment (Vercel, success, 2026-11-25 ~15:15 Amman time) reads `[reviews] Places API returned 403`.
   - The Google Cloud billing overview for project `therapyjo-web` (billing account `01E793-04399C-2173CB`) shows: "Your billing account is past due or does not have valid payment information associated with it."
   - It is the same failure as 2026-11-13, when a declined card closed the account (see the Places billing notes). A spent quota would answer 429, not 403.
 - **To restore:**
