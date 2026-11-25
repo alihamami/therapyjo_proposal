@@ -291,6 +291,13 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     };
 
     const handleRemoveFile = async (fileId: number) => {
+        const fileName = patient?.files.find((f) => f.id === fileId)?.fileName;
+        if (!(await confirm({
+            title: "Remove this file?",
+            message: `${fileName ? `"${fileName}"` : "The file"} is removed from ${patient?.name ?? "this patient"}'s documents for good. This can't be undone.`,
+            confirmLabel: "Remove",
+            tone: "danger",
+        }))) return;
         setFileError("");
         setRemovingId(fileId);
         // res.ok is the only success signal. The response also carries
