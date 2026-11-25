@@ -190,7 +190,10 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-073a | The admin file's Remove asks first | DONE — task commit `790d58c`, merged to `master` as `cb0f882` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `fix/admin-file-remove-confirm` |
 | TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | DONE — task commit `5199a0b`, merged to `master` as `85d8d80` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/duplicates-skeleton` |
 | TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
-| TJ-074 | Live QA pass on therapyjo.com | READY — planned 2026-11-25; a test pass on production, no code; the QA agent runs it in the user's Chrome | — |
+| TJ-074 | Live QA pass on therapyjo.com | DONE — run 2026-11-25 14:22–15:25 (Amman): 41 PASS, 2 FAIL, 3 BLOCKED of 46; every QA record cleaned up, patient 576 removed by SQL on the user's OK; findings filed as TJ-075–077 | — |
+| TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | BACKLOG — found by TJ-074 (W-4), no planning pass | — |
+| TJ-076 | Local builds spend the Google Places quota, and a failed fetch hides the reviews for a day | BACKLOG — found by TJ-074 (PUB-2), no planning pass | — |
+| TJ-077 | Small fixes from the live QA (TJ-074) | BACKLOG — five items, no planning pass | — |
 
 ---
 
@@ -26623,7 +26626,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-074 — Live QA pass on therapyjo.com
 
-- **Status:** READY — planned 2026-11-25 at the user's request ("dispatch a QA agent … run a planning pass for the QA to gather what was built along the way"). A test pass, not a code change: no branch, no commit.
+- **Status:** DONE — run 2026-11-25, 14:22–15:25 Amman time, by the QA agent in the user's Chrome: **41 PASS, 2 FAIL, 3 BLOCKED** of 46 (see "Results" at the end of this task). Planned 2026-11-25 at the user's request ("dispatch a QA agent … run a planning pass for the QA to gather what was built along the way"). A test pass, not a code change: no branch, no commit.
 - **Who:** a QA agent in the user's own Chrome (Claude in Chrome). The user signs in whenever a page asks for a password. The planner relays every hand-off and reviews the report.
 - **Why:** batches 8–10 went live in `1f6fc91`, and nobody has walked the live site end to end since the work began. This pass checks what the project built, task by task, on the real site.
 
@@ -26727,3 +26730,63 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - Anything noticed outside the checks, marked "outside plan".
 
 **After the agent:** the planner reviews the report, writes the SQL `DELETE` for the archived QA TEMP patient (bookings already gone), shows it to the user, and runs it in Supabase only on the user's OK. Then it files the results here, with a new task for each confirmed failure.
+
+**Results (2026-11-25, run 14:22–15:25 Amman time):** the QA agent's report, checked by the planner. Planner rulings are marked.
+
+| Phase | PASS | FAIL | BLOCKED |
+|---|---|---|---|
+| P1 Public site | 4 (PUB-1 by ruling, 4, 5, 6) | 1 (PUB-2, reviews; the map passes) | 1 (PUB-3: no published posts) |
+| P2 Admin, looking | 11 (ADM-1 to 11) | — | 1 (ADM-12: the window could not be narrowed to 861px) |
+| P3 Admin, on QA records | 9 (W-1 to 3, 5 to 10) | 1 (W-4, the menu-link part) | — |
+| P4 Secretary | 5 (SEC-1 to 5) | — | — |
+| P5 Doctor | 5 (DOC-1, 2, 3, 5, 6) | — | 1 (DOC-4: the QA session's day had not opened for doctors) |
+| P6 and P7 | 7 (END-1, END-2, CLN-1 to 5) | — | — |
+
+- **Every 375px part is BLOCKED.** The user's Chrome window stayed 2133px wide, and `resize_window` did not change it. The phone layouts were measured in the mocked previews of each batch before it shipped.
+- **Planner rulings:**
+  - PUB-1: the Bodoni Moda expectation was a planning error (TJ-055 kept headings in the body face). Arabic is 10% larger through `size-adjust:110%` in the Arabic `@font-face`, confirmed in the live stylesheet.
+  - ADM-1: a card hides its status word while Scheduled, by design (`ReservationSlot.tsx` `showStatus`); W-7 saw the word once the status changed.
+  - W-7: moving back from Waiting to Check In is TJ-008b's revert.
+  - DOC-2 and DOC-3: a doctor uploading files and editing a patient's assessment are by design (TJ-054 allows clinical work and files; TJ-062 limited sessions only).
+  - The phone `0` for the temp patient is the app's own "no number" (TJ-068d), not an invented number.
+- **The two FAILs** became TJ-075 (W-4) and TJ-076 (PUB-2).
+- **PUB-2, read by the planner:** `/api/public/reviews` answered `{"available":false}` from the cache (`X-Vercel-Cache: HIT`), and Vercel logged no Places warning at runtime in the 30 minutes before. So the failure was cached by the build of `1f6fc91` and holds for a day (`revalidate: 86400`). The local `.env` holds the real Places key, so every local build in the main checkout spends one of the 30 calls a day; the night's executor builds most likely used them up. Likely, not proven. It recovers once the cached answer expires, about a day after the deploy, or at the next deploy.
+- **Cleanup:**
+  - **Created, then deleted in the app:** two staff accounts (resigned, then hard-deleted), bookings 2955 and its copy, the note and the Draft post. The planner re-checked the doctors, secretaries and archived-patients lists.
+  - **Patient 576 removed by SQL** in Supabase on the user's OK ("Run it"). Before the delete, a check found one row, `QA TEMP Patient B`, archived, phone `0`, with 0 bookings, 2 assessments, 0 files and 20 history entries. The guarded `DELETE` then removed it, and the verify read 0 for the patient, its assessments, files, history and bookings.
+  - **Possibly left:** the storage object for `qa-temp.png` (TJ-014a).
+- **Hand-offs:** the user signed in four times (as admin, as the temp secretary, as the temp doctor, then as admin again) and typed both temp passwords. The agent never typed a password.
+- **The user's call, not filed:** older test records from before this run are still there: archived patient 242 "QA", resigned doctors "QA" and "QA2", and active secretary "QAsec".
+- **Noted, no action:**
+  - `/admin/employees` has no index page, so it 404s. The menu is a dropdown, so that is likely fine.
+  - `/admin?date=` is ignored.
+  - The first click on Add Doctor before the page hydrated did nothing.
+  - Blog posts and staff accounts are deleted only from their Archived tabs, after Archive or Resign.
+  - The history line "Updated name, phone1, phone2" after a name-only edit left the phone as `0`; the SQL check confirmed it.
+
+---
+
+### TJ-075 — Top-menu links leave a patient file without the unsaved-changes prompt
+
+- **Status:** BACKLOG — found by TJ-074 (W-4) on 2026-11-25; no planning pass.
+- **Why:** on `/admin/patients/<id>`, with assessment text typed but not saved, a click on the menu bar's Dashboard link left the page with no prompt, and the text was lost. The page's own Back button does show the prompt, and closing the tab raises the browser's dialog. TJ-022's goal was a warning before clinical text is discarded "by an ordinary click elsewhere on the page", so the menu links are inside that goal.
+- **Starting point:** the guard (a `beforeunload` listener plus the in-page Back button) lives in `admin/patients/[id]/page.tsx`, `doctor/patients/[id]/page.tsx` and `doctor/session/[id]/page.tsx`. The menu bar's links are Next `<Link>`s in the shared shell (TJ-070), and App Router navigation fires no `beforeunload`. The doctor's session page needs the same check.
+
+---
+
+### TJ-076 — Local builds spend the Google Places quota, and a failed fetch hides the reviews for a day
+
+- **Status:** BACKLOG — found by TJ-074 (PUB-2) on 2026-11-25; no planning pass.
+- **Why:** the landing page's reviews were empty after the deploy of `1f6fc91`. The reviews route caches every answer for a day (`revalidate: 86400`), a failure included. Every build with the real key, local ones included, spends one of the 30 Place Details calls a day (the Console cap). The executor's gate builds run in the main checkout, whose `.env` holds that key.
+- **To decide at planning:** keep local and executor builds from calling Places (for example, call only at runtime on Vercel, or only when `VERCEL` is set); and do not cache a failed fetch for a day (a short revalidate on failure only). Raise the cap rather than shorten the success revalidate (see the Places billing notes).
+
+---
+
+### TJ-077 — Small fixes from the live QA (TJ-074)
+
+- **Status:** BACKLOG — found by TJ-074 on 2026-11-25; five small items, no planning pass.
+1. **Leave-site dialog on "Session not found":** the doctor's session page for a session it cannot load (`/doctor/session/2955` before its day opened) raises the browser's "Leave site?" dialog with nothing typed. Its unsaved check must treat an unloaded session as clean.
+2. **Session-ended wording:** the notice always says "signed out automatically after 8 hours of inactivity", even after a sign-out in another tab (END-1). It needs neutral words, decided at planning.
+3. **Blog Archive asks nothing:** Archive in the blog list acts at once, while every other Archive asks first (TJ-069b2).
+4. **History over-reports an edit:** after a name-only edit, it reads "Updated name, phone1, phone2" (the phones were unchanged, as the SQL check confirmed). The diff must compare values, not the fields sent.
+5. **"Last visit" takes the check-out date, not the session's date:** a session dated Dec 2, checked out on Nov 25, set Last visit to Nov 25. On a normal day the two match. Decide at planning whether the session date is meant.
