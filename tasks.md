@@ -191,7 +191,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | DONE — task commit `5199a0b`, merged to `master` as `85d8d80` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/duplicates-skeleton` |
 | TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
 | TJ-074 | Live QA pass on therapyjo.com | DONE — run 2026-11-25 14:22–15:25 (Amman): 41 PASS, 2 FAIL, 3 BLOCKED of 46; every QA record cleaned up, patient 576 removed by SQL on the user's OK; findings filed as TJ-075–077 | — |
-| TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | BACKLOG — found by TJ-074 (W-4), no planning pass | — |
+| TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | READY — passed 2026-11-25; one step (also fixes TJ-077 item 1) | `fix/unsaved-guard-links` |
 | TJ-076 | Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day | BACKLOG — reviews restored 2026-11-25 (user fixed the payment; redeploy `934c9d1`); the code follow-ups have no planning pass | — |
 | TJ-077 | Small fixes from the live QA (TJ-074) | BACKLOG — five items, no planning pass | — |
 
@@ -26769,9 +26769,181 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-075 — Top-menu links leave a patient file without the unsaved-changes prompt
 
-- **Status:** BACKLOG — found by TJ-074 (W-4) on 2026-11-25; no planning pass.
-- **Why:** on `/admin/patients/<id>`, with assessment text typed but not saved, a click on the menu bar's Dashboard link left the page with no prompt, and the text was lost. The page's own Back button does show the prompt, and closing the tab raises the browser's dialog. TJ-022's goal was a warning before clinical text is discarded "by an ordinary click elsewhere on the page", so the menu links are inside that goal.
-- **Starting point:** the guard (a `beforeunload` listener plus the in-page Back button) lives in `admin/patients/[id]/page.tsx`, `doctor/patients/[id]/page.tsx` and `doctor/session/[id]/page.tsx`. The menu bar's links are Next `<Link>`s in the shared shell (TJ-070), and App Router navigation fires no `beforeunload`. The doctor's session page needs the same check.
+- **Status:** READY — passed 2026-11-25. One step, at the user's request ("Plan TJ-075"). Found by TJ-074 (W-4).
+- **Branch:** `fix/unsaved-guard-links`, cut from `master` at the commit that adds this spec.
+- **Why:** on `/admin/patients/<id>`, with assessment text typed but not saved, a click on the menu bar's Dashboard link left the page with no prompt, and the text was lost. The page's own Back button does ask, and closing the tab raises the browser's dialog. TJ-022's goal was a warning before clinical text is discarded "by an ordinary click elsewhere on the page".
+
+**Planning pass:** 2026-11-25, on `master` at `9aa0392`. Read in full: `src/lib/useUnsavedChanges.ts` and its three callers, `admin/patients/[id]/page.tsx`, `doctor/patients/[id]/page.tsx` and `doctor/session/[id]/page.tsx`; `components/ConfirmDialog.tsx` (`useConfirm` is stable, built with `useCallback`); the shell's links in `components/StaffShell.tsx` (Next `<Link>`s for the brand and the menu; Sign Out is a button).
+- **Cause:** the guard is one shared hook that does two things: `beforeunload`, and a `confirmDiscard()` for the pages' own Back buttons. App Router navigation through a `<Link>` fires no `beforeunload`, so the menu bar, the brand and any link in the page went through silently.
+- **The fix, in the hook:** while the form is dirty, a click listener on `document` in the capture phase catches a plain left click on a same-site link. It stops the click before React's own handling can navigate, asks in the staff dialog ("Leave without saving?", red Discard, focus on Cancel), and on a yes sends the router to the link. A modified click (new tab), `target="_blank"`, `download`, another site (where `beforeunload` already asks) and a link to the same page all pass untouched. `stopImmediatePropagation` keeps a second guard on the same page (the admin file's SOAP popup has its own) from asking twice.
+- **Wording:** each caller passes the wording its Back button already uses: "Your unsaved Clinical Assessment edits will be lost." on both patient files, "Your unsaved SOAP or Clinical Intake text will be lost." on the session page. The admin file's SOAP popup keeps the default; its backdrop covers the links anyway.
+- **TJ-077 item 1, folded in:** the doctor's session page started its SOAP baseline as `""`, so a page that never loads a session ("Session not found") counted as unsaved. That raised a "Leave site?" dialog then, and with this guard it would have asked on every link. The baseline now starts as the empty form.
+- **Not covered, recorded:** the browser's own Back and Forward buttons (App Router offers no way to hold them), and Sign Out (a button; `signOut` ends the session before the page unloads).
+- **Measured in the mocked preview** (the hook and three pages exactly as planned):
+  - Admin patient file with text typed, then a click on the menu's Dashboard: the dialog says "Leave without saving? Your unsaved Clinical Assessment edits will be lost.", with a red Discard and focus on Cancel, and the address stays. Cancel keeps the page, the text and "Unsaved changes". Discard goes to `/admin`.
+  - Nothing typed: the same click goes straight to `/admin`, with no dialog.
+  - Doctor's session (own session) with SOAP text typed, then a click on the menu's Patients: the dialog shows the SOAP wording.
+  - "Session not found" (the mock's `?missing`): a click on Patients goes straight through, with no dialog.
+
+**Scope — touch only these (4):** `src/lib/useUnsavedChanges.ts`, `src/app/admin/patients/[id]/page.tsx`, `src/app/doctor/patients/[id]/page.tsx`, `src/app/doctor/session/[id]/page.tsx`.
+
+**Do not touch:** any other file; `StaffShell.tsx`; the Back buttons; `ClinicalAssessment.tsx`.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. "Replace the whole file with exactly" means the file's whole content becomes the code block, ending with one line break. Do the steps in order.
+
+**1. `src/lib/useUnsavedChanges.ts`** — replace the whole file with exactly:
+   ```tsx
+   "use client";
+
+   import { useEffect, useRef, useCallback } from "react";
+   import { useRouter } from "next/navigation";
+   import { useConfirm, type ConfirmOptions } from "@/app/components/ConfirmDialog";
+
+   /**
+    * Guards unsaved form text against being thrown away.
+    *
+    * `dirty` is computed by the caller — this hook does not know what a form is.
+    * While it is true, the hook:
+    * - warns on browser close/reload (the browser's own dialog);
+    * - asks before an in-app link leaves the page (the menu bar, the brand, a
+    *   link in the page), in the staff portal's dialog with the `leave` wording.
+    *   App Router navigation fires no beforeunload, so a click on a <Link> used
+    *   to throw the text away without a word (TJ-075);
+    * - hands back an async `confirmDiscard()` the caller must await before any
+    *   other action that would overwrite the form (a refetch) or leave the page.
+    *
+    * There is no autosave, by decision: a warning was judged enough. (TJ-022)
+    * Not covered: the browser's own Back and Forward buttons, and Sign Out.
+    */
+   export function useUnsavedChanges(dirty: boolean, leave?: ConfirmOptions) {
+       // Kept in refs so the listeners are registered once and still read the
+       // current values; re-binding on every keystroke would be wasteful.
+       const dirtyRef = useRef(dirty);
+       const leaveRef = useRef(leave);
+       // Written in an effect, not during render: assigning to a ref while
+       // rendering is what react-hooks/refs flags, and the rule is right —
+       // a ref write does not re-render, so anything derived from it can go
+       // stale. The listeners below read them, and only ever after paint.
+       useEffect(() => {
+           dirtyRef.current = dirty;
+           leaveRef.current = leave;
+       });
+
+       useEffect(() => {
+           const onBeforeUnload = (e: BeforeUnloadEvent) => {
+               if (!dirtyRef.current) return;
+               // The browser shows its own generic wording; a custom message has
+               // been ignored by every major browser for years. Both lines are
+               // required for cross-browser coverage.
+               e.preventDefault();
+               e.returnValue = "";
+           };
+           window.addEventListener("beforeunload", onBeforeUnload);
+           return () => window.removeEventListener("beforeunload", onBeforeUnload);
+       }, []);
+
+       // Asks in the staff portal's own dialog (TJ-069b1); resolves true when
+       // there is nothing to lose or the user chose to discard.
+       const confirm = useConfirm();
+       const confirmDiscard = useCallback(
+           async (options: ConfirmOptions) =>
+               !dirtyRef.current || confirm({ confirmLabel: "Discard changes", tone: "danger", ...options }),
+           [confirm]
+       );
+
+       // In-app links (TJ-075). The listener sits on document in the capture
+       // phase, so it runs before React's own click handling and can stop a
+       // <Link> from navigating; after a yes, the router goes there instead.
+       const router = useRouter();
+       useEffect(() => {
+           const onClick = (e: MouseEvent) => {
+               if (!dirtyRef.current || e.defaultPrevented || e.button !== 0) return;
+               // A modified click opens a new tab or window: nothing is lost here.
+               if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+               const link = e.target instanceof Element ? e.target.closest("a[href]") : null;
+               if (!(link instanceof HTMLAnchorElement)) return;
+               if ((link.target && link.target !== "_self") || link.hasAttribute("download")) return;
+               const url = new URL(link.href);
+               // Another site unloads the page, so beforeunload already asks.
+               if (url.origin !== window.location.origin) return;
+               // A link to a spot on this same page loses nothing.
+               if (url.pathname === window.location.pathname && url.search === window.location.search) return;
+               e.preventDefault();
+               // Also keeps a second guard on the same page from asking twice.
+               e.stopImmediatePropagation();
+               void confirm({
+                   title: "Leave without saving?",
+                   message: "Your unsaved changes will be lost.",
+                   confirmLabel: "Discard changes",
+                   tone: "danger",
+                   ...leaveRef.current,
+               }).then((ok) => {
+                   if (ok) router.push(url.pathname + url.search + url.hash);
+               });
+           };
+           document.addEventListener("click", onClick, true);
+           return () => document.removeEventListener("click", onClick, true);
+       }, [confirm, router]);
+
+       return { confirmDiscard };
+   }
+   ```
+
+**2. `src/app/admin/patients/[id]/page.tsx`**
+
+1. Replace
+   ```tsx
+   const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+   ```
+   with
+   ```tsx
+   const { confirmDiscard } = useUnsavedChanges(intakeDirty, { title: "Leave without saving?", message: "Your unsaved Clinical Assessment edits will be lost." });
+   ```
+
+**3. `src/app/doctor/patients/[id]/page.tsx`**
+
+1. Replace
+   ```tsx
+   const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+   ```
+   with
+   ```tsx
+   const { confirmDiscard } = useUnsavedChanges(intakeDirty, { title: "Leave without saving?", message: "Your unsaved Clinical Assessment edits will be lost." });
+   ```
+
+**4. `src/app/doctor/session/[id]/page.tsx`**
+
+1. Replace
+   ```tsx
+       const [soapBaseline, setSoapBaseline] = useState<string>("");
+
+   ```
+   with
+   ```tsx
+       // Starts as the empty form, so a page that never loads a session (for
+       // "Session not found") holds nothing unsaved. (TJ-075)
+       const [soapBaseline, setSoapBaseline] = useState<string>(JSON.stringify({ subjective: "", objective: "", assessment: "", plan: "" }));
+
+   ```
+2. Replace
+   ```tsx
+   const { confirmDiscard } = useUnsavedChanges(clinicalDirty);
+   ```
+   with
+   ```tsx
+   const { confirmDiscard } = useUnsavedChanges(clinicalDirty, { title: "Leave without saving?", message: "Your unsaved SOAP or Clinical Intake text will be lost." });
+   ```
+
+**Verification:**
+- `grep -c 'addEventListener("click", onClick, true)' src/lib/useUnsavedChanges.ts` prints `1`.
+- `grep -c 'useUnsavedChanges(intakeDirty, {' "src/app/admin/patients/[id]/page.tsx" "src/app/doctor/patients/[id]/page.tsx"` prints `1` for each.
+- `git diff --stat` against the parent lists exactly the 4 files.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only.
+
+**Done when:**
+- [ ] With unsaved clinical text, an in-app link asks first on all three pages; with none, links go straight through; "Session not found" holds nothing unsaved; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+**How the spec was made:** as batches 8–10. Edits were generated by script on a throwaway worktree of `master` at `9aa0392`, every anchor asserted to occur once, and the instructions rendered from the recorded edits; the hook is given whole. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `b34e5ed`). Acting as the executor, a parser read only the Instructions above and applied them to a fresh checkout of `master`: all 4 file versions came out byte-identical, same tree. Expected blobs are in the planner's scratchpad (`b11/expected_blobs.txt`).
 
 ---
 
@@ -26796,7 +26968,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 ### TJ-077 — Small fixes from the live QA (TJ-074)
 
 - **Status:** BACKLOG — found by TJ-074 on 2026-11-25; five small items, no planning pass.
-1. **Leave-site dialog on "Session not found":** the doctor's session page for a session it cannot load (`/doctor/session/2955` before its day opened) raises the browser's "Leave site?" dialog with nothing typed. Its unsaved check must treat an unloaded session as clean.
+1. **Folded into TJ-075 (2026-11-25). Leave-site dialog on "Session not found":** the doctor's session page for a session it cannot load (`/doctor/session/2955` before its day opened) raises the browser's "Leave site?" dialog with nothing typed. Its unsaved check must treat an unloaded session as clean.
 2. **Session-ended wording:** the notice always says "signed out automatically after 8 hours of inactivity", even after a sign-out in another tab (END-1). It needs neutral words, decided at planning.
 3. **Blog Archive asks nothing:** Archive in the blog list acts at once, while every other Archive asks first (TJ-069b2).
 4. **History over-reports an edit:** after a name-only edit, it reads "Updated name, phone1, phone2" (the phones were unchanged, as the SQL check confirmed). The diff must compare values, not the fields sent.
