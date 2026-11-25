@@ -10,6 +10,7 @@ import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Secretary {
     id: string;
@@ -300,10 +301,6 @@ export default function SecretariesPage() {
         fetchSecretaries();
     };
 
-    if (loading) {
-        return <p className="staff-loading" role="status">Loading…</p>;
-    }
-
     return (
         <div>
             <div className="staff-page-header">
@@ -368,7 +365,7 @@ export default function SecretariesPage() {
                                 </td>
                             </tr>
                         ))}
-                        {visible.length === 0 && (
+                        {loading ? <StaffSkeletonRows columns={6} label="Loading secretaries…" /> : visible.length === 0 && (
                             <tr className="staff-table-state"><td colSpan={6}>
                                 {filter === "Archived" ? (
                                     <StaffEmpty icon={Archive} title="No archived secretaries" hint="Secretaries who resign move here. You can re-enrol them any time." />

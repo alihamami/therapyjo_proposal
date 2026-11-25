@@ -3505,3 +3505,173 @@ button.staff-row-name {
 .staff-summary-fill.over {
   background: var(--staff-warn);
 }
+/* Skeletons, decision P4-4 = 4A (TJ-072d; components/StaffSkeleton.tsx):
+   grey blocks in the shape of what is loading, pulsing together every 1.6s,
+   and still under reduced motion. */
+@keyframes staff-skel-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.staff-skel,
+.staff-skel-box,
+.staff-skel-photo {
+  display: block;
+  animation: staff-skel-pulse 1.6s ease-in-out infinite;
+}
+.staff-skel {
+  max-width: 100%;
+  height: 10px;
+  border-radius: var(--staff-radius-sm);
+  background: rgba(255, 255, 255, 0.09);
+}
+.staff-skel-box,
+.staff-skel-photo {
+  height: 36px;
+  border-radius: var(--staff-radius-md);
+  background: rgba(255, 255, 255, 0.06);
+}
+@media (prefers-reduced-motion: reduce) {
+  .staff-skel,
+  .staff-skel-box,
+  .staff-skel-photo {
+    animation: none;
+  }
+}
+/* What screen readers hear; nobody sees it. */
+.staff-skel-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* A loading row is as tall as a real list row (55px), so the list does not
+   jump when the data arrives. */
+.staff-skel-row td {
+  padding-top: 1.35rem;
+  padding-bottom: 1.35rem;
+}
+.staff-table tbody tr.staff-skel-row:hover {
+  background: none;
+}
+.staff-skel-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.staff-skel-page > .staff-back {
+  align-self: flex-start;
+  margin: 0;
+}
+.staff-skel-form {
+  max-width: 900px;
+}
+.staff-skel-heading {
+  margin: 0;
+  font-size: var(--staff-size-xl);
+  font-weight: 600;
+}
+.staff-skel-record,
+.staff-skel-fields,
+.staff-skel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.staff-skel-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+.staff-skel-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.staff-skel-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2.25rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--staff-border);
+}
+.staff-skel-tabs {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.6rem 0 0.9rem;
+  border-bottom: 1px solid var(--staff-border);
+}
+.staff-skel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+}
+.staff-skel-end {
+  display: flex;
+  justify-content: flex-end;
+}
+.staff-skel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem;
+}
+.staff-skel-calendar {
+  display: grid;
+  grid-template-columns: 48px repeat(3, minmax(0, 1fr));
+  min-height: 320px;
+  overflow: hidden;
+}
+.staff-skel-times {
+  display: flex;
+  flex-direction: column;
+  gap: 2.6rem;
+  padding: 2.6rem 0.6rem 0;
+  border-inline-end: 1px solid var(--staff-border);
+}
+.staff-skel-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem 0.5rem;
+  border-inline-end: 1px solid var(--staff-border);
+}
+.staff-skel-col:last-child {
+  border-inline-end: none;
+}
+.staff-skel-col > .staff-skel:first-child {
+  margin-bottom: 0.5rem;
+}
+.staff-skel-tile {
+  overflow: hidden;
+  border: 1px solid var(--staff-border);
+  border-radius: var(--staff-radius-lg);
+  background: var(--staff-surface);
+}
+.staff-skel-photo {
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 0;
+}
+.staff-skel-tile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem 1rem;
+}
+@media (max-width: 640px) {
+  .staff-skel-grid {
+    grid-template-columns: 1fr;
+  }
+}

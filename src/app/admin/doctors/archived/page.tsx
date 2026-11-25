@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Archive } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 
@@ -93,7 +94,7 @@ export default function ArchivedDoctorsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr className="staff-table-state"><td colSpan={5}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                            <StaffSkeletonRows columns={5} label="Loading archived profiles…" />
                         ) : doctors.length === 0 ? (
                             <tr className="staff-table-state"><td colSpan={5}>
                                 <StaffEmpty icon={Archive} title="No archived doctor profiles" hint="Profiles you archive move here. You can restore them any time." />

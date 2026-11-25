@@ -10,6 +10,7 @@ import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Doctor {
     id: string;
@@ -331,10 +332,6 @@ export default function DoctorsPage() {
         fetchDoctors();
     };
 
-    if (loading) {
-        return <p className="staff-loading" role="status">Loading…</p>;
-    }
-
     return (
         <div>
             <div className="staff-page-header">
@@ -408,7 +405,7 @@ export default function DoctorsPage() {
                                 </td>
                             </tr>
                         ))}
-                        {visible.length === 0 && (
+                        {loading ? <StaffSkeletonRows columns={7} label="Loading doctors…" /> : visible.length === 0 && (
                             <tr className="staff-table-state"><td colSpan={7}>
                                 {filter === "Archived" ? (
                                     <StaffEmpty icon={Archive} title="No archived doctors" hint="Doctors who resign move here. You can re-enrol them any time." />

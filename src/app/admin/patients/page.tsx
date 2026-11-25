@@ -9,6 +9,7 @@ import RowMenu from "@/app/components/RowMenu";
 import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 
 interface Patient {
     id: number;
@@ -112,7 +113,7 @@ export default function PatientsPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr className="staff-table-state"><td colSpan={6}><p className="staff-loading" role="status">Loading…</p></td></tr>
+                            <StaffSkeletonRows columns={6} label="Loading patients…" />
                         ) : patients.length === 0 ? (
                             <tr className="staff-table-state"><td colSpan={6}>
                                 {search ? (
