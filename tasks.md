@@ -191,7 +191,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | DONE — task commit `5199a0b`, merged to `master` as `85d8d80` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/duplicates-skeleton` |
 | TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
 | TJ-074 | Live QA pass on therapyjo.com | DONE — run 2026-11-25 14:22–15:25 (Amman): 41 PASS, 2 FAIL, 3 BLOCKED of 46; every QA record cleaned up, patient 576 removed by SQL on the user's OK; findings filed as TJ-075–077 | — |
-| TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | READY — passed 2026-11-25; one step (also fixes TJ-077 item 1) | `fix/unsaved-guard-links` |
+| TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | DONE — task commit `ade81bd`, merged to `master` as `ae57e4d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; also fixes TJ-077 item 1; **not pushed** | `fix/unsaved-guard-links` |
 | TJ-076 | Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day | BACKLOG — reviews restored 2026-11-25 (user fixed the payment; redeploy `934c9d1`); the code follow-ups have no planning pass | — |
 | TJ-077 | Small fixes from the live QA (TJ-074) | BACKLOG — five items, no planning pass | — |
 
@@ -26769,7 +26769,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-075 — Top-menu links leave a patient file without the unsaved-changes prompt
 
-- **Status:** READY — passed 2026-11-25. One step, at the user's request ("Plan TJ-075"). Found by TJ-074 (W-4).
+- **Status:** DONE. Executed by the Sonnet executor at the user's request ("Dispatch it"): task commit `ade81bd` on `fix/unsaved-guard-links`, from `7414cf8`. Planner-verified 2026-11-25: exactly the 4 Scope files, all byte-identical to the expected blobs (`b11/expected_blobs.txt`), `src/` tree `b34e5ed`; the commit's tree differs from the planner's gated worktree (build 0, tsc 0) by `tasks.md` only; the executor's own tsc and build exited 0; `tasks.md` untouched. Merged to `master` with `--no-ff` as `ae57e4d` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.** Found by TJ-074 (W-4).
 - **Branch:** `fix/unsaved-guard-links`, cut from `master` at the commit that adds this spec.
 - **Why:** on `/admin/patients/<id>`, with assessment text typed but not saved, a click on the menu bar's Dashboard link left the page with no prompt, and the text was lost. The page's own Back button does ask, and closing the tab raises the browser's dialog. TJ-022's goal was a warning before clinical text is discarded "by an ordinary click elsewhere on the page".
 
