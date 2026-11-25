@@ -2,13 +2,29 @@ import { NextResponse } from "next/server";
 
 // GET /api/public/reviews — real Google reviews for the public site.
 // Server-only: GOOGLE_PLACES_API_KEY must never reach the browser.
-// Revalidated daily. Place Details calls that include `reviews` bill as
-// Place Details Enterprise + Atmosphere, which has 1,000 free calls a month.
-// Daily is ~30 calls a month plus one per build; hourly was ~720. This cache
-// is a cost control: do not shorten it without checking the bill.
-export const revalidate = 86400;
+// Place Details calls that include `reviews` bill as Place Details
+// Enterprise + Atmosphere, which has 1,000 free calls a month. The cost
+// control is the fetch below: Next's data cache keeps a successful answer for
+// a day, so about 30 calls a month; hourly was ~720. Do not shorten it without
+// checking the bill, and raise the Console's daily cap rather than this.
+//
+// The route itself is dynamic, never prerendered (TJ-076). A build no longer
+// calls Places: every build, local ones included, used to spend one of the 30
+// calls a day. And a failure is no longer frozen for a day: Next's data cache
+// keeps only status-200 answers, so after a failure the next visit asks again.
+// The edge keeps a failure for 10 minutes, so an outage costs a few calls an
+// hour rather than one per visit, and keeps a success for an hour.
+export const dynamic = "force-dynamic";
 
 const MAX_QUOTE_CHARS = 320;
+
+// What the edge may keep (see the note at the top).
+const FAILURE_CACHE = "public, s-maxage=600";
+const SUCCESS_CACHE = "public, s-maxage=3600";
+
+function unavailable() {
+    return NextResponse.json({ available: false }, { headers: { "Cache-Control": FAILURE_CACHE } });
+}
 
 interface LocalizedText {
     text?: string;
@@ -46,7 +62,7 @@ export async function GET() {
 
     if (!key || !placeId) {
         console.warn("[reviews] GOOGLE_PLACES_API_KEY or GOOGLE_PLACES_PLACE_ID is not set");
-        return NextResponse.json({ available: false });
+        return unavailable();
     }
 
     try {
@@ -60,14 +76,14 @@ export async function GET() {
 
         if (!res.ok) {
             console.warn(`[reviews] Places API returned ${res.status}`);
-            return NextResponse.json({ available: false });
+            return unavailable();
         }
 
         const data: PlacesResponse = await res.json();
 
         if (typeof data.rating !== "number" || typeof data.userRatingCount !== "number") {
             console.warn("[reviews] Places API response missing rating or userRatingCount");
-            return NextResponse.json({ available: false });
+            return unavailable();
         }
 
         const reviews = (data.reviews ?? []).flatMap((r) => {
@@ -94,9 +110,9 @@ export async function GET() {
             userRatingCount: data.userRatingCount,
             googleMapsUri: data.googleMapsUri ?? "",
             reviews,
-        });
+        }, { headers: { "Cache-Control": SUCCESS_CACHE } });
     } catch {
         console.warn("[reviews] Places API request failed");
-        return NextResponse.json({ available: false });
+        return unavailable();
     }
 }
