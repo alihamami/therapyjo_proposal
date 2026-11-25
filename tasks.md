@@ -192,7 +192,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
 | TJ-074 | Live QA pass on therapyjo.com | DONE — run 2026-11-25 14:22–15:25 (Amman): 41 PASS, 2 FAIL, 3 BLOCKED of 46; every QA record cleaned up, patient 576 removed by SQL on the user's OK; findings filed as TJ-075–077 | — |
 | TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | DONE — task commit `ade81bd`, merged to `master` as `ae57e4d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; also fixes TJ-077 item 1; **not pushed** | `fix/unsaved-guard-links` |
-| TJ-076 | Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day | BACKLOG — reviews restored 2026-11-25 (user fixed the payment; redeploy `934c9d1`); the code follow-ups have no planning pass | — |
+| TJ-076 | Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day | READY — passed 2026-11-25; one step (reviews already restored 2026-11-25) | `fix/reviews-dynamic-route` |
 | TJ-077 | Small fixes from the live QA (TJ-074) | BACKLOG — five items, no planning pass | — |
 
 ---
@@ -26949,19 +26949,107 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-076 — Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day
 
-- **Status:** BACKLOG — the code follow-ups below have no planning pass. **Reviews restored 2026-11-25:** the user fixed the Google Cloud payment ("Payment fixed"); the past-due banner was gone from the billing overview; the redeploy of `934c9d1` (Vercel success) made `/api/public/reviews` answer `available: true`, rating 4.9, 382 ratings, 5 reviews. Found by TJ-074 (PUB-2).
-- **Cause, read by the planner:**
-  - The build log of `0425c8c`'s deployment (Vercel, success, 2026-11-25 ~15:15 Amman time) reads `[reviews] Places API returned 403`.
-  - The Google Cloud billing overview for project `therapyjo-web` (billing account `01E793-04399C-2173CB`) shows: "Your billing account is past due or does not have valid payment information associated with it."
-  - It is the same failure as 2026-11-13, when a declined card closed the account (see the Places billing notes). A spent quota would answer 429, not 403.
-- **To restore:**
-  1. The user fixes the payment in the Cloud console's Payment overview. Card details are the user's to enter.
-  2. Redeploy, because the route caches the failure for a day (`revalidate: 86400`).
-  3. Check that `/api/public/reviews` answers `available: true`.
-- **Code follow-ups, to decide at planning:**
-  - A failed fetch should not be cached for a day: use a short revalidate on failure only.
-  - Local and executor builds should not call Places. The main checkout's `.env` holds the real key, so every gate build there spends one of the 30 calls a day.
-  - Raise the cap rather than shorten the success revalidate.
+- **Status:** READY — passed 2026-11-25. One step, at the user's request ("start with task 76"). **Reviews restored 2026-11-25:** the user fixed the Google Cloud payment ("Payment fixed"); the past-due banner was gone from the billing overview; the redeploy of `934c9d1` (Vercel success) made `/api/public/reviews` answer `available: true`, rating 4.9, 382 ratings, 5 reviews. Found by TJ-074 (PUB-2).
+- **Branch:** `fix/reviews-dynamic-route`, cut from `master` at the commit that adds this spec.
+- **Why:** after the deploy of `1f6fc91` the landing page had no reviews for a day. The cause was billing: the build log read `[reviews] Places API returned 403`, and the Cloud billing overview said the account was past due, as on 2026-11-13. But the code made it worse in two ways. The route is prerendered at build with `revalidate = 86400`, so the failed answer was frozen for a day, and only a redeploy could clear it. And every build calls Places, local ones included. The main checkout's `.env` holds the real key, so every executor gate build spends one of the 30 calls a day.
+
+**Planning pass:** 2026-11-25, on `master` at `af6ef64`. Read: `src/app/api/public/reviews/route.ts` in full; its only consumer, `components/Reviews.tsx` (a client `fetch` on mount, which treats a non-OK or failed request as unavailable); `next.config.mjs` (no `cacheComponents`, no fetch cache settings); Next 16.1.6's `server/lib/patch-fetch.js`.
+- **What Next does:**
+  - The data cache stores a fetch answer only when `res.status === 200` (`patch-fetch.js:626`), so a failed Places answer is never kept there. What froze it was the route's own prerender.
+  - Under `dynamic = "force-dynamic"`, a fetch that names its own `revalidate` is still cached (the forced `revalidate = 0` applies only when the fetch sets nothing, `patch-fetch.js:340`).
+  - The `X-Goog-Api-Key` header does not stop caching; only `authorization` and `cookie` do (`:354`).
+- **The fix, one file:**
+  - The route becomes `force-dynamic`, so it is never prerendered and a build makes no Places call. The fetch keeps `next: { revalidate: 86400 }`, so a success still costs one call a day.
+  - Each failure answer carries `Cache-Control: public, s-maxage=600` (the edge keeps it 10 minutes), so an outage costs a few calls an hour, not one per visit, and recovers within 10 minutes of the cause being fixed.
+  - A success carries `public, s-maxage=3600`, so the edge serves it as it did before.
+  - The notes at the top are rewritten to match: raise the Console's daily cap rather than shorten the cache.
+- **Measured** on the planned result, in a throwaway worktree with placeholder settings (no real key; nothing calls Google):
+  - The build's route table shows `ƒ /api/public/reviews`, where master's shows `○ /api/public/reviews 1d 1y`.
+  - Master's build logs `[reviews] … is not set` while prerendering; the new build does not run the route at all.
+  - `next start` answered two requests in a row with `cache-control: public, s-maxage=600` and `{"available":false}`, logging one `[reviews]` line per request, so the route runs each time and nothing is frozen.
+  - The success path (unchanged apart from its header) could not run without the real key, and was not run.
+
+**Scope — touch only this (1):** `src/app/api/public/reviews/route.ts`.
+
+**Do not touch:** any other file; `components/Reviews.tsx`; the fetch's `revalidate: 86400`.
+
+**Instructions** (CRLF in the working tree; keep it). Every quoted "Replace" text occurs exactly once in its file unless the step says otherwise; replace it character for character. Code blocks are shown at their real indentation, prefixed by 3 spaces for this list; a code block that ends with an empty line means the text ends with a line break. Do the steps in order.
+
+**1. `src/app/api/public/reviews/route.ts`**
+
+1. Replace
+   ```tsx
+   // GET /api/public/reviews — real Google reviews for the public site.
+   // Server-only: GOOGLE_PLACES_API_KEY must never reach the browser.
+   // Revalidated daily. Place Details calls that include `reviews` bill as
+   // Place Details Enterprise + Atmosphere, which has 1,000 free calls a month.
+   // Daily is ~30 calls a month plus one per build; hourly was ~720. This cache
+   // is a cost control: do not shorten it without checking the bill.
+   export const revalidate = 86400;
+
+   ```
+   with
+   ```tsx
+   // GET /api/public/reviews — real Google reviews for the public site.
+   // Server-only: GOOGLE_PLACES_API_KEY must never reach the browser.
+   // Place Details calls that include `reviews` bill as Place Details
+   // Enterprise + Atmosphere, which has 1,000 free calls a month. The cost
+   // control is the fetch below: Next's data cache keeps a successful answer for
+   // a day, so about 30 calls a month; hourly was ~720. Do not shorten it without
+   // checking the bill, and raise the Console's daily cap rather than this.
+   //
+   // The route itself is dynamic, never prerendered (TJ-076). A build no longer
+   // calls Places: every build, local ones included, used to spend one of the 30
+   // calls a day. And a failure is no longer frozen for a day: Next's data cache
+   // keeps only status-200 answers, so after a failure the next visit asks again.
+   // The edge keeps a failure for 10 minutes, so an outage costs a few calls an
+   // hour rather than one per visit, and keeps a success for an hour.
+   export const dynamic = "force-dynamic";
+
+   ```
+2. Replace
+   ```tsx
+   const MAX_QUOTE_CHARS = 320;
+
+   ```
+   with
+   ```tsx
+   const MAX_QUOTE_CHARS = 320;
+
+   // What the edge may keep (see the note at the top).
+   const FAILURE_CACHE = "public, s-maxage=600";
+   const SUCCESS_CACHE = "public, s-maxage=3600";
+
+   function unavailable() {
+       return NextResponse.json({ available: false }, { headers: { "Cache-Control": FAILURE_CACHE } });
+   }
+
+   ```
+3. Replace `return NextResponse.json({ available: false });` with `return unavailable();` (it occurs exactly 4 times; replace all 4).
+4. Replace
+   ```tsx
+               reviews,
+           });
+
+   ```
+   with
+   ```tsx
+               reviews,
+           }, { headers: { "Cache-Control": SUCCESS_CACHE } });
+
+   ```
+
+**Verification:**
+- `grep -c 'export const dynamic = "force-dynamic";' src/app/api/public/reviews/route.ts` prints `1`; `grep -c 'export const revalidate' src/app/api/public/reviews/route.ts` prints `0`.
+- `grep -c 'return unavailable();' src/app/api/public/reviews/route.ts` prints `4`.
+- `git diff --stat` against the parent lists exactly the 1 file.
+- `npx tsc --noEmit --incremental false` exits 0. `npx next build --webpack` exits 0. No dev server; never `prisma db push` or `db seed`. Lint is informational only. In the build's route table, `/api/public/reviews` is marked `ƒ`.
+
+**Done when:**
+- [ ] The route is dynamic, failures carry the 10-minute edge cache and successes the 1-hour one; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+**How the spec was made:** as batches 8–10 and TJ-075. The edits were generated by script on a throwaway worktree of `master` at `af6ef64`, with every anchor asserted, and the instructions rendered from the recorded edits. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `fab162d`). Acting as the executor, a parser read only the Instructions above and applied them to a fresh checkout of `master`: the file came out byte-identical, same tree. The expected blob is in the planner's scratchpad (`b12/expected_blobs.txt`).
+- **After a push, worth a look live:** `/api/public/reviews` answers `available: true` with `cache-control: public, s-maxage=3600`, and the build log has no `[reviews]` line.
 
 ---
 
