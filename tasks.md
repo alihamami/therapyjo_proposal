@@ -186,10 +186,10 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-072d | Skeletons: the shared piece and every table | DONE — task commit `19f7b33`, merged to `master` as `aac7f9d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/skeleton-tables` |
 | TJ-072e | Skeletons on the remaining loading screens | DONE — task commit `827ba80`, merged to `master` as `330055e` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/skeleton-pages` |
 | TJ-072f | Booking search dropdown on the staff tokens | DONE — task commit `f4c8092`, merged to `master` as `d6a22bf` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/booking-dropdown-tokens` |
-| TJ-073 | Phase 4 follow-ups: three loose ends | SPLIT — planned 2026-11-25; batch 10 = TJ-073a, b, c READY | — |
-| TJ-073a | The admin file's Remove asks first | READY — passed 2026-11-25; batch 10, step 1 of 3 | `fix/admin-file-remove-confirm` |
-| TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | READY — passed 2026-11-25; batch 10, step 2 of 3 | `feat/duplicates-skeleton` |
-| TJ-073c | The session-ended notice on the staff popup | READY — passed 2026-11-25; batch 10, step 3 of 3 | `feat/session-notice-popup` |
+| TJ-073 | Phase 4 follow-ups: three loose ends | DONE — planned 2026-11-25; batch 10 = TJ-073a, b, c merged 2026-11-25 after the user's review, **not pushed** | — |
+| TJ-073a | The admin file's Remove asks first | DONE — task commit `790d58c`, merged to `master` as `cb0f882` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `fix/admin-file-remove-confirm` |
+| TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | DONE — task commit `5199a0b`, merged to `master` as `85d8d80` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/duplicates-skeleton` |
+| TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/session-notice-popup` |
 
 ---
 
@@ -26399,8 +26399,18 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-073 — Phase 4 follow-ups: three loose ends
 
-- **Status:** SPLIT — planned 2026-11-25 at the user's request ("dispatch an executor to carry out the open issues"). **Batch 10 = TJ-073a, b, c: READY** (see "Batch 10 — planned").
+- **Status:** DONE — planned 2026-11-25 at the user's request ("dispatch an executor to carry out the open issues"). **Batch 10 = TJ-073a, b, c: merged 2026-11-25 as `cb0f882`, `85d8d80`, `c546e12` after the user's review, not pushed** (see "Batch 10 — verified and merged" and "Batch 10 — planned").
 - **Why:** batches 8 and 9 turned up three loose ends, recorded under TJ-072: the admin patient file's file Remove deletes without asking (the secretary's asks); `.staff-loading` left in `globals.css`; the session-ended notice still on the old slate `#1e293b`.
+
+**Batch 10 — verified and merged (2026-11-25):**
+- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `cb0f882` (TJ-073a), `85d8d80` (TJ-073b), `c546e12` (TJ-073c). The merged tree is identical to the verified tip `3a5a376` (`1c3d2e1`; `src/` `aa825cd`). **Not pushed.**
+- **Executed** by the Sonnet executor at the user's request on stacked branches from `bd65497`: `790d58c` (TJ-073a), `5199a0b` (TJ-073b), `3a5a376` (TJ-073c). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
+- **Scope:** each commit changes exactly its task's files (1, 2, 2).
+- **Re-application:** all 5 changed file versions are byte-identical to the planner's expected blobs (`b10/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`aa825cd`).
+- **Gates:** the tip differs from the planner's gated worktree (`build` 0, `tsc` 0 on the same `src/` tree, in a clean worktree) by `tasks.md` only; the executor's own runs on each branch: `tsc` 0, `next build --webpack` 0, no warnings.
+- **Executor's notes, checked:** it hard-coded the instruction text in its script instead of parsing `tasks.md`; the byte-identical result shows nothing was lost. No script failures.
+- **Mocked preview of the same files** opened for the user (port 3072): the admin file's Remove confirmation, Duplicate Check with `?slow`, and the session-ended notice's markup over the admin Patients list.
+- **Not checkable here, worth a look live after a push:** the session-ended notice appearing on its own after a real session ends (its timing logic is unchanged), and a real Remove going through after the confirmation.
 
 **Batch 10 — planned (2026-11-25):** three steps: TJ-073a (the admin file's Remove asks first), TJ-073b (the Duplicate Check page gets a skeleton and `.staff-loading` is retired), TJ-073c (the session-ended notice on the staff popup). 5 file changes across 4 files; one `globals.css` append.
 - **Correction to batch 9's finding:** `.staff-loading` was not unused. The Duplicate Check page still shows "Scanning for duplicates…" with it, the one loading line batch 9's count missed (it says "Scanning", not "Loading"). Only `.staff-table-state .staff-loading` was dead. TJ-073b gives the page the cards skeleton, then retires the class.
@@ -26408,19 +26418,19 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **Left as is:** the employee drawers' small "Loading documents…" hint (a line inside a form, not a loading screen).
 - **How the specs were made:** as batches 8 and 9: edits generated by script on a throwaway worktree of `master` at `1c1f770`, every anchor asserted to occur once, instructions rendered from the recorded edits. `tsc` and `next build --webpack` exit 0 on the result (`src/` tree `aa825cd`). Acting as the executor, a parser read only the Instructions written below and applied them to a fresh checkout of `master`: all 5 file versions came out byte-identical, same tree (1, 2 and 2 files per step).
 - **Mocked preview:** all three measured at 1280px and 375px (details in each task's pass). Expected results in the planner's scratchpad (`b10/expected_blobs.txt`); the executor's tip must reproduce `src/` tree `aa825cd`.
-- **Dispatch:** at the user's request (the same message), once this plan is committed.
+- **Dispatch:** at the user's request (the same message), after this plan was committed as `bd65497`; see "Batch 10 — verified and merged".
 
 | ID | Title | Batch |
 |---|---|---|
-| TJ-073a | The admin file's Remove asks first | 10 — READY |
-| TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | 10 — READY |
-| TJ-073c | The session-ended notice on the staff popup | 10 — READY |
+| TJ-073a | The admin file's Remove asks first | 10 — DONE |
+| TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | 10 — DONE |
+| TJ-073c | The session-ended notice on the staff popup | 10 — DONE |
 
 ---
 
 ### TJ-073a — The admin file's Remove asks first
 
-- **Status:** READY — passed 2026-11-25. Batch 10, step 1 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `790d58c` on `fix/admin-file-remove-confirm`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `cb0f882` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `fix/admin-file-remove-confirm`, cut from `master` at the commit that adds this spec.
 - **Why:** on the admin patient file, Remove deletes a document at once; the secretary's asks first (TJ-069b2). One misclick loses a patient's file for good.
 
@@ -26468,7 +26478,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-073b — Duplicate Check skeleton; `.staff-loading` retired
 
-- **Status:** READY — passed 2026-11-25. Batch 10, step 2 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `5199a0b` on `feat/duplicates-skeleton`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `85d8d80` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/duplicates-skeleton`, cut from the tip of `fix/admin-file-remove-confirm`.
 - **Why:** the Duplicate Check page is the last screen with a text loading line ("Scanning for duplicates…") and the last user of `.staff-loading` (decision P4-4).
 
@@ -26536,7 +26546,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-073c — The session-ended notice on the staff popup
 
-- **Status:** READY — passed 2026-11-25. Batch 10, step 3 of 3.
+- **Status:** DONE. Executed by the Sonnet executor: task commit `3a5a376` on `feat/session-notice-popup`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `c546e12` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
 - **Branch:** `feat/session-notice-popup`, cut from the tip of `feat/duplicates-skeleton`.
 - **Why:** when a staff session ends, the notice still uses the old slate `#1e293b`, 16px corners and the old gradient button, unlike every other staff popup (TJ-069d1).
 
