@@ -192,7 +192,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
 | TJ-074 | Live QA pass on therapyjo.com | DONE — run 2026-11-25 14:22–15:25 (Amman): 41 PASS, 2 FAIL, 3 BLOCKED of 46; every QA record cleaned up, patient 576 removed by SQL on the user's OK; findings filed as TJ-075–077 | — |
 | TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | BACKLOG — found by TJ-074 (W-4), no planning pass | — |
-| TJ-076 | Local builds spend the Google Places quota, and a failed fetch hides the reviews for a day | BACKLOG — found by TJ-074 (PUB-2), no planning pass | — |
+| TJ-076 | Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day | BLOCKED — needs the user to fix the Google Cloud payment; then a redeploy; code follow-ups unplanned | — |
 | TJ-077 | Small fixes from the live QA (TJ-074) | BACKLOG — five items, no planning pass | — |
 
 ---
@@ -26751,6 +26751,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
   - The phone `0` for the temp patient is the app's own "no number" (TJ-068d), not an invented number.
 - **The two FAILs** became TJ-075 (W-4) and TJ-076 (PUB-2).
 - **PUB-2, read by the planner:** `/api/public/reviews` answered `{"available":false}` from the cache (`X-Vercel-Cache: HIT`), and Vercel logged no Places warning at runtime in the 30 minutes before. So the failure was cached by the build of `1f6fc91` and holds for a day (`revalidate: 86400`). The local `.env` holds the real Places key, so every local build in the main checkout spends one of the 30 calls a day; the night's executor builds most likely used them up. Likely, not proven. It recovers once the cached answer expires, about a day after the deploy, or at the next deploy.
+- **Corrected the same day (see TJ-076):** the guess above was wrong. The build log of the next deploy (`0425c8c`, Vercel success) read `[reviews] Places API returned 403`, and the Google Cloud billing overview shows "Your billing account is past due or does not have valid payment information". A spent quota would answer 429.
 - **Cleanup:**
   - **Created, then deleted in the app:** two staff accounts (resigned, then hard-deleted), bookings 2955 and its copy, the note and the Draft post. The planner re-checked the doctors, secretaries and archived-patients lists.
   - **Patient 576 removed by SQL** in Supabase on the user's OK ("Run it"). Before the delete, a check found one row, `QA TEMP Patient B`, archived, phone `0`, with 0 bookings, 2 assessments, 0 files and 20 history entries. The guarded `DELETE` then removed it, and the verify read 0 for the patient, its assessments, files, history and bookings.
@@ -26774,11 +26775,21 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ---
 
-### TJ-076 — Local builds spend the Google Places quota, and a failed fetch hides the reviews for a day
+### TJ-076 — Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day
 
-- **Status:** BACKLOG — found by TJ-074 (PUB-2) on 2026-11-25; no planning pass.
-- **Why:** the landing page's reviews were empty after the deploy of `1f6fc91`. The reviews route caches every answer for a day (`revalidate: 86400`), a failure included. Every build with the real key, local ones included, spends one of the 30 Place Details calls a day (the Console cap). The executor's gate builds run in the main checkout, whose `.env` holds that key.
-- **To decide at planning:** keep local and executor builds from calling Places (for example, call only at runtime on Vercel, or only when `VERCEL` is set); and do not cache a failed fetch for a day (a short revalidate on failure only). Raise the cap rather than shorten the success revalidate (see the Places billing notes).
+- **Status:** BLOCKED — needs the user. Found by TJ-074 (PUB-2) on 2026-11-25.
+- **Cause, read by the planner:**
+  - The build log of `0425c8c`'s deployment (Vercel, success, 2026-11-25 ~15:15 UTC) reads `[reviews] Places API returned 403`.
+  - The Google Cloud billing overview for project `therapyjo-web` (billing account `01E793-04399C-2173CB`) shows: "Your billing account is past due or does not have valid payment information associated with it."
+  - It is the same failure as 2026-11-13, when a declined card closed the account (see the Places billing notes). A spent quota would answer 429, not 403.
+- **To restore:**
+  1. The user fixes the payment in the Cloud console's Payment overview. Card details are the user's to enter.
+  2. Redeploy, because the route caches the failure for a day (`revalidate: 86400`).
+  3. Check that `/api/public/reviews` answers `available: true`.
+- **Code follow-ups, to decide at planning:**
+  - A failed fetch should not be cached for a day: use a short revalidate on failure only.
+  - Local and executor builds should not call Places. The main checkout's `.env` holds the real key, so every gate build there spends one of the 30 calls a day.
+  - Raise the cap rather than shorten the success revalidate.
 
 ---
 
