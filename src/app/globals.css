@@ -3667,3 +3667,8 @@ button.staff-row-name {
     grid-template-columns: 1fr;
   }
 }
+/* The session-ended notice (SessionExpiryNotice.tsx, TJ-073c) wears the popup
+   look and sits above any popup or confirmation still open under it. */
+.staff-session-overlay {
+  z-index: 2000;
+}

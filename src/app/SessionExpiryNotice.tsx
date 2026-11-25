@@ -90,89 +90,33 @@ export default function SessionExpiryNotice() {
         router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
     };
 
+    // The staff popup look (.staff-modal-* in globals.css), with no close
+    // button: signing in again is the only way on. .staff-session-overlay
+    // lifts it above any popup or confirmation that was open at the time.
     return (
-        <div className="modal-overlay">
-            <div className="modal-card">
-                <h2>Your session has ended</h2>
-                <p>
-                    You were signed out automatically after 8 hours of inactivity.
-                    Sign in again to continue.
-                </p>
-                <div className="modal-actions">
-                    <button className="btn-primary" onClick={signInAgain}>
+        <div className="staff-modal-overlay staff-session-overlay">
+            <div
+                className="staff-modal"
+                role="alertdialog"
+                aria-modal="true"
+                aria-labelledby="session-ended-title"
+                aria-describedby="session-ended-text"
+            >
+                <div className="staff-modal-head">
+                    <h2 id="session-ended-title" className="staff-modal-title">Your session has ended</h2>
+                </div>
+                <div className="staff-modal-body">
+                    <p id="session-ended-text" className="staff-modal-text">
+                        You were signed out automatically after 8 hours of inactivity.
+                        Sign in again to continue.
+                    </p>
+                </div>
+                <div className="staff-modal-foot">
+                    <button type="button" className="staff-btn staff-btn-primary" onClick={signInAgain} autoFocus>
                         Sign in again
                     </button>
                 </div>
             </div>
-
-            <style jsx>{`
-                .modal-overlay {
-                    position: fixed;
-                    inset: 0;
-                    background: rgba(0, 0, 0, 0.6);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 2000;
-                    backdrop-filter: blur(4px);
-                    -webkit-backdrop-filter: blur(4px);
-                    padding: 1rem;
-                    box-sizing: border-box;
-                }
-                .modal-card {
-                    background: #1e293b;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 16px;
-                    padding: 2rem;
-                    width: 100%;
-                    max-width: 420px;
-                    box-sizing: border-box;
-                    color: #fff;
-                }
-                .modal-card h2 {
-                    font-size: 1.3rem;
-                    margin: 0 0 0.75rem;
-                    font-weight: 600;
-                }
-                .modal-card p {
-                    font-size: 0.9rem;
-                    color: rgba(255, 255, 255, 0.65);
-                    line-height: 1.5;
-                    margin: 0;
-                }
-                .modal-actions {
-                    display: flex;
-                    justify-content: flex-end;
-                    margin-top: 1.5rem;
-                }
-                .btn-primary {
-                    background: linear-gradient(135deg, #059669, #10b981);
-                    color: #fff;
-                    border: none;
-                    border-radius: 10px;
-                    padding: 0.6rem 1.25rem;
-                    font-size: 0.9rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    transition: opacity 0.2s;
-                    font-family: inherit;
-                }
-                .btn-primary:hover {
-                    opacity: 0.85;
-                }
-
-                @media (max-width: 480px) {
-                    .modal-card {
-                        padding: 1.25rem;
-                    }
-                    .modal-actions {
-                        justify-content: stretch;
-                    }
-                    .btn-primary {
-                        width: 100%;
-                    }
-                }
-            `}</style>
         </div>
     );
 }
