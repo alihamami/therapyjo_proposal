@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import BlogEditor from "../BlogEditor";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 export default function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -33,7 +34,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
     }
 
     if (!post) {
-        return <div style={{ padding: "2rem", color: "rgba(255,255,255,0.5)" }}>Loading…</div>;
+        return <StaffSkeleton kind="form" title="Edit Post" label="Loading the post…" back={<button className="staff-back" onClick={() => router.push("/admin/blog")}>← Back to Blog</button>} />;
     }
 
     return <BlogEditor initial={post} />;

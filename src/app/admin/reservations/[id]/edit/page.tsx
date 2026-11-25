@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
 import { isMissingPhone } from "@/lib/phone";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface Doctor { id: string; name: string; color: string | null; }
 
@@ -108,7 +109,7 @@ export default function EditReservationPage({ params }: { params: Promise<{ id: 
     if (loading) {
         return (
             <div className="page">
-                <p className="staff-loading" role="status">Loading…</p>
+                <StaffSkeleton kind="form" title="Edit Reservation" label="Loading the booking…" back={<button className="staff-back" onClick={() => router.push("/admin")}>← Back to Dashboard</button>} />
             </div>
         );
     }

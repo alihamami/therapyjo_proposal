@@ -7,6 +7,7 @@ import { shouldOpenRow } from "@/lib/rowLink";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface DoctorProfile {
     id: string;
@@ -174,10 +175,6 @@ export default function DoctorsCmsPage() {
         fetchDoctors();
     };
 
-    if (loading) {
-        return <p className="staff-loading" role="status">Loading…</p>;
-    }
-
     return (
         <div>
             <div className="staff-page-header">
@@ -189,6 +186,7 @@ export default function DoctorsCmsPage() {
             </div>
 
             <div className="grid">
+                {loading && <StaffSkeleton kind="tiles" label="Loading doctor profiles…" />}
                 {doctors.map((doc) => (
                     <div
                         key={doc.id}
@@ -225,7 +223,7 @@ export default function DoctorsCmsPage() {
                         </div>
                     </div>
                 ))}
-                {doctors.length === 0 && (
+                {!loading && doctors.length === 0 && (
                     <div className="staff-panel grid-empty">
                         <StaffEmpty
                             icon={Stethoscope}

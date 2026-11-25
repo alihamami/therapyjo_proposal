@@ -7,6 +7,7 @@ import { use } from "react";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import { History, Phone } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
 import ClinicalAssessment from "@/app/components/ClinicalAssessment";
 import { isMissingPhone } from "@/lib/phone";
@@ -169,7 +170,7 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
     const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     const formatTime = (t: string) => new Date(t).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 
-    if (loading) return <p className="staff-loading" role="status">Loading session…</p>;
+    if (loading) return <StaffSkeleton kind="record" label="Loading session…" back={<button className="staff-back" onClick={() => router.push("/doctor")}>← Back to Schedule</button>} />;
     if (!reservation) return <div style={{ color: "rgba(255,255,255,0.4)", padding: "3rem", textAlign: "center" }}>Session not found</div>;
 
     return (

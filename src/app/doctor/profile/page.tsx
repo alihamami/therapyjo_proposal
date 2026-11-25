@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface DoctorProfile {
     id: string;
@@ -109,7 +110,7 @@ export default function DoctorProfilePage() {
     }
 
     if (!profile) {
-        return <p className="staff-loading" role="status">Loading…</p>;
+        return <StaffSkeleton kind="form" title="My Public Profile" label="Loading your profile…" />;
     }
 
     return (

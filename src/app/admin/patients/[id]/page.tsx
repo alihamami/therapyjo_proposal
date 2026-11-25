@@ -11,6 +11,7 @@ import RowMenu from "@/app/components/RowMenu";
 import { useConfirm } from "@/app/components/ConfirmDialog";
 import StaffModal from "@/app/components/StaffModal";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import StaffSkeleton, { StaffSkeletonRows } from "@/app/components/StaffSkeleton";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/reservationStatus";
 import PatientSummary, { type LatestAssessment } from "@/app/components/PatientSummary";
 
@@ -311,7 +312,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     };
 
     if (loading) {
-        return <p className="staff-loading" role="status">Loading…</p>;
+        return <StaffSkeleton kind="record" label="Loading patient…" back={<button className="staff-back" onClick={() => router.push("/admin/patients")}>← Back</button>} />;
     }
     if (!patient) return null;
 
@@ -540,11 +541,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
 
             {/* History Tab — admin-only */}
             {activeTab === "history" && (
-                auditLoading ? (
-                    <div className="staff-panel">
-                        <p className="staff-loading" role="status">Loading…</p>
-                    </div>
-                ) : auditLog.length === 0 ? (
+                !auditLoading && auditLog.length === 0 ? (
                     <div className="staff-panel">
                         <StaffEmpty icon={History} title="No recorded activity yet" hint="Changes to this patient's file are recorded here." />
                     </div>
@@ -560,6 +557,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
                                 </tr>
                             </thead>
                             <tbody>
+                                {auditLoading && <StaffSkeletonRows columns={4} rows={4} label="Loading history…" />}
                                 {auditLog.map((e) => (
                                     <tr key={e.id}>
                                         <td>{new Date(e.createdAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</td>
