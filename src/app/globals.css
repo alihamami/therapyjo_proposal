@@ -2340,7 +2340,7 @@ button.staff-row-name {
 .staff-table tbody tr:hover {
   background: rgba(255, 255, 255, 0.02);
 }
-/* The one row that holds the loading line or the empty state. */
+/* The one row that holds the empty state. */
 .staff-table .staff-table-state td {
   padding: 0;
 }
@@ -2348,8 +2348,7 @@ button.staff-row-name {
   background: none;
 }
 /* On a phone the table is wider than its wrapper and scrolls sideways; the
-   loading line and the empty state stay in view at the wrapper's width. */
-.staff-table-state .staff-loading,
+   empty state stays in view at the wrapper's width. */
 .staff-table-state .staff-empty {
   position: sticky;
   inset-inline-start: 0;
@@ -2375,13 +2374,6 @@ button.staff-row-name {
   margin-top: 1.25rem;
   color: var(--staff-muted);
   font-size: var(--staff-size-base);
-}
-.staff-loading {
-  margin: 0;
-  padding: 2rem 1rem;
-  color: var(--staff-faint);
-  font-size: var(--staff-size-base);
-  text-align: center;
 }
 /* Empty state, design 3B (components/StaffEmpty.tsx). */
 .staff-empty {

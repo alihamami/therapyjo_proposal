@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { CircleCheck, Phone } from "lucide-react";
 import StaffEmpty from "@/app/components/StaffEmpty";
+import StaffSkeleton from "@/app/components/StaffSkeleton";
 
 interface DuplicateGroup {
     phone: string;
@@ -54,7 +55,7 @@ export default function DuplicatePatientsPage() {
             </div>
 
             {loading ? (
-                <p className="staff-loading staff-panel" role="status">Scanning for duplicates…</p>
+                <StaffSkeleton kind="cards" label="Scanning for duplicates…" />
             ) : duplicates.length === 0 ? (
                 <div className="staff-panel">
                     <StaffEmpty icon={CircleCheck} title="No duplicate patients" hint="No two patients share a phone number." />
