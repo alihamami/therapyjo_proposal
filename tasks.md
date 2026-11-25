@@ -192,7 +192,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
 | TJ-074 | Live QA pass on therapyjo.com | DONE — run 2026-11-25 14:22–15:25 (Amman): 41 PASS, 2 FAIL, 3 BLOCKED of 46; every QA record cleaned up, patient 576 removed by SQL on the user's OK; findings filed as TJ-075–077 | — |
 | TJ-075 | Top-menu links leave a patient file without the unsaved-changes prompt | BACKLOG — found by TJ-074 (W-4), no planning pass | — |
-| TJ-076 | Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day | BLOCKED — needs the user to fix the Google Cloud payment; then a redeploy; code follow-ups unplanned | — |
+| TJ-076 | Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day | BACKLOG — reviews restored 2026-11-25 (user fixed the payment; redeploy `934c9d1`); the code follow-ups have no planning pass | — |
 | TJ-077 | Small fixes from the live QA (TJ-074) | BACKLOG — five items, no planning pass | — |
 
 ---
@@ -26777,7 +26777,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-076 — Google reviews gone: the Places billing account is past due (403), and a failed fetch is cached for a day
 
-- **Status:** BLOCKED — needs the user. Found by TJ-074 (PUB-2) on 2026-11-25.
+- **Status:** BACKLOG — the code follow-ups below have no planning pass. **Reviews restored 2026-11-25:** the user fixed the Google Cloud payment ("Payment fixed"); the past-due banner was gone from the billing overview; the redeploy of `934c9d1` (Vercel success) made `/api/public/reviews` answer `available: true`, rating 4.9, 382 ratings, 5 reviews. Found by TJ-074 (PUB-2).
 - **Cause, read by the planner:**
   - The build log of `0425c8c`'s deployment (Vercel, success, 2026-11-25 ~15:15 Amman time) reads `[reviews] Places API returned 403`.
   - The Google Cloud billing overview for project `therapyjo-web` (billing account `01E793-04399C-2173CB`) shows: "Your billing account is past due or does not have valid payment information associated with it."
