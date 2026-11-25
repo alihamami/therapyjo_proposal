@@ -79,9 +79,11 @@ export default function DoctorSessionPage({ params }: { params: Promise<{ id: st
     // Both clinical forms are guarded together: fetchData() repopulates the
     // SOAP form and, by showing "Loading session…", unmounts the Clinical
     // Assessment, so either being dirty is enough to lose work.
-    const [soapBaseline, setSoapBaseline] = useState<string>("");
+    // Starts as the empty form, so a page that never loads a session (for
+    // "Session not found") holds nothing unsaved. (TJ-075)
+    const [soapBaseline, setSoapBaseline] = useState<string>(JSON.stringify({ subjective: "", objective: "", assessment: "", plan: "" }));
     const clinicalDirty = JSON.stringify(soapForm) !== soapBaseline || intakeDirty;
-    const { confirmDiscard } = useUnsavedChanges(clinicalDirty);
+    const { confirmDiscard } = useUnsavedChanges(clinicalDirty, { title: "Leave without saving?", message: "Your unsaved SOAP or Clinical Intake text will be lost." });
 
     const fetchData = useCallback(async () => {
         setLoading(true);

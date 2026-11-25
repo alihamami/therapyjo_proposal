@@ -120,7 +120,7 @@ export default function PatientProfilePage({ params }: { params: Promise<{ id: s
     // <ClinicalAssessment>, which reports here; the guard below acts on it.
     // (TJ-067b)
     const [intakeDirty, setIntakeDirty] = useState(false);
-    const { confirmDiscard } = useUnsavedChanges(intakeDirty);
+    const { confirmDiscard } = useUnsavedChanges(intakeDirty, { title: "Leave without saving?", message: "Your unsaved Clinical Assessment edits will be lost." });
 
     // The latest assessment, for the summary line. ClinicalAssessment reports
     // it after each load; undefined until then. (TJ-072c)
