@@ -297,7 +297,7 @@ function SecretaryNewReservationForm() {
                 .side-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
                 .note-group { display: flex; flex-direction: column; gap: 0.5rem; }
                 .patient-search { position: relative; }
-                .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; background: #1e293b; border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-sm, 2px); overflow: hidden; margin-top: 2px; }
+                .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; background: var(--staff-raised); border: 1px solid var(--staff-border-strong); border-radius: var(--staff-radius-md); overflow: hidden; margin-top: 4px; box-shadow: var(--staff-shadow-pop); }
                 .search-item { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.85rem; border: none; background: none; color: #fff; cursor: pointer; font-size: var(--staff-size-base); font-family: inherit; text-align: left; }
                 .search-item:hover { background: rgba(76,175,147,0.12); }
                 .sr-phone { color: rgba(255,255,255,0.4); font-size: var(--staff-size-sm); }

@@ -326,8 +326,9 @@ function NewReservationForm() {
                 .patient-search { position: relative; }
                 .search-dropdown {
                     position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
-                    background: #1e293b; border: 1px solid rgba(255,255,255,0.12);
-                    border-radius: var(--radius-sm, 2px); overflow: hidden; margin-top: 2px;
+                    background: var(--staff-raised); border: 1px solid var(--staff-border-strong);
+                    border-radius: var(--staff-radius-md); overflow: hidden; margin-top: 4px;
+                    box-shadow: var(--staff-shadow-pop);
                 }
                 .search-item {
                     width: 100%; display: flex; justify-content: space-between; align-items: center;
