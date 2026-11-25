@@ -190,6 +190,7 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-073a | The admin file's Remove asks first | DONE — task commit `790d58c`, merged to `master` as `cb0f882` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `fix/admin-file-remove-confirm` |
 | TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | DONE — task commit `5199a0b`, merged to `master` as `85d8d80` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/duplicates-skeleton` |
 | TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
+| TJ-074 | Live QA pass on therapyjo.com | READY — planned 2026-11-25; a test pass on production, no code; the QA agent runs it in the user's Chrome | — |
 
 ---
 
@@ -26617,3 +26618,112 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 **Done when:**
 - [ ] The session-ended notice looks like the other staff popups and still cannot be dismissed; `tsc` and the build exit 0; the planner's re-application is byte-identical.
+
+---
+
+### TJ-074 — Live QA pass on therapyjo.com
+
+- **Status:** READY — planned 2026-11-25 at the user's request ("dispatch a QA agent … run a planning pass for the QA to gather what was built along the way"). A test pass, not a code change: no branch, no commit.
+- **Who:** a QA agent in the user's own Chrome (Claude in Chrome). The user signs in whenever a page asks for a password. The planner relays every hand-off and reviews the report.
+- **Why:** batches 8–10 went live in `1f6fc91`, and nobody has walked the live site end to end since the work began. This pass checks what the project built, task by task, on the real site.
+
+**Planning pass:** 2026-11-25, on `master` at `9c30bd8`. Read: the queue (118 tasks DONE, 73 IDs); the page routes (5 public, 18 admin, 7 secretary, 6 doctor); the delete endpoints; the schema's cascade rules; side effects.
+- **Production, real clinic data.** There is no test environment. One Supabase database serves the live clinic; there is no local database.
+- **Nothing is sent out** when a record is created: the only messaging is client-side WhatsApp links; there is no server email or SMS.
+- **What can be cleaned up from the app:** bookings, notes, blog posts, a patient's files, and doctor and secretary accounts (hard delete, TJ-009g, TJ-010a) all have delete paths. **A patient cannot be deleted**, only archived (hard delete closed as TJ-011c). Decision, 2026-11-25: the agent archives the temp patient; the planner then writes one SQL `DELETE` for that patient ID, shows it to the user, and runs it in Supabase only on the user's OK. Its assessments, file rows and history cascade; its bookings must be deleted first, in the app.
+- **Known residue:** a removed file's storage object may stay behind (TJ-014a open), so record its name. Never upload an ID document to a temp employee: a hard delete leaks it (TJ-014e).
+- **Time matters:** doctors see a day's sessions only from 09:30 Amman time (TJ-064). Note the time the doctor checks run.
+- **Excluded:** decisions still open or blocked (TJ-005b2b, TJ-011b, TJ-014a/c/d/e, TJ-042b, TJ-071c) and the backlog. If one of those shows up, note it as already known, not as a failure.
+
+**Hard rules for the agent**
+1. **Real records are read-only.** On any record the agent did not create (patient, booking, session, note, post, website doctor, pending change, employee) it never presses Save, Create, Update, Delete, Remove, Archive, Restore, Resign, Approve, Reject, Check in, Check out, Revert, Duplicate or Upload. It may open forms, menus and popups to look, then leave with Cancel, Escape or Back, and it never types into a real record's fields.
+2. **Writes only on QA records.** Every record it creates is named with the prefix `QA TEMP`. Each one goes into a ledger (type, name, ID, URL, created at) the moment it exists.
+3. **No passwords or codes, ever.** At a login page, a new employee's password fields, a password change, or an admin re-authentication, the agent stops and reports `NEEDS USER:`, saying exactly what the user must type and where. It continues only when the planner's next message says it is done.
+4. **QA bookings** go only in the temp doctor's column, on a weekday at least 7 days ahead, between 10:00 and 16:00. Each one is deleted in cleanup.
+5. **Blog posts stay Draft.** A post is never published, not even for a moment.
+6. **Upload only** `C:\Users\ahama\AppData\Local\Temp\claude\3f7c7b11a3fb18ab\f283a7f1-33cf-4c73-90d8-d4e057e6db30\scratchpad\qa\qa-temp.png` (99 bytes, a green square), and only to the QA TEMP patient.
+7. **Privacy:** the report names no real patient, phone number or clinical text. Real records are referred to by ID only.
+8. **Stop and report**, without trying a fix, on: an error page or a 500; anything that looks like data loss; any sign a write reached a real record; a confirmation that does not appear where this plan expects one.
+9. **Use the user's Chrome in a new tab of its own.** It never signs out, never changes the user's account settings, and never clicks a WhatsApp, phone or map link through to send anything.
+
+**Phases** (in order; each starts by noting the time)
+
+| Phase | Signed in as | Mode | Covers |
+|---|---|---|---|
+| P1 Public site | nobody | read-only | PUB |
+| P2 Admin, looking | the user's admin account | read-only | ADM |
+| P3 Admin, on QA records | admin | writes on QA records only | W |
+| P4 Secretary | the temp secretary (the user signs in) | writes on QA records only | SEC |
+| P5 Doctor | the temp doctor (the user signs in) | writes on QA records only | DOC |
+| P6 Session ending | temp doctor, then admin | — | END |
+| P7 Cleanup | admin | deletes QA records only | CLN |
+
+**Checks.** "Look" means read-only. For each check the report gives PASS, FAIL, BLOCKED (with the reason) or SKIPPED (with the reason), plus one line of evidence (what was seen, measured or read).
+
+*P1 Public site* (signed out; at 1280px and again at 375px for PUB-1 and PUB-3):
+- **PUB-1** `/` loads. Arabic text uses the site's Arabic-capable font, drawn larger than Latin; headings use Bodoni Moda; no sideways scroll at 375px (TJ-053, 055, 056, 057).
+- **PUB-2** Google reviews show with names and stars; the map is a real embed of the clinic, not a placeholder (TJ-003, 004, 066).
+- **PUB-3** `/blog` lists posts; one post opens at `/blog/<slug>` (look only).
+- **PUB-4** The language switch moves between English and Arabic, and the page turns right-to-left.
+- **PUB-5** `/Login` (capital L) reaches the sign-in page, not a 404 (TJ-051). `/admin` while signed out ends at `/login`.
+- **PUB-6** The WhatsApp button and the contact links are present (look only).
+
+*P2 Admin, looking* (the user signs in as admin first; 1280px, then the ones marked 375 again at 375px):
+- **ADM-1** Dashboard: one day header with Yesterday, Today, Tomorrow and the date chip; the date popover is opaque; the schedule fits before it scrolls; every card names its status; doctor colours and the All Doctors choice; cards are short and their action menu sits above its neighbours (TJ-038, 039, 043a, 044, 049a/b, 052, 071a, 071b, 009d). 375.
+- **ADM-2** A click on an empty slot opens the booking form at that hour (TJ-041). Cancel; nothing is saved.
+- **ADM-3** A click on a card opens that patient's file (TJ-048). Look only.
+- **ADM-4** Patients: search waits for typing to pause; pagination; the row menu opens and closes; "No phone" instead of a bare 0; the page header, table and Back links (TJ-068d, 068f1, 069e1, 069h, 069k). 375.
+- **ADM-5** A real patient file, looking only: the header, the summary line (next session, last visit, sessions done of recommended, amber when over); the tabs; the Sessions table naming each status; the Files tab; the History tab; the assessment in four sections with the Save bar in view while scrolling, reading "All changes saved"; the switch between assessment pages; "Patient Since" as text (TJ-067a, 067b, 072a, 072b, 072c). Pick a patient with two or more assessments if one exists. Do not type into any field. 375.
+- **ADM-6** Archived patients, and Duplicate Check (the scan finishes and shows groups or the empty state) (TJ-037, 073b).
+- **ADM-7** Employees, doctors and secretaries: the lists, the archive of resigned staff, the row menus; open an editor popup and Cancel (TJ-009c, 068f2, 069d3, 069e3).
+- **ADM-8** Website doctors and their archive; Approvals: look at any pending change, but never Approve or Reject (TJ-069e2, 069j).
+- **ADM-9** Blog: the list; open a post's editor and leave without saving (TJ-068f3, 069d4b).
+- **ADM-10** Notes: the list, and the New Note form, which is left without saving (TJ-069e2).
+- **ADM-11** A real session's page shows its SOAP note to the admin (TJ-065). Look only.
+- **ADM-12** The menu bar is one solid row, lined up with the page, down to 861px; below that, the phone menu (TJ-068b, 068g, 070).
+
+*P3 Admin, on QA records* (log each record in the ledger as it is made):
+- **W-1** Employees → new doctor `QA TEMP Doctor` (username `qatempdoctor`). The colour field defaults to one it accepts (TJ-009h); working hours are a selector (TJ-009e); the reveal-password eye (TJ-009a). At the password fields: `NEEDS USER`. No ID documents. Then new secretary `QA TEMP Secretary` (username `qatempsecretary`), the same way.
+- **W-2** New Reservation, from the dashboard: the patient search dropdown on the staff colours (TJ-072f); "Create a new patient" from inside the form, making `QA TEMP Patient` with no phone (TJ-008a; if the form insists on a phone, stop with `NEEDS USER` rather than invent a number that may be a real patient's); try 06:00 first and expect a refusal (TJ-042a); then book 10:00 on the temp doctor (rule 4).
+- **W-3** Edit that booking: move it to 11:00; trying 19:30 is refused (TJ-047a, 047b).
+- **W-4** The QA TEMP patient's file, assessment: type in a field and the bar says "Unsaved changes"; try to leave and the unsaved-changes prompt appears; stay; Save, and the bar reads "All changes saved" (TJ-022, 069b1, 072b). Add a second assessment page (TJ-067b). Set Recommended Sessions to 3.
+- **W-5** Files tab: upload `qa-temp.png` (TJ-011a). Remove asks first (TJ-073a); Cancel keeps it; Remove and confirm, and it is gone.
+- **W-6** Edit Info: change the name to `QA TEMP Patient B`, Save; the History tab lists the creation and the edit.
+- **W-7** The QA booking's session: check in, then revert the state (TJ-008b); check out. The patient file's summary then reads 1 of 3 done (TJ-072c). Write a SOAP note on that session as admin (TJ-065).
+- **W-8** Notes: create `QA TEMP note` (look at the confirmation when it is deleted in P7).
+- **W-9** Blog: create a Draft post `QA TEMP post`. It is not on `/blog` while signed out (check in a quick look).
+- **W-10** The temp secretary's editor: turn the content grant on, then off (TJ-005b2a).
+
+*P4 Secretary* (`NEEDS USER`: sign in as `qatempsecretary`):
+- **SEC-1** The secretary's dashboard and menu; the schedule shows the QA booking.
+- **SEC-2** The QA TEMP patient's file: no clinical assessment, and no Recommended Sessions; the summary counts every Checked Out session with no "of" (TJ-023, decision P4-5).
+- **SEC-3** Duplicate the QA booking from its card: the date-and-time popup (TJ-069c). Make the copy 7 days later, same hour, then delete that copy from the secretary's screen (TJ-040). The confirmation appears first.
+- **SEC-4** Edit the original QA booking's notes and save (TJ-047c).
+- **SEC-5** Patients search and the archived list look right; nothing real is touched.
+
+*P5 Doctor* (`NEEDS USER`: sign in as `qatempdoctor`):
+- **DOC-1** The dashboard opens on All Doctors (TJ-058). Before 09:30 Amman time, today shows the "not opened yet" notice instead of an empty calendar (TJ-064b); record the time.
+- **DOC-2** A colleague's session is read-only: no state buttons, and no edit (TJ-062b). Look only.
+- **DOC-3** Patients and the QA TEMP file: no phone numbers anywhere; no create, edit, archive or file removal (TJ-054a). The doctor's own day after 09:30 shows the QA booking only on its own day (TJ-064a).
+- **DOC-4** The QA booking's session page: edit the SOAP note and save; the unsaved-changes prompt guards it (TJ-022).
+- **DOC-5** The doctor's Duplicate on its own card does not book (TJ-061). If it offers a booking, Cancel.
+- **DOC-6** My Public Profile opens (look only).
+
+*P6 Session ending:*
+- **END-1** With the temp doctor signed in on a staff page in tab A, open tab B and sign out there. Tab A shows "Your session has ended" within about 2 seconds, in the staff popup style, with no close button and focus on "Sign in again". The button goes to `/login` with the page as `callbackUrl` (TJ-073c). Escape does not close it.
+- **END-2** `NEEDS USER`: sign back in as admin.
+
+*P7 Cleanup* (admin; every row of the ledger is closed):
+- **CLN-1** Delete the QA booking(s) (the confirmation first).
+- **CLN-2** Delete `QA TEMP note` and the Draft `QA TEMP post` (TJ-012), each confirmation first.
+- **CLN-3** Archive the QA TEMP patient (the confirmation first). Record its patient ID for the planner's SQL.
+- **CLN-4** Hard-delete `QA TEMP Doctor` and `QA TEMP Secretary` (TJ-009g, 010a), each with its typed confirmation. If an account still owns a booking or note, delete that first and say so.
+- **CLN-5** Reconcile the ledger: every record is deleted or archived, and the leftovers are listed (the archived patient's ID and the file name for TJ-014a).
+
+**Report** (the agent's final message, all the planner sees):
+- A table with one row per check ID: result, and one line of evidence. Every FAIL comes with the URL, the steps, what was expected and what happened, plus a screenshot.
+- The ledger, with each row's cleanup state.
+- Every `NEEDS USER` stop, and when it was cleared.
+- Anything noticed outside the checks, marked "outside plan".
+
+**After the agent:** the planner reviews the report, writes the SQL `DELETE` for the archived QA TEMP patient (bookings already gone), shows it to the user, and runs it in Supabase only on the user's OK. Then it files the results here, with a new task for each confirmed failure.
