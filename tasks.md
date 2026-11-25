@@ -179,17 +179,17 @@ Two things that bear repeating here, because this is the file both agents open:
 | TJ-071a | One day header for the three dashboards | DONE — task commit `79dfd1b`, merged to `master` as `48e647b` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-day-header` |
 | TJ-071b | Name the status on every schedule card | DONE — task commit `d1d4ab1`, merged to `master` as `6711d09` with `--no-ff` on 2026-11-24 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-24 in `68856b8`** | `feat/staff-card-status` |
 | TJ-071c | Doctor colours that are easy to tell apart | BLOCKED — needs the live doctor list and the user's decision on the palette and on recolouring | — |
-| TJ-072 | Staff portal refresh, phase 4: patient file and lists | DONE — decided 2026-11-24 (P4-1 to P4-5 as recommended); all six steps merged 2026-11-25 after the user's review (batch 8 = TJ-072a, b, c; batch 9 = TJ-072d, e, f), **not pushed** | — |
-| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | DONE — task commit `68eedb7`, merged to `master` as `fe1d81d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-file-tidy` |
-| TJ-072b | The assessment in sections, with a Save bar that stays visible | DONE — task commit `4ab9954`, merged to `master` as `fc0c2ee` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/assessment-sections` |
-| TJ-072c | A summary line on the patient file | DONE — task commit `8b1f3fb`, merged to `master` as `8171bc6` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/patient-summary-line` |
-| TJ-072d | Skeletons: the shared piece and every table | DONE — task commit `19f7b33`, merged to `master` as `aac7f9d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/skeleton-tables` |
-| TJ-072e | Skeletons on the remaining loading screens | DONE — task commit `827ba80`, merged to `master` as `330055e` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/skeleton-pages` |
-| TJ-072f | Booking search dropdown on the staff tokens | DONE — task commit `f4c8092`, merged to `master` as `d6a22bf` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/booking-dropdown-tokens` |
-| TJ-073 | Phase 4 follow-ups: three loose ends | DONE — planned 2026-11-25; batch 10 = TJ-073a, b, c merged 2026-11-25 after the user's review, **not pushed** | — |
-| TJ-073a | The admin file's Remove asks first | DONE — task commit `790d58c`, merged to `master` as `cb0f882` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `fix/admin-file-remove-confirm` |
-| TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | DONE — task commit `5199a0b`, merged to `master` as `85d8d80` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/duplicates-skeleton` |
-| TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **not pushed** | `feat/session-notice-popup` |
+| TJ-072 | Staff portal refresh, phase 4: patient file and lists | DONE — decided 2026-11-24 (P4-1 to P4-5 as recommended); all six steps merged 2026-11-25 after the user's review (batch 8 = TJ-072a, b, c; batch 9 = TJ-072d, e, f), **pushed and deployed 2026-11-25 in `1f6fc91`** | — |
+| TJ-072a | Patient file: shared tabs, panels, status names and 4A buttons | DONE — task commit `68eedb7`, merged to `master` as `fe1d81d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/patient-file-tidy` |
+| TJ-072b | The assessment in sections, with a Save bar that stays visible | DONE — task commit `4ab9954`, merged to `master` as `fc0c2ee` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/assessment-sections` |
+| TJ-072c | A summary line on the patient file | DONE — task commit `8b1f3fb`, merged to `master` as `8171bc6` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/patient-summary-line` |
+| TJ-072d | Skeletons: the shared piece and every table | DONE — task commit `19f7b33`, merged to `master` as `aac7f9d` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/skeleton-tables` |
+| TJ-072e | Skeletons on the remaining loading screens | DONE — task commit `827ba80`, merged to `master` as `330055e` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/skeleton-pages` |
+| TJ-072f | Booking search dropdown on the staff tokens | DONE — task commit `f4c8092`, merged to `master` as `d6a22bf` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/booking-dropdown-tokens` |
+| TJ-073 | Phase 4 follow-ups: three loose ends | DONE — planned 2026-11-25; batch 10 = TJ-073a, b, c merged 2026-11-25 after the user's review, **pushed and deployed 2026-11-25 in `1f6fc91`** | — |
+| TJ-073a | The admin file's Remove asks first | DONE — task commit `790d58c`, merged to `master` as `cb0f882` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `fix/admin-file-remove-confirm` |
+| TJ-073b | Duplicate Check skeleton; `.staff-loading` retired | DONE — task commit `5199a0b`, merged to `master` as `85d8d80` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/duplicates-skeleton` |
+| TJ-073c | The session-ended notice on the staff popup | DONE — task commit `3a5a376`, merged to `master` as `c546e12` with `--no-ff` on 2026-11-25 after the user's review; planner-verified and previewed; **pushed and deployed 2026-11-25 in `1f6fc91`** | `feat/session-notice-popup` |
 
 ---
 
@@ -23546,7 +23546,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072 — Staff portal refresh, phase 4: patient file and lists
 
-- **Status:** DONE — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: merged 2026-11-25 as `fe1d81d`, `fc0c2ee`, `8171bc6` after the user's review, not pushed** (see "Batch 8 — verified and merged" and "Batch 8 — planned"). **Batch 9 = TJ-072d, e, f: merged 2026-11-25 as `aac7f9d`, `330055e`, `d6a22bf` after the user's review, not pushed** (see "Batch 9 — verified and merged" and "Batch 9 — planned"). **TJ-072 is DONE:** all six steps are on `master`, waiting for a push.
+- **Status:** DONE — decided 2026-11-24: **P4-1 to P4-5 as recommended**, approved by the user ("Yes, all five") against the planner's mockup (private design canvas `https://claude.ai/artifact/6eDBFtG7wSA4CbYBwrJX9w`). **Batch 8 = TJ-072a, b, c: merged 2026-11-25 as `fe1d81d`, `fc0c2ee`, `8171bc6` after the user's review, pushed and deployed 2026-11-25 in `1f6fc91`** (see "Batch 8 — verified and merged" and "Batch 8 — planned"). **Batch 9 = TJ-072d, e, f: merged 2026-11-25 as `aac7f9d`, `330055e`, `d6a22bf` after the user's review, pushed and deployed 2026-11-25 in `1f6fc91`** (see "Batch 9 — verified and merged" and "Batch 9 — planned"). **TJ-072 is DONE:** all six steps are on `master`, pushed and deployed 2026-11-25 in `1f6fc91`.
 - **Why:** The clinical assessment is about 13 identical full-width text boxes with Save only at the bottom. Group them into sections (History, Examination, Diagnosis & plan, Exercises) with a Save bar that stays visible. Add a summary line on the patient file (next appointment, doctor, sessions done out of recommended). Empty pages get an icon, a one-line explanation and the create button, instead of three different one-liners. Loading states become skeletons instead of "Loading…" text in 27 places.
 - **Execution:** as phases 1–3: stacked branches, one Sonnet executor at a time, planner re-applies and verifies, mocked preview, **nothing merges or pushes until the user has seen it**.
 
@@ -23558,7 +23558,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **P4-5** No Recommended Sessions for the secretary: their line counts every Checked Out session, with no "of".
 
 **Batch 9 — verified and merged (2026-11-25):**
-- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `aac7f9d` (TJ-072d), `330055e` (TJ-072e), `d6a22bf` (TJ-072f). The merged tree is identical to the verified tip `f4c8092` (`89bae3e`; `src/` `0304292`). **Not pushed.**
+- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `aac7f9d` (TJ-072d), `330055e` (TJ-072e), `d6a22bf` (TJ-072f). The merged tree is identical to the verified tip `f4c8092` (`89bae3e`; `src/` `0304292`). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Executed** by the Sonnet executor at the user's request ("Dispatch it") on stacked branches from `7ede720`: `19f7b33` (TJ-072d), `827ba80` (TJ-072e), `f4c8092` (TJ-072f). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
 - **Scope:** each commit changes exactly its task's files (14, 16, 2).
 - **Re-application:** all 32 changed file versions are byte-identical to the planner's expected blobs (`b9/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`0304292`).
@@ -23575,7 +23575,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 - **Dispatch:** at the user's request ("Dispatch it"); see "Batch 9 — verified and merged".
 
 **Batch 8 — verified and merged (2026-11-25):**
-- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `fe1d81d` (TJ-072a), `fc0c2ee` (TJ-072b), `8171bc6` (TJ-072c). The merged `src/` tree is identical to the verified tip `8b1f3fb` (`0cdc8b0`); only `tasks.md` differs. **Not pushed.**
+- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `fe1d81d` (TJ-072a), `fc0c2ee` (TJ-072b), `8171bc6` (TJ-072c). The merged `src/` tree is identical to the verified tip `8b1f3fb` (`0cdc8b0`); only `tasks.md` differs. **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Executed** by the Sonnet executor at the user's request ("dispatch when done") on stacked branches from `4366795`: `68eedb7` (TJ-072a), `4ab9954` (TJ-072b), `8b1f3fb` (TJ-072c). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
 - **Scope:** each commit changes exactly its task's files (5, 2, 6).
 - **Re-application:** all 13 changed file versions are byte-identical to the planner's expected blobs (`b8/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`0cdc8b0`).
@@ -23613,7 +23613,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072a — Patient file: shared tabs, panels, status names and 4A buttons
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `68eedb7` on `feat/patient-file-tidy`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `fe1d81d` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `68eedb7` on `feat/patient-file-tidy`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `fe1d81d` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/patient-file-tidy`, cut from `master` at the commit that adds this spec.
 - **Why:** the three patient files are copies of the same header, tabs, Sessions table and Files tab, each with its own style block; their Sessions tables show No Show and Cancelled as grey dots with raw capitals; several buttons predate design 4A; the admin file's card scrolls sideways, which would stop TJ-072b's Save bar from sticking; the secretary's file is 468px wide on a 375px phone.
 
@@ -24672,7 +24672,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072b — The assessment in sections, with a Save bar that stays visible
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `4ab9954` on `feat/assessment-sections`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `fc0c2ee` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `4ab9954` on `feat/assessment-sections`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `fc0c2ee` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/assessment-sections`, cut from the tip of `feat/patient-file-tidy`.
 - **Why:** the Clinical Assessment is 12 fields in one undivided grid, with Save, success and error only at the bottom of a long form (decisions P4-1, P4-2).
 
@@ -25204,7 +25204,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072c — A summary line on the patient file
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `8b1f3fb` on `feat/patient-summary-line`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `8171bc6` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `8b1f3fb` on `feat/patient-summary-line`. Planner-verified 2026-11-25 (see "Batch 8 — verified" under TJ-072). Merged to `master` with `--no-ff` as `8171bc6` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/patient-summary-line`, cut from the tip of `feat/assessment-sections`.
 - **Why:** the patient file shows only "Last visit"; staff look through the Sessions tab for the next appointment and count sessions by hand (decisions P4-3, P4-5).
 
@@ -25550,7 +25550,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072d — Skeletons: the shared piece and every table
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `19f7b33` on `feat/skeleton-tables`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `aac7f9d` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `19f7b33` on `feat/skeleton-tables`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `aac7f9d` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/skeleton-tables`, cut from `master` at the commit that adds this spec.
 - **Why:** nine lists show a one-line "Loading…" row while they load, and Blog and both Employees pages replace the whole page with that line, header included (decision P4-4).
 
@@ -26043,7 +26043,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072e — Skeletons on the remaining loading screens
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `827ba80` on `feat/skeleton-pages`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `330055e` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `827ba80` on `feat/skeleton-pages`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `330055e` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/skeleton-pages`, cut from the tip of `feat/skeleton-tables`.
 - **Why:** the other 16 screens still show "Loading…" text while they load (decision P4-4).
 
@@ -26348,7 +26348,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-072f — Booking search dropdown on the staff tokens
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `f4c8092` on `feat/booking-dropdown-tokens`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `d6a22bf` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `f4c8092` on `feat/booking-dropdown-tokens`. Planner-verified 2026-11-25 (see "Batch 9 — verified and merged" under TJ-072). Merged to `master` with `--no-ff` as `d6a22bf` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/booking-dropdown-tokens`, cut from the tip of `feat/skeleton-pages`.
 - **Why:** the patient search dropdown on New Booking (admin and secretary) still uses the CMS handoff's slate `#1e293b` and 2px corners (TJ-069 batch 5 note).
 
@@ -26399,11 +26399,16 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-073 — Phase 4 follow-ups: three loose ends
 
-- **Status:** DONE — planned 2026-11-25 at the user's request ("dispatch an executor to carry out the open issues"). **Batch 10 = TJ-073a, b, c: merged 2026-11-25 as `cb0f882`, `85d8d80`, `c546e12` after the user's review, not pushed** (see "Batch 10 — verified and merged" and "Batch 10 — planned").
+- **Status:** DONE — planned 2026-11-25 at the user's request ("dispatch an executor to carry out the open issues"). **Batch 10 = TJ-073a, b, c: merged 2026-11-25 as `cb0f882`, `85d8d80`, `c546e12` after the user's review, pushed and deployed 2026-11-25 in `1f6fc91`** (see "Batch 10 — verified and merged" and "Batch 10 — planned").
 - **Why:** batches 8 and 9 turned up three loose ends, recorded under TJ-072: the admin patient file's file Remove deletes without asking (the secretary's asks); `.staff-loading` left in `globals.css`; the session-ended notice still on the old slate `#1e293b`.
 
+**Batches 8–10 — deployed (2026-11-25):** pushed at the user's request ("Push all") by SHA (`git push origin 1f6fc91:master`, fast-forward from `68856b8`, 28 commits, all from this planning workflow, the oldest being batch 7's held deploy record `3b6ea07`; no unmerged branch on `origin`). One push, so one deployment: Vercel `success` ("Deployment has completed"). Tree `1c3d2e1` (`src/` `aa825cd`).
+- **Live check, read-only, without signing in:** the live stylesheet carries batch 8's `.staff-save-bar` and `.staff-summary`, batch 9's `.staff-skel-pulse` and `.staff-skel-row`, batch 10's `.staff-session-overlay`, and no `.staff-loading`; `/`, `/blog` and `/login` answer 200.
+- **Hold:** this record stays local until the risk window passes, so Vercel's one-step rollback still points at `68856b8`'s deployment (batch 7).
+- **Still to check live, signed in:** a real assessment save (the Save bar's "All changes saved"); the summary line on a patient with several assessments; the skeletons on a real connection; the booking dropdown with real patients; a real file Remove after its confirmation; the session-ended notice after a real expiry.
+
 **Batch 10 — verified and merged (2026-11-25):**
-- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `cb0f882` (TJ-073a), `85d8d80` (TJ-073b), `c546e12` (TJ-073c). The merged tree is identical to the verified tip `3a5a376` (`1c3d2e1`; `src/` `aa825cd`). **Not pushed.**
+- **Merged** after the user's review of the preview ("Merge, push later"), in order with `--no-ff`: `cb0f882` (TJ-073a), `85d8d80` (TJ-073b), `c546e12` (TJ-073c). The merged tree is identical to the verified tip `3a5a376` (`1c3d2e1`; `src/` `aa825cd`). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Executed** by the Sonnet executor at the user's request on stacked branches from `bd65497`: `790d58c` (TJ-073a), `5199a0b` (TJ-073b), `3a5a376` (TJ-073c). Commit messages and trailers as specified; `tasks.md` untouched on every branch; checkout left on `master`, clean.
 - **Scope:** each commit changes exactly its task's files (1, 2, 2).
 - **Re-application:** all 5 changed file versions are byte-identical to the planner's expected blobs (`b10/expected_blobs.txt`); the tip's `src/` tree equals the planner's verified tree (`aa825cd`).
@@ -26430,7 +26435,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-073a — The admin file's Remove asks first
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `790d58c` on `fix/admin-file-remove-confirm`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `cb0f882` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `790d58c` on `fix/admin-file-remove-confirm`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `cb0f882` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `fix/admin-file-remove-confirm`, cut from `master` at the commit that adds this spec.
 - **Why:** on the admin patient file, Remove deletes a document at once; the secretary's asks first (TJ-069b2). One misclick loses a patient's file for good.
 
@@ -26478,7 +26483,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-073b — Duplicate Check skeleton; `.staff-loading` retired
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `5199a0b` on `feat/duplicates-skeleton`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `85d8d80` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `5199a0b` on `feat/duplicates-skeleton`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `85d8d80` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/duplicates-skeleton`, cut from the tip of `fix/admin-file-remove-confirm`.
 - **Why:** the Duplicate Check page is the last screen with a text loading line ("Scanning for duplicates…") and the last user of `.staff-loading` (decision P4-4).
 
@@ -26546,7 +26551,7 @@ export default function StaffModal({ title, onClose, children, footer, wide, clo
 
 ### TJ-073c — The session-ended notice on the staff popup
 
-- **Status:** DONE. Executed by the Sonnet executor: task commit `3a5a376` on `feat/session-notice-popup`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `c546e12` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Not pushed.**
+- **Status:** DONE. Executed by the Sonnet executor: task commit `3a5a376` on `feat/session-notice-popup`. Planner-verified 2026-11-25 (see "Batch 10 — verified and merged" under TJ-073). Merged to `master` with `--no-ff` as `c546e12` on 2026-11-25, after the user saw the preview ("Merge, push later"). **Pushed and deployed 2026-11-25 in `1f6fc91`.**
 - **Branch:** `feat/session-notice-popup`, cut from the tip of `feat/duplicates-skeleton`.
 - **Why:** when a staff session ends, the notice still uses the old slate `#1e293b`, 16px corners and the old gradient button, unlike every other staff popup (TJ-069d1).
 
